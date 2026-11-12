@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addons><addon id="plugin.video.xtreammate"
+       name="XCMate"
+       version="0.1.29.91"
+       provider-name="GS Media">
+
+  <requires>
+    <import addon="xbmc.python" version="3.0.0"/>
+    <import addon="script.module.pil" version="5.1.0"/>
+    <import addon="script.module.requests" version="2.27.0" optional="true"/>
+
+</requires>
+
+  <extension point="xbmc.python.pluginsource" library="default.py">
+    <provides>video audio</provides>
+  </extension>
+
+  <extension point="xbmc.service" library="service.py" start="startup"/>
+
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en_GB">XCMate – TV setup wizard for Xtream, M3U and Stalker</summary>
+    <summary lang="de_DE">XCMate – IPTV-Einrichtungsassistent mit Xtream, M3U und Stalker</summary>
+    <description lang="en_GB">
+      Independent GPL-licensed derivative of mr-evil1 TiViMate Kodi, featuring a guided IPTV import process and on-video remote-control live channel and category navigation.
+      Features: Multiple M3U playlists, Xtream Codes API (Live/VOD/Series),
+      XMLTV EPG, channel groups, favourites, search, catch-up, recordings,
+      reminders, sleep timer.
+    </description>
+    <description lang="de_DE">
+      Eigenständiger GPL-Fork von mr-evil1 TiViMate Kodi mit geführter IPTV-Einrichtung und Fernbedienungssteuerung über laufendem Live-TV.
+      Funktionen: Mehrere M3U-Playlists, Xtream-Codes-API (Live/VOD/Serien),
+      XMLTV-EPG, Sendergruppen, Favoriten, Suche, Catch-up, Aufnahmen,
+      Erinnerungen, Sleep-Timer.
+    </description>
+    <platform>all</platform>
+    <license>GPL-2.0-only</license>
+    <defaultlanguage>resource.language.en_gb</defaultlanguage>
+    <forum>https://forum.kodi.tv</forum>
+    <website>https://kodi.tv</website>
+    <source>https://github.com/artattakk-creator/kodi-noodleprivate</source>
+    <news>0.1.29.91 Release Candidate: Sechs beschriftete BINGIE-Reihen: Filme, Serien, Im Kino, Disney, Diese Woche im Trend und MP3s. Gültige clock50-Widgetpfade wieder verwenden. Eigene Ladekreisel mit begrenzter Laufzeit und erhaltenem Fokus. Vorhandene TVMaze-/TMDB-Bildsuche, Bilddownloads und manuelle Zuordnungen unverändert erhalten. Einstellungen, Provider, Token, EPG, Favoriten und persönliche Widgets bleiben erhalten. Android-Abnahme offen; noch keine Repository-Veröffentlichung.</news>
+    <assets>
+      <icon>icon-81da1003a2753ec6.png</icon>
+      <fanart>resources/media/lightweight_splash.jpg</fanart>
+    </assets>
+  </extension>
+
+</addon><addon id="plugin.video.noodleprivate" name="Noodle Private" version="0.4.2" provider-name="Private Kodi Project">
+  <requires>
+    <import addon="xbmc.python" version="3.0.0" />
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="de_DE">Privates Video-Plugin mit Grafiken, zentralem GS-Media-Update und BINGIE-MOD-Widgets</summary>
+    <description lang="de_DE">Videolisten, Suche, Filter, anbieterübergreifende Favoritenlisten, dynamischem Cumination-Anbieterkatalog, Admin-Oberfläche, Quellenprüfung und Wiedergabe von NoodleMagazine. Private Testversion; keine Verbindung zum Website-Betreiber.</description>
+    <summary lang="en_GB">Private video plugin with Kodi artwork and widgets</summary>
+    <description lang="en_GB">Browse, search, save cross-provider collections and play supported sources with Cumination. Independent personal test build.</description>
+    <disclaimer lang="de_DE">Für volljährige Nutzer. Keine Gewähr für Verfügbarkeit, Zugriff oder Nutzungsrechte externer Inhalte. Kein Umgehen von Zugriffssperren.</disclaimer>
+    <platform>all</platform>
+    <license>MIT</license>
+    <assets><icon>resources/icon.png</icon><fanart>resources/fanart.png</fanart></assets>
+  </extension>
+</addon><addon id="repository.titan.bingie.mod" name="BINGIE MOD Repository" provider-name="AchillesPunks, Matke" version="2.0.1">
+	<extension point="xbmc.addon.repository" name="BINGIE MOD Repository">
+		<requires>
+			<import addon="xbmc.addon" version="12.0.0" />
+		</requires>
+		<dir minversion="20.0.0" maxversion="20.9.0">
+			<info compressed="false">https://raw.githubusercontent.com/AchillesPunks/repository.titan.bingie.mod/master/nexus/addons.xml</info>
+			<checksum>https://raw.githubusercontent.com/AchillesPunks/repository.titan.bingie.mod/master/nexus/addons.xml.md5</checksum>
+			<datadir zip="true">https://raw.githubusercontent.com/AchillesPunks/repository.titan.bingie.mod/master/nexus/</datadir>
+		</dir>
+		<dir minversion="20.9.1">
+			<info compressed="false">https://raw.githubusercontent.com/AchillesPunks/repository.titan.bingie.mod/master/omega/addons.xml</info>
+			<checksum>https://raw.githubusercontent.com/AchillesPunks/repository.titan.bingie.mod/master/omega/addons.xml.md5</checksum>
+			<datadir zip="true">https://raw.githubusercontent.com/AchillesPunks/repository.titan.bingie.mod/master/omega/</datadir>
+		</dir>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<summary lang="en">BINGIE MOD Repository</summary>
+        <description lang="en">A repository for BINGIE MOD skin.</description>
+        <disclaimer />
+        <platform>all</platform>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+	</extension>
+</addon><addon id="script.skinshortcuts" name="Skin Shortcuts" version="2.1.0" provider-name="BigNoid, marcelveldt, SiLVO">
+	<requires>
+		<import addon="xbmc.python" version="3.0.0" />
+		<import addon="script.module.unidecode" version="0.4.14" />
+		<import addon="script.module.simpleeval" version="0.9.10" />
+	</requires>
+	<extension point="xbmc.python.library" library="default.py" />
+	<extension point="xbmc.addon.metadata">
+		<description lang="de_DE">Add-on für Skins für einfache Bearbeitung und Auflistung von benutzerdefinierten Verknüpfungen (erfordert Skin-Unterstützung)</description>
+		<description lang="el_GR">Πρόσθετο για κελύφη, το οποίο παρέχει έναν απλό τρόπο διαχείρισης και κατηγοριοποίησης των συντομεύσεων του χρήστη (πρέπει να υποστηρίζεται από το κέλυφος)</description>
+		<description lang="en_GB">Add-on for skins to provide simple managing and listing of user shortcuts (requires skin support)</description>
+		<description lang="en_NZ">Add-on for skins to provide simple managing and listing of user shortcuts (requires skin support)</description>
+		<description lang="en_US">Add-on for skins to provide simple managing and listing of user shortcuts (requires skin support)</description>
+		<description lang="es_ES">Complemento para las pieles para proporcionar una gestión sencilla y lista de atajos de usuario (requiere que la piel lo soporte)</description>
+		<description lang="fr_CA">Addiciel pour habillages qui fournit une gestion simple et un listage des raccourcis utilisateurs (exige la prise en charge de l'habillage)</description>
+		<description lang="gl_ES">Complemento que fornece aos temas dunha xestión sinxela dos atallos dos usuarios (require soporte do tema)</description>
+		<description lang="hu_HU">Felszín kiegészítő amely könnyen kezelhetővé és listázhatóvá teszi a felhasználói parancsikonokat (Felszín támogatás szükséges)</description>
+		<description lang="is_IS">Viðbót fyrir viðmót til að halda utan um flýtivísa og fá yfirlit yfir þá (þarfnast stuðnings frá viðmóti)</description>
+		<description lang="it_IT">Add-on per gli skin per consentire un facile gestione ed elenco delle scorciatoie utente (richiede che lo skin lo supporti)</description>
+		<description lang="lt_LT">Priedas teminėms išvaizdoms, kad jos turėtų galimybę paprastai tvarkyti ir atvaizduoti vartotojo  sukurtas nuorodas (reikalingas teminės išvaizdos palaikymas)</description>
+		<description lang="nl_NL">Add-on voor skins om te voorzien in het eenvoudig beheren en sorteren van gebruikers snelkoppelingen (vereist skin ondersteuning)</description>
+		<description lang="nb_NO">Tillegg for enkel administrering og opplisting av bruker-snarveier i tema (krever støtte i tema)</description>
+		<description lang="pl_PL">Wtyczka dla skór, która zapewnia proste zarządzanie i tworzenie list skrótów użytkownika (wymaga wsparcia skóry)</description>
+		<description lang="pt_PT">Um add-on que permite que os temas tenham recursos simples para gerir e listar atalhos de utilizadores (é necessário suporte do tema)</description>
+		<description lang="pt_BR">Add-on para que as skins possam prover gerenciamento de lista de atalhos para o menu principal (requer suporte da skin)</description>
+		<description lang="ru_RU">Дополнение для обложек, предоставляющее простой способ управления и список пользовательских ярлыков (требуется поддержка обложкой)</description>
+		<description lang="sk_SK">Doplnok poskytujúci jednoduchý manažment zoznamu užívateľských odkazov (vyžaduje podporu v doplnku pre vzhľad)</description>
+		<description lang="sv_SE">Skinntillägg som tillhandahåller enkel hantering och översikt av användargenvägar (om skinnet stöder det)</description>
+		<description lang="zh_TW">插件为皮肤提供了简单的管理和用户连接方式列表 (需要皮肤支持)</description>
+		<platform>all</platform>
+		<license>GPL-2.0-only</license>
+		<forum>https://forum.kodi.tv/showthread.php?tid=178294</forum>
+		<source>https://github.com/mikesilvo164/script.skinshortcuts</source>
+		<assets>
+			<icon>icon.png</icon>
+			<fanart>fanart.jpg</fanart>
+		</assets>
+		<news>Kodi v19 Matrix + Python 3 compatibility</news>
+	</extension>
+</addon><addon id="script.gsmedia.skinshortcuts.bridge" name="GS Media BINGIE Shortcuts Compatibility" version="0.1.0" provider-name="GS Media">
+  <requires>
+    <import addon="xbmc.python" version="3.0.0" />
+    <import addon="script.skinshortcuts" version="2.1.0" />
+  </requires>
+  <extension point="xbmc.python.script" library="default.py" />
+  <extension point="xbmc.addon.metadata">
+    <summary lang="de_DE">Installationshilfe fuer Skin Shortcuts 2.1.0</summary>
+    <description lang="de_DE">Einmaliger GS Media Test-Helfer. Kodi installiert die fuer BINGIE benoetigte Mindestversion von Skin Shortcuts als Pflichtabhaengigkeit. Entfernt keine Nutzerdaten.</description>
+    <summary lang="en_GB">One-time BINGIE Skin Shortcuts 2.1.0 install bridge</summary>
+    <description lang="en_GB">Requires original Skin Shortcuts 2.1.0 to ask Kodi's native dependency manager to resolve it from the GS Media pilot source. No direct filesystem modification.</description>
+    <platform>all</platform>
+    <license>MIT</license>
+    <source>https://github.com/artattakk-creator/kodi-noodleprivate</source>
+  </extension>
+</addon><addon id="script.module.jurialmunkey" name="jurialmunkey common" provider-name="jurialmunkey" version="0.2.35">
+  <requires>
+    <import addon="xbmc.python" version="3.0.1" />
+    <import addon="script.module.requests" version="2.9.1" />
+    <import addon="script.module.infotagger" version="0.0.5" />
+  </requires>
+  <extension point="xbmc.python.module" library="resources/modules" />
+  <extension point="xbmc.addon.metadata">
+    <description lang="en_GB">Common code required by TMDbHelper and other related jurialmunkey add-ons</description>
+    <description lang="zh_CN">TMDb 助手及其他相关 jurialmunkey 插件所需的通用代码</description>
+    <license>GPL-3.0-or-later</license>
+    <website>https://github.com/jurialmunkey/script.module.jurialmunkey</website>
+    <assets>
+      <icon>icon.png</icon>
+    </assets>
+  </extension>
+</addon><addon id="script.module.resolveurl" name="ResolveURL" version="5.1.212" provider-name="gujal">
+    <requires>
+        
+        <import addon="script.module.six" />
+        <import addon="script.module.kodi-six" />
+        <import addon="script.module.pyqrcode" />
+        <import addon="script.module.cloudrequest" optional="true" />
+        <import addon="plugin.video.youtube" optional="true" />
+        <import addon="script.module.python.twitch" optional="true" />
+        <import addon="plugin.googledrive" optional="true" />
+    </requires>
+    <extension point="xbmc.python.module" library="lib" />
+    <extension point="xbmc.python.pluginsource" library="lib/default.py" />
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <summary lang="en_GB">Resolve common video host URL's to be playable in XBMC/Kodi.</summary>
+        <summary lang="es_ES">Resolver enlaces a videos de sitios populares para poder reproducirlos en XBMC/Kodi.</summary>
+        <summary lang="hr_HR">Prilagodi najčešće URL-ove video izvora kako bi radili u XBMC/Kodiju.</summary>
+        <summary lang="el_GR">Επίλυση συνδέσμων κοινών εξυπηρετητών σε μορφή βίντεο ικανό για αναπαραγωγή στο XBMC/Kodi.</summary>
+        <description lang="en_GB">Resolve common video host URL's to be playable in XBMC/Kodi, simplify addon development of video plugins requiring multi video hosts.</description>
+        <description lang="el_GR">Επίλυση συνδέσμων κοινών εξυπηρετητών σε μορφή βίντεο ικανό για αναπαραγωγή στο XBMC/Kodi, απλοποίηση της ανάπτυξης των προσθέτων που χρησιμοποιούν πολλαπλούς εξυπηρετητές για υλικό βίντεο</description>
+        <description lang="hr_HR">Prilagodi najčešće URL-ove video izvora kako bi radili u XBMC/Kodiju, pojednostavnjuje razvoj priključaka za video dodatke koji zahtjevaju višestruke video izvore.</description>
+        <disclaimer lang="en_GB">This script only resolves video content from legitimate file lockers without prejudice. If this script is being used by 3rd parties to resolve content that you feel infringes upon your Intellectual Property then please take your complaints to the actual website or developer linking to such content and not here. This script in no way searches for any content whatsoever.</disclaimer>
+        <disclaimer lang="el_GR">Το ανωτέρο σενάριο το μόνο που κάνει είναι να επιλύει οπτικοακουστικό περιεχόμενο από νόμιμες πηγές χωρίς προκατάληψη. Εάν το ανωτέρο σενάριο χρησιμοποιηθεί από τρίτους ώστε να επιλύσει περιεχόμενο το οποίο σας προκαλεί αντίδραση ότι παραβιάζει την πνευματική σας ιδιοκτησία παρακαλώ μεταφέρετε τα παραπονά σας στον ιστότοπο τον οποίο βρίσκεται το εν λόγω περιεχόμενο η τον δημιουργό ο οποίος πραγματοποιεί την σύνδεση και όχι εδω. Το σενάριο αυτό ουδεμία περίπτωση πραγματοποιεί αναζήτηση περιεχομένου.</disclaimer>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon><addon id="script.module.resolveurl.xxx" version="2.1.44" name="Adult Resolver SMR Extension" provider-name="gujal">
+    <requires>
+        
+        <import addon="script.module.resolveurl" version="5.1.0" />
+    </requires>
+    <extension point="xbmc.python.module" library="lib" />
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en_GB">Resolve adult video host URL's to be playable in XBMC/Kodi.</summary>
+        <description lang="en_GB">Resolve adult video host URL's to be playable in XBMC/Kodi.</description>
+        <platform>all</platform>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon><addon id="plugin.video.cumination" name="Cumination" provider-name="Cumination" version="1.1.206">
+    <requires>
+        <import addon="script.module.six" />
+        <import addon="script.module.kodi-six" />
+        <import addon="script.module.resolveurl" version="5.0.00" />
+        <import addon="script.module.resolveurl.xxx" version="2.0.1" />
+        <import addon="script.common.plugin.cache" />
+        <import addon="script.module.websocket" version="0.50.0" />
+        <import addon="script.module.inputstreamhelper" />
+        <import addon="script.module.requests" />
+    </requires>
+    <extension library="default.py" point="xbmc.python.pluginsource">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <license>GPL 2.0</license>
+        <summary lang="en_GB">Cumination, the culmination of adult sites on Kodi</summary>
+        <description lang="en_GB">Cumination, the culmination of adult sites on Kodi</description>
+        <disclaimer lang="en_GB">The author does not host or distribute any of the content displayed by this addon. The author does not have any affiliation with the sites offered. Click on About from the contextmenu on each site to check for contact details.</disclaimer>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon><addon id="repository.xvault" name="xVAULT Repository" provider-name="xVAULT" version="1.0.3">
+    <extension point="xbmc.addon.repository" name="xVAULT Repository">
+        <dir>
+            <info compressed="false">https://xvault.repowork.de/addons.xml</info>
+            <checksum>https://xvault.repowork.de/addons.xml.md5</checksum>
+            <datadir zip="true">https://xvault.repowork.de/</datadir>
+        </dir>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="de_DE">Offizielles xVAULT Kodi-Repository</summary>
+        <summary lang="en_GB">Official xVAULT Kodi repository</summary>
+        <description lang="de_DE">Stellt xVAULT-Updates ueber Kodi bereit.</description>
+        <description lang="en_GB">Provides xVAULT updates through Kodi.</description>
+        <platform>all</platform>
+        <assets>
+            <icon>icon.png</icon>
+        </assets>
+    </extension>
+</addon><addon id="repository.slyguy" name="SlyGuy Repository" provider-name="SlyGuy" version="0.0.9">
+  <extension point="xbmc.addon.repository" name="SlyGuy Repository">
+    <dir>
+      <info compressed="false">https://slyguy.uk/.repo/repository.slyguy/addons.xml</info>
+      <checksum>https://slyguy.uk/.repo/repository.slyguy/addons.xml.md5</checksum>
+      <datadir zip="true">https://slyguy.uk/.repo/repository.slyguy/</datadir>
+    </dir>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+    <description lang="en">Addons by SlyGuy (slyguy.uk)</description>
+    <license />
+    <language />
+    <website />
+    <news />
+    <assets>
+      <icon>icon.png</icon>
+      <fanart>fanart.jpg</fanart>
+    </assets>
+  </extension>
+</addon><addon id="script.gsmedia.setup" name="XCMate Media Center Installer" version="0.5.26" provider-name="XCMate">
+  <requires><import addon="xbmc.python" version="3.0.0"/></requires>
+  <extension point="xbmc.python.script" library="default.py"/>
+  <extension point="xbmc.service" library="service.py" start="startup"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="de_DE">XCMate Vollautomatische Mediencenter-Einrichtung für Kodi 21.3 Omega</summary>
+    <description lang="de_DE">Automatischer Installationskandidat für elf Pflichtprogramme und deren Abhängigkeiten. Nutzt Kodi-Repository-Installationen nach Zustimmung, gesichertes Fortschrittsjournal, BINGIE-2.2.3-Patch mit Original-Hashprüfung, Menüs/Widgets und TMDB-xVAULT-Player. Ungeprüfte Paketquellen und der automatische Abschluss bleiben bis zur echten Android-Abnahme gesperrt.</description>
+    <summary lang="en_GB">XCMate Setup: guided eleven-addon installation candidate</summary>
+    <description lang="en_GB">Guided 11-addon installation with secure Kodi-native dependency upgrade helpers, retry recovery, repository prompts, private progress journal, pinned BINGIE patch and TMDB player configuration. Full auto-completion is blocked until package provenance and Android device testing pass.</description>
+    <disclaimer lang="de_DE">Entwicklungskandidat. Installationen und Skinänderungen erfolgen nur nach expliziter Zustimmung auf einer neuen Kodi-Box. Android-Abnahme fehlt; auf produktiven Boxen nicht ausführen.</disclaimer>
+    <platform>all</platform>
+    <license>MIT (Wizard), GPL-2.0-only (bundled BINGIE source patch)</license>
+  </extension>
+</addon><addon id="repository.gsmedia.pilot" name="xcMate Repository – Test v1.9.12 – Kodi 21.3 Omega" version="1.9.12" provider-name="xcMate">
+  <extension point="xbmc.addon.repository">
+    <dir>
+      <info compressed="false">https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/addons.xml</info>
+      <checksum>https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/addons.xml.md5</checksum>
+      <datadir zip="true">https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/</datadir>
+      <hashes>false</hashes>
+    </dir>
+    
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="de_DE">xcMate Repository – Test v1.9.12 – Kodi 21.3 Omega (nicht produktiv)</summary>
+    <description lang="de_DE">XC Mate – geprüfter Testkatalog für den automatischen Kodi-Installationswizard. Android-Endabnahme am Gerät.</description>
+    <summary lang="en_GB">xcMate Repository – Test v1.9.12 – Kodi 21.3 Omega (nicht produktiv)</summary>
+    <description lang="en_GB">XC Mate – geprüfter Testkatalog für den automatischen Kodi-Installationswizard. Android-Endabnahme am Gerät.</description>
+    <disclaimer lang="de_DE">Eigenstaendiges GS Media Repository. Externe Projekte sind nicht Teil des Lite-Katalogs und werden gegebenenfalls separat durch ihre Urheber gepflegt. Keine Verbindung mit Team Kodi.</disclaimer>
+    <platform>all</platform>
+    <license>MIT</license>
+    <assets><icon>icon-1.8.png</icon><fanart>fanart.png</fanart></assets>
+  </extension>
+</addon><addon id="plugin.audio.m3sr2019" name="MP3 Streams Echoed" version="2026.1.0" provider-name="Echostorm / Claude">
+    <requires>
+        <import addon="xbmc.python" version="3.0.0" />
+        <import addon="script.module.beautifulsoup4" />
+        <import addon="script.module.requests" />
+        <import addon="script.module.routing" />
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>audio</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <reuselanguageinvoker>true</reuselanguageinvoker>
+        <platform>all</platform>
+        <license>GPL-3.0</license>
+        <summary>MP3 Streams Echoed — music streaming for Kodi</summary>
+        <description>Browse and stream songs and albums. Browse by genre, search artists, albums or songs, save favourites, play or shuffle full albums, and stream tracks directly in Kodi.</description>
+        <assets>
+            <icon>resources/media/icon.png</icon>
+            <fanart>resources/media/fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon><addon id="script.ezmaintenanceplus" name="EZ Maintenance+" version="2026.04.05.0" provider-name="aenema, peno">
+  <requires>
+    <import addon="script.module.requests" version="1.0.0" />
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+     <provides>executable</provides>
+  </extension>
+  <extension point="xbmc.service" library="service.py" start="startup" />
+  <extension point="xbmc.addon.metadata">
+	<summary>A Streamlined Utility Tool for Kodi</summary>
+	<description>No Bloatware, no Nonsense! Just Keep your Kodi sharp and clean with this utility tool... Now with a Custom Wizard.</description>
+    <language />
+    <platform>all</platform>
+    <license>The MIT License</license>
+    <forum>-</forum>
+    <source>https://github.com</source>
+    <assets>
+	    <icon>icon.png</icon>
+	    <fanart>fanart.png</fanart>
+    </assets>
+    <news>
+2026.04.05.0
+ - Updated for Kodi 22
+2023.01.09.0
+ - Added AutoClean Cache functionality every x days at a given hour.
+ - Backup always replaced the home folder reference in xml files with special://home
+   Not all addons can handle this replace so it is now possible via a setting to disable this.
+ - Backup Cancel didn't work. This is now fixed.
+
+2023.01.01.0
+ - Fix a fix on 2022.12.28.0
+
+2022.12.28.0
+ - Fix crash with full backup when there are foreign, like Hebrew, characters in xml files
+
+2021.12.19.0
+ - Made kodi 19 (Matrix) compatible.
+
+2021.11.03.0
+- Fix Speedtest crash.
+
+2020.12.19.1
+- The plugin was also installed under Video add-ons. Now it only is in Program add-ons where it belongs
+- Clean removed some files created by Common plugin cache or StorageServer or script.common.plugin.cache at kodi startup.
+  This resulted in breaking cache functionality of kodi
+- Upload kodi log file to pastebin didn't always work and the first bytes were binary characters
+- Made all decode calls UTF-8
+- Improved ADVANCED SETTINGS(BUFFER SIZE) functionality
+    </news>
+  </extension>
+</addon><addon id="script.gsmedia.upgrade.plugin.audio.m3sr2019" name="XCMate Dependency Upgrade - plugin.audio.m3sr2019" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="plugin.audio.m3sr2019" version="2026.1.0" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original plugin.audio.m3sr2019 at minimum 2026.1.0. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.plugin.program.autocompletion" name="XCMate Dependency Upgrade - plugin.program.autocompletion" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="plugin.program.autocompletion" version="2.1.2" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original plugin.program.autocompletion at minimum 2.1.2. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.plugin.video.cumination" name="XCMate Dependency Upgrade - plugin.video.cumination" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="plugin.video.cumination" version="1.1.206" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original plugin.video.cumination at minimum 1.1.206. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.plugin.video.themoviedb.helper" name="XCMate Dependency Upgrade - plugin.video.themoviedb.helper" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="plugin.video.themoviedb.helper" version="5.4.16" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original plugin.video.themoviedb.helper at minimum 5.4.16. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.plugin.video.youtube" name="XCMate Dependency Upgrade - plugin.video.youtube" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="plugin.video.youtube" version="7.0.2.2" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original plugin.video.youtube at minimum 7.0.2.2. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.repository.slyguy" name="XCMate Dependency Upgrade - repository.slyguy" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="repository.slyguy" version="0.0.9" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original repository.slyguy at minimum 0.0.9. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.resource.images.backgroundoverlays.basic" name="XCMate Dependency Upgrade - resource.images.backgroundoverlays.basic" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="resource.images.backgroundoverlays.basic" version="1.0.0" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original resource.images.backgroundoverlays.basic at minimum 1.0.0. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.resource.images.skinbackgrounds.titanium" name="XCMate Dependency Upgrade - resource.images.skinbackgrounds.titanium" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="resource.images.skinbackgrounds.titanium" version="1.0.0" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original resource.images.skinbackgrounds.titanium at minimum 1.0.0. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.resource.images.skinicons.wide" name="XCMate Dependency Upgrade - resource.images.skinicons.wide" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="resource.images.skinicons.wide" version="1.0.5" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original resource.images.skinicons.wide at minimum 1.0.5. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.resource.images.studios.coloured" name="XCMate Dependency Upgrade - resource.images.studios.coloured" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="resource.images.studios.coloured" version="0.0.23" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original resource.images.studios.coloured at minimum 0.0.23. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.script.bingie.helper" name="XCMate Dependency Upgrade - script.bingie.helper" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="script.bingie.helper" version="1.1.2" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original script.bingie.helper at minimum 1.1.2. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.script.ezmaintenanceplus" name="XCMate Dependency Upgrade - script.ezmaintenanceplus" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="script.ezmaintenanceplus" version="2026.04.05.0" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original script.ezmaintenanceplus at minimum 2026.04.05.0. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.script.module.addon.signals" name="XCMate Dependency Upgrade - script.module.addon.signals" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="script.module.addon.signals" version="0.0.6" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original script.module.addon.signals at minimum 0.0.6. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.script.module.beautifulsoup4" name="XCMate Dependency Upgrade - script.module.beautifulsoup4" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="script.module.beautifulsoup4" version="4.9.3" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original script.module.beautifulsoup4 at minimum 4.9.3. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.script.module.infotagger" name="XCMate Dependency Upgrade - script.module.infotagger" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="script.module.infotagger" version="0.0.5" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original script.module.infotagger at minimum 0.0.5. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.script.module.jurialmunkey" name="XCMate Dependency Upgrade - script.module.jurialmunkey" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="script.module.jurialmunkey" version="0.2.35" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original script.module.jurialmunkey at minimum 0.2.35. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.script.module.pil" name="XCMate Dependency Upgrade - script.module.pil" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="script.module.pil" version="5.1.0" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original script.module.pil at minimum 5.1.0. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.script.module.requests" name="XCMate Dependency Upgrade - script.module.requests" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="script.module.requests" version="2.9.1" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original script.module.requests at minimum 2.9.1. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.script.module.resolveurl" name="XCMate Dependency Upgrade - script.module.resolveurl" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="script.module.resolveurl" version="5.1.212" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original script.module.resolveurl at minimum 5.1.212. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.script.module.resolveurl.xxx" name="XCMate Dependency Upgrade - script.module.resolveurl.xxx" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="script.module.resolveurl.xxx" version="2.1.44" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original script.module.resolveurl.xxx at minimum 2.1.44. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.script.module.simpleeval" name="XCMate Dependency Upgrade - script.module.simpleeval" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="script.module.simpleeval" version="0.9.10" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original script.module.simpleeval at minimum 0.9.10. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.script.module.simplejson" name="XCMate Dependency Upgrade - script.module.simplejson" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="script.module.simplejson" version="3.17.0" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original script.module.simplejson at minimum 3.17.0. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.script.module.slyguy" name="XCMate Dependency Upgrade - script.module.slyguy" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="script.module.slyguy" version="0.86.96" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original script.module.slyguy at minimum 0.86.96. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.script.module.unidecode" name="XCMate Dependency Upgrade - script.module.unidecode" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="script.module.unidecode" version="0.4.14" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original script.module.unidecode at minimum 0.4.14. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.script.module.websocket" name="XCMate Dependency Upgrade - script.module.websocket" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="script.module.websocket" version="0.50.0" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original script.module.websocket at minimum 0.50.0. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.script.module.xbmcswift2" name="XCMate Dependency Upgrade - script.module.xbmcswift2" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="script.module.xbmcswift2" version="19.0.0" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original script.module.xbmcswift2 at minimum 19.0.0. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.script.module.xmltodict" name="XCMate Dependency Upgrade - script.module.xmltodict" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="script.module.xmltodict" version="0.12.0" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original script.module.xmltodict at minimum 0.12.0. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.script.skin.helper.backgrounds" name="XCMate Dependency Upgrade - script.skin.helper.backgrounds" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="script.skin.helper.backgrounds" version="1.0.36" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original script.skin.helper.backgrounds at minimum 1.0.36. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.script.skin.helper.service" name="XCMate Dependency Upgrade - script.skin.helper.service" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="script.skin.helper.service" version="1.30.0" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original script.skin.helper.service at minimum 1.30.0. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.script.skin.helper.widgets" name="XCMate Dependency Upgrade - script.skin.helper.widgets" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="script.skin.helper.widgets" version="1.30.0" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original script.skin.helper.widgets at minimum 1.30.0. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.slyguy.dependencies" name="XCMate Dependency Upgrade - slyguy.dependencies" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="slyguy.dependencies" version="0.0.30" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original slyguy.dependencies at minimum 0.0.30. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.script.module.arrow" name="XCMate Dependency Upgrade - script.module.arrow" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="script.module.arrow" version="1.1.0" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original script.module.arrow at minimum 1.1.0. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.script.module.metadatautils" name="XCMate Dependency Upgrade - script.module.metadatautils" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="script.module.metadatautils" version="1.30.0" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original script.module.metadatautils at minimum 1.30.0. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.script.module.musicbrainz" name="XCMate Dependency Upgrade - script.module.musicbrainz" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="script.module.musicbrainz" version="0.7.0" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original script.module.musicbrainz at minimum 0.7.0. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.script.module.simplecache" name="XCMate Dependency Upgrade - script.module.simplecache" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="script.module.simplecache" version="2.0.2" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original script.module.simplecache at minimum 2.0.2. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.upgrade.script.module.thetvdb" name="XCMate Dependency Upgrade - script.module.thetvdb" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="script.module.thetvdb" version="1.0.34" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original script.module.thetvdb at minimum 1.0.34. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.bingie.helper" name="Bingie Mod Helper" version="1.1.2" provider-name="cartman.dos, matke">
+	<requires>
+		<import addon="xbmc.python" version="3.0.0" />
+		<import addon="script.module.simplejson" version="3.17.0" />
+	</requires>
+	<extension point="xbmc.python.script" library="default.py" />
+	<extension point="xbmc.addon.metadata">
+		<language />
+		<summary lang="en">BINGIE Helper Script</summary>
+		<description lang="en">Helper for some of BINGIE MOD features</description>
+		<platform>all</platform>
+		<license>GPL v3.0</license>
+		<forum>https://forum.kodi.tv/showthread.php?tid=334820</forum>
+		<website />
+		<source>https://github.com/matke-84/script.bingie.helper/</source>
+		<assets>
+			<icon>resources/icon.png</icon>
+			<fanart>resources/fanart.jpg</fanart>
+		</assets>
+	</extension>
+</addon><addon id="script.gsmedia.bingie.bootstrap" name="xcMate Native BINGIE Repository &amp; Helper Bootstrap" version="0.1.0" provider-name="xcMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="repository.titan.bingie.mod" version="2.0.1" /><import addon="script.bingie.helper" version="1.1.2" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">First-party one-step original BINGIE dependency installation</summary><description lang="en_GB">Inert addon whose only function is to request Kodi's native dependency resolver to install the verified, unmodified BINGIE MOD repository 2.0.1 and BINGIE Helper 1.1.2 from the xcMate test catalog.</description><license>MIT</license><platform>all</platform><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.slyguy.bootstrap" name="xcMate Native Original SlyGuy Dependency Bootstrap" version="0.1.0" provider-name="xcMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="repository.slyguy" version="0.0.9" /><import addon="slyguy.dependencies" version="0.0.30" /><import addon="script.module.slyguy" version="0.87.6" /><import addon="slyguy.trailers" version="0.2.2" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="de_DE">Kodi installiert SlyGuy-Originale aus dem offiziellen SlyGuy-Repository</summary><description lang="de_DE">Erfordert die originalen unveraenderten SlyGuy-Abhaengigkeiten, SlyGuy Common und SlyGuy Trailers aus dem bereits vorhandenen offiziellen Repository. Kein Originalpaket wird von xcMate gespiegelt.</description><license>MIT</license><platform>all</platform><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.xcmate.branding" name="XCMate BINGIE Space Blue Manager" version="0.2.0" provider-name="GS Media">
+  <requires><import addon="xbmc.python" version="3.0.0" /></requires>
+  <extension point="xbmc.python.script" library="default.py" />
+  <extension point="xbmc.addon.metadata">
+    <summary lang="de_DE">XCMate Space Blue: komplettes BINGIE-Farbschema, Intro, Splash, Logo und Wiederherstellung</summary>
+    <description lang="de_DE">Optionales Branding-Paket für verifiziertes Titan BINGIE MOD 2.2.3: original mitgeliefertes XCMate-Intro (Ton enthalten), Splash-Fotos, Logos sowie ein tiefblaues Farbschema für Menüs, Panels, Fokussierung, OSD und Fortschrittsbalken. Farb-Einstellungen werden vorab gesichert und bei Rückbau wiederhergestellt. Jeder Eingriff erfolgt erst nach separater Bestätigung, erstellt vorab sichere Backups und kann rückgängig gemacht werden. Widget- und Fokuskonfigurationen werden nicht umgeschrieben.</description>
+    <disclaimer lang="de_DE">Entwicklungskandidat, Android-TV-Gerätetest ausstehend. Vor Änderungen vollständiges Kodi-Profil sichern; Skinupdates können die Änderung überschreiben. Backup nicht durch Löschen der Add-on-Daten entfernen.</disclaimer>
+    <summary lang="en_GB">XCMate BINGIE Space Blue: palette, intro, splash, logo, backup and restore</summary>
+    <description lang="en_GB">An optional opt-in branding patch for checked Titan BINGIE MOD 2.2.3; includes a 7-second H.264/AAC video, splash images, chrome logo, blue skin-color preset, secure backups and rollback. No widget/focus geometry changes.</description>
+    <platform>all</platform><license>MIT (patch code); media: user-provided XCMate branding</license>
+    <assets><icon>resources/media/icon.png</icon><fanart>resources/media/fanart.jpg</fanart></assets>
+  </extension>
+</addon>
+<addon id="resource.images.skinicons.wide" name="Skin Icons - Wide" version="1.0.5" provider-name="marcelveldt, cartman.dos">
+	<extension point="kodi.resource.images" compile="false" type="skinicons" />
+	<requires>
+		<import addon="kodi.resource" version="1.0.0" />
+	</requires>
+	<extension point="xbmc.addon.metadata">
+		<summary lang="en">Skin Icons Pack - Wide</summary>
+		<description lang="en">Skin Icons Pack - Wide</description>
+		<platform>all</platform>
+		<license>GPL v3.0</license>
+		<forum>https://forum.kodi.tv/showthread.php?tid=334820</forum>
+		<website />
+		<source>https://github.com/cartmandos/resource.images.skinicons.wide/</source>
+		<assets>
+			<icon>icon.png</icon>
+		</assets>
+	</extension>
+</addon>
+</addons>

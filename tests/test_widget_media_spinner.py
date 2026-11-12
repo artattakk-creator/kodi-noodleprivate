@@ -129,12 +129,14 @@ class MediaSpinner(Fixture50, unittest.TestCase):
         source = ROOT/'src/plugin.video.xtreammate'
         path = ROOT/'docs/XCMate/test-builds/media-spinner/plugin.video.xtreammate-0.1.29.90.zip'
         self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), Path(str(path)+'.sha256').read_text().split()[0])
-        files = [p for p in source.rglob('*') if p.is_file() and '__pycache__' not in p.parts and not p.name.endswith('.pyc') and p.name!='.DS_Store']
+        import subprocess
+        baseline='2a1ea40e847525275b2e46e168092ec58511fd1a'
+        files = [ROOT/n for n in subprocess.check_output(['git','ls-tree','-r','--name-only',baseline,'src/plugin.video.xtreammate'],cwd=ROOT).decode().splitlines()]
         with zipfile.ZipFile(path) as z:
             self.assertIsNone(z.testzip())
             self.assertEqual(set(z.namelist()), {'plugin.video.xtreammate/'+p.relative_to(source).as_posix() for p in files})
             for p in files:
-                self.assertEqual(z.read('plugin.video.xtreammate/'+p.relative_to(source).as_posix()), p.read_bytes())
+                self.assertEqual(z.read('plugin.video.xtreammate/'+p.relative_to(source).as_posix()), subprocess.check_output(['git','show',baseline+':'+p.relative_to(ROOT).as_posix()],cwd=ROOT))
 
     def test_artwork_pending_cannot_leak_between_rows_accounts_or_profiles(self):
         import widget_assets69 as assets
