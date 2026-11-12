@@ -74,6 +74,24 @@ class Release91(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'SIX438_SCREENSHOT_NOT_DECODABLE'):
                 six_rows438.read_frame(Path(folder)/'missing.png', lambda ms: self.fail('already expired'))
 
+    def test_native_91_and_90_select_identical_approved_geometry(self):
+        from types import SimpleNamespace
+        source = (ROOT/'tools/kodi_home80_host/gui80.py').read_text().split("exec(compile(source80,", 1)[0]
+        class FixturePath:
+            def __init__(self, path): self.path = path
+            def read_text(self): return (ROOT/'tools/kodi_home75_host/gui75.py').read_text()
+        generated = []
+        for version in ('0.1.29.90', '0.1.29.91'):
+            env = dict(Path=FixturePath, xbmcaddon=SimpleNamespace(Addon=lambda *a: SimpleNamespace(getAddonInfo=lambda key: version)))
+            exec(source.replace('from pathlib import Path', '').replace('import xbmcaddon', ''), env)
+            generated.append(env['source80'])
+        self.assertEqual(generated[0], generated[1])
+        self.assertIn('((130,0),1760,620)', generated[1])
+        for name in ('tools/run_kodi_home82_contract.py', 'tools/kodi_home80_host/gui80.py', 'tools/kodi_home82_host/post82.py'):
+            text = (ROOT/name).read_text()
+            self.assertNotIn("'0.1.29.90')", text, name)
+            self.assertIn("'0.1.29.90','0.1.29.91')", text, name)
+
     def test_rc_zip_is_complete_and_byte_reproducible_with_the_repository_builder(self):
         from package_xcmate71 import build
         package = ROOT/'docs/XCMate/test-builds/02991'/rc.NAME
