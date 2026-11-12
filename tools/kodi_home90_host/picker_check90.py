@@ -42,9 +42,9 @@ def spinner_receipts438(home,bindings):
    while not xbmc.getCondVisibility('Control.IsVisible('+str(spinner)+')') and time.monotonic()<deadline:xbmc.sleep(50)
    if not xbmc.getCondVisibility('Control.IsVisible('+str(spinner)+')'):
     source437=xbmc.getInfoLabel('Container('+str(cid)+').ListItem.Property(XCMate.WidgetKind41)')
-    facts=dict(kind=kind,focus=home.getFocusId(),row=xbmc.getCondVisibility('Control.IsVisible(75'+str(cid)+')'),header=xbmc.getCondVisibility('Control.IsVisible(84'+str(cid)+')'),busy=home.getProperty(keys[0]),state=home.getProperty(keys[1]),item_kind=source437)
+    facts=dict(kind=kind,focus=home.getFocusId(),row=xbmc.getCondVisibility('Control.IsVisible(75'+str(cid)+')'),header=xbmc.getCondVisibility('Control.IsVisible(84'+str(cid)+')'),busy=home.getProperty(keys[0]),state=home.getProperty(keys[1]),item_kind=source437,busy_condition=xbmc.getCondVisibility('String.IsEqual(Window(Home).Property('+keys[0]+'),true)'),kind_condition=xbmc.getCondVisibility('String.IsEqual(Container('+str(cid)+').ListItem.Property(XCMate.WidgetKind41),'+kind+')'))
     try:facts['native_size']=[home.getControl(spinner).getWidth(),home.getControl(spinner).getHeight()]
-    except RuntimeError:facts['native_size']='CONTROL_MISSING'
+    except RuntimeError:facts['native_size']='PYTHON_CONTROL_UNSUPPORTED_OR_MISSING'
     raise RuntimeError(('SPINNER438_DIAGNOSTIC',facts))
    for index in range(4):
     xbmc.sleep(170)

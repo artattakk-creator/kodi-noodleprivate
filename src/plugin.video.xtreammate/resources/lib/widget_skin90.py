@@ -29,7 +29,7 @@ def media_spinners(header):
    if child.tag=='include':node.remove(child)
   for tag,text in (('width','24'),('height','24'),('top','2'),('left','0')):node.find(tag).text=text
   state='Window(Home).Property(XCMate.Home85.'+kind+'.'
-  owned='[String.Contains($PARAM[widgetPath],action='+action+') | String.IsEqual(Container($PARAM[widgetid]).ListItem.Property(XCMate.WidgetKind41),'+kind+')]'
+  owned='[String.Contains("$PARAM[widgetPath]",action='+action+') | String.IsEqual(Container($PARAM[widgetid]).ListItem.Property(XCMate.WidgetKind41),'+kind+')]'
   loading=' | '.join('String.IsEqual('+state+'State),'+value+')' for value in ('LOADING_CATALOG','LOADING_ART','READY_PARTIAL'))
   node.find('visible').text=owned+' + String.IsEqual('+state+'Busy),true) + [Container($PARAM[widgetid]).IsUpdating | '+loading+']'
   result.append(node)
