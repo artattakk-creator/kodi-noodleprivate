@@ -60,7 +60,7 @@ def repair(profile,skin):
 
 
 def directory_uri89(value):
-    """Allow only declared Home-property tokens in a directory XML value.
+    """Allow declared Home properties and the exact generated clock parameter.
 
     Never relax the executable ActivateWindow/builtin boundary. These URLs
     are written as escaped XML, not executed as Python or Kodi commands.
@@ -69,6 +69,13 @@ def directory_uri89(value):
     from widget_hooks45 import HOOK
     if isinstance(value,str) and value.startswith('plugin://plugin.video.xtreammate/'):
         checked=HOOK.sub('runtime89',value)
+        # Kodi's generated Home directory URLs contain this exact clock
+        # info-label token for cache invalidation. Normalize it only for
+        # strict URI validation; preserve the actual URL byte-for-byte.
+        checked,count=re.subn(r'(?<=[?&])clock50=\$INFO\[System\.Time\(hh:mm\)\](?=&|$)',
+                             'clock50=runtime89',checked)
+        if count>1:raise ValueError('INVALID_NAVIGATION')
+        if '$INFO[' in checked:raise ValueError('INVALID_NAVIGATION')
         uri(checked)
         return value
     return uri(value)

@@ -1,4 +1,4 @@
-"""Current .90 source/package gate; actual released .89 remains immutable."""
+"""Historical .90 source/package gate; published .90 remains immutable."""
 import ast,hashlib,json,subprocess,unittest,zipfile
 from pathlib import Path
 from stabilization_contract_02990 import without_stabilization90
@@ -23,7 +23,7 @@ class Scope90(unittest.TestCase):
   with zipfile.ZipFile(archive) as z:
    self.assertIsNone(z.testzip());self.assertEqual(len(z.namelist()),len(files))
    self.assertFalse(any(n.endswith(('.log','.sqlite','.db','.pyc')) for n in z.namelist()))
-   for p in files:self.assertEqual(z.read('plugin.video.xtreammate/'+p.relative_to(source).as_posix()),p.read_bytes())
+   for p in files:self.assertEqual(z.read('plugin.video.xtreammate/'+p.relative_to(source).as_posix()),subprocess.check_output(['git','show','4336dd56a707f80b3784fa11f179d2a427cd5727:'+p.relative_to(ROOT).as_posix()],cwd=ROOT))
  def test_published_channels_installer_and_all_89_packages_remain_exact_main(self):
   names=['addons.xml','addons.xml.md5','online-test/addons.xml','online-test/addons.xml.md5','online-test/manifest.json','index.html','online-test/index.html','script.gsmedia.setup/script.gsmedia.setup-0.5.26.zip','plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.89.zip','online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.89.zip','online-test/plugin.video.xtreammate-0.1.29.89.zip']
   from published_channels90 import retained,approved

@@ -1,10 +1,11 @@
 """Original BINGIE manager + original SkinShortcuts explorer, real IR actions.
 No select/explorer/save replacement, no fake saved WidgetPaths. Disposable data.
 """
-import ast,json,time,hashlib
+import ast,json,time,hashlib,os
 from pathlib import Path
 import xbmc,xbmcgui,xbmcaddon
-home=xbmcgui.Window(10000);history=[]
+home=xbmcgui.Window(10000);history=[];manager_ids437={}
+clock437=os.environ.get('XCMATE_CLOCK437')=='true'
 initial_template90=hashlib.sha256(Path('/root/.kodi/addons/skin.titan.bingie.mod/xml/script-skinshortcuts-includes.xml').read_bytes()).hexdigest()
 xbmcaddon.Addon('script.skinshortcuts').setSetting('enable_logging','true')
 for method90 in ('Addons.GetAddons','Addons.Getaddons'):
@@ -60,19 +61,37 @@ def manager():
   names90=[xbmc.getInfoLabel('Container(211).ListItemAbsolute('+str(i)+').Label') for i in range(int(xbmc.getInfoLabel('Container(211).NumItems') or 0))]
   try:
    position90=home_position90(names90)
-   dialog90=xbmcgui.Window(xbmcgui.getCurrentWindowDialogId())
+   manager_window437=xbmcgui.getCurrentWindowDialogId()
+   dialog90=xbmcgui.Window(manager_window437)
    control90=dialog90.getControl(211)
    dialog90.setFocusId(211);control90.selectItem(position90)
   except RuntimeError:return False
+  manager_ids437[id(dialog90)]=manager_window437
   owner90[:]=[dialog90];return True
  until(home_ready90,'PICKER90_MANAGER_HOME_NOT_READY')
  xbmc.sleep(200);return owner90[0]
 
 def choose(dialog,slot,kind=None,noportal=False):
- dialog.setFocusId(1312);action('Select');dialog.setFocusId(90011+slot*10);action('Select')
+ manager_id437=manager_ids437[id(dialog)]
+ until(lambda:xbmcgui.getCurrentWindowDialogId()==manager_id437,'PICKER90_MANAGER_NOT_TOPMOST')
+ check(xbmc.getCondVisibility('Window.IsActive(script-skinshortcuts.xml)'),'PICKER90_NOT_IN_MANAGER')
+ button437=90011+slot*10
+ # The original manager keeps its widget panel open between slot picks.
+ # Re-selecting its launcher races the already focused first slot. Observe
+ # the real panel property and focus ACK before sending a single Select.
+ if dialog.getProperty('widgetcontrols')!='1':
+  dialog.setFocusId(1312)
+  until(lambda:xbmc.getInfoLabel('System.CurrentControlId')=='1312','PICKER90_WIDGET_LAUNCHER_NOT_FOCUSED')
+  action('Select')
+ until(lambda:dialog.getProperty('widgetcontrols')=='1' and xbmc.getCondVisibility('Control.IsVisible('+str(button437)+')'),'PICKER90_SLOT_NOT_VISIBLE')
+ dialog.setFocusId(button437)
+ until(lambda:xbmc.getInfoLabel('System.CurrentControlId')==str(button437),'PICKER90_SLOT_NOT_FOCUSED')
+ action('Select')
  seen=[]
  for step in range(16):
-  until(lambda:bool(entries()) or xbmcgui.getCurrentWindowDialogId()==10103,'PICKER90_EMPTY_SELECT')
+  # Previous modal list labels can survive during the manager's close/open
+  # animation. Never treat those stale labels as the new native selection.
+  until(lambda:xbmcgui.getCurrentWindowDialogId()!=manager_id437 and (bool(entries()) or xbmcgui.getCurrentWindowDialogId()==10103),'PICKER90_EMPTY_SELECT')
   if xbmcgui.getCurrentWindowDialogId()==10103:
    xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=90,method='Input.SendText',params=dict(text='XCMate '+str(kind),done=True))));break
   values=stable_entries();seen.append(values);history.append(dict(step=step,kind=kind,labels=values,window=xbmcgui.getCurrentWindowDialogId(),current=xbmc.getInfoLabel('Container(6).CurrentItem')));Path('/root/picker90-history.json').write_text(json.dumps(history,indent=2));print('PICKER90_NATIVE_LIST '+json.dumps(history[-1]),flush=True)
@@ -85,19 +104,23 @@ def choose(dialog,slot,kind=None,noportal=False):
   if kind and any(any(w in v.casefold() for w in words) for v in values):target=next(i for i,v in enumerate(values) if any(w in v.casefold() for w in words))
   # Even when the skin exposes optional default XCMate presets, exercise the
   # required original Add-On -> Video Add-On -> actual XCMate explorer path.
-  for branch90 in ('Add-On  >','Video Add-On  >'):
-   if branch90 in values:target=values.index(branch90);break
+  presets437=[i for i,v in enumerate(values) if kind and 'XCMate' in v and any(w in v.casefold() for w in words)] if clock437 else []
+  if presets437:
+   check(len(presets437)==1,('CLOCK437_PRESET_NOT_UNIQUE',values));target=presets437[0]
+  else:
+   for branch90 in ('Add-On  >','Video Add-On  >'):
+    if branch90 in values:target=values.index(branch90);break
   if target is None:
    for candidates in (('video add-ons','video addons','video-addons','video add-on'),('add-ons','addons','add-on'),('use as widget','als widget','hier verwenden')):
     options=[i for i,v in enumerate(values) if any(w in v.casefold() for w in candidates)]
     if options:target=options[0];break
   check(target is not None,('PICKER90_UNKNOWN_NATIVE_BRANCH',values));selected=values[target];select(target)
-  if 'use as widget' in selected.casefold() or 'als widget' in selected.casefold():
-   until(lambda:xbmcgui.getCurrentWindowDialogId()==10103 or xbmc.getCondVisibility('Window.IsActive(script-skinshortcuts.xml)'),'PICKER90_SELECT_DID_NOT_RETURN')
+  if presets437 or 'use as widget' in selected.casefold() or 'als widget' in selected.casefold():
+   until(lambda:xbmcgui.getCurrentWindowDialogId() in (10103,manager_id437),('PICKER90_SELECT_DID_NOT_RETURN',manager_id437))
    if xbmcgui.getCurrentWindowDialogId()==10103:xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=90,method='Input.SendText',params=dict(text='XCMate '+kind,done=True))))
    break
  else:raise RuntimeError('PICKER90_RECURSION_LIMIT')
- until(lambda:xbmc.getCondVisibility('Window.IsActive(script-skinshortcuts.xml)'),'PICKER90_MANAGER_NOT_RETURNED')
+ until(lambda:xbmcgui.getCurrentWindowDialogId()==manager_id437,'PICKER90_MANAGER_NOT_RETURNED')
  return seen
 def close(dialog):
  dialog.setFocusId(211)
@@ -116,7 +139,10 @@ for slot,kind in enumerate(('live','vod','series')):choose(dialog,slot,kind)
 close(dialog)
 properties=folder/'skin.titan.bingie.mod.properties';until(lambda:properties.exists(),'PICKER90_NO_SAVED_PROPERTIES')
 rows=ast.literal_eval(properties.read_text(encoding='utf-8'));paths=[r[3] for r in rows if r[2].startswith('widgetPath')]
-for expected in ('widget_live_start_group','widget_recent_vod','widget_recent_series'):check(any(expected in p and 'pid=fixture59' in p for p in paths),('PICKER90_PATH_NOT_SAVED',expected))
+for expected in ('widget_live_start_group','widget_recent_vod','widget_recent_series'):check(any(expected in p and (clock437 or 'pid=fixture59' in p) for p in paths),('PICKER90_PATH_NOT_SAVED',expected))
+if clock437:
+ for expected in ('widget_recent_vod','widget_recent_series'):
+  check(any(expected in p and 'clock50=$INFO[System.Time(hh:mm)]' in p for p in paths),('CLOCK437_UPSTREAM_PRESET_TOKEN_MISSING',expected))
 before=hashlib.sha256(properties.read_bytes()).hexdigest();dialog=manager();close(dialog);check(hashlib.sha256(properties.read_bytes()).hexdigest()==before,'PICKER90_REOPEN_REWROTE_PROPERTIES')
 foreign90=[r for r in rows if r[2].startswith('widgetPath') and 'plugin://script.skin.helper.widgets/' in r[3]]
 check(len(foreign90)>=2,'PICKER90_FOREIGN_BASELINE_MISSING')

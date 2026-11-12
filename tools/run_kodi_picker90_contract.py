@@ -6,7 +6,7 @@ sys.path.insert(0,str(Path(__file__).resolve().parent))
 from run_kodi_home74_contract import SKIN_SHA,SKIN_URL
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--report-dir',type=Path,required=True);p.add_argument('--resolution',default='1280x720',choices=('1920x1080','1280x720'));a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--report-dir',type=Path,required=True);p.add_argument('--resolution',default='1280x720',choices=('1920x1080','1280x720'));p.add_argument('--clock-contract437',action='store_true',help='Fresh default Home first, upstream XCMate clock presets, native 1510/1520/1530');a=p.parse_args()
  root=Path(__file__).resolve().parents[1];report=a.report_dir.resolve();report.mkdir(parents=True,exist_ok=True);archive=report/'skin.zip'
  import urllib.request
  with urllib.request.urlopen(SKIN_URL,timeout=60) as response:archive.write_bytes(response.read(100*1024*1024))
@@ -29,7 +29,7 @@ def main():
  mounts=[(helper/'fixture_picker90.py',target) if target=='/fixture84.py' else (source,target) for source,target in mounts]
  cmd=['run','-d','--name',name]
  for source,target in mounts:cmd+=['--mount','type=bind,src='+str(source)+',dst='+target+',readonly']
- cmd+=['-e','XCMATE_RES74='+a.resolution,'xcmate-kodi21-picker90','sh','/work/start.sh']
+ cmd+=['-e','XCMATE_RES74='+a.resolution,'-e','XCMATE_CLOCK437='+str(a.clock_contract437).lower(),'xcmate-kodi21-picker90','sh','/work/start.sh']
  try:
   run(*cmd,stdout=subprocess.DEVNULL)
   with (report/'probe.log').open('w') as log:run('exec',name,'python3','/work/probe.py',stdout=log,stderr=subprocess.STDOUT)
