@@ -24,6 +24,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Validate native observer syntax before building Kodi
+        run: python -m py_compile tools/run_kodi_picker90_contract.py tools/kodi_home90_host/picker90.py tools/kodi_home90_host/picker_check90.py tools/kodi_home90_host/skin_picker90.py
       - run: python -m pip install 'Pillow>=11,<13' 'simpleeval==0.9.13'
       - name: Original SkinShortcuts save, clock50, 1510/1520/1530, pixels and three cold restarts
         run: python tools/run_kodi_picker90_contract.py --clock-contract437 --report-dir "${{ runner.temp }}/clock437" --resolution "${{ matrix.resolution }}"
