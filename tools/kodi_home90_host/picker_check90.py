@@ -15,7 +15,7 @@ def home_position90(labels):
 def service_poll90():
  __import__('hero_epg63').poll();__import__('widget_notice46').poll()
 
-def spinner_receipts438(home,bindings,kinds=None):
+def spinner_receipts438(home,bindings,kinds=None,label=""):
  """Native animation/visibility under explicit UI-state fault injection.
 
  This tests the real texture and renderer. Actual queue ownership/deadlines
@@ -44,7 +44,7 @@ def spinner_receipts438(home,bindings,kinds=None):
      with Image.open(io.BytesIO(path.read_bytes())) as image:return path,image.convert('RGB')
     except (OSError,ValueError,SyntaxError):xbmc.sleep(50)
    raise RuntimeError(('SPINNER438_SCREENSHOT_NOT_READY',name,path.exists(),path.stat().st_size if path.exists() else None,xbmcgui.getCurrentWindowId()))
-  _,baseline438=frame438('picker90-spinner438-'+kind+'-baseline')
+  _,baseline438=frame438('picker90-spinner438-'+kind+label+'-baseline')
   sx438,sy438=baseline438.width/1920,baseline438.height/1080
   roi438=tuple(round(value*scale) for value,scale in zip((250,640,1890,1040),(sx438,sy438,sx438,sy438)))
   # Measure native pixels, not a resized screenshot. A 24 logical-pixel
@@ -63,7 +63,7 @@ def spinner_receipts438(home,bindings,kinds=None):
     print('SPINNER438_DIAGNOSTIC '+json.dumps(facts),flush=True)
    for index in range(4):
     xbmc.sleep(170)
-    path,frame=frame438('picker90-spinner438-'+kind+'-'+str(index))
+    path,frame=frame438('picker90-spinner438-'+kind+label+'-'+str(index))
     frames.append(frame.crop(roi438));files.append(path.name)
    changes=[ImageChops.difference(frames[0],frame).getbbox() for frame in frames[1:]]
    animated=any(box and 1<=box[2]-box[0]<=max438[0] and 1<=box[3]-box[1]<=max438[1] for box in changes)
@@ -73,7 +73,7 @@ def spinner_receipts438(home,bindings,kinds=None):
    terminal=[]
    for state in ('READY','EMPTY','ERROR_RETRYABLE'):
     home.setProperty(keys[0],'');home.setProperty(keys[1],state);xbmc.sleep(250)
-    _,terminal438=frame438('picker90-spinner438-'+kind+'-'+state)
+    _,terminal438=frame438('picker90-spinner438-'+kind+label+'-'+state)
     if terminal438.crop(rect).tobytes()!=baseline438.crop(rect).tobytes():raise RuntimeError(('SPINNER438_STUCK_PIXELS',kind,state,rect))
     if xbmc.getInfoLabel('Container('+str(cid)+').NumItems')!=before:raise RuntimeError(('SPINNER438_LISTITEMS_RESET',kind,state))
     terminal.append(state)
@@ -228,7 +228,7 @@ def check90(cycle,errors):
   check(home.getFocusId()==cid,('PICKER90_NATIVE_FOCUS_LOST',kind,home.getFocusId(),home.getProperty('XCMate.Home78.Activation')))
   cases.append(dict(kind=kind,control=cid,rows=total,pixels=pixels,screenshot=picture.name))
  spinners438=spinner_receipts438(home,bindings) if cycle==0 and hasattr(__import__('widget_skin90'),'media_spinners') else []
- six438=__import__('six_rows438').run(home,bindings,spinner_receipts438,service_poll90) if cycle==0 else None
+ six438=__import__('six_rows438').run(home,bindings,spinner_receipts438,service_poll90,cycle=cycle)
  rows=ast.literal_eval(props.read_text(encoding='utf-8'));foreign=[r for r in rows if r[2].startswith('widgetPath') and 'plugin://script.skin.helper.widgets/' in r[3]]
  check(len(foreign)>=2 and foreign==before['foreign_paths'],'PICKER90_FOREIGN_DEFINITIONS_CHANGED')
  check(hashlib.sha256(props.read_bytes()).hexdigest()==before['properties_sha256'],'PICKER90_NATIVE_REFRESH_CHANGED_PROPERTIES')

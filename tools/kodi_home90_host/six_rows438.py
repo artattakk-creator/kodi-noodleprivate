@@ -19,7 +19,7 @@ def install():
    with wave.open(str(target/'tone.wav'),'wb') as w:
     w.setparams((1,2,8000,0,'NONE','not compressed'));w.writeframes(b''.join(struct.pack('<h',int(4000*math.sin(2*math.pi*440*i/8000))) for i in range(8000*6)))
 
-def run(home,bindings,spinner_observer,service_poll):
+def run(home,bindings,spinner_observer,service_poll,cycle=0):
  import xbmc,xbmcgui
  import widget_six_runtime as runtime
  from widget_six_sources import EXTRAS
@@ -38,11 +38,17 @@ def run(home,bindings,spinner_observer,service_poll):
  runtime._rows={};runtime._scope=None
  # Previous native Live/Film/Series receipts have already observed all items.
  schedule=json.loads(home.getProperty('XCMate.Home75.Schedule') or '{}');schedule['phase']=3;home.setProperty('XCMate.Home75.Schedule',json.dumps(schedule))
- start=time.monotonic();states=[]
+ start=time.monotonic();states=[];timings={};load_order=[]
  try:
   for _ in range(600):
    runtime.poll()
    states.append({kind:row['state'] for kind,row in runtime._rows.items()})
+   elapsed=int((time.monotonic()-start)*1000)
+   for kind,row in runtime._rows.items():
+    timing=timings.setdefault(kind,{})
+    if row['state']=='LOADING' and 'started_ms' not in timing:
+     timing['started_ms']=elapsed;load_order.append(kind)
+    if row['state']=='READY' and 'ready_ms' not in timing:timing['ready_ms']=elapsed
    if len(runtime._rows)==4 and all(row['state']=='READY' for row in runtime._rows.values()):break
    xbmc.sleep(100)
   else:raise RuntimeError(('SIX438_NATIVE_SOURCE_NOT_READY',runtime._rows))
@@ -58,7 +64,7 @@ def run(home,bindings,spinner_observer,service_poll):
    if count!='6':raise RuntimeError(('SIX438_ITEMS_MISSING',kind,count))
    heading=xbmc.getCondVisibility('Control.IsVisible(84'+str(cid)+')')
    if not heading:raise RuntimeError(('SIX438_HEADER_HIDDEN',kind))
-   path=Path('/root/picker90-six438-'+kind+'.png');xbmc.executebuiltin('TakeScreenshot('+str(path)+')',wait=False);xbmc.sleep(400)
+   path=Path('/root/picker90-six438-'+str(cycle)+'-'+kind+'.png');xbmc.executebuiltin('TakeScreenshot('+str(path)+')',wait=False);xbmc.sleep(400)
    from PIL import Image
    with Image.open(io.BytesIO(path.read_bytes())) as image:
     rgb=image.convert('RGB').resize((1920,1080));color=(30,170,100) if kind=='mp3' else (180,70,120)
@@ -70,7 +76,7 @@ def run(home,bindings,spinner_observer,service_poll):
   # original BINGIE directories; it is a separate responsiveness gate below.
   home.setFocusId(bindings['series'])
   extra_bindings={kind:cid for kind,_,cid,_ in EXTRAS}
-  spinner_receipts=spinner_observer(home,extra_bindings,kinds=[r[0] for r in EXTRAS])
+  spinner_receipts=spinner_observer(home,extra_bindings,kinds=[r[0] for r in EXTRAS],label='-cold'+str(cycle))
   # Real native directory clicks and Back: no fabricated window switch.
   for kind,_,cid,target_kind in EXTRAS[:-1]:
    home.setFocusId(cid);xbmc.sleep(150);xbmc.executebuiltin('Action(Select)',wait=False)
@@ -99,7 +105,7 @@ def run(home,bindings,spinner_observer,service_poll):
   xbmc.executebuiltin('Action(Up)',wait=False);deadline=time.monotonic()+5
   while home.getFocusId()!=extra_bindings['trend'] and time.monotonic()<deadline:xbmc.sleep(50)
   if home.getFocusId()!=extra_bindings['trend']:raise RuntimeError(('SIX438_AUDIO_RETURN_INPUT_BLOCKED',home.getFocusId(),xbmcgui.getCurrentWindowId(),xbmcgui.getCurrentWindowDialogId()))
-  report=dict(status='PASS',rows=rows,spinner=spinner_receipts,audio_played=True,audio_stop_ack=True,audio_return_ir=True,video_directory_clicks=[r[0] for r in EXTRAS[:-1]],video_directory_back=True,elapsed_ms=int((time.monotonic()-start)*1000),source='SYNTHETIC_NATIVE_DIRECTORIES_NOT_REMOTE_SERVICES',android='ANDROID_NOT_TESTED')
-  Path('/root/picker90-six438.json').write_text(json.dumps(report,indent=2));return report
+  report=dict(status='PASS',cycle=cycle,load_order=load_order,source_timings_ms=timings,rows=rows,spinner=spinner_receipts,audio_played=True,audio_stop_ack=True,audio_return_ir=True,video_directory_clicks=[r[0] for r in EXTRAS[:-1]],video_directory_back=True,elapsed_ms=int((time.monotonic()-start)*1000),source='SYNTHETIC_NATIVE_DIRECTORIES_NOT_REMOTE_SERVICES',android='ANDROID_NOT_TESTED')
+  Path('/root/picker90-six438-'+str(cycle)+'.json').write_text(json.dumps(report,indent=2));return report
  finally:
   for key,value in originals.items():home.setProperty(key,value)

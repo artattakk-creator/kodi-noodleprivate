@@ -48,7 +48,12 @@ pactl list short sinks > /root/picker90-native-audio-sinks.txt
   for cycle90 in range(4):
    files90.append(('/root/picker90-cold-'+str(cycle90)+'.json','picker90-cold-'+str(cycle90)+'.json'))
    for kind90 in ('live','vod','series','diagnostic'):files90.append(('/root/picker90-home-'+str(cycle90)+'-'+kind90+'.png','picker90-home-'+str(cycle90)+'-'+kind90+'.png'))
-  files90.append(('/root/picker90-six438.json','picker90-six438.json'))
+  for cycle438 in range(4):
+   files90.append(('/root/picker90-six438-'+str(cycle438)+'.json','picker90-six438-'+str(cycle438)+'.json'))
+   for kind438 in ('cinema','disney','trend','mp3'):
+    picture438='picker90-six438-'+str(cycle438)+'-'+kind438+'.png';files90.append(('/root/'+picture438,picture438))
+    for frame438 in range(4):
+     picture438='picker90-spinner438-'+kind438+'-cold'+str(cycle438)+'-'+str(frame438)+'.png';files90.append(('/root/'+picture438,picture438))
   for kind438 in ('cinema','disney','trend','mp3'):files90.append(('/root/picker90-six438-'+kind438+'.png','picker90-six438-'+kind438+'.png'))
   for kind438 in ('vod','series','cinema','disney','trend','mp3'):
    for frame438 in range(4):
