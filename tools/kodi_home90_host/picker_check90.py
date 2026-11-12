@@ -15,6 +15,50 @@ def home_position90(labels):
 def service_poll90():
  __import__('hero_epg63').poll();__import__('widget_notice46').poll()
 
+def spinner_receipts438(home,bindings):
+ """Native animation/visibility under explicit UI-state fault injection.
+
+ This tests the real texture and renderer. Actual queue ownership/deadlines
+ are tested separately on the host; this is not a provider or Android PASS.
+ Every injected property is restored, and native ListItems remain untouched.
+ """
+ from PIL import ImageChops
+ receipts=[]
+ for kind,prefix in (('vod',85),('series',86)):
+  cid=bindings[kind];spinner=int(str(prefix)+str(cid))
+  keys=['XCMate.Home85.'+kind+'.'+field for field in ('Busy','State','Text')]
+  saved={key:home.getProperty(key) for key in keys}
+  home.setFocusId(cid);home.getControl(cid).selectItem(0);xbmc.sleep(300)
+  before=xbmc.getInfoLabel('Container('+str(cid)+').NumItems')
+  try:
+   home.setProperty(keys[0],'true');home.setProperty(keys[1],'LOADING_ART');home.setProperty(keys[2],'Wird geladen …')
+   frames=[];files=[]
+   for index in range(4):
+    xbmc.sleep(170)
+    if not xbmc.getCondVisibility('Control.IsVisible('+str(spinner)+')'):raise RuntimeError(('SPINNER438_NOT_VISIBLE',kind))
+    path=Path('/root/picker90-spinner438-'+kind+'-'+str(index)+'.png')
+    xbmc.executebuiltin('TakeScreenshot('+str(path)+')',wait=False)
+    for _ in range(30):
+     try:
+      with Image.open(io.BytesIO(path.read_bytes())) as image:frame=image.convert('RGB').resize((1920,1080))
+      break
+     except (OSError,ValueError,SyntaxError):xbmc.sleep(50)
+    else:raise RuntimeError('SPINNER438_SCREENSHOT_NOT_READY')
+    frames.append(frame.crop((250,640,1890,1040)));files.append(path.name)
+   changes=[ImageChops.difference(frames[0],frame).getbbox() for frame in frames[1:]]
+   animated=any(box and 1<=box[2]-box[0]<=24 and 1<=box[3]-box[1]<=24 for box in changes)
+   if not animated:raise RuntimeError(('SPINNER438_ANIMATION_PIXELS_MISSING',kind,changes))
+   terminal=[]
+   for state in ('READY','EMPTY','ERROR_RETRYABLE'):
+    home.setProperty(keys[0],'');home.setProperty(keys[1],state);xbmc.sleep(150)
+    if xbmc.getCondVisibility('Control.IsVisible('+str(spinner)+')'):raise RuntimeError(('SPINNER438_STUCK',kind,state))
+    if xbmc.getInfoLabel('Container('+str(cid)+').NumItems')!=before:raise RuntimeError(('SPINNER438_LISTITEMS_RESET',kind,state))
+    terminal.append(state)
+   receipts.append(dict(kind=kind,control=spinner,animation_pixels=True,frames=files,changes=changes,terminal_hidden=terminal,listitems_preserved=int(before),injection='UI_STATE_ONLY_NOT_PROVIDER_JOB',android='ANDROID_NOT_TESTED'))
+  finally:
+   for key,value in saved.items():home.setProperty(key,value)
+ return receipts
+
 def run(cycle):
  sys.path.insert(0,'/root/.kodi/addons/plugin.video.xtreammate')
  from fixture66 import install
@@ -153,8 +197,9 @@ def check90(cycle,errors):
   check(pixels>1500,('PICKER90_NATIVE_PIXELS_MISSING',kind,cid,pixels))
   check(home.getFocusId()==cid,('PICKER90_NATIVE_FOCUS_LOST',kind))
   cases.append(dict(kind=kind,control=cid,rows=total,pixels=pixels,screenshot=picture.name))
+ spinners438=spinner_receipts438(home,bindings) if cycle==0 and hasattr(__import__('widget_skin90'),'media_spinners') else []
  rows=ast.literal_eval(props.read_text(encoding='utf-8'));foreign=[r for r in rows if r[2].startswith('widgetPath') and 'plugin://script.skin.helper.widgets/' in r[3]]
  check(len(foreign)>=2 and foreign==before['foreign_paths'],'PICKER90_FOREIGN_DEFINITIONS_CHANGED')
  check(hashlib.sha256(props.read_bytes()).hexdigest()==before['properties_sha256'],'PICKER90_NATIVE_REFRESH_CHANGED_PROPERTIES')
- report=dict(status='PASS',cycle=cycle,native_cases=cases,foreign_definitions=len(foreign),properties_sha256=before['properties_sha256'],original_compiler_sha256=hashlib.sha256(tree.read_bytes()).hexdigest(),android='ANDROID_NOT_TESTED')
+ report=dict(status='PASS',cycle=cycle,native_cases=cases,native_spinner438=spinners438,foreign_definitions=len(foreign),properties_sha256=before['properties_sha256'],original_compiler_sha256=hashlib.sha256(tree.read_bytes()).hexdigest(),android='ANDROID_NOT_TESTED')
  Path('/root/picker90-cold-'+str(cycle)+'.json').write_text(json.dumps(report,indent=2));print('PICKER90_COLD '+json.dumps(report),flush=True);return report

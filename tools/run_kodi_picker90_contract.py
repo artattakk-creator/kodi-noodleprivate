@@ -41,6 +41,9 @@ def main():
   for cycle90 in range(4):
    files90.append(('/root/picker90-cold-'+str(cycle90)+'.json','picker90-cold-'+str(cycle90)+'.json'))
    for kind90 in ('live','vod','series','diagnostic'):files90.append(('/root/picker90-home-'+str(cycle90)+'-'+kind90+'.png','picker90-home-'+str(cycle90)+'-'+kind90+'.png'))
+  for kind438 in ('vod','series'):
+   for frame438 in range(4):
+    name438='picker90-spinner438-'+kind438+'-'+str(frame438)+'.png';files90.append(('/root/'+name438,name438))
   for source,target in files90:subprocess.run(docker+['cp',name+':'+source,str(report/target)],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
   for path in ('probe.log','picker90-error.txt','picker90-history.json','picker90-registry.json','picker90.json','synthetic-kodi.log'):
    if (report/path).is_file():
