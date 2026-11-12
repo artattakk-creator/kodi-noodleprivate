@@ -69,6 +69,11 @@ def directory_uri89(value):
     from widget_hooks45 import HOOK
     if isinstance(value,str) and value.startswith('plugin://plugin.video.xtreammate/'):
         checked=HOOK.sub('runtime89',value)
+        # Kodi's generated Home directory URLs contain this exact clock
+        # info-label token for cache invalidation. Normalize it only for
+        # strict URI validation; preserve the actual URL byte-for-byte.
+        checked=checked.replace('clock50=$INFO[System.Time(hh:mm)]','clock50=runtime89')
+        if '$INFO[' in checked:raise ValueError('INVALID_NAVIGATION')
         uri(checked)
         return value
     return uri(value)
