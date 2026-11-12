@@ -6,6 +6,7 @@ from pathlib import Path
 def delta437():
  return json.loads((Path(__file__).parent/'fixtures/pr437_reviewed_delta.json').read_text())
 def without_clock437(source,module):
+ source=__import__('release_contract91').without_release91(source,module)
  binary=isinstance(source,bytes);raw=source if binary else source.encode()
  spinner=json.loads((Path(__file__).parent/'fixtures/media_spinner_reviewed_delta.json').read_text())
  for path,change in [(spinner['path'],spinner)]+list(spinner.get('modules',{}).items()):

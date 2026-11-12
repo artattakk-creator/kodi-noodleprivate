@@ -6,8 +6,18 @@ sys.path.insert(0,str(Path(__file__).resolve().parent))
 from run_kodi_home74_contract import SKIN_SHA,SKIN_URL
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--report-dir',type=Path,required=True);p.add_argument('--resolution',default='1280x720',choices=('1920x1080','1280x720'));p.add_argument('--clock-contract437',action='store_true',help='Fresh default Home first, upstream XCMate clock presets, native 1510/1520/1530');a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--report-dir',type=Path,required=True);p.add_argument('--resolution',default='1280x720',choices=('1920x1080','1280x720'));p.add_argument('--addon-zip',type=Path,help='Verify and install exact .91 RC ZIP instead of mounting source');p.add_argument('--clock-contract437',action='store_true',help='Fresh default Home first, upstream XCMate clock presets, native 1510/1520/1530');a=p.parse_args()
  root=Path(__file__).resolve().parents[1];report=a.report_dir.resolve();report.mkdir(parents=True,exist_ok=True);archive=report/'skin.zip'
+ addon_source=root/'src/plugin.video.xtreammate'
+ if a.addon_zip:
+  from release_candidate91 import inspect_package
+  proof=inspect_package(a.addon_zip)
+  unpacked=report/'verified-addon91'
+  unpacked.mkdir()
+  with zipfile.ZipFile(a.addon_zip) as z:z.extractall(unpacked)
+  addon_source=unpacked/'plugin.video.xtreammate'
+  (report/'package-proof91.json').write_text(json.dumps(proof,indent=2)+'\n')
+
  import urllib.request
  with urllib.request.urlopen(SKIN_URL,timeout=60) as response:archive.write_bytes(response.read(100*1024*1024))
  assert hashlib.sha256(archive.read_bytes()).hexdigest()==SKIN_SHA
@@ -31,7 +41,7 @@ pactl list short sinks > /root/picker90-native-audio-sinks.txt
  start=start.replace('while true; do',pulse438+'\nwhile true; do')
  (report/'start.sh').write_text(start)
  base=root/'tools/kodi_home84_host';helper=root/'tools/kodi_home90_host'
- mounts=[(root/'tools/kodi_home74_host','/work'),(root/'src/plugin.video.xtreammate','/xcmate'),(pristine/'skin.titan.bingie.mod','/skin'),(candidate,'/candidate'),(base/'fixture84.py','/fixture84.py'),(root/'tools/kodi_home86_host/tls86.py','/work/tls69.py'),(helper/'skin_picker90.py','/work/skin_fixture66.py'),(root/'tools/kodi_home74_host/skin_fixture66.py','/base_skin78.py'),(helper/'setup_picker90.py','/setup_picker90.py'),(helper/'picker90.py','/picker90.py'),(helper/'probe_picker90.py','/work/probe.py'),(root/'online-test/script.skinshortcuts/script.skinshortcuts-2.1.0.zip','/skinshortcuts90.zip'),(report/'start.sh','/work/start.sh')]
+ mounts=[(root/'tools/kodi_home74_host','/work'),(addon_source,'/xcmate'),(pristine/'skin.titan.bingie.mod','/skin'),(candidate,'/candidate'),(base/'fixture84.py','/fixture84.py'),(root/'tools/kodi_home86_host/tls86.py','/work/tls69.py'),(helper/'skin_picker90.py','/work/skin_fixture66.py'),(root/'tools/kodi_home74_host/skin_fixture66.py','/base_skin78.py'),(helper/'setup_picker90.py','/setup_picker90.py'),(helper/'picker90.py','/picker90.py'),(helper/'probe_picker90.py','/work/probe.py'),(root/'online-test/script.skinshortcuts/script.skinshortcuts-2.1.0.zip','/skinshortcuts90.zip'),(report/'start.sh','/work/start.sh')]
  mounts.extend([(helper/'diagnostic_picker90.py','/diagnostic_picker90.py'),(helper/'picker_check90.py','/picker_check90.py'),(helper/'six_rows438.py','/six_rows438.py'),(base/'fixture84.py','/base_fixture84.py')])
  mounts=[(helper/'fixture_picker90.py',target) if target=='/fixture84.py' else (source,target) for source,target in mounts]
  cmd=['run','-d','--name',name]
@@ -40,6 +50,20 @@ pactl list short sinks > /root/picker90-native-audio-sinks.txt
  try:
   run(*cmd,stdout=subprocess.DEVNULL)
   with (report/'probe.log').open('w') as log:run('exec',name,'python3','/work/probe.py',stdout=log,stderr=subprocess.STDOUT)
+  if a.addon_zip:
+   code91="""from pathlib import Path
+import xml.etree.ElementTree as E
+source=Path('/xcmate');installed=Path('/root/.kodi/addons/plugin.video.xtreammate')
+node=E.parse(installed/'addon.xml').getroot()
+assert (node.get('id'),node.get('version'))==('plugin.video.xtreammate','0.1.29.91')
+files=[p for p in source.rglob('*') if p.is_file() and '__pycache__' not in p.parts and p.name!='addon.xml']
+assert all((installed/p.relative_to(source)).read_bytes()==p.read_bytes() for p in files)
+print(len(files))
+"""
+   verified=run('exec',name,'python3','-c',code91,capture_output=True,text=True)
+   proof.update(installed_version='0.1.29.91',unchanged_installed_nonmanifest_files=int(verified.stdout.strip()),fixture_manifest_adapted=True,fixture_service_disabled=True,fixture_plugin_entry=True,android='ANDROID_NOT_TESTED')
+   (report/'package-proof91.json').write_text(json.dumps(proof,indent=2)+'\n')
+
  finally:
   files90=[('/root/picker90-diagnostic.json','picker90-diagnostic.json'),('/root/picker90-registry.json','picker90-registry.json'),('/root/picker90-history.json','picker90-history.json'),('/root/picker90.json','picker90.json'),('/root/picker90-error.txt','picker90-error.txt'),('/root/picker90-native-audio-sinks.txt','picker90-native-audio-sinks.txt'),('/tmp/xcmate-native-pulse.log','native-pulse.log'),('/root/.kodi/temp/kodi.log','synthetic-kodi.log')]
   files90.extend([('/root/picker90-experiments.json','picker90-experiments.json'),('/root/picker90-experiment-error.txt','picker90-experiment-error.txt')])

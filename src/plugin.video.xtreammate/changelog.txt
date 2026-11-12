@@ -1,3 +1,10 @@
+0.1.29.91 – Release Candidate aus den gemergten Widget-PRs #437 und #438
+- Gültige clock50-Widgetpfade wieder verwenden; Film- und Serienreihen zuverlässig anbinden.
+- Filme, Serien, Im Kino, Disney, Diese Woche im Trend und MP3s mit eigener Überschrift und Original-BINGIE-Ladekreisel.
+- Getrennte Ladezustände, Ende bei Erfolg/leer/Fehler/Timeout; Fokus, Klickziele und persönliche Widgets erhalten.
+- TVMaze-/TMDB-Bildsuche, Downloads in Sendungsdetails und manuelle Bildzuordnung unverändert erhalten.
+- Provider, Token, EPG, Favoriten, Cover, Kodi-Konfiguration und Installer 0.5.26 bleiben erhalten. Android-Abnahme offen; Pilot-Veröffentlichung nur vorbereitet.
+
 0.1.29.90 – kumulativer Android-.89-P0-Testkandidat, nicht veröffentlicht
 - Anzeige von Film- und Serienreihen beim Start verbessert.
 - Verifizierte Logo-Manifeste einmal pro Dateigeneration laden; vorhandene Logos vor optionaler Texture-/Netzwerksuche verwenden.

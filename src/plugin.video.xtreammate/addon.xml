@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon id="plugin.video.xtreammate"
        name="XCMate"
-       version="0.1.29.90"
+       version="0.1.29.91"
        provider-name="GS Media">
 
   <requires>
@@ -38,7 +38,7 @@
     <forum>https://forum.kodi.tv</forum>
     <website>https://kodi.tv</website>
     <source>https://github.com/artattakk-creator/kodi-noodleprivate</source>
-    <news>0.1.29.90 Testversion: Gespeicherte Senderlogos zuerst verwenden und fehlende Logos begrenzt nachladen. Lokales Jetzt/Danach über Kodi-Neustarts und Gruppenwechsel erhalten. Portal-Lesezugriffe bei parallelen Schreibjobs stabilisieren. Film-/Serienwidgets bei vorübergehenden Datenbankfehlern erhalten. Manuelle Bildzuordnung mit bestätigtem Readback korrigieren. Sendergruppen nach unvollständigem Laden weiter vorbereiten. XCMate-Quellen im nativen Widget-Picker auch bei neuer Einrichtung auffindbar machen. Bekannte Fremdwidget-Navigation nur nach gesicherter, ausdrücklich bestätigter Adapterkorrektur ändern. Passwörter, TMDB-Token, EPG, Favoriten, Cover und persönliche Einstellungen bleiben erhalten. Echte Android-Abnahme offen; kein Repository-Release.</news>
+    <news>0.1.29.91 Release Candidate: Sechs beschriftete BINGIE-Reihen: Filme, Serien, Im Kino, Disney, Diese Woche im Trend und MP3s. Gültige clock50-Widgetpfade wieder verwenden. Eigene Ladekreisel mit begrenzter Laufzeit und erhaltenem Fokus. Vorhandene TVMaze-/TMDB-Bildsuche, Bilddownloads und manuelle Zuordnungen unverändert erhalten. Einstellungen, Provider, Token, EPG, Favoriten und persönliche Widgets bleiben erhalten. Android-Abnahme offen; noch keine Repository-Veröffentlichung.</news>
     <assets>
       <icon>icon-81da1003a2753ec6.png</icon>
       <fanart>resources/media/lightweight_splash.jpg</fanart>

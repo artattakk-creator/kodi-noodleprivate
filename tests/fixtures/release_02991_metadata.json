@@ -1,0 +1,14 @@
+{
+  "base": "2a1ea40e847525275b2e46e168092ec58511fd1a",
+  "issue": 439,
+  "modules": {
+    "src/plugin.video.xtreammate/addon.xml": {
+      "old_sha256": "b2eeb81fb1b4ea961c354327ab62220360aa21fc7579784248faee96728866f8",
+      "new_sha256": "32c51c108f7948345ec316fab0ab4822edc9292f322fdd76131725e758634187"
+    },
+    "src/plugin.video.xtreammate/changelog.txt": {
+      "old_sha256": "af05fc2b980b16bda9559069fc1c0f197135f717cc264f07a241407912776098",
+      "new_sha256": "db431d63d68eebd61350b5b66e08ba03f3494299d1557a87400bdf86318606bf"
+    }
+  }
+}
