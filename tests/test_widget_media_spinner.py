@@ -26,7 +26,7 @@ class MediaSpinner(Fixture50, unittest.TestCase):
         header = root.find("include[@name='widget_header_multi']")
         native = header.find(".//control[@type='multiimage']")
         row = root.find("include[@name='XCMate80.MediaRow']")
-        spinners = row.findall("control/control[@type='multiimage']")
+        spinners = row.findall("control/control[@type='grouplist']/control[@type='multiimage']")
         self.assertEqual(len(spinners), 2)
         for kind, spinner in zip(('vod','series'), spinners):
             for tag in ('imagepath','timeperimage','fadetime','colordiffuse','aspectratio'):
@@ -70,17 +70,20 @@ class MediaSpinner(Fixture50, unittest.TestCase):
         import widget_skin78
         root = widget_skin78.parse(self.graph()['xml/IncludesHomeWidgets.xml'])
         group = root.find("include[@name='XCMate80.MediaRow']/control")
-        title = group.find("control[@type='label']")
-        end_title = int(title.findtext('left')) + int(title.findtext('width'))
-        for spinner in group.findall("control[@type='multiimage']"):
-            self.assertGreaterEqual(int(spinner.findtext('left')), end_title)
-            self.assertLessEqual(int(spinner.findtext('left'))+int(spinner.findtext('width')), 900)
+        heading = group.find("control[@type='grouplist']")
+        title = heading.find("control[@type='label']")
+        self.assertEqual(title.findtext('width'), 'auto')
+        self.assertEqual(heading.findtext('itemgap'), '12')
+        self.assertEqual(int(heading.findtext('left'))+int(heading.findtext('width')), 886)
+        self.assertLess(886,900)
+        for spinner in heading.findall("control[@type='multiimage']"):
+            self.assertEqual(int(spinner.findtext('width')),24)
             self.assertLessEqual(int(spinner.findtext('top'))+int(spinner.findtext('height')), 30)
 
     def test_unreviewed_row_or_spinner_modification_blocks_guarded_upgrade(self):
         import widget_skin78, widget_skin90
         files = self.graph()
-        for before,after in ((b'<left>868</left>',b'<left>900</left>'),
+        for before,after in ((b'<itemgap>12</itemgap>',b'<itemgap>600</itemgap>'),
                              (b'<height>244</height>',b'<height>800</height>'),
                              (b'<timeperimage>85</timeperimage>',b'<timeperimage>1</timeperimage>')):
             bad = dict(files)
@@ -120,3 +123,37 @@ class MediaSpinner(Fixture50, unittest.TestCase):
             self.assertEqual(set(z.namelist()), {'plugin.video.xtreammate/'+p.relative_to(source).as_posix() for p in files})
             for p in files:
                 self.assertEqual(z.read('plugin.video.xtreammate/'+p.relative_to(source).as_posix()), p.read_bytes())
+
+    def test_artwork_pending_cannot_leak_between_rows_accounts_or_profiles(self):
+        import widget_assets69 as assets
+        with mock.patch.object(assets,'_pending',{'queued'}), mock.patch.object(assets,'_pending_scopes',{'queued':('profile-a','p','series')}), mock.patch.object(assets,'profile',return_value='profile-a'), mock.patch.object(assets,'_fatal82',False):
+            assets._stop.clear()
+            self.assertTrue(assets.pending({'id':'p'},'series'))
+            self.assertFalse(assets.pending({'id':'p'},'vod'))
+            self.assertFalse(assets.pending({'id':'other'},'series'))
+            with mock.patch.object(assets,'profile',return_value='profile-b'):
+                self.assertFalse(assets.pending({'id':'p'},'series'))
+            with mock.patch.object(assets,'_fatal82',True):
+                self.assertFalse(assets.pending({'id':'p'},'series'))
+            assets.shutdown()
+            self.assertFalse(assets.pending({'id':'p'},'series'))
+
+    def test_catalogue_loading_uses_only_current_profile_and_active_unit_without_io(self):
+        import widget_fast69 as fast, catalog_jobs73 as jobs
+        job = dict(pid='p',kinds=['vod','series'],state='RUNNING',units=[['vod',{}],['series',{}]],cursor=1)
+        with mock.patch('widget_assets69.pending',return_value=False), mock.patch('epg_handoff63.profile_scope',return_value='profile-a'), mock.patch.object(jobs,'_cache',{'jobs':[job]}), mock.patch.object(jobs,'_cache_profile','profile-a'), mock.patch.object(jobs,'jobs',side_effect=AssertionError('NO_JOURNAL_OR_DB_FOR_SPINNER')):
+            self.assertFalse(fast.row_pending({'id':'p'},'vod'))
+            self.assertTrue(fast.row_pending({'id':'p'},'series'))
+            self.assertFalse(fast.row_pending({'id':'other'},'series'))
+            with mock.patch('epg_handoff63.profile_scope',return_value='profile-b'):
+                self.assertFalse(fast.row_pending({'id':'p'},'series'))
+            job['state']='FAILED'
+            self.assertFalse(fast.row_pending({'id':'p'},'series'))
+
+    def test_new_scoped_worker_deltas_do_not_normalize_unreviewed_changes(self):
+        from clock50_contract437 import without_clock437
+        delta = json.loads((ROOT/'tests/fixtures/media_spinner_reviewed_delta.json').read_text())
+        for path, change in delta['modules'].items():
+            self.assertEqual(without_clock437(change['new'],path),change['old'])
+            extra=change['new']+'\nUNREVIEWED = True\n'
+            self.assertEqual(without_clock437(extra,path),extra)

@@ -1,6 +1,22 @@
 """Small native media publications before bulk warmup; no focus directory reload."""
 import hashlib,json,threading,time
 _guard=threading.Lock();_thread=None;_stop=threading.Event();_published={};_next=0
+def row_pending(portal,kind):
+ # The previous global artwork flag made film loaders follow series/live
+ # jobs. Use the bounded existing queue plus the service's catalogue memo;
+ # never open another database/journal just to draw a loading indicator.
+ if __import__('widget_assets69').pending(portal,kind):return True
+ jobs=__import__('catalog_jobs73')
+ cache=(jobs._cache or {}) if jobs._cache_profile==__import__('epg_handoff63').profile_scope() else {}
+ for job in cache.get('jobs',[]):
+  if job.get('pid')!=str(portal['id']) or kind not in job.get('kinds',[]) or job.get('state') not in ('WAITING','RUNNING') or job.get('cancel'):continue
+  units=job.get('units')
+  if job.get('state')=='RUNNING' and units:
+   cursor=job.get('cursor',0)
+   if not isinstance(cursor,int) or not 0<=cursor<len(units) or units[cursor][0]!=kind:continue
+  return True
+ return False
+
 def prepare(cancel=lambda:False):
  global _next
  now=time.monotonic()
@@ -44,7 +60,7 @@ def prepare(cancel=lambda:False):
    if not portal.get('include_'+kind,True):continue
    rows,code=snapshot(portal,kind)
    if not rows:
-    __import__('home_loading85').update(portal,kind,rows,code,pending=bool(__import__('widget_assets69')._pending))
+    __import__('home_loading85').update(portal,kind,rows,code,pending=row_pending(portal,kind))
     if code in ('READY','CACHE') and allowed(kind,portal) and publish(portal,kind,rows,code):
      prepared(kind,0,portal=portal,rows=rows)
     continue
@@ -56,7 +72,7 @@ def prepare(cancel=lambda:False):
    refs=references(portal,kind,rows)
    visible85=__import__('home_loading85').visible(portal,kind,rows)
    images85=__import__('external_art89').ready_count(portal,kind,visible85,refs)
-   __import__('home_loading85').update(portal,kind,rows,code,images=images85,pending=bool(__import__('widget_assets69')._pending))
+   __import__('home_loading85').update(portal,kind,rows,code,images=images85,pending=row_pending(portal,kind))
    from home_metrics82 import note as metric82
    # A publication changes only after rows/policy/references change, never on
    # IR focus. Existing native widget reload hooks retain their own rate limit.

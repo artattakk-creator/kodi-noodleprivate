@@ -27,7 +27,7 @@ def media_spinners(header):
   node=copy.deepcopy(originals[0]);node.set('id',prefix+'$PARAM[widgetid]')
   for child in list(node):
    if child.tag=='include':node.remove(child)
-  for tag,text in (('width','24'),('height','24'),('top','2'),('left','868')):node.find(tag).text=text
+  for tag,text in (('width','24'),('height','24'),('top','2'),('left','0')):node.find(tag).text=text
   state='Window(Home).Property(XCMate.Home85.'+kind+'.'
   owned='[String.Contains($PARAM[widgetPath],action='+action+') | String.IsEqual(Container($PARAM[widgetid]).ListItem.Property(XCMate.WidgetKind41),'+kind+')]'
   loading=' | '.join('String.IsEqual('+state+'State),'+value+')' for value in ('LOADING_CATALOG','LOADING_ART','READY_PARTIAL'))
@@ -35,14 +35,30 @@ def media_spinners(header):
   result.append(node)
  return result
 
+def media_heading(title,header):
+ """Let Kodi measure the saved label and place its spinner 12px after it."""
+ group=E.Element('control',type='grouplist',id='84$PARAM[widgetid]')
+ for tag,text in (('left','130'),('top','0'),('width','756'),('height','26'),
+                  ('orientation','horizontal'),('itemgap','12'),('align','left')):
+  E.SubElement(group,tag).text=text
+ label=copy.deepcopy(title);label.find('left').text='0'
+ width=label.find('width');width.text='auto';width.set('min','1');width.set('max','720')
+ group.append(label);group.extend(media_spinners(header))
+ return group
+
 def original_media_row(row,header):
  """Fail closed on any unrelated geometry or animation edit."""
  from widget_skin80 import digest
  original=copy.deepcopy(row);group=original.find('control')
- found=group.findall("control[@type='multiimage']");expected=media_spinners(header)
- if found:
-  if [digest(n) for n in found]!=[digest(n) for n in expected]:raise ValueError('MEDIA_SPINNER_UNVERIFIED')
-  for node in found:group.remove(node)
+ headings=group.findall("control[@id='84$PARAM[widgetid]']")
+ if headings:
+  if len(headings)!=1:raise ValueError('MEDIA_SPINNER_UNVERIFIED')
+  heading=headings[0];titles=heading.findall("control[@type='label']")
+  if len(titles)!=1:raise ValueError('MEDIA_SPINNER_UNVERIFIED')
+  title=copy.deepcopy(titles[0]);title.find('left').text='130'
+  title.find('width').text='720';title.find('width').attrib.clear()
+  if digest(heading)!=digest(media_heading(title,header)):raise ValueError('MEDIA_SPINNER_UNVERIFIED')
+  position=list(group).index(heading);group.remove(heading);group.insert(position,title)
  if digest(original)!=MEDIA_ROW_SHA:raise ValueError('MEDIA_SPINNER_UNVERIFIED')
  return original
 
@@ -121,8 +137,10 @@ def upgrade(files):
  n,end,row=_node(result[name],'include','name','XCMate80.MediaRow')
  _,_,header=_node(result[name],'include','name','widget_header_multi')
  original_media_row(row,header)
- if not row.find('control').findall("control[@type='multiimage']"):
-  row.find('control').extend(media_spinners(header))
+ group=row.find('control')
+ if not group.findall("control[@id='84$PARAM[widgetid]']"):
+  title=group.find("control[@type='label']");position=list(group).index(title)
+  group.remove(title);group.insert(position,media_heading(title,header))
   result[name]=edit(result[name],[(n['start'],end,E.tostring(row,encoding='utf-8'))])
  return result
 
