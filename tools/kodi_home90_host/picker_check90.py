@@ -269,19 +269,27 @@ def storage93(until,check):
  from storage_ui92 import create_window
  value=dict(categories=[dict(category='EPG_DB',files=1,bytes=129458176,complete=True,volume=dict(volume='synthetic93',mount_key='synthetic93',fs='SYNTHETIC',available=144609280,total=4034297856,reserve=1073741824)),dict(category='KODI_THUMBNAILS',files=0,bytes=0,complete=False,volume={})])
  window=create_window(value);previous=xbmcgui.getCurrentWindowDialogId()
+ debug93=json.loads(xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=93,method='Settings.GetSettingValue',params=dict(setting='debug.showloginfo'))))).get('result',{}).get('value',True)
+ xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=93,method='Settings.SetSettingValue',params=dict(setting='debug.showloginfo',value=False))))
  try:
   window.show()
   until(lambda:window.getControl(101).getLabel()==tr(38730),'STORAGE93_NATIVE_TITLE_MISSING')
   check(window.getControl(101).getLabel()!='Plot','STORAGE93_WRONG_NATIVE_TITLE')
   check(window.getControl(103).getText().find('"categories"')<0,'STORAGE93_RAW_JSON')
   check(tr(38738) in window.getControl(103).getText(),'STORAGE93_PARTIAL_NOT_MARKED')
-  image=Path('/root/storage93.png');xbmc.executebuiltin('TakeScreenshot('+str(image)+')',wait=False)
+  image=Path('/root/storage93.png');colors93={}
+  until(lambda:window.getFocusId()==501,'STORAGE93_FOCUS_NOT_READY')
   def decoded93():
+   xbmc.executebuiltin('TakeScreenshot('+str(image)+')',wait=False);xbmc.sleep(100)
    try:
-    with Image.open(image) as frame:frame.load();return frame.width>0 and frame.height>0
+    with Image.open(image) as frame:frame.load();rgb=frame.convert('RGB').resize((1280,720))
+    colors93.update(panel=rgb.getpixel((40,100)),focus=rgb.getpixel((80,620)),button=rgb.getpixel((400,620)))
+    return all(max(abs(a-b) for a,b in zip(colors93[name],expected))<=6 for name,expected in [('panel',(20,29,43)),('focus',(95,120,153)),('button',(37,52,71))])
    except (OSError,ValueError):return False
-  until(decoded93,'STORAGE93_SCREENSHOT_INCOMPLETE')
+  until(decoded93,'STORAGE93_PANEL_OR_BUTTON_PIXELS_MISSING')
   xbmc.executebuiltin('Action(Back)',wait=False)
   until(lambda:xbmcgui.getCurrentWindowDialogId()==previous,'STORAGE93_BACK_DID_NOT_RETURN')
-  write_receipt90('/root/storage93.json',dict(status='PASS',native_title=tr(38730),partial_marked=True,raw_json=False,screenshot='storage93.png',back_returned=True,platform='LINUX_KODI_SYNTHETIC',android='ANDROID_NOT_TESTED'))
- finally:window.close()
+  write_receipt90('/root/storage93.json',dict(status='PASS',native_title=tr(38730),partial_marked=True,raw_json=False,verified_texture_pixels=colors93,screenshot='storage93.png',back_returned=True,platform='LINUX_KODI_SYNTHETIC',android='ANDROID_NOT_TESTED'))
+ finally:
+  window.close()
+  xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=93,method='Settings.SetSettingValue',params=dict(setting='debug.showloginfo',value=bool(debug93)))))

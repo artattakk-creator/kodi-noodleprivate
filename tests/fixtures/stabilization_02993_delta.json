@@ -5,7 +5,10 @@
     "src/plugin.video.xtreammate/resources/lib/stop_barrier93.py": "4e15bfbaca6e902862989ac5b40c1cc5e980aa2fcecbf5072e7efd6fdb73f949",
     "src/plugin.video.xtreammate/resources/lib/storage_report93.py": "b7bdbe0fd3427b75922e5fd3ca135ad822448e6dfcb8125a78adcce7835986fb",
     "src/plugin.video.xtreammate/resources/lib/storage_scan93.py": "8dad2ee4bc69436ea7bdfe36d14daadba051cc96b3b8f8ba0e18c5cbc89aed50",
-    "src/plugin.video.xtreammate/resources/skins/Default/720p/XCMateStorage93.xml": "cc0f1e0c06b37775ffd305b2d635707110dbf6f33aa50ca20bb17de1fe953f81"
+    "src/plugin.video.xtreammate/resources/media/storage93/button.png": "87e1bfcd63c7192a495cc7fcfbbc5fceff63fa131abd7fd7eaa5b7a7eec69cfc",
+    "src/plugin.video.xtreammate/resources/media/storage93/focus.png": "65b1889ba517f22aa1c0db3c34e1565b7cb8bdd22a7b375c84932bf07c63e949",
+    "src/plugin.video.xtreammate/resources/media/storage93/panel.png": "7b50d2d26b24426584cb52148c6414bf8e9f7e564bb07d8ba7f2df5b96ab8ed3",
+    "src/plugin.video.xtreammate/resources/skins/Default/720p/XCMateStorage93.xml": "994e3ce02d9075f0a47d4f0bc0a49be298af1704ddca31edf2d8e9975c0c996f"
   },
   "base": "3e1d6f87787baa95d24cc4e7c83c24914db31364",
   "modules": {

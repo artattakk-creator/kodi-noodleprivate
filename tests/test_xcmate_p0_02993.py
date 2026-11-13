@@ -160,3 +160,14 @@ class P093(Fixture,unittest.TestCase):
   for value in ([],None,{'sha256':17},'bad'):
    receipt.write_text(json.dumps(value));r=m.prune()
    self.assertEqual(r['deleted_files'],0);self.assertTrue((folder/old['backup']).exists())
+ def test_storage_panel_and_focus_textures_are_bundled_opaque_and_skin_independent(self):
+  import xml.etree.ElementTree as E
+  from xcmate027_fixture import ADDON
+  from PIL import Image
+  root=E.parse(ADDON/'resources/skins/Default/720p/XCMateStorage93.xml').getroot()
+  references=[n.text for n in root.iter() if n.tag in ('texture','texturefocus','texturenofocus')]
+  self.assertGreaterEqual(len(references),3)
+  for reference in references:
+   self.assertTrue(reference.startswith('special://home/addons/plugin.video.xtreammate/'))
+   file=ADDON/reference.split('plugin.video.xtreammate/',1)[1]
+   with Image.open(file) as image:self.assertEqual(image.convert('RGBA').getextrema()[3],(255,255))
