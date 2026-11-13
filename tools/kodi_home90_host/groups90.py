@@ -16,9 +16,16 @@ def run(portal,pump,capture,check):
  def until(predicate,reason,seconds=12):
   end=time.monotonic()+seconds
   while time.monotonic()<end:
+   # Service is disabled in this native rig. Exercise its actual owner poll,
+   # including own-standard-OSD recovery, rather than an inert dialog object.
+   nav.tick()
    if predicate():return
    xbmc.sleep(30)
-  raise RuntimeError((reason,nav.mode,nav.sid,nav._closed))
+  try:capture('visible84-groups90-failure')
+  except Exception:pass
+  try:focus90=nav.getFocusId()
+  except RuntimeError:focus90=-1
+  raise RuntimeError((reason,nav.mode,nav.sid,nav._closed,xbmcgui.getCurrentWindowId(),xbmcgui.getCurrentWindowDialogId(),focus90))
  def native_sid90():
   try:return json.loads(xbmc.Player().getVideoInfoTag().getUniqueID('xcmate_live'))['sid']
   except (ValueError,RuntimeError,KeyError):return ''
