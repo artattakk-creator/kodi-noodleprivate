@@ -147,8 +147,8 @@ before=hashlib.sha256(properties.read_bytes()).hexdigest();dialog=manager();clos
 foreign90=[r for r in rows if r[2].startswith('widgetPath') and 'plugin://script.skin.helper.widgets/' in r[3]]
 check(len(foreign90)>=2,'PICKER90_FOREIGN_BASELINE_MISSING')
 Path('/root/picker90-baseline.json').write_text(json.dumps(dict(properties_sha256=before,foreign_paths=foreign90,initial_template_sha256=initial_template90),indent=2))
-from picker_check90 import run as check90
+from picker_check90 import run as check90,write_receipt90
 home90=check90(0)
 report=dict(status='PASS',original_skinshortcuts='2.1.0',fresh_noportal=True,saved_widget_paths=paths,original_dialog_branches=history,properties_sha256=before,android='ANDROID_NOT_TESTED')
 report['native_home']=home90
-Path('/root/picker90.json').write_text(json.dumps(report,indent=2));print('PICKER90_RESULT '+json.dumps(report),flush=True)
+write_receipt90('/root/picker90.json',report);print('PICKER90_RESULT '+json.dumps(report),flush=True)

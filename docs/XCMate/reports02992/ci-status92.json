@@ -1,0 +1,114 @@
+{
+  "tested_checkout": "4152c7f4b13fddad4735aa93488d680bc4f9d3c4",
+  "production_source_commit": "c9b6bdf673f43331157e0a610ee4e78fb7dc2e96",
+  "as_of_utc": "2026-11-13T14:34:00Z",
+  "primary_host": {
+    "run": 43441528773,
+    "status": "PASS",
+    "tests": 3915
+  },
+  "primary_exact_native": {
+    "run": 43441528517,
+    "status": "PASS",
+    "resolutions": [
+      "1280x720",
+      "1920x1080"
+    ]
+  },
+  "all_workflows_claim": "NOT_ALL_COMPLETE; exact immutable passing runs cited separately; documentation-only updates do not change the tested source or ZIP",
+  "workflow_runs": [
+    {
+      "id": 43441528558,
+      "name": "XCMate .89 durable logos and native pictures",
+      "status": "in_progress",
+      "conclusion": null
+    },
+    {
+      "id": 43441528817,
+      "name": "XCMate .90 startup, native IR and 15-minute retention",
+      "status": "in_progress",
+      "conclusion": null
+    },
+    {
+      "id": 43441528705,
+      "name": "XCMate cumulative native Home and review",
+      "status": "in_progress",
+      "conclusion": null
+    },
+    {
+      "id": 43441528809,
+      "name": "XCMate .71 P0 setup and persistence",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 43441528897,
+      "name": "XCMate .68 implementation review",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 43441529060,
+      "name": "XCMate .88 native pictures under reserve pressure",
+      "status": "in_progress",
+      "conclusion": null
+    },
+    {
+      "id": 43441528593,
+      "name": "XCMate .69 focused review",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 43441528773,
+      "name": "XCMate .92 complete host and Pilot preparation (no publication)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 43441528413,
+      "name": "Publish GS Media Kodi updates",
+      "status": "in_progress",
+      "conclusion": null
+    },
+    {
+      "id": 43441528414,
+      "name": "XCMate 73 catalog, widgets and optional EPG review",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 43441528488,
+      "name": "XCMate 72 archived rescan baseline",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 43441528478,
+      "name": "GS Media Repository Lite release gate",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 43441528392,
+      "name": "XCMate .70 EPG artwork review",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 43441528517,
+      "name": "XCMate .92 exact ZIP native Kodi 720p and 1080p",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 43441528495,
+      "name": "Archived XCMate 74 Home stability and artwork review",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "merge_performed": false,
+  "publication_performed": false,
+  "android": "ANDROID_NOT_TESTED"
+}

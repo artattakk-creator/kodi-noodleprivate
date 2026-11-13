@@ -560,13 +560,15 @@ def _refresh_portal_epg_inner(portal_id, p, force=False):
         try:
             raw, _ = http_get(epg_url, max_bytes=MAX_XML_BYTES, max_seconds=60)
             stage = 'PARSE'
+            raw_bytes92=len(raw)
             channels, programmes = parse_xmltv(raw)
+            raw=None  # Parsed metadata is committed below; no persistent raw archive.
             if not programmes:
                 from epg_errors import EmptyGuideError
                 raise EmptyGuideError('XMLTV contains no valid programmes')
             source_status(portal_id, 'provider', 'READY', running=False,
                           channels=len(channels), programmes=sum(len(v) for v in programmes.values()),
-                          bytes=len(raw))
+                          bytes=raw_bytes92)
         except Exception as e:
             from epg_errors import failure_details
             _, fields = failure_details(e, stage)
@@ -616,9 +618,15 @@ def _refresh_portal_epg_inner(portal_id, p, force=False):
         from guide_store import import_cache
         from epg_sources import configuration
         records={i:source for i,source in enumerate(configuration(portal_id).get('sources',[]),1)}
-        import_cache(portal_id,programmes,'legacy44-'+str(time.time_ns()),trusted_feed=not short_only44,source_records=records)
-        _save_disk(portal_id, programmes)
-        _mem_set(portal_id, programmes)
+        revision92='legacy44-'+str(time.time_ns())
+        imported92=import_cache(portal_id,programmes,revision92,trusted_feed=not short_only44,source_records=records)
+        from epg_snapshot92 import committed,short
+        if not imported92 or not committed(portal_id,revision92):
+            diagnostic('IMPORT_READBACK_FAILED',running=False)
+            return {}  # Last-good cache and source data remain untouched.
+        snapshot92=short(programmes,now)
+        _save_disk(portal_id, snapshot92)
+        _mem_set(portal_id, snapshot92)
         info(f'[EPG] {portal_id}: {len(programmes)} channels saved')
     return programmes
 

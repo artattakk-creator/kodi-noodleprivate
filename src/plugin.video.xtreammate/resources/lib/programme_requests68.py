@@ -40,6 +40,7 @@ def _read(key):
 def request(event,priority=False):
  """A bounded intent only; callers already possess the displayed local event."""
  try:
+  if _window().getProperty('XCMate.Storage92.Disabled.'+__import__('epg_handoff63').profile_scope())=='true':return False
   if event.get('_no_art_request68') or not event.get('pid') or not event.get('sid') or not event.get('title'):return False
   if not 0<int(event['start'])<int(event['stop']):return False
   value={k:event[k] for k in _FIELDS if k in event}
@@ -137,6 +138,7 @@ def mark_seen(tag,policy,now):
 def drain(cancel=lambda:False):
  try:__import__('series_requests85').drain(cancel)
  except (OSError,ValueError,RuntimeError,AttributeError):pass
+ if not __import__('storage_policy92').images_enabled():return 0
  try:__import__('programme_reference84').tick(cancel)
  except (OSError,ValueError,RuntimeError,AttributeError):pass
  """Worker-only bounded intake, fair cyclic slots and authoritative re-read."""

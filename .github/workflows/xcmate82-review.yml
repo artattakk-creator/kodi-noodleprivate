@@ -1,4 +1,4 @@
-name: XCMate .91 complete host and Pilot preparation (no publication)
+name: XCMate .92 complete host and Pilot preparation (no publication)
 on:
   pull_request:
     branches: [main]
@@ -7,7 +7,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: xcmate91-review-${{ github.head_ref || github.ref }}
+  group: xcmate92-review-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 jobs:
   full-host:
@@ -26,22 +26,22 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          mkdir -p "$RUNNER_TEMP/xcmate91"
-          git rev-parse HEAD > "$RUNNER_TEMP/xcmate91/source-commit.txt"
+          mkdir -p "$RUNNER_TEMP/xcmate92"
+          git rev-parse HEAD > "$RUNNER_TEMP/xcmate92/source-commit.txt"
           python -m compileall -q src/plugin.video.xtreammate
-          python -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/xcmate91/tests.txt"
-          python -m pytest -q tests/test_xcmate_bingie_branding.py 2>&1 | tee "$RUNNER_TEMP/xcmate91/branding.txt"
+          python -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/xcmate92/tests.txt"
+          python -m pytest -q tests/test_xcmate_bingie_branding.py 2>&1 | tee "$RUNNER_TEMP/xcmate92/branding.txt"
           python tools/validate_kodi_po.py
       - name: Reproduce ZIP, verify every frozen publication channel
         run: |
-          python tools/package_xcmate71.py "$RUNNER_TEMP/xcmate91" > "$RUNNER_TEMP/xcmate91/package.json"
-          cmp "$RUNNER_TEMP/xcmate91/plugin.video.xtreammate-0.1.29.91.zip" docs/XCMate/test-builds/02991/plugin.video.xtreammate-0.1.29.91.zip
+          python tools/package_xcmate71.py "$RUNNER_TEMP/xcmate92" > "$RUNNER_TEMP/xcmate92/package.json"
+          cmp "$RUNNER_TEMP/xcmate92/plugin.video.xtreammate-0.1.29.92.zip" docs/XCMate/test-builds/02992/plugin.video.xtreammate-0.1.29.92.zip
           python tools/release_channel75.py
-          python tools/release_candidate91.py --output docs/XCMate/test-builds/02991
+          python tools/release_candidate92.py --output docs/XCMate/test-builds/02992
           git diff --exit-code -- addons.xml addons.xml.md5 index.html online-test plugin.video.xtreammate script.gsmedia.setup src/script.gsmedia.setup
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: xcmate91-complete-host
-          path: ${{ runner.temp }}/xcmate91/
+          name: xcmate92-complete-host
+          path: ${{ runner.temp }}/xcmate92/
           retention-days: 30

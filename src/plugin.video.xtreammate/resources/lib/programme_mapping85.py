@@ -72,7 +72,7 @@ def record_key90(records,key):
  return matches[0] if len(matches)==1 else key
 
 def set_mapping(event,candidate=None,hidden=False,automatic=False,cancel=lambda:False,operation89='',alias90=''):
- from import_budget import check_space
+ from storage_metadata92 import check as metadata_check
  from profile_transaction import writing
  key=namespace(event);filename=path()
  with writing(timeout=.2):
@@ -101,7 +101,7 @@ def set_mapping(event,candidate=None,hidden=False,automatic=False,cancel=lambda:
   if len(data['records'])>MAX_RECORDS:raise OSError('MANUAL_LIMIT')
   raw=json.dumps(data,separators=(',',':'),sort_keys=True).encode()
   if len(raw)>MAX_BYTES:raise OSError('MANUAL_LIMIT')
-  check_space(str(filename),len(raw)+65536)
+  metadata_check(filename,len(raw)+65536,kind='mapping')
   fd,tmp=tempfile.mkstemp(prefix='.manual85-',dir=filename.parent)
   try:
    with os.fdopen(fd,'wb') as f:f.write(raw);f.flush();os.fsync(f.fileno())

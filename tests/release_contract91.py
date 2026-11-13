@@ -17,6 +17,7 @@ def original91(path):
     return raw
 
 def without_release91(source, module):
+    source = __import__('stabilization_contract92').without92(source,module)
     binary = isinstance(source, bytes)
     raw = source if binary else source.encode()
     path = str(module)

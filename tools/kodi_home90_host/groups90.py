@@ -16,9 +16,30 @@ def run(portal,pump,capture,check):
  def until(predicate,reason,seconds=12):
   end=time.monotonic()+seconds
   while time.monotonic()<end:
+   # Service is disabled in this native rig. Exercise its actual owner poll,
+   # including own-standard-OSD recovery, rather than an inert dialog object.
+   nav.tick()
    if predicate():return
    xbmc.sleep(30)
-  raise RuntimeError((reason,nav.mode,nav.sid,nav._closed))
+  marker92=xbmcgui.Window(10000)
+  raw_count92=marker92.getProperty('XtreamMate.NativeActionCount')
+  diagnostic92=dict(reason=reason,mode=nav.mode,window=xbmcgui.getCurrentWindowId(),dialog=xbmcgui.getCurrentWindowDialogId(),native_count=int(raw_count92) if raw_count92.isdigit() else -1,last_left=marker92.getProperty('XtreamMate.LastHandledKey')=='left',exiting=bool(getattr(nav,'_exiting',False)),guide_handoff=bool(getattr(nav,'_guide_handoff',False)))
+  if reason.startswith('GROUP90_LEFT_LEVEL'):
+   # Research only. A successful directed action does NOT turn the failed
+   # global-action test green; always raise the original failure below.
+   did92=xbmcgui.getCurrentWindowDialogId()
+   if xbmcgui.Window(did92).getProperty('XtreamMate.NavigatorIdentity')==nav._window_nonce:
+    xbmc.executebuiltin('Action(Left,'+str(did92)+')',wait=False)
+    end92=time.monotonic()+2
+    while nav.mode==diagnostic92['mode'] and time.monotonic()<end92:nav.tick();xbmc.sleep(30)
+    diagnostic92['directed_mode']=nav.mode
+    diagnostic92['directed_count']=marker92.getProperty('XtreamMate.NativeActionCount')
+  Path('/root/groups90-failure.json').write_text(json.dumps(diagnostic92,indent=2))
+  try:capture('visible84-groups90-failure')
+  except Exception:pass
+  try:focus90=nav.getFocusId()
+  except RuntimeError:focus90=-1
+  raise RuntimeError((reason,nav.mode,nav.sid,nav._closed,xbmcgui.getCurrentWindowId(),xbmcgui.getCurrentWindowDialogId(),focus90))
  def native_sid90():
   try:return json.loads(xbmc.Player().getVideoInfoTag().getUniqueID('xcmate_live'))['sid']
   except (ValueError,RuntimeError,KeyError):return ''
@@ -28,7 +49,16 @@ def run(portal,pump,capture,check):
    return nav._catalog_ready and not getattr(nav,'_catalog_partial46',False)
   until(complete90,'GROUP90_CATALOGUE_NOT_READY')
   check(len(nav.channels)==2740,('GROUP90_CHANNELS_MISSING',len(nav.channels)))
-  nav.show();nav._tune(nav.index.by_sid['1']);until(nav.owns_playback,'GROUP90_NATIVE_VIDEO_NOT_OWNED')
+  # Match the real service lifecycle: native video/fullscreen first, then
+  # show its input owner. Showing a dialog on Home before Player.play lets
+  # Kodi's later FullscreenVideo activation cover that dialog.
+  nav._tune(nav.index.by_sid['1']);until(nav.owns_playback,'GROUP90_NATIVE_VIDEO_NOT_OWNED')
+  until(lambda:xbmcgui.getCurrentWindowId()==12005,'GROUP90_NATIVE_FULLSCREEN_NOT_VISIBLE')
+  nav.show()
+  def active90():
+   try:return xbmcgui.Window(xbmcgui.getCurrentWindowDialogId()).getProperty('XtreamMate.NavigatorIdentity')==nav._window_nonce
+   except RuntimeError:return False
+  until(active90,'GROUP90_NATIVE_INPUT_OWNER_NOT_ACTIVE')
   cases=[]
   # Keep an actual WAL writer open: the generation-pinned read path and
   # existing EPG worker must remain independently usable. This is a WAL
@@ -47,8 +77,22 @@ def run(portal,pump,capture,check):
     until(lambda:nav._highlight['channels']==136,'GROUP90_LAST_PAGE_WRONG_POSITION')
     expected=str(group*1000+137);xbmc.executebuiltin('Action(Select)',wait=False)
     # Ownership deliberately accepts the previous verified session during a
-    # native tune. Require the new C++ item tag before declaring the zap done.
-    until(lambda:nav.sid==expected and nav.mode=='hidden' and nav.owns_playback() and native_sid90()==expected,'GROUP90_WRONG_STATION')
+    # native tune. Require the new C++ item tag AND actual restored input owner
+    # before sending the next IR action. The service may legitimately show
+    # its information bar after releasing the standard OSD; both use capture.
+    # Kodi publishes the new C++ item tag before opening its native BusyDialog
+    # and before AVStarted. A key sent in that interval is legitimately eaten
+    # by the player transition. Require a short continuous real GUI/AV-ready
+    # interval, not just the early item announcement; the 12s bound is intact.
+    ready_since90=None
+    def tuned90():
+     nonlocal ready_since90
+     busy90=any(xbmc.getCondVisibility('Window.IsVisible('+str(cid90)+')') for cid90 in (10138,10160))
+     ready90=(nav.sid==expected and nav.owns_playback() and native_sid90()==expected and active90() and nav.getFocusId()==nav.capture.getId() and not busy90 and xbmc.Player().isPlayingVideo() and xbmc.Player().getTime()>.2)
+     if not ready90:ready_since90=None;return False
+     if ready_since90 is None:ready_since90=time.monotonic()
+     return time.monotonic()-ready_since90>=.3
+    until(tuned90,'GROUP90_WRONG_STATION')
     tag=json.loads(xbmc.Player().getVideoInfoTag().getUniqueID('xcmate_live'));check(tag['sid']==expected,'GROUP90_PLAYER_TAG_MISMATCH')
     cases.append(dict(group=group,total=137,last_index=136,correct_sid=True,native_video=True))
    screenshot,_=capture('visible84-groups90-native')

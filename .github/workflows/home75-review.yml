@@ -4,6 +4,12 @@ on:
     branches: [main]
     paths: ['src/plugin.video.xtreammate/**', 'tests/**', 'tools/**', '.github/workflows/**']
   workflow_dispatch:
+    inputs:
+      mode:
+        description: Full includes the 30-minute DB pause; initial-home diagnoses startup without that pause
+        type: choice
+        options: [full, initial-home]
+        default: full
 permissions:
   contents: read
 concurrency:
@@ -11,6 +17,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   native75:
+    name: native75 (${{ matrix.resolution }}, ${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'full' }})
     runs-on: ubuntu-latest
     timeout-minutes: 50
     strategy:
@@ -36,7 +43,12 @@ jobs:
             sudo apt-get install -y ffmpeg
           fi
       - name: Receiver gates, full bleed Hero, initial rows and actual detail playback
-        run: python tools/run_kodi_home82_contract.py --report-dir "${{ runner.temp }}/native75" --resolution "${{ matrix.resolution }}" --fault-idle-seconds "${{ matrix.fault_seconds }}"
+        env:
+          INITIAL_HOME_ONLY: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'initial-home' }}
+        run: |
+          fault_seconds="${{ matrix.fault_seconds }}"
+          if [ "$INITIAL_HOME_ONLY" = "true" ]; then fault_seconds=0; fi
+          python tools/run_kodi_home82_contract.py --report-dir "${{ runner.temp }}/native75" --resolution "${{ matrix.resolution }}" --fault-idle-seconds "$fault_seconds"
       - name: .75 code and preservation regressions
         run: |
           python -m unittest discover -s tests -p '*02975.py' -v
@@ -55,6 +67,7 @@ jobs:
           candidate_version="$(python -c 'import xml.etree.ElementTree as E; print(E.parse("src/plugin.video.xtreammate/addon.xml").getroot().get("version"))')"
           candidate_folder="media-spinner"
           if [ "$candidate_version" = "0.1.29.91" ]; then candidate_folder="02991"; fi
+          if [ "$candidate_version" = "0.1.29.92" ]; then candidate_folder="02992"; fi
           cmp "${{ runner.temp }}/package75/plugin.video.xtreammate-$candidate_version.zip" "docs/XCMate/test-builds/$candidate_folder/plugin.video.xtreammate-$candidate_version.zip"
           python tools/release_channel75.py
       - uses: actions/upload-artifact@v4
@@ -68,6 +81,7 @@ jobs:
             ${{ runner.temp }}/native75/restart*.log
             ${{ runner.temp }}/native75/post75-error.txt
             ${{ runner.temp }}/native75/gui-error.txt
+            ${{ runner.temp }}/native75/vod80-native-kodi-tail.log
           retention-days: 30
 
   native-media77:

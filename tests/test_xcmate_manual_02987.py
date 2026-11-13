@@ -34,7 +34,7 @@ class Manual87(Fixture,unittest.TestCase):
   self.assertEqual(self.m.path().read_bytes(),before);self.assertFalse(list(self.folder.glob('.manual85-*')))
  def test_real_storage_failure_is_not_user_cancel_and_preserves_mapping(self):
   self.m.set_mapping(self.event,self.candidate);before=self.m.path().read_bytes()
-  with mock.patch.object(self.q,'authoritative',return_value=self.event),mock.patch('work_search86.details',return_value=self.candidate),mock.patch('import_budget.check_space',side_effect=OSError('private storage detail')):
+  with mock.patch.object(self.q,'authoritative',return_value=self.event),mock.patch('work_search86.details',return_value=self.candidate),mock.patch('storage_metadata92.check',side_effect=OSError('private storage detail')):
    nonce=self.q.request(self.event,'save',candidate=self.candidate);self.q.drain()
   self.assertEqual(self.q.result(nonce)['code'],'PERSISTENCE_BLOCKED');self.assertEqual(self.m.path().read_bytes(),before)
   self.assertNotIn('private storage detail',json.dumps(self.q.result(nonce)))

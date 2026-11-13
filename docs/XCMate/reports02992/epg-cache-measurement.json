@@ -1,0 +1,30 @@
+{
+  "platform": "SYNTHETIC_LINUX_FILES_NOT_ANDROID",
+  "channels": 3357,
+  "description_chars": 4096,
+  "events_per_channel_before": 30,
+  "short_ms": 84.981,
+  "records": [
+    {
+      "model": "full_duplicate_91_model",
+      "programmes": 100710,
+      "bytes": 430309249,
+      "allocated": 430309376,
+      "json_ms": 3022.145
+    },
+    {
+      "model": "short_92",
+      "programmes": 6714,
+      "bytes": 4651720,
+      "allocated": 4653056,
+      "json_ms": 12.329
+    }
+  ],
+  "now_next_preserved": true,
+  "original_full_descriptions_preserved": true,
+  "guide_database": "UNCHANGED_BY_MEASUREMENT",
+  "rss_peak_kib": 872388,
+  "production_source_commit": "6c52b6e08b78b889b014707a6325876632c89e2b",
+  "android": "ANDROID_NOT_TESTED",
+  "note": "Actual disposable-file sizes using the same JSON cache envelope. This is not measured existing Android space recovery."
+}

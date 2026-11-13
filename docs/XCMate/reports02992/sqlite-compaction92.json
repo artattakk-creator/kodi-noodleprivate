@@ -1,0 +1,31 @@
+{
+  "production_source_commit": "cb8d297cd96bf9ea66bedf122292b88b8326b939",
+  "platform": "REAL_SQLITE_ON_SYNTHETIC_LINUX_FILES",
+  "android": "ANDROID_NOT_TESTED",
+  "cases": [
+    {
+      "test": "test_incremental_compaction_is_only_used_on_incremental_databases",
+      "status": "PASS_AFTER_ALL_ASSERTIONS",
+      "main_bytes_before": 1671168,
+      "main_bytes_after": 1146880,
+      "code": "VERIFIED_RETENTION",
+      "rows": 1600,
+      "physical_bytes_before": 1671168,
+      "physical_bytes_after": 1146880,
+      "observed_file_delta": 524288,
+      "full_vacuum": "NOT_RUN"
+    },
+    {
+      "test": "test_retention_never_unlinks_live_wal_or_forces_vacuum",
+      "status": "PASS_AFTER_ALL_ASSERTIONS",
+      "main_bytes_before": 1671168,
+      "main_bytes_after": 1671168,
+      "code": "WAL_BUSY",
+      "rows": 50,
+      "physical_bytes_before": 1671168,
+      "physical_bytes_after": 1782440,
+      "observed_file_delta": -111272,
+      "full_vacuum": "NOT_RUN"
+    }
+  ]
+}

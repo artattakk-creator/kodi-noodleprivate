@@ -1,0 +1,313 @@
+{
+  "version": "0.1.29.92",
+  "state": "DONE",
+  "at": 1794565013.7228267,
+  "free_before": 2446802944,
+  "inventory_before": {
+    "at": 1794565013.7182066,
+    "categories": [
+      {
+        "category": "NORMALIZED_CACHE",
+        "own": true,
+        "files": 2,
+        "bytes": 16777233,
+        "allocated_bytes": 16781312,
+        "complete": true,
+        "volume": {
+          "role": "NORMALIZED_CACHE",
+          "volume": "86e5014965866131",
+          "mount_key": "b7cf7ec0de94151e",
+          "fs": "tmpfs",
+          "total": 5226229760,
+          "available": 2446802944,
+          "free": 2446802944,
+          "reserve": 1073741824
+        }
+      },
+      {
+        "category": "COVERS",
+        "own": true,
+        "files": 0,
+        "bytes": 0,
+        "allocated_bytes": 0,
+        "complete": true,
+        "volume": {
+          "role": "COVERS",
+          "volume": "86e5014965866131",
+          "mount_key": "b7cf7ec0de94151e",
+          "fs": "tmpfs",
+          "total": 5226229760,
+          "available": 2446802944,
+          "free": 2446802944,
+          "reserve": 1073741824
+        }
+      },
+      {
+        "category": "PROGRAMME_EXTERNAL",
+        "own": true,
+        "files": 0,
+        "bytes": 0,
+        "allocated_bytes": 0,
+        "complete": true,
+        "volume": {
+          "role": "PROGRAMME_EXTERNAL",
+          "volume": "86e5014965866131",
+          "mount_key": "b7cf7ec0de94151e",
+          "fs": "tmpfs",
+          "total": 5226229760,
+          "available": 2446802944,
+          "free": 2446802944,
+          "reserve": 1073741824
+        }
+      },
+      {
+        "category": "PROGRAMME_IMAGES",
+        "own": true,
+        "files": 0,
+        "bytes": 0,
+        "allocated_bytes": 0,
+        "complete": true,
+        "volume": {
+          "role": "PROGRAMME_IMAGES",
+          "volume": "86e5014965866131",
+          "mount_key": "b7cf7ec0de94151e",
+          "fs": "tmpfs",
+          "total": 5226229760,
+          "available": 2446802944,
+          "free": 2446802944,
+          "reserve": 1073741824
+        }
+      },
+      {
+        "category": "LOGOS",
+        "own": true,
+        "files": 0,
+        "bytes": 0,
+        "allocated_bytes": 0,
+        "complete": true,
+        "volume": {
+          "role": "LOGOS",
+          "volume": "86e5014965866131",
+          "mount_key": "b7cf7ec0de94151e",
+          "fs": "tmpfs",
+          "total": 5226229760,
+          "available": 2446802944,
+          "free": 2446802944,
+          "reserve": 1073741824
+        }
+      },
+      {
+        "category": "TEMP_ARTWORK",
+        "own": true,
+        "files": 0,
+        "bytes": 0,
+        "allocated_bytes": 0,
+        "complete": true,
+        "volume": {
+          "role": "TEMP_ARTWORK",
+          "volume": "86e5014965866131",
+          "mount_key": "b7cf7ec0de94151e",
+          "fs": "tmpfs",
+          "total": 5226229760,
+          "available": 2446802944,
+          "free": 2446802944,
+          "reserve": 1073741824
+        }
+      },
+      {
+        "category": "GUIDE_BACKUPS",
+        "own": true,
+        "files": 0,
+        "bytes": 0,
+        "allocated_bytes": 0,
+        "complete": true,
+        "volume": {
+          "role": "GUIDE_BACKUPS",
+          "volume": "86e5014965866131",
+          "mount_key": "b7cf7ec0de94151e",
+          "fs": "tmpfs",
+          "total": 5226229760,
+          "available": 2446802944,
+          "free": 2446802944,
+          "reserve": 1073741824
+        }
+      },
+      {
+        "category": "RESTORE_PLANS",
+        "own": true,
+        "files": 0,
+        "bytes": 0,
+        "allocated_bytes": 0,
+        "complete": true,
+        "volume": {
+          "role": "RESTORE_PLANS",
+          "volume": "86e5014965866131",
+          "mount_key": "b7cf7ec0de94151e",
+          "fs": "tmpfs",
+          "total": 5226229760,
+          "available": 2446802944,
+          "free": 2446802944,
+          "reserve": 1073741824
+        }
+      },
+      {
+        "category": "EPG_DB",
+        "own": true,
+        "files": 0,
+        "bytes": 0,
+        "allocated_bytes": 0,
+        "complete": true,
+        "volume": {
+          "role": "EPG_DB",
+          "volume": "86e5014965866131",
+          "mount_key": "b7cf7ec0de94151e",
+          "fs": "tmpfs",
+          "total": 5226229760,
+          "available": 2446802944,
+          "free": 2446802944,
+          "reserve": 1073741824
+        },
+        "wal_bytes": 0,
+        "shm_bytes": 0
+      },
+      {
+        "category": "EPG_METADATA",
+        "own": true,
+        "files": 0,
+        "bytes": 0,
+        "allocated_bytes": 0,
+        "complete": true,
+        "volume": {
+          "role": "EPG_METADATA",
+          "volume": "86e5014965866131",
+          "mount_key": "b7cf7ec0de94151e",
+          "fs": "tmpfs",
+          "total": 5226229760,
+          "available": 2446802944,
+          "free": 2446802944,
+          "reserve": 1073741824
+        },
+        "wal_bytes": 0,
+        "shm_bytes": 0
+      },
+      {
+        "category": "PROGRAMME_DB",
+        "own": true,
+        "files": 0,
+        "bytes": 0,
+        "allocated_bytes": 0,
+        "complete": true,
+        "volume": {
+          "role": "PROGRAMME_DB",
+          "volume": "86e5014965866131",
+          "mount_key": "b7cf7ec0de94151e",
+          "fs": "tmpfs",
+          "total": 5226229760,
+          "available": 2446802944,
+          "free": 2446802944,
+          "reserve": 1073741824
+        },
+        "wal_bytes": 0,
+        "shm_bytes": 0
+      },
+      {
+        "category": "MIGRATION_JOURNAL",
+        "own": true,
+        "files": 0,
+        "bytes": 0,
+        "allocated_bytes": 0,
+        "complete": true,
+        "volume": {
+          "role": "MIGRATION_JOURNAL",
+          "volume": "86e5014965866131",
+          "mount_key": "b7cf7ec0de94151e",
+          "fs": "tmpfs",
+          "total": 5226229760,
+          "available": 2446802944,
+          "free": 2446802944,
+          "reserve": 1073741824
+        },
+        "wal_bytes": 0,
+        "shm_bytes": 0
+      },
+      {
+        "category": "KODI_THUMBNAILS",
+        "own": false,
+        "files": 0,
+        "bytes": 0,
+        "allocated_bytes": 0,
+        "complete": true,
+        "volume": {
+          "role": "KODI_THUMBNAILS",
+          "error": "VOLUME_UNAVAILABLE"
+        }
+      },
+      {
+        "category": "KODI_DATABASES",
+        "own": false,
+        "files": 0,
+        "bytes": 0,
+        "allocated_bytes": 0,
+        "complete": true,
+        "volume": {
+          "role": "KODI_DATABASES",
+          "error": "VOLUME_UNAVAILABLE"
+        }
+      },
+      {
+        "category": "KODI_PACKAGES",
+        "own": false,
+        "files": 0,
+        "bytes": 0,
+        "allocated_bytes": 0,
+        "complete": true,
+        "volume": {
+          "role": "KODI_PACKAGES",
+          "error": "VOLUME_UNAVAILABLE"
+        }
+      },
+      {
+        "category": "KODI_TEMP",
+        "own": false,
+        "files": 0,
+        "bytes": 0,
+        "allocated_bytes": 0,
+        "complete": true,
+        "volume": {
+          "role": "KODI_TEMP",
+          "error": "VOLUME_UNAVAILABLE"
+        }
+      }
+    ],
+    "measurement": "READ_ONLY_NO_ANDROID_QUOTA_ASSUMPTION",
+    "android": "ANDROID_NOT_TESTED"
+  },
+  "temp": {
+    "files": 1,
+    "bytes": 16777216
+  },
+  "databases": [
+    {
+      "category": "guide_v1.sqlite",
+      "code": "NOT_CREATED",
+      "rows": 0
+    },
+    {
+      "category": "programme_meta46.sqlite",
+      "code": "NOT_CREATED",
+      "rows": 0
+    },
+    {
+      "category": "programme_artwork.sqlite",
+      "code": "NOT_CREATED",
+      "rows": 0
+    }
+  ],
+  "free_after": 2463571968,
+  "artwork_orphans": "OPEN_REFERENCE_PROOF_REQUIRED",
+  "kodi_cache": "PROTECTED",
+  "fallback90": "PROTECTED",
+  "observed_free_change": 16769024,
+  "evidence": "LINUX_HOST_SYNTHETIC_OLD_OWN_TEMP_NOT_ANDROID",
+  "protected_file_preserved": true
+}

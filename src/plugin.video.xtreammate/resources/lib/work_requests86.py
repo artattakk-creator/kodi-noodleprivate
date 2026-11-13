@@ -62,7 +62,7 @@ def mapping_commit90(*args,**options):
  # A local profile-write lease is not a network timeout. Keep the same .2s
  # writer budget and the prior durable record on failure.
  try:return __import__('programme_mapping85').set_mapping(*args,**options)
- except TimeoutError:raise SourceError('PERSISTENCE_BLOCKED') from None
+ except TimeoutError:raise SourceError('PROFILE_BUSY') from None
 
 def save(event,options,expected,cancel=lambda:False):
  current=authoritative(event,expected)
@@ -125,12 +125,14 @@ def _drain89(cancelled_service=lambda:False):
     win.setProperty(manual_slot(event['pid'],event['media_kind86']),nonce)
    win.setProperty(RESULT,json.dumps(dict(value,nonce=nonce,binding=data['binding']),separators=(',',':')))
    __import__('work_trace87').mark(nonce,'DELIVERED')
- except (SourceError,OSError,TimeoutError,ValueError,TypeError,AttributeError) as error:
+ except (SourceError,OSError,TimeoutError,ValueError,TypeError,AttributeError,__import__('sqlite3').Error) as error:
   __import__('art_trace81').note(event or {},'MATCH_REJECTED',getattr(error,'code','SAVE_BLOCKED'))
   code=getattr(error,'code','PERSISTENCE_BLOCKED' if isinstance(error,OSError) else 'CANDIDATES_REJECTED')
   if isinstance(error,OSError) and str(error)=='MANUAL_READBACK':code='READBACK_FAILED'
   if isinstance(error,TimeoutError) or code in ('TIMEOUT','HTTP_TIMEOUT') or code=='CANCELLED' and time.monotonic()>=locals().get('deadline',float('inf')):code='NETWORK_TIMEOUT'
-  if code in ('DISK_FULL','SPACE_FULL','DB_BUSY','XM-ARTWORK-DB-PAUSED'):code='PERSISTENCE_BLOCKED'
+  if isinstance(error,__import__('sqlite3').Error):code='SQLITE_BUSY' if (getattr(error,'sqlite_errorcode',0)&255) in (5,6) else 'PERSISTENCE_BLOCKED'
+  if isinstance(error,PermissionError):code='WRITE_DENIED'
+  if code in ('DB_BUSY','XM-ARTWORK-DB-PAUSED'):code='SQLITE_BUSY'
   if code in ('RESEARCH_BUSY','WORKER_QUEUE_FULL'):code='WORKER_BUSY'
   if nonce and not cancelled(nonce):win.setProperty(RESULT,json.dumps(dict(nonce=nonce,code=code,rows=[])))
 

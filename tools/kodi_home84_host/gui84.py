@@ -126,6 +126,11 @@ for activation90 in range(600):
  pump();xbmc.sleep(100)
  phase90=json.loads(home.getProperty('XCMate.Home78.Activation') or '{}').get('phase')
  if phase90=='RUNTIME_READY':break
+ # Activation is a process-local repair receipt, not a persistent startup
+ # requirement. On a cold start an already installed, unchanged skin needs
+ # no repair/request. Verify the six actual native controls and Ready variable
+ # in that case; all following list/pixel/navigation gates still run.
+ if cold and phase90 is None and __import__('widget_skin78').runtime().get('code')=='RUNTIME_READY':break
 else:raise RuntimeError(('NATIVE90_ACTIVATION_NOT_READY',phase90))
 home=xbmcgui.Window(10000)
 cases=[]

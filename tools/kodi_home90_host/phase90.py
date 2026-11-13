@@ -69,6 +69,11 @@ def run(portal,rows,pump,capture,cold,check,home,early_logo,early_epg):
   pump();elapsed=time.monotonic()-started
   if interval<20 and elapsed>=interval*40:
    cid=(2510,2520,2530)[interval%3];home.setFocusId(cid);home.getControl(cid).selectItem(interval%5);interval+=1
+   # Omega setFocusId uses SendThreadMessage; getFocusId reads the last
+   # applied GUI state. Await that single request, never reissue/refocus.
+   focus_until92=time.monotonic()+.5
+   while xbmcgui.getCurrentWindowId()==10000 and home.getFocusId()!=cid and time.monotonic()<focus_until92:
+    pump();xbmc.sleep(20)
    check(xbmcgui.getCurrentWindowId()==10000 and home.getFocusId()==cid,('START90_HOME_FOCUS_LOST',cid,home.getFocusId()))
   if not samples or elapsed>=(450 if len(samples)==1 else 899):
    from PIL import Image

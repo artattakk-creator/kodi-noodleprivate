@@ -7,6 +7,15 @@ def rpc(method,params=None):
  with opener.open(request,timeout=30) as response:data=json.load(response)
  if 'error' in data:raise RuntimeError(str(data['error']))
  return data['result']
+
+def pids90():
+ result=set()
+ for path in Path('/proc').iterdir():
+  if not path.name.isdigit():continue
+  try:command=(path/'cmdline').read_bytes().split(b'\0')[0]
+  except OSError:continue
+  if command==b'/usr/lib/x86_64-linux-gnu/kodi/kodi.bin':result.add(path.name)
+ return result
 for _ in range(150):
  try:rpc('JSONRPC.Ping');break
  except Exception:time.sleep(.2)
@@ -14,12 +23,19 @@ else:raise RuntimeError('PICKER90_KODI_NOT_STARTED')
 state=rpc('GUI.GetProperties',dict(properties=['currentwindow','currentcontrol']))
 if state['currentwindow']['id']==10100 and state['currentcontrol']['label']=='No':rpc('Input.Select')
 for addon in ('script.module.unidecode','script.module.simpleeval','plugin.video.xtreammate','script.skinshortcuts','skin.titan.bingie.mod','script.xcmate.picker90','plugin.video.themoviedb.helper','plugin.audio.m3sr2019'):rpc('Addons.SetAddonEnabled',dict(addonid=addon,enabled=True))
-assert rpc('Settings.SetSettingValue',dict(setting='audiooutput.audiodevice',value='PULSE:Default'))
+assert rpc('Settings.SetSettingValue',dict(setting='audiooutput.audiodevice',value='PULSE:xcmate_native'))
 assert rpc('Settings.SetSettingValue',dict(setting='lookandfeel.skin',value='skin.titan.bingie.mod'))
-rpc('Application.Quit');time.sleep(3)
+initial90=pids90();assert initial90,'PICKER90_INITIAL_PROCESS_MISSING'
+try:rpc('Application.Quit')
+except OSError:pass  # The requested shutdown may close this response socket.
 for _ in range(200):
- try:rpc('JSONRPC.Ping');break
+ # A ping can still reach the old server while it is shutting down. Require
+ # actual process replacement, as in the three later cold cycles below.
+ if pids90().intersection(initial90):time.sleep(.2);continue
+ try:
+  assert pids90();rpc('JSONRPC.Ping');break
  except Exception:time.sleep(.2)
+else:raise RuntimeError('PICKER90_INITIAL_PROCESS_NOT_REPLACED')
 rpc('GUI.ActivateWindow',dict(window='home'));time.sleep(2)
 state=rpc('GUI.GetProperties',dict(properties=['currentwindow','currentcontrol']))
 print('PICKER90_INITIAL_WINDOW '+json.dumps(state),flush=True)
@@ -32,15 +48,6 @@ for _ in range(4800):
   report=json.loads(Path('/root/picker90.json').read_text(encoding='utf-8'));assert report['status']=='PASS';print(json.dumps(report));break
  time.sleep(.1)
 else:raise RuntimeError('PICKER90_NATIVE_TIMEOUT')
-
-def pids90():
- result=set()
- for path in Path('/proc').iterdir():
-  if not path.name.isdigit():continue
-  try:command=(path/'cmdline').read_bytes().split(b'\0')[0]
-  except OSError:continue
-  if command==b'/usr/lib/x86_64-linux-gnu/kodi/kodi.bin':result.add(path.name)
- return result
 
 cold90=[]
 for cycle90 in range(1,4):

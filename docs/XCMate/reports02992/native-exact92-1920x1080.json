@@ -1,0 +1,503 @@
+{
+  "status": "PASS",
+  "platform": "REAL_LINUX_KODI_21_2_SYNTHETIC_SOURCES",
+  "resolution": "1920x1080",
+  "run_id": 43441528517,
+  "artifact_id": 14046820770,
+  "package": {
+    "version": "0.1.29.92",
+    "sha256": "1db07f87e1f1e84581868c1acced91a89017c332fc934caade7f785ffd88f3b4",
+    "bytes": 4697322,
+    "files": 867,
+    "crc": "PASS",
+    "source_bytes": "PASS",
+    "source_commit": "4152c7f4b13fddad4735aa93488d680bc4f9d3c4",
+    "installed_version": "0.1.29.92",
+    "unchanged_installed_nonmanifest_files": 866,
+    "fixture_manifest_adapted": true,
+    "fixture_service_disabled": true,
+    "fixture_plugin_entry": true,
+    "android": "ANDROID_NOT_TESTED",
+    "production_source_commit": "c9b6bdf673f43331157e0a610ee4e78fb7dc2e96"
+  },
+  "cycles": [
+    {
+      "cycle": 0,
+      "status": "PASS",
+      "native_cases": [
+        {
+          "kind": "live",
+          "control": 1510,
+          "rows": 88,
+          "pixels": 5184,
+          "screenshot": "picker90-home-0-live.png"
+        },
+        {
+          "kind": "vod",
+          "control": 1520,
+          "rows": 24,
+          "pixels": 43200,
+          "screenshot": "picker90-home-0-vod.png"
+        },
+        {
+          "kind": "series",
+          "control": 1530,
+          "rows": 24,
+          "pixels": 43200,
+          "screenshot": "picker90-home-0-series.png"
+        }
+      ],
+      "foreign_definitions": 3,
+      "source_timings_ms": {
+        "cinema": {
+          "started_ms": 267,
+          "ready_ms": 3029
+        },
+        "disney": {
+          "started_ms": 3029,
+          "ready_ms": 4055
+        },
+        "trend": {
+          "started_ms": 4055,
+          "ready_ms": 5118
+        },
+        "mp3": {
+          "started_ms": 5118,
+          "ready_ms": 6889
+        }
+      },
+      "extra_rows": [
+        {
+          "kind": "cinema",
+          "title": "Im Kino",
+          "target": "videos",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 129600
+        },
+        {
+          "kind": "disney",
+          "title": "Disney",
+          "target": "videos",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 231840
+        },
+        {
+          "kind": "trend",
+          "title": "Diese Woche im Trend",
+          "target": "videos",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 231840
+        },
+        {
+          "kind": "mp3",
+          "title": "MP3s",
+          "target": "music",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 129600
+        }
+      ],
+      "source_status": "PASS"
+    },
+    {
+      "cycle": 1,
+      "status": "PASS",
+      "native_cases": [
+        {
+          "kind": "live",
+          "control": 1510,
+          "rows": 88,
+          "pixels": 5184,
+          "screenshot": "picker90-home-1-live.png"
+        },
+        {
+          "kind": "vod",
+          "control": 1520,
+          "rows": 24,
+          "pixels": 43200,
+          "screenshot": "picker90-home-1-vod.png"
+        },
+        {
+          "kind": "series",
+          "control": 1530,
+          "rows": 24,
+          "pixels": 43200,
+          "screenshot": "picker90-home-1-series.png"
+        }
+      ],
+      "foreign_definitions": 3,
+      "source_timings_ms": {
+        "cinema": {
+          "started_ms": 230,
+          "ready_ms": 985
+        },
+        "disney": {
+          "started_ms": 985,
+          "ready_ms": 2275
+        },
+        "trend": {
+          "started_ms": 2275,
+          "ready_ms": 3459
+        },
+        "mp3": {
+          "started_ms": 3459,
+          "ready_ms": 4767
+        }
+      },
+      "extra_rows": [
+        {
+          "kind": "cinema",
+          "title": "Im Kino",
+          "target": "videos",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 129600
+        },
+        {
+          "kind": "disney",
+          "title": "Disney",
+          "target": "videos",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 231840
+        },
+        {
+          "kind": "trend",
+          "title": "Diese Woche im Trend",
+          "target": "videos",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 231840
+        },
+        {
+          "kind": "mp3",
+          "title": "MP3s",
+          "target": "music",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 129600
+        }
+      ],
+      "source_status": "PASS"
+    },
+    {
+      "cycle": 2,
+      "status": "PASS",
+      "native_cases": [
+        {
+          "kind": "live",
+          "control": 1510,
+          "rows": 88,
+          "pixels": 5184,
+          "screenshot": "picker90-home-2-live.png"
+        },
+        {
+          "kind": "vod",
+          "control": 1520,
+          "rows": 24,
+          "pixels": 43200,
+          "screenshot": "picker90-home-2-vod.png"
+        },
+        {
+          "kind": "series",
+          "control": 1530,
+          "rows": 24,
+          "pixels": 43200,
+          "screenshot": "picker90-home-2-series.png"
+        }
+      ],
+      "foreign_definitions": 3,
+      "source_timings_ms": {
+        "cinema": {
+          "started_ms": 221,
+          "ready_ms": 1225
+        },
+        "disney": {
+          "started_ms": 1225,
+          "ready_ms": 2272
+        },
+        "trend": {
+          "started_ms": 2272,
+          "ready_ms": 3816
+        },
+        "mp3": {
+          "started_ms": 3816,
+          "ready_ms": 5036
+        }
+      },
+      "extra_rows": [
+        {
+          "kind": "cinema",
+          "title": "Im Kino",
+          "target": "videos",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 129600
+        },
+        {
+          "kind": "disney",
+          "title": "Disney",
+          "target": "videos",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 231840
+        },
+        {
+          "kind": "trend",
+          "title": "Diese Woche im Trend",
+          "target": "videos",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 231840
+        },
+        {
+          "kind": "mp3",
+          "title": "MP3s",
+          "target": "music",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 129600
+        }
+      ],
+      "source_status": "PASS"
+    },
+    {
+      "cycle": 3,
+      "status": "PASS",
+      "native_cases": [
+        {
+          "kind": "live",
+          "control": 1510,
+          "rows": 88,
+          "pixels": 5184,
+          "screenshot": "picker90-home-3-live.png"
+        },
+        {
+          "kind": "vod",
+          "control": 1520,
+          "rows": 24,
+          "pixels": 43200,
+          "screenshot": "picker90-home-3-vod.png"
+        },
+        {
+          "kind": "series",
+          "control": 1530,
+          "rows": 24,
+          "pixels": 43200,
+          "screenshot": "picker90-home-3-series.png"
+        }
+      ],
+      "foreign_definitions": 3,
+      "source_timings_ms": {
+        "cinema": {
+          "started_ms": 160,
+          "ready_ms": 1214
+        },
+        "disney": {
+          "started_ms": 1214,
+          "ready_ms": 2470
+        },
+        "trend": {
+          "started_ms": 2470,
+          "ready_ms": 3342
+        },
+        "mp3": {
+          "started_ms": 3342,
+          "ready_ms": 4130
+        }
+      },
+      "extra_rows": [
+        {
+          "kind": "cinema",
+          "title": "Im Kino",
+          "target": "videos",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 129600
+        },
+        {
+          "kind": "disney",
+          "title": "Disney",
+          "target": "videos",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 231840
+        },
+        {
+          "kind": "trend",
+          "title": "Diese Woche im Trend",
+          "target": "videos",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 231840
+        },
+        {
+          "kind": "mp3",
+          "title": "MP3s",
+          "target": "music",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 129600
+        }
+      ],
+      "source_status": "PASS"
+    }
+  ],
+  "groups": {
+    "status": "PASS",
+    "native_groups": 20,
+    "native_station_changes": 20,
+    "catalogue_rows": 2740,
+    "page_size": 100,
+    "wal_writer_held": true,
+    "cases": [
+      {
+        "group": 0,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 1,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 2,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 3,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 4,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 5,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 6,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 7,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 8,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 9,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 10,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 11,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 12,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 13,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 14,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 15,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 16,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 17,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 18,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 19,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      }
+    ],
+    "screenshot": "visible84-groups90-native.png",
+    "android": "ANDROID_NOT_TESTED"
+  },
+  "native_cold_restarts": 3,
+  "android": "ANDROID_NOT_TESTED"
+}

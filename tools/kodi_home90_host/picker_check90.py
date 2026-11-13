@@ -7,6 +7,14 @@ from pathlib import Path
 import xbmc,xbmcgui
 from PIL import Image
 
+def write_receipt90(path,report):
+ # Native supervisor runs concurrently. Publish the complete fixture result
+ # atomically so exists() cannot expose an empty/partial JSON document.
+ # Disposable test data only; all renderer/PCM/ownership assertions precede it.
+ path=Path(path);temporary=path.with_name(path.name+'.writing')
+ temporary.write_text(json.dumps(report,indent=2),encoding='utf-8')
+ temporary.replace(path)
+
 def home_position90(labels):
  positions=[i for i,label in enumerate(labels) if label.strip().casefold() in ('home','startseite')]
  if len(positions)!=1:raise RuntimeError(('PICKER90_HOME_MENU_NOT_UNIQUE',labels))
@@ -228,9 +236,28 @@ def check90(cycle,errors):
   check(home.getFocusId()==cid,('PICKER90_NATIVE_FOCUS_LOST',kind,home.getFocusId(),home.getProperty('XCMate.Home78.Activation')))
   cases.append(dict(kind=kind,control=cid,rows=total,pixels=pixels,screenshot=picture.name))
  spinners438=spinner_receipts438(home,bindings) if cycle==0 and hasattr(__import__('widget_skin90'),'media_spinners') else []
+ # Run the actual native groups/IR contract early as well as in the long
+ # retention rig. Fast feedback must not remove its 20x137/paging assertions.
+ groups92=None
+ if cycle==0:
+  import library_index
+  groups92_data=[dict(category_id=str(i),category_name='Native group '+str(i)) for i in range(20)]
+  streams92=[dict(stream_id=str(i*1000+j+1),category_id=str(i),name='Native station '+str(j)) for i in range(20) for j in range(137)]
+  library_index.replace_catalog('navigation90','live',streams92,groups92_data)
+  def group_capture92(name):
+   picture=Path('/root/'+name+'.png');xbmc.executebuiltin('TakeScreenshot('+str(picture)+')',wait=False)
+   for _ in range(100):
+    xbmc.sleep(50)
+    try:
+     with Image.open(picture) as frame:frame.load();rgb=frame.convert('RGB').resize((1920,1080))
+     return picture,rgb
+    except (OSError,ValueError):continue
+   raise RuntimeError('GROUP92_SCREENSHOT_INCOMPLETE')
+  portals92=__import__('portals').get_active();check(bool(portals92),'GROUP92_FIXTURE_NO_PORTAL')
+  groups92=__import__('groups90').run(portals92[0],service_poll90,group_capture92,check)
  six438=__import__('six_rows438').run(home,bindings,spinner_receipts438,service_poll90,cycle=cycle)
  rows=ast.literal_eval(props.read_text(encoding='utf-8'));foreign=[r for r in rows if r[2].startswith('widgetPath') and 'plugin://script.skin.helper.widgets/' in r[3]]
  check(len(foreign)>=2 and foreign==before['foreign_paths'],'PICKER90_FOREIGN_DEFINITIONS_CHANGED')
  check(hashlib.sha256(props.read_bytes()).hexdigest()==before['properties_sha256'],'PICKER90_NATIVE_REFRESH_CHANGED_PROPERTIES')
- report=dict(status='PASS',cycle=cycle,native_cases=cases,native_spinner438=spinners438,six_rows438=six438,foreign_definitions=len(foreign),properties_sha256=before['properties_sha256'],original_compiler_sha256=hashlib.sha256(tree.read_bytes()).hexdigest(),android='ANDROID_NOT_TESTED')
- Path('/root/picker90-cold-'+str(cycle)+'.json').write_text(json.dumps(report,indent=2));print('PICKER90_COLD '+json.dumps(report),flush=True);return report
+ report=dict(status='PASS',cycle=cycle,groups92=groups92,native_cases=cases,native_spinner438=spinners438,six_rows438=six438,foreign_definitions=len(foreign),properties_sha256=before['properties_sha256'],original_compiler_sha256=hashlib.sha256(tree.read_bytes()).hexdigest(),android='ANDROID_NOT_TESTED')
+ write_receipt90('/root/picker90-cold-'+str(cycle)+'.json',report);print('PICKER90_COLD '+json.dumps(report),flush=True);return report

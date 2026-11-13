@@ -258,8 +258,8 @@ class Migration83(unittest.TestCase):
 
     def test_internal_journal_reserve_has_its_own_code(self):
         from import_budget import ReserveBlocked
-        with mock.patch('import_budget.check_space',side_effect=ReserveBlocked(1,32*1024**2,65536)):
-            with self.assertRaisesRegex(self.fail,'ARTWORK_JOURNAL_RESERVE_BLOCKED'):self.m._db()
+        with mock.patch('storage_metadata92.check',side_effect=self.fail('RESERVE_BLOCKED')):
+            with self.assertRaisesRegex(self.fail,'RESERVE_BLOCKED'):self.m._db()
 
     def test_journal_busy_is_bounded_specific_and_can_resume(self):
         self.fixture.seed(2);self.m.begin(self.target)

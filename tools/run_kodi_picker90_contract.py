@@ -10,7 +10,7 @@ def main():
  root=Path(__file__).resolve().parents[1];report=a.report_dir.resolve();report.mkdir(parents=True,exist_ok=True);archive=report/'skin.zip'
  addon_source=root/'src/plugin.video.xtreammate'
  if a.addon_zip:
-  from release_candidate91 import inspect_package
+  from release_candidate92 import inspect_package
   proof=inspect_package(a.addon_zip)
   unpacked=report/'verified-addon91'
   unpacked.mkdir()
@@ -36,12 +36,27 @@ def main():
 pulseaudio --system --daemonize=yes --exit-idle-time=-1 --load="module-native-protocol-unix socket=/tmp/xcmate-native-pulse.sock auth-anonymous=1" --load="module-null-sink sink_name=xcmate_native" --log-target=file:/tmp/xcmate-native-pulse.log
 export PULSE_SERVER=unix:/tmp/xcmate-native-pulse.sock
 pactl set-default-sink xcmate_native
+python3 - <<'PULSE_NATIVE92'
+import subprocess,json
+from pathlib import Path
+before=subprocess.check_output(['pactl','list','short','modules'],text=True)
+# No hardware power management is being tested in this disposable PCM sink.
+# Keep the real clock active instead of racing Pulse's idle suspend/resume.
+removed=[]
+for line in before.splitlines():
+ fields=line.split()
+ if len(fields)>1 and fields[0].isdigit() and fields[1]=='module-suspend-on-idle':
+  subprocess.run(['pactl','unload-module',fields[0]],check=True);removed.append(fields[1])
+after=subprocess.check_output(['pactl','list','short','modules'],text=True)
+Path('/root/picker90-native-audio-policy.json').write_text(json.dumps(dict(scope='DISPOSABLE_CONTAINER_ONLY',removed=removed,idle_suspend_loaded='module-suspend-on-idle' in after)))
+PULSE_NATIVE92
 pactl list short sinks > /root/picker90-native-audio-sinks.txt
 '''
  start=start.replace('while true; do',pulse438+'\nwhile true; do')
  (report/'start.sh').write_text(start)
  base=root/'tools/kodi_home84_host';helper=root/'tools/kodi_home90_host'
  mounts=[(root/'tools/kodi_home74_host','/work'),(addon_source,'/xcmate'),(pristine/'skin.titan.bingie.mod','/skin'),(candidate,'/candidate'),(base/'fixture84.py','/fixture84.py'),(root/'tools/kodi_home86_host/tls86.py','/work/tls69.py'),(helper/'skin_picker90.py','/work/skin_fixture66.py'),(root/'tools/kodi_home74_host/skin_fixture66.py','/base_skin78.py'),(helper/'setup_picker90.py','/setup_picker90.py'),(helper/'picker90.py','/picker90.py'),(helper/'probe_picker90.py','/work/probe.py'),(root/'online-test/script.skinshortcuts/script.skinshortcuts-2.1.0.zip','/skinshortcuts90.zip'),(report/'start.sh','/work/start.sh')]
+ mounts.extend([(helper/'groups90.py','/groups90.py'),(helper/'navigation90.mp4','/root/navigation90.mp4')])
  mounts.extend([(helper/'diagnostic_picker90.py','/diagnostic_picker90.py'),(helper/'picker_check90.py','/picker_check90.py'),(helper/'six_rows438.py','/six_rows438.py'),(base/'fixture84.py','/base_fixture84.py')])
  mounts=[(helper/'fixture_picker90.py',target) if target=='/fixture84.py' else (source,target) for source,target in mounts]
  cmd=['run','-d','--name',name]
@@ -55,17 +70,30 @@ pactl list short sinks > /root/picker90-native-audio-sinks.txt
 import xml.etree.ElementTree as E
 source=Path('/xcmate');installed=Path('/root/.kodi/addons/plugin.video.xtreammate')
 node=E.parse(installed/'addon.xml').getroot()
-assert (node.get('id'),node.get('version'))==('plugin.video.xtreammate','0.1.29.91')
+assert (node.get('id'),node.get('version'))==('plugin.video.xtreammate','0.1.29.92')
 files=[p for p in source.rglob('*') if p.is_file() and '__pycache__' not in p.parts and p.name!='addon.xml']
 assert all((installed/p.relative_to(source)).read_bytes()==p.read_bytes() for p in files)
 print(len(files))
 """
    verified=run('exec',name,'python3','-c',code91,capture_output=True,text=True)
-   proof.update(source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip(),installed_version='0.1.29.91',unchanged_installed_nonmanifest_files=int(verified.stdout.strip()),fixture_manifest_adapted=True,fixture_service_disabled=True,fixture_plugin_entry=True,android='ANDROID_NOT_TESTED')
+   proof.update(source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip(),installed_version='0.1.29.92',unchanged_installed_nonmanifest_files=int(verified.stdout.strip()),fixture_manifest_adapted=True,fixture_service_disabled=True,fixture_plugin_entry=True,android='ANDROID_NOT_TESTED')
    (report/'package-proof91.json').write_text(json.dumps(proof,indent=2)+'\n')
 
  finally:
+  # Exit 137 alone does not identify OOM or an add-on defect. Preserve native
+  # container/console evidence before disposing of this synthetic test rig.
+  try:
+   state92=run('inspect','--format','{{json .State}}',name,capture_output=True,text=True).stdout
+   events92=subprocess.run(docker+['exec',name,'cat','/sys/fs/cgroup/memory.events'],env=env,capture_output=True,text=True)
+   stats92=subprocess.run(docker+['stats','--no-stream','--format','{{json .}}',name],env=env,capture_output=True,text=True)
+   (report/'container-resource90.json').write_text(json.dumps(dict(state=json.loads(state92),memory_events=events92.stdout,memory_events_returncode=events92.returncode,stats=stats92.stdout),indent=2))
+   with (report/'container-console90.log').open('w') as console92:
+    subprocess.run(docker+['logs',name],env=env,stdout=console92,stderr=subprocess.STDOUT)
+  except (ValueError,subprocess.CalledProcessError):pass
   files90=[('/root/picker90-diagnostic.json','picker90-diagnostic.json'),('/root/picker90-registry.json','picker90-registry.json'),('/root/picker90-history.json','picker90-history.json'),('/root/picker90.json','picker90.json'),('/root/picker90-error.txt','picker90-error.txt'),('/root/picker90-native-audio-sinks.txt','picker90-native-audio-sinks.txt'),('/tmp/xcmate-native-pulse.log','native-pulse.log'),('/root/.kodi/temp/kodi.log','synthetic-kodi.log')]
+  files90.extend([('/root/groups90.json','groups90.json'),('/root/visible84-groups90-native.png','visible84-groups90-native.png'),('/root/visible84-groups90-failure.png','visible84-groups90-failure.png')])
+  files90.append(('/root/picker90-native-audio-policy.json','picker90-native-audio-policy.json'))
+  files90.append(('/root/groups90-failure.json','groups90-failure.json'))
   files90.extend([('/root/picker90-experiments.json','picker90-experiments.json'),('/root/picker90-experiment-error.txt','picker90-experiment-error.txt')])
   for stage90 in ('params','self','bounds','combined','flat'):files90.append(('/root/picker90-experiment-'+stage90+'.png','picker90-experiment-'+stage90+'.png'))
   files90.extend([('/root/.kodi/addons/skin.titan.bingie.mod/xml/IncludesHomeWidgets.xml','installed-widgets90.xml'),('/root/.kodi/addons/skin.titan.bingie.mod/xml/IncludesHomeBingie.xml','installed-home90.xml'),('/root/.kodi/addons/skin.titan.bingie.mod/xml/script-skinshortcuts-includes.xml','original-generated90.xml'),('/root/.kodi/userdata/addon_data/script.skinshortcuts/skin.titan.bingie.mod.properties','original-saved90.properties')])

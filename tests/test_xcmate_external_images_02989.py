@@ -85,7 +85,7 @@ class External89(Fixture,unittest.TestCase):
   with mock.patch.object(self.module,'context',return_value=['other']),mock.patch.object(self.module,'store',side_effect=AssertionError('never write previous profile image')):self.module.drain()
  def test_metadata_reserve_and_external_quota_block_without_publishing_or_changing_selection(self):
   self.activate(True);before=self.config.read()
-  with mock.patch('metadata_store89.check',side_effect=OSError('METADATA_SAFETY_FLOOR')):
+  with mock.patch('storage_metadata92.check',side_effect=OSError('RESERVE_BLOCKED')):
    with self.assertRaises(OSError):__import__('logo_store89').persist(self.portal,self.row,png((200,100)))
   self.assertFalse(self.module.records('logo'));self.assertEqual(self.config.read(),before)
   storage=self.module.backend('logo')

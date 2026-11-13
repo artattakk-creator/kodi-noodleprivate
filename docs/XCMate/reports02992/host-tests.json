@@ -1,0 +1,44 @@
+{
+  "current_status": "PASS",
+  "production_source_commit": "c9b6bdf673f43331157e0a610ee4e78fb7dc2e96",
+  "native_gates": "SEPARATE_NOT_IMPLIED_BY_HOST_PASS",
+  "android": "ANDROID_NOT_TESTED",
+  "previous_complete_ci": {
+    "commit": "cb8d297cd96bf9ea66bedf122292b88b8326b939",
+    "fixture_commit": "aa63715973844837f02cb1341e57c366291b6007",
+    "run_id": 43427632454,
+    "tests": 3914,
+    "seconds": 999.971,
+    "status": "PASS",
+    "branding_pytest": 11,
+    "po_catalogs": 17
+  },
+  "previous_complete_local": {
+    "tests": 3914,
+    "seconds": 920.049,
+    "status": "PASS",
+    "local_log_sha256": "936e9f851d1630391eebfdd0a58a49bc94ba99f552425266b10062a4303ff546",
+    "full_log_published": false
+  },
+  "targeted_final": {
+    "status": "PASS",
+    "tests": 59,
+    "seconds": 7.914,
+    "parallel_preflight_repeats": 20,
+    "parallel_preflight_seconds": 0.294,
+    "slow_gui_publish": "OTHER_INITIALIZERS_READ_COMPLETE_MARKER_WITHOUT_LOCK"
+  },
+  "expected_tests": 3915,
+  "current_complete_ci": {
+    "commit": "c9b6bdf673f43331157e0a610ee4e78fb7dc2e96",
+    "fixture_commit": "4152c7f4b13fddad4735aa93488d680bc4f9d3c4",
+    "run_id": 43441528773,
+    "job_id": 131940074359,
+    "tests": 3915,
+    "seconds": 642.602,
+    "status": "PASS",
+    "branding_pytest": 11,
+    "branding_seconds": 0.28,
+    "po_catalogs": 17
+  }
+}

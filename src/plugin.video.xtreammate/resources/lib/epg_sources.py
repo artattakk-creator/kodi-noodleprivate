@@ -310,6 +310,8 @@ def merge_sources(portal_id, builtin_programmes, parse_xmltv):
             failures += 1
             error('EPG source failed ({}): {}'.format(
                 source.get('id', '')[:8], type(exc).__name__))
+        finally:
+            raw=None  # No raw feed survives into the next source/download.
     if index:
         cache_set(_channels_cache_key(portal_id), index)
         linked = _link_cached_xtream_channels(portal_id, merged, index)

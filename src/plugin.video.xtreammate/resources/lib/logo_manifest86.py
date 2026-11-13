@@ -60,7 +60,10 @@ def read(portal,rows,with_fallback=True):
     file=backend.resolve_target(value['sha256'])
     if value.get('width',0)>0 and value.get('height',0)>0 and valid_file(file,value):result[str(row['sid'])]=file
    except (KeyError,OSError,ValueError,TypeError):continue
- missing=[r for r in rows if str(r['sid']) not in result]
+ # A revoked source must not re-enter through the legacy manifest/cache
+ # fallback after the verified-own loop deliberately rejected it.
+ from widget_refs74 import revoked
+ missing=[r for r in rows if str(r['sid']) not in result and not revoked(source(r))]
  if missing:result.update(_legacy_read90(portal,missing,with_fallback))
  __import__('startup_diag90').note('LOCAL_HIT',count=len(result),total=len(rows))
  return result

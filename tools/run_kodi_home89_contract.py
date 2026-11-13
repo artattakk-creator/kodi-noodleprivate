@@ -46,6 +46,14 @@ def main():
    with (report/('foreign-restart'+str(i)+'.log')).open('w') as log:run('exec',name,'python3','-c',"import json,time;from pathlib import Path;end=time.monotonic()+160\nwhile time.monotonic()<end:\n if Path('/root/post75-error.txt').exists():raise RuntimeError(Path('/root/post75-error.txt').read_text())\n if Path('/root/foreign87.json').exists():assert json.loads(Path('/root/foreign87.json').read_text())['status']=='PASS';break\n time.sleep(.1)\nelse:raise RuntimeError('FOREIGN87_RESTART_TIMEOUT')",stdout=log,stderr=subprocess.STDOUT)
    copy('/root/post75.json','restart'+str(i)+'.json');copy('/root/foreign87.json','foreign-restart'+str(i)+'.json')
  finally:
+  # Preserve evidence before removing this disposable container. Signal 137
+  # alone is not proof of an add-on memory leak or Android failure.
+  try:
+   state89=run('inspect','--format','{{json .State}}',name,capture_output=True,text=True).stdout
+   metrics89=subprocess.run(docker+['exec',name,'cat','/sys/fs/cgroup/memory.events'],env=env,capture_output=True,text=True)
+   stats89=subprocess.run(docker+['stats','--no-stream','--format','{{json .}}',name],env=env,capture_output=True,text=True)
+   (report/'container-resource89.json').write_text(json.dumps(dict(state=json.loads(state89),memory_events=metrics89.stdout,stats=stats89.stdout),indent=2))
+  except (ValueError,subprocess.CalledProcessError):pass
   try:
    files=json.loads(run('exec',name,'python3','-c',"import json;from pathlib import Path;print(json.dumps([str(p) for p in Path('/root').glob('visible84-*.png')]))",capture_output=True,text=True).stdout)
    for file in files:copy(file,Path(file).name)

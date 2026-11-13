@@ -55,6 +55,13 @@ def read(portal,kind,rows):
  from render_cache81 import references
  for sid81,roles81 in references(portal,kind,rows).items():result.setdefault(sid81,{}).update(roles81)
  for sid89,roles89 in __import__('poster_store89').read(portal,kind,rows).items():result.setdefault(sid89,{}).update(roles89)
+ if kind=='live':
+  # Cold boot can have no volatile URL/DNS/RAM lease while the independent
+  # station manifest already proves all local files. Publish those exact
+  # account/source/hash-verified logos rather than waiting for another fetch.
+  # This is a directory/worker reader, not the GUI-only frame poll.
+  for sid92,uri92 in __import__('logo_manifest86').read(portal,rows,with_fallback=False).items():
+   result.setdefault(sid92,{})['poster']=uri92
  return result
 def prepare(portal,kind,rows,cancel=lambda:False):
  global _thread

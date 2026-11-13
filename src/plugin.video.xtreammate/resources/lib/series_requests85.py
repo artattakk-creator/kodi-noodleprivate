@@ -49,7 +49,9 @@ def drain(cancelled_service=lambda:False):
   if not portal:raise ValueError('PORTAL_MISSING')
   reader=Reader(portal['id'])
   try:channel=reader.get('live',str(event.get('sid')))
-  finally:reader.close()
+  finally:
+   close=getattr(reader,'close',None)
+   if close:close()
   if not channel:raise ValueError('CHANNEL_MISSING')
   actual=load(portal,channel,event)
   if actual.get('code')!='LOCAL_EVENT' or actual.get('start')!=event.get('start') or actual.get('stop')!=event.get('stop'):raise ValueError('NO_SOURCE_FACTS')

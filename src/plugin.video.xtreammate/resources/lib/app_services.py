@@ -107,6 +107,7 @@ def _run():
     cancelled=lambda:_stop.is_set() or monitor.abortRequested()
     from startup48 import Phases,suspended,mark
     phases48=Phases()
+    __import__('storage_maintenance92').startup(cancelled)
     next_prepare=0
     while not cancelled():
         runtime.emit()
@@ -119,6 +120,7 @@ def _run():
             if runtime.wait_abort(monitor,.5,_stop):break
             continue
         worked=False
+        __import__('storage_maintenance92').startup(cancelled)
         try:
             from catalog_progress73 import prepare as catalog_progress73
             catalog_progress73()

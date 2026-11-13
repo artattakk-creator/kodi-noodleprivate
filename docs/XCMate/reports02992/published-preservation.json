@@ -1,0 +1,76 @@
+{
+  "base": "002ba995dc3ce6a6f72037261ad28c70e2d87d80",
+  "files": [
+    {
+      "path": "addons.xml",
+      "sha256": "c094b14edc1320f22aa2ca48c67cdc06b6e4899bf160e72d50a4b1515a27427b",
+      "unchanged": true
+    },
+    {
+      "path": "addons.xml.md5",
+      "sha256": "f17de59cc2e0fbff7d7ad1ab55946b9e92d47aab0343ce5c70b484f625b780c7",
+      "unchanged": true
+    },
+    {
+      "path": "index.html",
+      "sha256": "43fe808d970653ddaee32202753ea1633342c1bd631afbc485f1559d6acb6076",
+      "unchanged": true
+    },
+    {
+      "path": "online-test/addons.xml",
+      "sha256": "0681e73aedef4d913b29ce419d80ba16462ed4f983604440d137509612c01ea7",
+      "unchanged": true
+    },
+    {
+      "path": "online-test/addons.xml.md5",
+      "sha256": "a3150cbcaece30ce08f9d40217376af488cf5dfdcb3a4fb3a5f505edafd44635",
+      "unchanged": true
+    },
+    {
+      "path": "online-test/manifest.json",
+      "sha256": "06ba5d2834ddac0d55b85bdd1f6b83289e8986481397ec1ff11b9f9deae4e936",
+      "unchanged": true
+    },
+    {
+      "path": "online-test/index.html",
+      "sha256": "675081766d5b41eacc7e7c39d3fc0403f6166b3fcf409c8145301e2e0c2ef6c3",
+      "unchanged": true
+    },
+    {
+      "path": "plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.90.zip",
+      "sha256": "e95b0a0cc46e745a3318a609e6e57a005ee3a88965f6e7de0c4b21c68f30f17f",
+      "unchanged": true
+    },
+    {
+      "path": "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.90.zip",
+      "sha256": "e95b0a0cc46e745a3318a609e6e57a005ee3a88965f6e7de0c4b21c68f30f17f",
+      "unchanged": true
+    },
+    {
+      "path": "plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.91.zip",
+      "sha256": "230fde5237e8a9aa2be548ef29ef95301a8b41080d043a03ed0d9fee7b4c198b",
+      "unchanged": true
+    },
+    {
+      "path": "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.91.zip",
+      "sha256": "230fde5237e8a9aa2be548ef29ef95301a8b41080d043a03ed0d9fee7b4c198b",
+      "unchanged": true
+    },
+    {
+      "path": "online-test/script.gsmedia.setup-0.5.26.zip",
+      "sha256": "5aa5d101a57adda5dbb1f5d05319da1ec185676dc784817b25dea267322ae0af",
+      "unchanged": true
+    },
+    {
+      "path": "online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.26.zip",
+      "sha256": "5aa5d101a57adda5dbb1f5d05319da1ec185676dc784817b25dea267322ae0af",
+      "unchanged": true
+    },
+    {
+      "path": "script.gsmedia.setup/script.gsmedia.setup-0.5.26.zip",
+      "sha256": "5aa5d101a57adda5dbb1f5d05319da1ec185676dc784817b25dea267322ae0af",
+      "unchanged": true
+    }
+  ],
+  "publication": "NOT_PERFORMED"
+}

@@ -34,11 +34,12 @@ def path():
 def connect(filename=None, write=False,timeout=2):
     filename=filename or path()
     if not write and not os.path.isfile(filename): return None
+    if write:
+        from import_budget import check_space
+        check_space(filename)  # Check before creating/opening; a rejected write owns no SQLite handle.
     db=sqlite3.connect(filename,timeout=timeout)
     db.row_factory=sqlite3.Row
     if write:
-        from import_budget import check_space
-        check_space(filename)
         db.execute('PRAGMA journal_mode=WAL')
         db.execute('PRAGMA max_page_count=2147483646')
         db.executescript('''CREATE TABLE IF NOT EXISTS catalog(

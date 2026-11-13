@@ -1,0 +1,24 @@
+{
+  "status": "FAIL",
+  "run_id": 43430993170,
+  "job_id": 131904142173,
+  "artifact_id": 14039928369,
+  "source_commit": "cb8d297cd96bf9ea66bedf122292b88b8326b939",
+  "fixture_commit": "7df2395a0b6b9f5b9a89428f954b5803241abee6",
+  "platform": "REAL_LINUX_KODI_SYNTHETIC_MEDIA_NOT_ANDROID",
+  "resolution": "1280x720",
+  "failure": {
+    "code": "VOD80_BUTTON_NO_VIDEO",
+    "window": 13002,
+    "dialog": 9999,
+    "control": "300",
+    "selected_label": "Play",
+    "items": "5",
+    "modal": false
+  },
+  "native_log": "NOT_PRESENT_IN_ARTIFACT",
+  "cause": "UNCONFIRMED_INPUT_VERSUS_HANDOFF_VERSUS_PLAYER",
+  "other_same_source_runs": "720p and1080p initial-home PASS, full1080p PASS; intermittent full720p failure remains recorded",
+  "next_probe": "Require actual stable visible/enabled own Play before one global Select; retain native log tail on recurrence",
+  "android": "ANDROID_NOT_TESTED"
+}
