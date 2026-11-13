@@ -43,6 +43,7 @@ class IPTVMasterService(xbmc.Monitor):
         from artwork_config import initialize
         try:initialize()
         except OSError:pass  # Fail closed to internal if profile marker cannot commit.
+        __import__('storage_policy92').images_enabled()
         self._last_epg = 0
         self._epg_worker = None
         self._stopped_since = None

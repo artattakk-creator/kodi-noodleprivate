@@ -25,7 +25,9 @@ def read():
     file = receipt_path()
     if not file.exists():return {}
     if file.is_symlink() or file.stat().st_size > 128*1024:raise OSError('MAINTENANCE_JOURNAL_UNSAFE')
-    return json.loads(file.read_bytes())
+    value=json.loads(file.read_bytes())
+    if not isinstance(value,dict):raise ValueError('MAINTENANCE_JOURNAL_INVALID')
+    return value
 
 def journal(value):
     from storage_metadata92 import check
@@ -49,18 +51,19 @@ def reference_intervals():
             if len(rows)>4096:raise OSError('REFERENCE_SCAN_BUDGET')
             result.update((int(a),int(b)) for a,b in rows)
         finally:db.close()
-    file = root()/'reminders.json'
-    if file.exists():
-        if file.is_symlink() or file.stat().st_size>1024*1024:raise OSError('REFERENCE_SCAN_BUDGET')
-        value = json.loads(file.read_bytes())
-        def walk(value,depth=0):
-            if depth>12:raise OSError('REFERENCE_SCAN_BUDGET')
-            if isinstance(value,dict):
-                if 'start' in value and 'stop' in value:result.add((int(value['start']),int(value['stop'])))
-                for item in value.values():walk(item,depth+1)
-            elif isinstance(value,list):
-                for item in value:walk(item,depth+1)
-        walk(value)
+    for name92 in ('reminders.json','guide_bookmarks_v1.json'):
+        file = root()/name92
+        if file.exists():
+            if file.is_symlink() or file.stat().st_size>1024*1024:raise OSError('REFERENCE_SCAN_BUDGET')
+            value = json.loads(file.read_bytes())
+            def walk(value,depth=0):
+                if depth>12:raise OSError('REFERENCE_SCAN_BUDGET')
+                if isinstance(value,dict):
+                    if 'start' in value and 'stop' in value:result.add((int(value['start']),int(value['stop'])))
+                    for item in value.values():walk(item,depth+1)
+                elif isinstance(value,list):
+                    for item in value:walk(item,depth+1)
+            walk(value)
     return result
 
 def expire_epg(filename, tables, cutoff, protected, *, limit=512, seconds=.2):
@@ -107,7 +110,10 @@ def expire_epg(filename, tables, cutoff, protected, *, limit=512, seconds=.2):
         code='MORE' if more else 'VERIFIED_RETENTION'
         if check and check[0]:code='WAL_BUSY'
     except (sqlite3.Error,OSError) as error:
-        db.rollback();code='SQLITE_BUSY_OR_BUDGET' if isinstance(error,sqlite3.Error) else 'RESERVE_BLOCKED'
+        db.rollback()
+        if isinstance(error,sqlite3.Error):
+            code={5:'SQLITE_BUSY',6:'SQLITE_BUSY',9:'READ_BUDGET',13:'DISK_FULL',10:'SQLITE_IO'}.get(getattr(error,'sqlite_errorcode',0)&255,'SQLITE_ERROR')
+        else:code='SCHEMA_UNVERIFIED' if str(error)=='EPG_SCHEMA_UNVERIFIED' else 'RESERVE_BLOCKED' if getattr(error,'code69','')=='SAFE_RESERVE_BLOCKED' else 'IO_ERROR'
     finally:db.close()
     after=sum(p.stat().st_size for p in (file,Path(str(file)+'-wal')) if p.exists())
     return dict(code=code,rows=removed,physical_bytes_before=before,physical_bytes_after=after,
@@ -171,7 +177,7 @@ def run(cancel=lambda:False,progress=lambda **kw:None,force=False):
             if cancel():break
             result=expire_epg(root()/name,owned_tables,day_window(-7,now)[0],protected)
             results.append(dict(category=name,**result));progress(stage='RETENTION',done=len(results),files=3)
-        record.update(state='PAUSED' if cancel() or any(r['code'] in ('MORE','WAL_BUSY','SQLITE_BUSY_OR_BUDGET','RESERVE_BLOCKED') for r in results) else 'DONE',
+        record.update(state='PAUSED' if cancel() or any(r['code'] not in ('NOT_CREATED','VERIFIED_RETENTION') for r in results) else 'DONE',
                       temp=temp,databases=results,free_after=free(),artwork_orphans='OPEN_REFERENCE_PROOF_REQUIRED',
                       kodi_cache='PROTECTED',fallback90='PROTECTED')
         record['observed_free_change']=record['free_after']-record['free_before']

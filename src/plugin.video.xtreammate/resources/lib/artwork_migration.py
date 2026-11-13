@@ -310,7 +310,9 @@ def remove_originals(challenge='',cancel=lambda:False,progress=lambda **kw:None)
             if source.get('strict_storage87'):
                 if not source.get('storage92'):raise StorageFailure('CLEANUP_NOT_AUTHORIZED')
                 __import__('storage_transfer92').require_reboot(source)
-            if source.get('archive_mode',source['mode'])!='internal' or config['mode']!='external' or config['target']!=item['target']:raise StorageFailure('CLEANUP_NOT_AUTHORIZED')
+            original_mode=source.get('archive_mode',source['mode'])
+            if original_mode=='dynamic' and source.get('storage92'):original_mode='internal'
+            if original_mode!='internal' or config['mode']!='external' or config['target']!=item['target']:raise StorageFailure('CLEANUP_NOT_AUTHORIZED')
             if not verify(cancel,progress):return 0
             _phase(db,item,'CLEANUP_PAUSED')
             removed=0

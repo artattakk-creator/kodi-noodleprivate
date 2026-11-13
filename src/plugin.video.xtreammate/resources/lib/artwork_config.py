@@ -85,6 +85,7 @@ def initialize():
         fresh=not entries
         value=dict(version=VERSION,mode='dynamic' if fresh else 'internal',strategy='demand',target='',
                    profile=uuid.uuid4().hex,origin='FRESH' if fresh else 'LEGACY')
+        if fresh:__import__('storage_policy92').choose('later')
         _write(value);return value
 
 

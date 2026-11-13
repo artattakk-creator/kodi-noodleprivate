@@ -83,7 +83,7 @@ def setup(nonce):
     try:
         policy=job(lambda cancel,progress:read())
         # A legacy profile must not have its existing source opt-ins reset.
-        if policy and policy['image_epg']=='legacy':image_choice()
+        if policy:image_choice()
         target=__import__('menu_icons45').select(dialog,tr(38724),[tr(38725),tr(38707),tr(38726),tr(38706)])
         if target==0:
             # Internal is the existing default. Never undo an active migration.

@@ -29,6 +29,66 @@ class Storage92(Fixture,unittest.TestCase):
    module=importlib.import_module(name);target=self.folder/('new92-'+file)
    with mock.patch('import_budget.check_space',side_effect=OSError('RESERVE_BLOCKED')),self.assertRaises(OSError):module.connect(str(target),write=True)
    self.assertFalse(target.exists())
+ def test_legacy_bookmark_without_timer_is_a_protected_reference(self):
+  (self.folder/'guide_bookmarks_v1.json').write_text(json.dumps({'old':dict(start=1,stop=2)}))
+  self.assertIn((1,2),self.maintenance.reference_intervals())
+ def test_genuinely_fresh_profile_defers_image_epg_but_existing_fresh_origin_is_preserved(self):
+  import tempfile
+  config=importlib.import_module('artwork_config')
+  with tempfile.TemporaryDirectory() as folder,mock.patch('utils.addon_data_dir',return_value=folder):
+   self.assertEqual(config.initialize()['origin'],'FRESH');self.assertEqual(self.policy.read()['image_epg'],'later')
+   self.assertFalse(self.policy.images_enabled())
+   self.policy.path().unlink()  # Simulate the older .91 FRESH-origin profile without .92 policy.
+   self.assertEqual(config.initialize()['origin'],'FRESH');self.assertEqual(self.policy.read()['image_epg'],'legacy')
+ def test_explicit_deactivation_rejects_new_gui_intent_without_touching_lastgood(self):
+  request=importlib.import_module('programme_requests68');event=dict(pid='p',sid='1',title='Monk',start=self.now,stop=self.now+100)
+  self.policy.choose('no');self.assertFalse(request.request(event))
+  self.policy.choose('yes');self.assertTrue(request.request(event))
+ def test_short_snapshot_cannot_lose_current_programme_behind_dense_past(self):
+  short=importlib.import_module('epg_snapshot92').short
+  events=[dict(name=str(i),start_timestamp=i*60,stop_timestamp=(i+1)*60) for i in range(100)]
+  result=short({'channel':events},now=90*60+1)['channel']
+  self.assertIn('90',[e['name'] for e in result]);self.assertIn('91',[e['name'] for e in result])
+  self.assertLessEqual(len(result),7)
+ def test_short_snapshot_for_3357_channels_keeps_now_next_and_bounds_duplicate_text(self):
+  import json
+  short=importlib.import_module('epg_snapshot92').short
+  events=[dict(name=str(i),start_timestamp=i*60,stop_timestamp=(i+1)*60,description='x'*4096,xmltv_image='https://image.invalid/source.jpg') for i in range(30)]
+  data={str(i):events for i in range(3357)};result=short(data,now=10*60+1)
+  self.assertEqual(len(result),3357);self.assertTrue(all([r['name'] for r in rows]==['10','11'] for rows in result.values()))
+  self.assertLess(len(json.dumps(result).encode()),8*1024**2);self.assertEqual(len(events[10]['description']),4096)
+ def test_manual_candidate_manager_accepts_real_reader_api_without_close_method(self):
+  manager=importlib.import_module('series_requests85')
+  event=dict(pid='p',sid='1',title='Monk',canonical='xml',start=self.now,stop=self.now+100)
+  reader=lambda pid:SimpleNamespace(get=lambda kind,sid:dict(sid=sid,name='Station'))
+  with mock.patch('programme_mapping85.namespace',return_value='same-scope'),mock.patch('programme_mapping85.refresh_sources'),mock.patch('library_index.Reader',reader),mock.patch('programme_events46.load',return_value=dict(event,code='LOCAL_EVENT')),mock.patch('programme_candidates85.search',return_value=([],True)) as search:
+   nonce=manager.request(event);manager.drain()
+  search.assert_called_once();self.assertEqual(manager.result(nonce)['code'],'READY')
+ def test_92_transfer_verifies_programme_files_restart_and_explicit_dynamic_original_cleanup(self):
+  import test_xcmate_storage_02937 as baseline
+  fixture=baseline.Storage37(methodName='runTest');fixture.setUp();self.addCleanup(fixture.doCleanups)
+  fixture.seed(2);source=fixture.m.folder;programme=source/'programme_images46';programme.mkdir(exist_ok=True)
+  ident='blob46-'+'c'*64+'.png';(programme/ident).write_bytes(fixture.m.png)
+  protected=source/'guide-protected.sqlite';protected.write_bytes(b'PROTECTED')
+  with fixture.config.locked():
+   initial=dict(fixture.config.read(),mode='dynamic');initial.pop('archive_mode',None);fixture.config._write(initial)
+  self.assertEqual(fixture.config.read()['mode'],'dynamic')
+  proof=dict(volume='separate-fixture-volume',mount_key='separate-fixture-mount',rows=[],code='SEPARATE_POOL_VERIFIED')
+  migration=fixture.migration
+  def probe(target,profile,**options):
+   fixture.vfsmod.prepare_target(target,profile);return proof
+  with mock.patch('android_artwork87.preflight',return_value=proof),mock.patch('android_artwork87.probe',side_effect=probe),mock.patch('storage_transfer92.boot',return_value='a'*64):
+   migration.begin(str(fixture.external),shared=True,confirmed=True,strict87=True,reboot92=True)
+   migration.copy();self.assertTrue(migration.verify());migration.approve_render(True)
+   with self.assertRaisesRegex(OSError,'REBOOT_READBACK_REQUIRED'):migration.activate()
+  self.assertTrue((programme/ident).exists())
+  with mock.patch('android_artwork87.preflight',return_value=proof),mock.patch('storage_transfer92.boot',return_value='b'*64):
+   self.assertTrue(migration.activate());self.assertTrue((programme/ident).exists())
+   transfer=migration.status()['transfer'];report=migration.cleanup_report(transfer)
+  self.assertGreater(report['image_bytes_unlinked'],0)
+  self.assertFalse((programme/ident).exists());self.assertEqual(protected.read_bytes(),b'PROTECTED')
+  target=__import__('programme_storage87').target(str(fixture.external),fixture.profile)
+  self.assertEqual(target.read(ident,100000),fixture.m.png)
  def test_small_metadata_can_persist_below_bulk_import_reserve(self):
   with self.free(16*1024**2):
    value=self.metadata.check(self.folder/'programme_manual85.json',2048)
@@ -52,8 +112,9 @@ class Storage92(Fixture,unittest.TestCase):
   for value in ('no','later'):
    self.policy.choose(value);self.assertFalse(self.policy.images_enabled());self.assertEqual(image.read_bytes(),b'KEEP')
  def test_invalid_policy_fails_closed_without_replacing_user_file(self):
-  self.policy.path().write_text('{broken');self.assertFalse(self.policy.images_enabled())
-  self.assertEqual(self.policy.path().read_text(),'{broken')
+  for raw in ('{broken','[]','null'):
+   self.policy.path().write_text(raw);self.assertFalse(self.policy.images_enabled())
+   self.assertEqual(self.policy.path().read_text(),raw)
  def test_only_week_old_exact_closed_owned_temp_is_removed(self):
   cache=self.folder/'cache';cache.mkdir();old=cache/('.xcmate-cache-'+'a'*32);old.write_bytes(b'x'*8192);os.utime(old,(0,0))
   protect=[]
@@ -83,7 +144,7 @@ class Storage92(Fixture,unittest.TestCase):
   file=self.database();before=file.read_bytes()
   with sqlite3.connect(file) as db:
    db.execute('BEGIN IMMEDIATE');result=self.maintenance.expire_epg(file,('programmes',),1000,set(),seconds=.2)
-   self.assertEqual(result['code'],'SQLITE_BUSY_OR_BUDGET');self.assertEqual(result['rows'],0)
+   self.assertEqual(result['code'],'SQLITE_BUSY');self.assertEqual(result['rows'],0)
   self.assertEqual(file.read_bytes(),before)
  def test_retention_never_unlinks_live_wal_or_forces_vacuum(self):
   file=self.database();withheld=file.with_name(file.name+'-user-backup');withheld.write_bytes(b'KEEP')
