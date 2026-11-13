@@ -1,0 +1,30 @@
+{
+  "version": "0.1.29.93",
+  "addon_id": "plugin.video.xtreammate",
+  "user_approved_pilot_release": true,
+  "user_approved_regular_release": false,
+  "user_approved_neodark3_direct_release": false,
+  "channel": "pilot",
+  "authorization_issue": 454,
+  "source_pr": 455,
+  "source_merged": false,
+  "source_commit": "0b842c16edf12647a3d012b06c478b4929ca99a3",
+  "source_zip_path": "docs/XCMate/test-builds/02993/plugin.video.xtreammate-0.1.29.93.zip",
+  "zip_sha256": "48e0822827c2a8e8a854a812cbac0d0fb3407f6f6b9a5c3c2c2213f20fe77a95",
+  "zip_bytes": 4710998,
+  "zip_members": 876,
+  "pilot_catalog": "online-test/addons.xml",
+  "pilot_zip": "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.93.zip",
+  "regular_catalog_unchanged": true,
+  "neodark3_direct_unchanged": true,
+  "installer_0_5_26_unchanged": true,
+  "protected_fallback_0_1_29_90_sha256": "e95b0a0cc46e745a3318a609e6e57a005ee3a88965f6e7de0c4b21c68f30f17f",
+  "android_status": "NOT_TESTED",
+  "accepted_only_for_device_testing": true,
+  "open_p0_issues": [
+    452
+  ],
+  "host_ci": "PASS_3940",
+  "native_kodi_720p_1080p": "PASS",
+  "notes": "User explicitly authorized Pilot-only .93 release; not a full Android stability signoff. No source PR #455 merge, regular/NeoDark3 release or automatic Android cleanup beyond the version's bounded maintenance."
+}
