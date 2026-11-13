@@ -5529,3 +5529,191 @@ msgstr "NAS uses the existing verified VFS workflow. Unknown capacity is not a c
 msgctxt "#38729"
 msgid "Movie groups on Home (library unchanged)"
 msgstr "Movie groups on Home (library unchanged)"
+
+msgctxt "#38730"
+msgid "XCMate – storage analysis (read only)"
+msgstr "XCMate – storage analysis (read only)"
+
+msgctxt "#38731"
+msgid "Technical details (JSON)"
+msgstr "Technical details (JSON)"
+
+msgctxt "#38732"
+msgid "The saved startup channel is temporarily unavailable in the local catalogue. Settings are preserved. Please retry."
+msgstr "The saved startup channel is temporarily unavailable in the local catalogue. Settings are preserved. Please retry."
+
+msgctxt "#38733"
+msgid "Unknown"
+msgstr "Unknown"
+
+msgctxt "#38734"
+msgid "Measurement cancelled or not available yet."
+msgstr "Measurement cancelled or not available yet."
+
+msgctxt "#38735"
+msgid "Observed storage usage. Incomplete values are lower bounds, not empty folders."
+msgstr "Observed storage usage. Incomplete values are lower bounds, not empty folders."
+
+msgctxt "#38736"
+msgid "Other data class"
+msgstr "Other data class"
+
+msgctxt "#38737"
+msgid "measured completely"
+msgstr "measured completely"
+
+msgctxt "#38738"
+msgid "measurement incomplete"
+msgstr "measurement incomplete"
+
+msgctxt "#38739"
+msgid "not fully readable"
+msgstr "not fully readable"
+
+msgctxt "#38740"
+msgid "empty / not created yet"
+msgstr "empty / not created yet"
+
+msgctxt "#38741"
+msgid "Observed: {} in {} files"
+msgstr "Observed: {} in {} files"
+
+msgctxt "#38742"
+msgid "Volume cannot currently be measured reliably."
+msgstr "Volume cannot currently be measured reliably."
+
+msgctxt "#38743"
+msgid "Available: {} / Total: {} / Reserve: {}"
+msgstr "Available: {} / Total: {} / Reserve: {}"
+
+msgctxt "#38744"
+msgid "Volume {} · Mount {} · Filesystem {}"
+msgstr "Volume {} · Mount {} · Filesystem {}"
+
+msgctxt "#38745"
+msgid "SQLite WAL: {} · SHM: {}"
+msgstr "SQLite WAL: {} · SHM: {}"
+
+msgctxt "#38746"
+msgid "Reusable inside SQLite: {} (not physically free space)"
+msgstr "Reusable inside SQLite: {} (not physically free space)"
+
+msgctxt "#38747"
+msgid "Android quota unknown. Categories can overlap on the same storage pool and must not simply be added together. Analysis did not modify files."
+msgstr "Android quota unknown. Categories can overlap on the same storage pool and must not simply be added together. Analysis did not modify files."
+
+msgctxt "#38748"
+msgid "Storage operation – result"
+msgstr "Storage operation – result"
+
+msgctxt "#38749"
+msgid "Status: {}"
+msgstr "Status: {}"
+
+msgctxt "#38750"
+msgid "Free before: {} · Free after: {}"
+msgstr "Free before: {} · Free after: {}"
+
+msgctxt "#38751"
+msgid "Actually observed change: {}"
+msgstr "Actually observed change: {}"
+
+msgctxt "#38752"
+msgid "EPG: {} expired rows · observed file change: {}"
+msgstr "EPG: {} expired rows · observed file change: {}"
+
+msgctxt "#38753"
+msgid "Removed owned temporary data: {}"
+msgstr "Removed owned temporary data: {}"
+
+msgctxt "#38754"
+msgid "Verified removed old EPG backups: {}"
+msgstr "Verified removed old EPG backups: {}"
+
+msgctxt "#38755"
+msgid "Saved mappings, active databases and internal original images remain protected. A negative or missing storage delta is not a space gain."
+msgstr "Saved mappings, active databases and internal original images remain protected. A negative or missing storage delta is not a space gain."
+
+msgctxt "#38760"
+msgid "Movie/series covers"
+msgstr "Movie/series covers"
+
+msgctxt "#38761"
+msgid "External programme image receipts"
+msgstr "External programme image receipts"
+
+msgctxt "#38762"
+msgid "Programme images"
+msgstr "Programme images"
+
+msgctxt "#38763"
+msgid "Channel logos"
+msgstr "Channel logos"
+
+msgctxt "#38764"
+msgid "Temporary images"
+msgstr "Temporary images"
+
+msgctxt "#38765"
+msgid "Normalized EPG/catalogue caches"
+msgstr "Normalized EPG/catalogue caches"
+
+msgctxt "#38766"
+msgid "EPG recovery copies"
+msgstr "EPG recovery copies"
+
+msgctxt "#38767"
+msgid "Widget restore plans"
+msgstr "Widget restore plans"
+
+msgctxt "#38768"
+msgid "Active EPG database"
+msgstr "Active EPG database"
+
+msgctxt "#38769"
+msgid "EPG image metadata"
+msgstr "EPG image metadata"
+
+msgctxt "#38770"
+msgid "Programme/image index"
+msgstr "Programme/image index"
+
+msgctxt "#38771"
+msgid "Migration journal"
+msgstr "Migration journal"
+
+msgctxt "#38772"
+msgid "Kodi thumbnails (read only)"
+msgstr "Kodi thumbnails (read only)"
+
+msgctxt "#38773"
+msgid "Kodi databases (read only)"
+msgstr "Kodi databases (read only)"
+
+msgctxt "#38774"
+msgid "Kodi installation packages (read only)"
+msgstr "Kodi installation packages (read only)"
+
+msgctxt "#38775"
+msgid "Kodi temporary files (read only)"
+msgstr "Kodi temporary files (read only)"
+
+msgctxt "#38776"
+msgid "Separately selected cache"
+msgstr "Separately selected cache"
+
+msgctxt "#38777"
+msgid "Active cover storage"
+msgstr "Active cover storage"
+
+msgctxt "#38778"
+msgid "Active logo storage"
+msgstr "Active logo storage"
+
+msgctxt "#38779"
+msgid "Active programme image storage"
+msgstr "Active programme image storage"
+
+msgctxt "#38756"
+msgid "This channel group is empty"
+msgstr "This channel group is empty"

@@ -267,13 +267,18 @@ def dispatch(router):
             play(router,portal,direct=True);return
         sid=str(portal.get('start_stream_id') or '')
         xc=router._xc(portal) if portal.get('type')=='xtream' else None
-        from live_start import channel
+        from live_start import resolve
         from live_timing import emit
         emit(router._live_timing,'PORTAL_REQUEST_BEGIN',network=0)
-        router._start_channel=channel(portal,xc) if xc else None
+        start93=resolve(portal,xc) if xc else dict(code='START_TEMPORARILY_UNAVAILABLE',channel=None)
+        router._start_channel=start93['channel']
         emit(router._live_timing,'PORTAL_REQUEST_END',network=0)
         if not sid or router._start_channel is None:
             _end(router,False)
+            if sid:
+                # Missing/partial/locked catalogue: retain the user's IDs.
+                xbmcgui.Dialog().notification('XCMate',tr(38732))
+                return
             if xbmcgui.Dialog().yesno('XCMate',tr(32467)):
                 xbmc.executebuiltin('Container.Update('+router.url(action='startup_settings',pid=portal['id'])+')')
             return

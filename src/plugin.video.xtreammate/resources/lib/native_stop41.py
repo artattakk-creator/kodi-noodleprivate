@@ -30,6 +30,10 @@ def post(token):
     exit_jobs.trace('PLAYER_STOP_START',token)
     xbmc.executebuiltin('PlayerControl(Stop)',wait=False)
     xbmc.executebuiltin('SetProperty('+ACK+','+nonce+',home)',wait=False)
+    with exit_jobs._lock:
+        current=exit_jobs.state()
+        if current and _same(tuple(current['token']),token):
+            current['commands_enqueued93']=True;exit_jobs.save(current)
     exit_jobs.trace('NATIVE_STOP_POSTED',token)
     return True
 
@@ -37,6 +41,7 @@ def post(token):
 def returned(value):
     import xbmcgui
     nonce=value.get('native_ack','')
+    if __import__('stop_barrier93').returned(value):return True
     return bool(len(nonce)==32 and all(c in '0123456789abcdef' for c in nonce)
                 and xbmcgui.Window(10000).getProperty(ACK)==nonce)
 

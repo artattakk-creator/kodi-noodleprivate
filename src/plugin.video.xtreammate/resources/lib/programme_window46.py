@@ -75,12 +75,13 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
      from programme_events46 import load
      from media_art import local_art,request as request_logos
      value=load(self.portal,self.channel,self.selected)
+     value['_detail93']=True
      if self.selected and self.selected.get('_no_art_request68'):value['_no_art_request68']=True
      logos88=__import__('logo_manifest86').read(self.portal,[self.channel])
      value['logo']=logos88.get(str(self.channel.get('sid')),local_art(self.channel)['thumb']);request_logos([self.channel])
      from programme_art46 import cached
      from programme_requests68 import request
-     value['_art68']=cached(value)
+     value['_art68']=__import__('programme_preview67').shared(value) or cached(value)
      if not self._cancel.is_set():request(value,priority=True)
      future.set_result(value)
     except Exception:future.set_exception(RuntimeError('PROGRAMME_READ_FAILED'))

@@ -6,6 +6,7 @@ from pathlib import Path
 @lru_cache(maxsize=1)
 def delta92():return json.loads((Path(__file__).parent/'fixtures/stabilization_02992_delta.json').read_text())
 def without92(source,module):
+ source=__import__('stabilization_contract93').without93(source,module)
  binary=isinstance(source,bytes);raw=source if binary else source.encode();name=str(module)
  for path,change in delta92()['modules'].items():
   if name not in (path,Path(path).name,Path(path).stem):continue

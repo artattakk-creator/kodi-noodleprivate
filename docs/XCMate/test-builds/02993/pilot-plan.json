@@ -1,0 +1,36 @@
+{
+  "android_status": "ANDROID_NOT_TESTED",
+  "channel": "PILOT_ONLY",
+  "live_baseline_sha256": {
+    "addons.xml": "c094b14edc1320f22aa2ca48c67cdc06b6e4899bf160e72d50a4b1515a27427b",
+    "addons.xml.md5": "f17de59cc2e0fbff7d7ad1ab55946b9e92d47aab0343ce5c70b484f625b780c7",
+    "index.html": "43fe808d970653ddaee32202753ea1633342c1bd631afbc485f1559d6acb6076",
+    "online-test/addons.xml": "79dcc3789d3de06214bc0761c46bbf9c077ce935dfbd815c11ed5874f205b90b",
+    "online-test/addons.xml.md5": "b2d6c35de757411311be7800c2c47ebac371f4a5f7250fb6d7c535bf86edf04b",
+    "online-test/index.html": "a449a1dffca1df1ab223b614ecbbb78552090a06bb987ca2188b2701731f9a4a",
+    "online-test/manifest.json": "4291919b8065a5036f5ff17f270f6cc39a9fbd1187d03cb6d1825f525384ee75"
+  },
+  "merge_or_publish_authorized": false,
+  "package": {
+    "bytes": 4709776,
+    "crc": "PASS",
+    "files": 873,
+    "sha256": "82dfa3963483ee8bb3f1e292f641cba5218ab07cdfb08bcc64dd76ec380300a3",
+    "source_bytes": "PASS",
+    "version": "0.1.29.93"
+  },
+  "proposed_sha256": {
+    "online-test/addons.xml": "955eb520fa8f8218eef88a4ec98d51aca4f1996d3ee81f8e48495b144b5bff2f",
+    "online-test/addons.xml.md5": "cde982ab2235ae341a0539d58485fc4c7f8927acb8a88cbd91606ea2da4e1baa",
+    "online-test/manifest.json": "16f108a6ffbc581a51d84797d180f8786864bc143082f411535e788dd2cc949e",
+    "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.93.zip": "82dfa3963483ee8bb3f1e292f641cba5218ab07cdfb08bcc64dd76ec380300a3",
+    "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.93.zip.sha256": "d15b7eac3a1903896a83317da1131c9f8b3480491d3a5220b42e92a48e55b5c2"
+  },
+  "repository_released": false,
+  "source_base": "3e1d6f87787baa95d24cc4e7c83c24914db31364",
+  "source_merged": false,
+  "status": "REPOSITORY_STAGED_OFFLINE",
+  "version": "0.1.29.93",
+  "version_bump": true,
+  "zip_verified": true
+}

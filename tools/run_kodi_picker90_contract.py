@@ -10,7 +10,7 @@ def main():
  root=Path(__file__).resolve().parents[1];report=a.report_dir.resolve();report.mkdir(parents=True,exist_ok=True);archive=report/'skin.zip'
  addon_source=root/'src/plugin.video.xtreammate'
  if a.addon_zip:
-  from release_candidate92 import inspect_package
+  from release_candidate93 import inspect_package
   proof=inspect_package(a.addon_zip)
   unpacked=report/'verified-addon91'
   unpacked.mkdir()
@@ -70,13 +70,13 @@ pactl list short sinks > /root/picker90-native-audio-sinks.txt
 import xml.etree.ElementTree as E
 source=Path('/xcmate');installed=Path('/root/.kodi/addons/plugin.video.xtreammate')
 node=E.parse(installed/'addon.xml').getroot()
-assert (node.get('id'),node.get('version'))==('plugin.video.xtreammate','0.1.29.92')
+assert (node.get('id'),node.get('version'))==('plugin.video.xtreammate','0.1.29.93')
 files=[p for p in source.rglob('*') if p.is_file() and '__pycache__' not in p.parts and p.name!='addon.xml']
 assert all((installed/p.relative_to(source)).read_bytes()==p.read_bytes() for p in files)
 print(len(files))
 """
    verified=run('exec',name,'python3','-c',code91,capture_output=True,text=True)
-   proof.update(source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip(),installed_version='0.1.29.92',unchanged_installed_nonmanifest_files=int(verified.stdout.strip()),fixture_manifest_adapted=True,fixture_service_disabled=True,fixture_plugin_entry=True,android='ANDROID_NOT_TESTED')
+   proof.update(source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip(),installed_version='0.1.29.93',unchanged_installed_nonmanifest_files=int(verified.stdout.strip()),fixture_manifest_adapted=True,fixture_service_disabled=True,fixture_plugin_entry=True,android='ANDROID_NOT_TESTED')
    (report/'package-proof91.json').write_text(json.dumps(proof,indent=2)+'\n')
 
  finally:
@@ -92,6 +92,7 @@ print(len(files))
   except (ValueError,subprocess.CalledProcessError):pass
   files90=[('/root/picker90-diagnostic.json','picker90-diagnostic.json'),('/root/picker90-registry.json','picker90-registry.json'),('/root/picker90-history.json','picker90-history.json'),('/root/picker90.json','picker90.json'),('/root/picker90-error.txt','picker90-error.txt'),('/root/picker90-native-audio-sinks.txt','picker90-native-audio-sinks.txt'),('/tmp/xcmate-native-pulse.log','native-pulse.log'),('/root/.kodi/temp/kodi.log','synthetic-kodi.log')]
   files90.extend([('/root/groups90.json','groups90.json'),('/root/visible84-groups90-native.png','visible84-groups90-native.png'),('/root/visible84-groups90-failure.png','visible84-groups90-failure.png')])
+  files90.extend([('/root/storage93.json','storage93.json'),('/root/storage93.png','storage93.png')])
   files90.append(('/root/picker90-native-audio-policy.json','picker90-native-audio-policy.json'))
   files90.append(('/root/groups90-failure.json','groups90-failure.json'))
   files90.extend([('/root/picker90-experiments.json','picker90-experiments.json'),('/root/picker90-experiment-error.txt','picker90-experiment-error.txt')])

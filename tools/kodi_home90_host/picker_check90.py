@@ -256,8 +256,32 @@ def check90(cycle,errors):
   portals92=__import__('portals').get_active();check(bool(portals92),'GROUP92_FIXTURE_NO_PORTAL')
   groups92=__import__('groups90').run(portals92[0],service_poll90,group_capture92,check)
  six438=__import__('six_rows438').run(home,bindings,spinner_receipts438,service_poll90,cycle=cycle)
+ if cycle==0:storage93(until,check)
  rows=ast.literal_eval(props.read_text(encoding='utf-8'));foreign=[r for r in rows if r[2].startswith('widgetPath') and 'plugin://script.skin.helper.widgets/' in r[3]]
  check(len(foreign)>=2 and foreign==before['foreign_paths'],'PICKER90_FOREIGN_DEFINITIONS_CHANGED')
  check(hashlib.sha256(props.read_bytes()).hexdigest()==before['properties_sha256'],'PICKER90_NATIVE_REFRESH_CHANGED_PROPERTIES')
  report=dict(status='PASS',cycle=cycle,groups92=groups92,native_cases=cases,native_spinner438=spinners438,six_rows438=six438,foreign_definitions=len(foreign),properties_sha256=before['properties_sha256'],original_compiler_sha256=hashlib.sha256(tree.read_bytes()).hexdigest(),android='ANDROID_NOT_TESTED')
  write_receipt90('/root/picker90-cold-'+str(cycle)+'.json',report);print('PICKER90_COLD '+json.dumps(report),flush=True);return report
+
+
+def storage93(until,check):
+ from localization import tr
+ from storage_ui92 import create_window
+ value=dict(categories=[dict(category='EPG_DB',files=1,bytes=129458176,complete=True,volume=dict(volume='synthetic93',mount_key='synthetic93',fs='SYNTHETIC',available=144609280,total=4034297856,reserve=1073741824)),dict(category='KODI_THUMBNAILS',files=0,bytes=0,complete=False,volume={})])
+ window=create_window(value);previous=xbmcgui.getCurrentWindowDialogId()
+ try:
+  window.show()
+  until(lambda:window.getControl(101).getLabel()==tr(38730),'STORAGE93_NATIVE_TITLE_MISSING')
+  check(window.getControl(101).getLabel()!='Plot','STORAGE93_WRONG_NATIVE_TITLE')
+  check(window.getControl(103).getText().find('"categories"')<0,'STORAGE93_RAW_JSON')
+  check(tr(38738) in window.getControl(103).getText(),'STORAGE93_PARTIAL_NOT_MARKED')
+  image=Path('/root/storage93.png');xbmc.executebuiltin('TakeScreenshot('+str(image)+')',wait=False)
+  def decoded93():
+   try:
+    with Image.open(image) as frame:frame.load();return frame.width>0 and frame.height>0
+   except (OSError,ValueError):return False
+  until(decoded93,'STORAGE93_SCREENSHOT_INCOMPLETE')
+  xbmc.executebuiltin('Action(Back)',wait=False)
+  until(lambda:xbmcgui.getCurrentWindowDialogId()==previous,'STORAGE93_BACK_DID_NOT_RETURN')
+  write_receipt90('/root/storage93.json',dict(status='PASS',native_title=tr(38730),partial_marked=True,raw_json=False,screenshot='storage93.png',back_returned=True,platform='LINUX_KODI_SYNTHETIC',android='ANDROID_NOT_TESTED'))
+ finally:window.close()

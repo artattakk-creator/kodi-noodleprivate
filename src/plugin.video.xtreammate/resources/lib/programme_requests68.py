@@ -48,7 +48,7 @@ def request(event,priority=False):
   tag=identity(value);slot=str(int(tag[:8],16)%SLOTS)
   from programme_status70 import since
   prior70=_read('request.'+slot)
-  record=dict(event=value,tag=tag,scope=scope(),at=int(time.time()//5)*5,priority=bool(priority),since70=since(prior70,tag))
+  record=dict(event=value,tag=tag,scope=scope(),at=int(time.time()//5)*5,priority=bool(priority),since70=since(prior70,tag),detail93=bool(event.get('_detail93')))
   __import__('programme_deadline80').retry_window(record,prior70)
   raw=json.dumps(record,separators=(',',':'),allow_nan=False)
   if len(raw.encode())>MAX_BYTES:return False
@@ -211,6 +211,7 @@ def drain(cancel=lambda:False):
     status(current,'TMDB_LOOKUP_DISABLED')
     mark_seen(tag,policy,now)
     continue
+   if value.get('detail93'):current['_detail93']=True
    accepted=enqueue(current,allow_lookup=allow,local_image63=setting_bool('programme_art_local69',False),priority68=2 if value.get('priority') else False)
    mark_seen(tag,policy,now if accepted else now-8)
    processed+=1

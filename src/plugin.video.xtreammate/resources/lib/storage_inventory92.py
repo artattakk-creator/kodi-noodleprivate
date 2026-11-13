@@ -59,9 +59,12 @@ def collect(cancel=lambda: False, progress=lambda **kw: None, budget=4):
     from android_storage83 import measure, public
     deadline = time.monotonic() + max(.1, min(20, budget))
     rows = []
-    for label, path, own in roots():
+    entries=roots()
+    per_class=max(.01,min(.5,max(.1,budget)/max(1,len(entries))))
+    for number,(label, path, own) in enumerate(entries):
         if cancel():break
-        current = dict(category=label, own=own, **size(path, deadline))
+        current = dict(category=label, own=own, **__import__('storage_scan93').step(path,per_class))
+        progress(stage='INVENTORY',done=number+1,files=len(entries))
         try:current['volume'] = public([measure(str(path), label)])[0]
         except OSError:current['volume'] = dict(role=label, error='VOLUME_UNAVAILABLE')
         if path.suffix == '.sqlite':
@@ -70,7 +73,8 @@ def collect(cancel=lambda: False, progress=lambda **kw: None, budget=4):
         if path.suffix=='.sqlite' and path.exists() and not path.is_symlink():current['sqlite']=database(path)
         rows.append(current)
     return dict(at=time.time(), categories=sorted(rows, key=lambda r:r['bytes']+r.get('wal_bytes',0), reverse=True),
-                measurement='READ_ONLY_NO_ANDROID_QUOTA_ASSUMPTION', android='ANDROID_NOT_TESTED')
+                measurement='READ_ONLY_NO_ANDROID_QUOTA_ASSUMPTION', complete=len(rows)==len(entries) and all(r['complete'] for r in rows),
+                runtime_android=bool(__import__('android_storage83').android()),android='ANDROID_NOT_TESTED')
 
 
 def database(path):
