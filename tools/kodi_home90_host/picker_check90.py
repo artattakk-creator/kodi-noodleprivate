@@ -254,7 +254,8 @@ def check90(cycle,errors):
      return picture,rgb
     except (OSError,ValueError):continue
    raise RuntimeError('GROUP92_SCREENSHOT_INCOMPLETE')
-  groups92=__import__('groups90').run(portal,service_poll90,group_capture92,check)
+  portals92=__import__('portals').get_active();check(bool(portals92),'GROUP92_FIXTURE_NO_PORTAL')
+  groups92=__import__('groups90').run(portals92[0],service_poll90,group_capture92,check)
  rows=ast.literal_eval(props.read_text(encoding='utf-8'));foreign=[r for r in rows if r[2].startswith('widgetPath') and 'plugin://script.skin.helper.widgets/' in r[3]]
  check(len(foreign)>=2 and foreign==before['foreign_paths'],'PICKER90_FOREIGN_DEFINITIONS_CHANGED')
  check(hashlib.sha256(props.read_bytes()).hexdigest()==before['properties_sha256'],'PICKER90_NATIVE_REFRESH_CHANGED_PROPERTIES')
