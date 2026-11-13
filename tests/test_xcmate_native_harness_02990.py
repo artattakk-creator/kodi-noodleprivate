@@ -4,6 +4,30 @@ from pathlib import Path
 from unittest import mock
 ROOT=Path(__file__).resolve().parents[1]
 class NativeHarness90(unittest.TestCase):
+ def test_soak_supervisor_keeps_error_checks_and_all_required_measurements(self):
+  original=(ROOT/'tools/kodi_home87_host/probe87.py').read_text()
+  captured={}
+  class Source:
+   def read_text(self,**kwargs):return original
+  def stop(source,filename,mode):
+   captured['source']=source
+   return builtins.compile('pass',filename,mode)
+  ns={'Path':lambda *args:Source(),'compile':stop}
+  with mock.patch.dict('sys.modules',{'pathlib':types.SimpleNamespace(Path=lambda *args:Source())}):
+   builtins.exec(builtins.compile((ROOT/'tools/kodi_home90_host/probe90.py').read_bytes(),'probe90','exec'),ns)
+  changed=captured['source']
+  self.assertEqual(changed.replace('range(27000)','range(18000)'),original)
+  self.assertIn('range(2400)',changed)
+  self.assertIn("'range(27000)'",changed)
+  # The underlying supervisor still fails immediately on a real GUI error.
+  bottom=(ROOT/'tools/kodi_home84_host/probe84.py').read_text()
+  self.assertIn("if Path('/root/gui66-error.txt').exists():raise RuntimeError",bottom)
+  phase=(ROOT/'tools/kodi_home90_host/phase90.py').read_text()
+  self.assertIn('duration=0 if cold else 900',phase)
+  self.assertIn('else 899',phase)
+  runner=(ROOT/'tools/run_kodi_home90_contract.py').read_text()
+  self.assertIn("for i in (1,2,3):",runner)
+  self.assertIn("probe90.py','/work/probe.py'",runner)
  def test_original_manager_selects_home_even_when_search_is_first(self):
   source=ast.parse((ROOT/'tools/kodi_home90_host/picker_check90.py').read_text())
   node=next(n for n in source.body if isinstance(n,ast.FunctionDef) and n.name=='home_position90')
