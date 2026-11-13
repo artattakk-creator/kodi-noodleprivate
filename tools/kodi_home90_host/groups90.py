@@ -21,6 +21,20 @@ def run(portal,pump,capture,check):
    nav.tick()
    if predicate():return
    xbmc.sleep(30)
+  marker92=xbmcgui.Window(10000)
+  raw_count92=marker92.getProperty('XtreamMate.NativeActionCount')
+  diagnostic92=dict(reason=reason,mode=nav.mode,window=xbmcgui.getCurrentWindowId(),dialog=xbmcgui.getCurrentWindowDialogId(),native_count=int(raw_count92) if raw_count92.isdigit() else -1,last_left=marker92.getProperty('XtreamMate.LastHandledKey')=='left',exiting=bool(getattr(nav,'_exiting',False)),guide_handoff=bool(getattr(nav,'_guide_handoff',False)))
+  if reason.startswith('GROUP90_LEFT_LEVEL'):
+   # Research only. A successful directed action does NOT turn the failed
+   # global-action test green; always raise the original failure below.
+   did92=xbmcgui.getCurrentWindowDialogId()
+   if xbmcgui.Window(did92).getProperty('XtreamMate.NavigatorIdentity')==nav._window_nonce:
+    xbmc.executebuiltin('Action(Left,'+str(did92)+')',wait=False)
+    end92=time.monotonic()+2
+    while nav.mode==diagnostic92['mode'] and time.monotonic()<end92:nav.tick();xbmc.sleep(30)
+    diagnostic92['directed_mode']=nav.mode
+    diagnostic92['directed_count']=marker92.getProperty('XtreamMate.NativeActionCount')
+  Path('/root/groups90-failure.json').write_text(json.dumps(diagnostic92,indent=2))
   try:capture('visible84-groups90-failure')
   except Exception:pass
   try:focus90=nav.getFocusId()
