@@ -120,3 +120,19 @@ class P093(Fixture,unittest.TestCase):
  def test_detail_context_does_not_change_event_identity(self):
   m=importlib.import_module('programme_requests68');event=dict(pid='p',sid='1',title='Galileo',start=self.now,stop=self.now+100)
   self.assertEqual(m.identity(event),m.identity(dict(event,_detail93=True)))
+ def test_120_simulated_stop_receipts_cannot_ack_early_or_repost(self):
+  import xbmcgui,xbmc
+  m=importlib.import_module('stop_barrier93');window=xbmcgui.Window(10000)
+  with mock.patch('exit_jobs.save'),mock.patch('exit_jobs.trace'),mock.patch.object(xbmc,'executebuiltin') as post:
+   for n in range(120):
+    window.clearProperty(m.ACK)
+    v=dict(token=['live',dict(nonce=str(n))],native_posted=True,commands_enqueued93=True,worker_done=False,posted_at75=time.monotonic())
+    m.observe(v);self.assertFalse(v.get('progress_posted93'));self.assertFalse(m.returned(v))
+    v['posted_at75']-=6;m.observe(v);m.observe(v)
+    self.assertFalse(m.returned(v));window.setProperty(m.ACK,v['progress_nonce93']);self.assertTrue(m.returned(v))
+   self.assertEqual(post.call_count,120);self.assertTrue(all('PlayerControl' not in c.args[0] for c in post.call_args_list))
+ def test_open_backup_is_protected_and_resumes_after_handle_release(self):
+  m=importlib.import_module('epg_cleanup93');old,keep=self.seed_backups();file=self.folder/'guide_backups44'/old['backup']
+  with file.open('rb') as opened:
+   self.assertTrue(opened.read(1));r=m.prune();self.assertEqual(r['deleted_files'],0);self.assertTrue(file.exists())
+  r=m.prune();self.assertEqual(r['deleted_files'],1);self.assertFalse(file.exists())

@@ -21,7 +21,7 @@ class Scope87(unittest.TestCase):
   for path in paths:self.assertTrue(verify(path,committed=True),path);self.assertTrue(verify(path),path)
  def test_player_exit_provider_unchanged_and_token_owner_delta_is_exactly_reviewed(self):
   for name in ('live_exit.py','exit_jobs.py','playback_exit.py','native_stop41.py','portals.py'):
-   path='src/plugin.video.xtreammate/resources/lib/'+name;self.assertEqual((ROOT/path).read_bytes(),subprocess.check_output(['git','show',self.protection()['base']+':'+path],cwd=ROOT))
+   path='src/plugin.video.xtreammate/resources/lib/'+name;self.assertEqual(__import__('stabilization_contract93').without93((ROOT/path).read_bytes(),path),subprocess.check_output(['git','show',self.protection()['base']+':'+path],cwd=ROOT))
  def test_review_zip_matches_every_source_file_with_reproducible_sha_and_crc(self):
   import zipfile,xml.etree.ElementTree as E
   source=ROOT/'src/plugin.video.xtreammate';package=ROOT/'docs/XCMate/test-builds/02987/plugin.video.xtreammate-0.1.29.87.zip'

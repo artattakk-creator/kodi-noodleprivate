@@ -198,6 +198,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         mapping85=__import__('programme_mapping85').current(event)
         if mapping85 and mapping85.get('hidden'):return
         if mapping85 and mapping85.get('id'):
+            if mapping85.get('source') in ('tmdb','tvmaze') and not __import__('programme_candidates85').enabled(mapping85['source']):return
             # Existing proofs were checked above. New remote work must obey
             # the same visible-event admission as automatic lookups.
             if allow_lookup:
