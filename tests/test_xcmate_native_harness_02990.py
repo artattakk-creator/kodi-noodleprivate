@@ -79,6 +79,26 @@ class NativeHarness90(unittest.TestCase):
   self.assertIn('home,logo_case84,epg_case90)',outer)
   self.assertIn("__import__('home_activation78').prepare()",bottom)
   self.assertIn('NATIVE90_ACTIVATION_NOT_READY',bottom)
+  middle=ast.parse(captured['/base_gui86.py'])
+  baseline=next(n for n in middle.body if isinstance(n,ast.Assign) and any(isinstance(x,ast.Name) and x.id=='before_mapping93' for x in n.targets))
+  guard=next(n for n in middle.body if isinstance(n,ast.Expr) and isinstance(n.value,ast.Call) and len(n.value.args)>1 and isinstance(n.value.args[1],ast.Constant) and n.value.args[1].value=='SERIES85_SELECTION_WITHOUT_MANAGER_WROTE_MAPPING')
+  import tempfile
+  with tempfile.TemporaryDirectory() as folder:
+   target=Path(folder)/'mapping.json'
+   def check(ok,reason):
+    if not ok:raise AssertionError(reason)
+   for initial in (None,b'persisted prior mapping'):
+    if initial is None:target.unlink(missing_ok=True)
+    else:target.write_bytes(initial)
+    state=dict(mapping_path93=lambda:target,path=lambda:target,check=check)
+    builtins.exec(builtins.compile(ast.Module(body=[baseline],type_ignores=[]),'candidate-baseline','exec'),state)
+    code=builtins.compile(ast.Module(body=[guard],type_ignores=[]),'candidate-nonmutation','exec')
+    builtins.exec(code,state)
+    target.write_bytes(b'unexpected candidate mutation')
+    with self.assertRaises(AssertionError):builtins.exec(code,state)
+    if initial is not None:
+     target.unlink()
+     with self.assertRaises(AssertionError):builtins.exec(code,state)
 
  def test_original_manager_reacquires_owner_when_busy_dialog_replaces_it(self):
   tree=ast.parse((ROOT/'tools/kodi_home90_host/picker90.py').read_text())
