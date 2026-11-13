@@ -1,4 +1,4 @@
-"""Seven canonical sections; old directory URLs remain safe aliases."""
+"""Eight canonical sections including explicit storage; old directory URLs remain safe aliases."""
 from localization import tr
 SECTIONS=((36000,'accounts'),(36001,'live'),(36002,'epg'),(36003,'media'),(36004,'appearance'),(38700,'storage'),(36005,'system'),(36006,'experimental'))
 ALIASES={'startup':'live','groups':'live','remote':'appearance','player':'media','maintenance':'system','about':'system','designs':'appearance'}

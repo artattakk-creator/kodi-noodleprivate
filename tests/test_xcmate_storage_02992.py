@@ -24,6 +24,11 @@ class Storage92(Fixture,unittest.TestCase):
   db.execute('PRAGMA journal_mode=WAL');db.execute('CREATE TABLE programmes(pid,cid,start,stop,title)');db.execute('CREATE INDEX expiry ON programmes(stop)')
   db.executemany('INSERT INTO programmes VALUES(?,?,?,?,?)', [('p','c',i,i+1,'x'*1000) for i in range(1600)])
   db.commit();db.close();return file
+ def test_failed_bulk_reserve_creates_no_empty_epg_or_catalogue_database(self):
+  for name,file in [('guide_store','guide_v1.sqlite'),('library_index','library_v1.sqlite')]:
+   module=importlib.import_module(name);target=self.folder/('new92-'+file)
+   with mock.patch('import_budget.check_space',side_effect=OSError('RESERVE_BLOCKED')),self.assertRaises(OSError):module.connect(str(target),write=True)
+   self.assertFalse(target.exists())
  def test_small_metadata_can_persist_below_bulk_import_reserve(self):
   with self.free(16*1024**2):
    value=self.metadata.check(self.folder/'programme_manual85.json',2048)

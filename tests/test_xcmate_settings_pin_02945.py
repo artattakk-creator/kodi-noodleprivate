@@ -11,7 +11,7 @@ class SettingsPIN45(Fixture,unittest.TestCase):
   self.dialog=types.SimpleNamespace(input=mock.Mock(return_value=''),notification=mock.Mock(),select=mock.Mock(return_value=-1))
   patch=mock.patch.object(sys.modules['xbmcgui'],'Dialog',return_value=self.dialog);patch.start();self.addCleanup(patch.stop)
  def test_seven_canonical_sections_exactly_match_native_categories(self):
-  self.assertEqual([k for _,k in self.s.SECTIONS],['accounts','live','epg','media','appearance','system','experimental'])
+  self.assertEqual([k for _,k in self.s.SECTIONS],['accounts','live','epg','media','appearance','storage','system','experimental'])
   self.assertEqual([n.get('label') for n in ET.parse(ADDON/'resources/settings.xml').getroot()],[str(n) for n,_ in self.s.SECTIONS])
  def test_only_four_sixes_allow_entry_and_nested_calls_prompt_once(self):
   self.dialog.input.return_value='6666';calls=[]
@@ -52,7 +52,7 @@ class SettingsPIN45(Fixture,unittest.TestCase):
  def test_unreleased_actions_only_in_pin_submenus_and_aliases_are_safe(self):
   for name,rows in self.s.ROWS.items():
    self.assertFalse(any(action in self.p.ACTIONS for _,action,_ in rows),name)
-  for alias in ('startup','groups','remote','player','storage','maintenance','about','designs'):self.assertIn(alias,self.s.ALIASES)
+  for alias in ('startup','groups','remote','player','maintenance','about','designs'):self.assertIn(alias,self.s.ALIASES)
   all_actions={a for rows in self.s.EXPERIMENTAL.values() for _,a,_ in rows}
   self.assertTrue({'record_now','recordings_manage','download_folder','guide_timers','clear_cache','popup_probe','remote_diagnostics'}<=all_actions)
  def test_native_experimental_fields_are_hidden_and_open_action_is_gated(self):

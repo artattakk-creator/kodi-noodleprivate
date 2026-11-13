@@ -19,7 +19,7 @@ def retained(path):
  assert not subprocess.run(['git','ls-files','--error-unmatch',path],cwd=ROOT,capture_output=True).returncode==0,'TRACKED_PUBLICATION_MISSING'
  return (ROOT/'online-test/plugin.video.xtreammate'/Path(path).name).read_bytes()
 def approved(path,base=OLD):
- return subprocess.check_output(['git','show',(BASE if path in ('addons.xml','addons.xml.md5','online-test/addons.xml','online-test/addons.xml.md5','online-test/manifest.json','index.html','online-test/index.html') else base)+':'+path],cwd=ROOT)
+ return subprocess.check_output(['git','show',('002ba995dc3ce6a6f72037261ad28c70e2d87d80' if path in ('addons.xml','addons.xml.md5','online-test/addons.xml','online-test/addons.xml.md5','online-test/manifest.json','index.html','online-test/index.html') else base)+':'+path],cwd=ROOT)
 
 def committed(path):
  result=subprocess.run(['git','show','HEAD:'+path],cwd=ROOT,capture_output=True)

@@ -49,6 +49,6 @@ def manage(portal):
     if rows is None:return
     chosen=selected(portal['id']);ids=[str(g['cid']) for g in rows]
     preselect=[i for i,cid in enumerate(ids) if chosen is None or cid in chosen]
-    result=xbmcgui.Dialog().multiselect(tr(38729),[str(g.get('title') or g.get('name') or g['cid']) for g in rows],preselect=preselect)
+    result=__import__('menu_icons45').multiselect(xbmcgui.Dialog(),tr(38729),[str(g.get('title') or g.get('name') or g['cid']) for g in rows],preselect=preselect)
     if result is None:return
     save(portal['id'],[ids[i] for i in result if type(i) is int and 0<=i<len(ids)])

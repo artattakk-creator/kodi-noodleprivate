@@ -61,7 +61,7 @@ class Mapping85(Fixture,unittest.TestCase):
   self.maps.set_mapping(self.event,automatic=True);self.assertIsNone(self.maps.current(self.event));self.assertIsNotNone(self.maps.current(other));self.assertGreater(self.maps.epoch(self.event),epoch)
  def test_failed_reserve_write_cannot_report_saved_or_remove_previous(self):
   row=dict(id=19,source='tmdb',year=2019,country=['GB'],verified85=True);self.maps.set_mapping(self.event,row);before=self.maps.path().read_bytes()
-  with mock.patch('import_budget.check_space',side_effect=OSError('RESERVE_BLOCKED')):
+  with mock.patch('storage_metadata92.check',side_effect=OSError('RESERVE_BLOCKED')):
    with self.assertRaises(OSError):self.maps.set_mapping(self.event,dict(row,id=21))
   self.assertEqual(self.maps.path().read_bytes(),before);self.assertEqual(self.maps.current(self.event)['id'],19)
  def test_hiding_suggestion_is_per_work_and_reversible(self):

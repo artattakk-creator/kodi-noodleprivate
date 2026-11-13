@@ -84,6 +84,9 @@
     <setting id="remote_xtream" type="action" label="XCMate: Links / OK Fernbedienung aktivieren" action="RunPlugin(plugin://plugin.video.xtreammate/?action=remote_setup)" />
     <setting id="xcmate_ui_language" type="text" label="32620" default="kodi" visible="false" />
   </category>
+  <category label="38700">
+    <setting id="storage92_open" type="action" label="38700" action="RunPlugin(plugin://plugin.video.xtreammate/?action=storage92)" />
+  </category>
   <category label="36005">
     <setting id="cache_playlists" type="bool" label="32251" default="true" />
     <setting id="cache_epg" type="bool" label="32252" default="true" />

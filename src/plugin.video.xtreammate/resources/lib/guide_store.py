@@ -21,6 +21,9 @@ def path():
 
 def connect(filename=None,write=False):
     existed=os.path.isfile(filename or path())
+    if not existed:
+        from import_budget import check_space
+        check_space(filename or path())  # Never poison a new path with an empty DB on reserve failure.
     db=sqlite3.connect(filename or path(),timeout=2)
     db.row_factory=sqlite3.Row
     if existed:
@@ -29,8 +32,6 @@ def connect(filename=None,write=False):
             try:require(db)
             except Exception:db.close();raise
         return db
-    from import_budget import check_space
-    check_space(filename or path())
     db.execute('PRAGMA auto_vacuum=INCREMENTAL')
     db.execute('PRAGMA journal_mode=WAL')
     db.execute('PRAGMA max_page_count=2147483646')

@@ -9,7 +9,7 @@ def show(value):
 def image_choice():
     import xbmcgui
     from artwork_ui import job
-    choice=xbmcgui.Dialog().select(tr(38703),[tr(38704),tr(38705),tr(38706)])
+    choice=__import__('menu_icons45').select(xbmcgui.Dialog(),tr(38703),[tr(38704),tr(38705),tr(38706)])
     if choice in (0,1,2):
         decision=('yes','no','later')[choice]
         return job(lambda cancel,progress:__import__('storage_policy92').choose(decision))
@@ -20,7 +20,7 @@ def pick_usb():
     from storage_sources import external_sources
     values=job(lambda cancel,progress:external_sources())
     if not values:return None
-    index=xbmcgui.Dialog().select(tr(38707),[v['label'] for v in values])
+    index=__import__('menu_icons45').select(xbmcgui.Dialog(),tr(38707),[v['label'] for v in values])
     if 0<=index<len(values):return xbmcgui.Dialog().browseSingle(3,tr(38707),'files',defaultt=values[index]['path']) or None
 
 def manage(setup=False):
@@ -32,7 +32,7 @@ def manage(setup=False):
     if setup:image_choice()
     labels=[tr(i) for i in (38701,38702,38703,38707,38708,38709,38710,38711,38712,38713,38714)]
     while True:
-        choice=dialog.select(tr(38700),labels)
+        choice=__import__('menu_icons45').select(dialog,tr(38700),labels)
         if choice<0:return
         try:
             if choice==0:show(job(lambda cancel,progress:__import__('storage_inventory92').collect(cancel,progress)))
@@ -84,7 +84,7 @@ def setup(nonce):
         policy=job(lambda cancel,progress:read())
         # A legacy profile must not have its existing source opt-ins reset.
         if policy and policy['image_epg']=='legacy':image_choice()
-        target=dialog.select(tr(38724),[tr(38725),tr(38707),tr(38726),tr(38706)])
+        target=__import__('menu_icons45').select(dialog,tr(38724),[tr(38725),tr(38707),tr(38726),tr(38706)])
         if target==0:
             # Internal is the existing default. Never undo an active migration.
             config=job(lambda cancel,progress:__import__('artwork_config').read())
