@@ -37,10 +37,10 @@
     "kodi_version": "21.2 Debian 2:21.2+dfsg-4"
   },
   "full_host": {
-    "run_id": 43504728614,
+    "run_id": 43511300880,
     "status": "PASS",
-    "tests": 3939,
-    "seconds": 908.27,
+    "tests": 3940,
+    "seconds": 936.787,
     "branding": 11,
     "po": 17
   },
@@ -69,7 +69,7 @@
     "rerun_job": 132168824812
   },
   "latest_test_harness_commit": "86462cb1f4845bf4d80fcd1c111f478a59079be7",
-  "latest_test_harness_scope": "No addon source or ZIP changes; preserve 900s soak and all gates, synthetic supervisor45min",
+  "latest_test_harness_scope": "No addon or ZIP changes; full 900s soak and all gates retained; synthetic supervisor45min; candidate-only dialogue preserves existing mapping bytes",
   "latest_full_host": {
     "run_id": 43511300880,
     "status": "PASS",
@@ -82,11 +82,25 @@
     "initial_run": 43504728567,
     "initial_status": "FAIL_VISIBLE84_TIMEOUT",
     "corrected_run": 43511295707,
-    "status": "IN_PROGRESS",
+    "status": "PASS_BOTH_RESOLUTIONS_THREE_COLD_RESTARTS",
     "targeted_tests": 31,
     "targeted_seconds": 4.487,
     "android": "ANDROID_NOT_TESTED",
     "cold_failure": "OLD_CANDIDATE_GATE_EXPECTED_NO_MAPPING_AFTER_EXPLICIT_PRIOR_SAVE",
-    "cold_fix": "Byte-identical before/after mapping guard, no reset"
+    "cold_fix": "Byte-identical before/after mapping guard, no reset",
+    "resolutions": [
+      "1280x720",
+      "1920x1080"
+    ],
+    "warm_seconds_min": 900,
+    "cold_restarts": 3
+  },
+  "previous_full_host": {
+    "run_id": 43504728614,
+    "status": "PASS",
+    "tests": 3939,
+    "seconds": 908.27,
+    "branding": 11,
+    "po": 17
   }
 }
