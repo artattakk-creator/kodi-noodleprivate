@@ -19,11 +19,17 @@ def run(portal,rows,pump,capture,cold,check,home):
  art_storage82.capacity=measured;station_logos88.fetch=counted
  try:
   if cold:check(len(before)==88,('LOGO89_COLD_MANIFEST_MISSING',len(before)))
-  for tick in range(70):
+  # The inherited phase intentionally rejected writes at 27 MiB and set the
+  # real 60-second per-source backoff. Capacity is now explicitly positive;
+  # wait for that existing cooldown and worker cadence instead of burning 70
+  # immediate calls in a few seconds. Never clear _due or mock the clock.
+  # This is fixture phase sequencing, not a larger player/GUI timeout.
+  resume89=time.monotonic()+90
+  while time.monotonic()<resume89:
    station_logos88.prepare(portal,rows)
    refs=logo_manifest86.read(portal,rows,with_fallback=False)
    if len(refs)==88:break
-   pump()
+   pump();xbmc.sleep(250)
   check(len(refs)==88,('LOGO89_PERSISTENT_LOGOS_MISSING',len(refs)))
   logo_store89._verified.clear();refs=logo_manifest86.read(portal,rows,with_fallback=False)
   check(len(refs)==88,'LOGO89_COLD_HASH_READBACK_FAILED')

@@ -1,0 +1,34 @@
+{
+  "version": "0.1.29.92",
+  "state": "DONE",
+  "at": 1794563681.7578325,
+  "free_before": 2193416192,
+  "temp": {
+    "files": 1,
+    "bytes": 16777216
+  },
+  "databases": [
+    {
+      "category": "guide_v1.sqlite",
+      "code": "NOT_CREATED",
+      "rows": 0
+    },
+    {
+      "category": "programme_meta46.sqlite",
+      "code": "NOT_CREATED",
+      "rows": 0
+    },
+    {
+      "category": "programme_artwork.sqlite",
+      "code": "NOT_CREATED",
+      "rows": 0
+    }
+  ],
+  "free_after": 2210189312,
+  "artwork_orphans": "OPEN_REFERENCE_PROOF_REQUIRED",
+  "kodi_cache": "PROTECTED",
+  "fallback90": "PROTECTED",
+  "observed_free_change": 16773120,
+  "evidence": "LINUX_HOST_SYNTHETIC_OLD_OWN_TEMP_NOT_ANDROID",
+  "protected_file_preserved": true
+}

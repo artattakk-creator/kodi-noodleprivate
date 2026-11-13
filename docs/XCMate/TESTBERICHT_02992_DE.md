@@ -1,27 +1,56 @@
-# Testbericht .92 – laufende vollständige Prüfung
+# XCMate 0.1.29.92 – Test- und Freigabebericht
 
-Gezielt bestanden: 29 neue .92-Tests (Speicher/Metadaten/Integrität/Mapping/Home-Filter/Releasevertrag), 40 Tests in Speicher-/Mapping-/externen Bildmodulen, 81 bestehende Kernprüfungen (Migration inkl. 20.000 Bildern, EPG-Grenzen, Bildsuche, sechs Reihen), 39 Spinner-/Sechsreihenprüfungen. Diese Gruppen überlappen; nicht als Summe unterschiedlicher Tests ausgeben. Sprachkatalogvalidierung PASS.
+Stand: 13.11.2026. Source-PR [#448](https://github.com/artattakk-creator/kodi-noodleprivate/pull/448), getrennter Installer-PR [#447](https://github.com/artattakk-creator/kodi-noodleprivate/pull/447). Basis main `002ba995dc3ce6a6f72037261ad28c70e2d87d80` (.91). Finale Codekorrektur `fa04b2710691845402de15c75eeaa84ca4ac80ef`.
 
-Vollständige Hostsuite wird auf dem endgültigen Source ausgeführt; GitHub-CI folgt auf dem Draft-PR. Erster Gesamtlauf abgebrochen, weil er einen inzwischen korrigierten EPG-Syntaxfehler enthielt. Nicht als PASS gewertet. Historische Publikationsprüfungen wurden auf den tatsächlich veröffentlichten Main-Stand aktualisiert; .91-Artefaktprüfungen bleiben erhalten, .92 hat eigene vollständige Paket-/Sourceprüfungen.
+**Keine Android-Abnahme, kein Merge und keine Repository-Veröffentlichung.** Die Matrix im Implementierungsbericht benennt insbesondere noch offene native Android-Playerfehler und nicht bewiesene Hardware-Platzentlastung. Ein ausführbarer RC ist keine vollständige P0-Freigabe.
 
-Lokaler nativer Kodi-Versuch: BLOCKED_ENV_STORAGE, Docker apt konnte wegen fehlenden Platzes im Test-Overlay nicht installieren (vor Kodi-Start). Kein Android- oder Anwendungs-FAIL daraus abgeleitet. Native Linux-Kodi-720p/1080p-Läufe in GitHub Actions auswerten, besonders tatsächliches Down 2530→2540; keine Move-Mocks, geänderten Sollwerte oder zusätzlichen Skips.
+## Paket und Reproduzierbarkeit
 
-Echte RK3528-/Android-Tests: vollständig ANDROID_NOT_TESTED. Reale interne Entlastung, USB-Bilddarstellung und Player-Freeze werden erst am Gerät abgenommen. Implementierungsbericht listet OPEN-Punkte ausdrücklich; insbesondere kein behaupteter Fix eines nativen Decoderhangs.
+- `test-builds/02992/plugin.video.xtreammate-0.1.29.92.zip`, 4.695.958 Bytes, 867 Mitglieder.
+- SHA256: `ab8715438aa1156a281e023ee42687c5cf480dd62707628231d214d545fadd6c`.
+- Canonical Build und jeder Source-Byte/ZIP-Mitglied/CRC geprüft; keine Profil-SQLites, privaten Logs, pyc oder zusätzlichen Mitglieder. Manifest-ID und Version geprüft.
+- `python tools/release_candidate92.py --output docs/XCMate/test-builds/02992` prüft zudem das **nur unter docs abgelegte Offline-Pilot-Proposal**. Live-Indizes sowie .90/.91- und .5.26-Pakete bleiben unverändert.
+- Der separate Installer .5.29 ist kein Bestandteil des XCMate-ZIP: SHA256 `674eaea4254395a5963c24012b09f9a59632cb8bb57b29f652c65cf9f77ff30e`, PR #447, 8 gezielte Tests PASS und [Installer-CI](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43387039231) PASS. 31 unveränderte .5.26-Dateien, nur Versionsmanifest/UI plus neue Speicherbrücke. Kein erneuter 48-Komponenten-Lauf beauftragt.
 
-## Nachprüfung der ersten vollständigen Läufe
+## Hostprüfungen
 
-Erster abgeschlossener Source-Stand 97555c1e: 3.898 Hosttests ausgeführt. CI: 27 FAIL, keine ERROR; lokal zusätzlich zwei Speicherfehler der Testumgebung. Die FAILs waren veraltete Freeze-Baselines nach der bereits genehmigten .91-Veröffentlichung, alte Reserve-Fault-Injection an der nun ersetzten Bulk-Prüfung, fehlende native Speicher-Kategorie/Icon-Picker und der beauftragte .92-Migrationsdelta im historischen Rohbyte-Guard. Diese Prüfungen wurden nicht entfernt/übersprungen: Baseline fest auf 002ba995, negative Speicherungstests an die tatsächliche begrenzte Metadatenprüfung gebunden, zusätzliche .92-Scopeprüfung bleibt streng.
+Unveränderlicher Stand `62c2bc39`: **3.906 Tests PASS**, lokal 929,423 s und [vollständige GitHub-CI PASS](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43401683846). Zusätzlich 11 Branding-pytests und alle 17 PO-Kataloge PASS. Die 36 neuen .92-Tests sind im Gesamtlauf enthalten, nicht hinzuzählen.
 
-Nach Korrektur: 169 historische Scopeprüfungen PASS, 119 betroffene Speicher-/Mapping-/Einstellungsprüfungen PASS; danach 56 aktuelle Speicher-/Release-/Icon-/Native-Einstellungsprüfungen PASS. Gruppen überlappen. Zweiter kompletter finaler Lauf erforderlich, bis dahin keine vollständige grüne CI behaupten.
+Letzter Stand `fa04b271`: 54 gezielte Speicher-/Kapazitäts-/HTTP-vs-Dateipfad-/Live-Transport-/Paketprüfungen PASS. Der vollständige Lauf mit zwei zusätzlichen Regressionen und die abschließenden CI-Gates werden unten nach Abschluss ergänzt. Keine Ausführung auf veränderten Source-Fixtures als Endabnahme verwenden.
 
-Lokale Großlast-Nachprüfung PASS, nachdem ausschließlich eigene vollständig gespeicherte Installer-Worktree-/fehlgeschlagene Docker-Testartefakte entfernt wurden: 200.005 Filme + 200.005 Serien, je 109.380.521 HTTP-Bytes, DB 309.526.528 / 621.731.840 Bytes; 27,404 / 27,409 s, Peak-RSS 33.008 KiB. Keine reale Android-Speicherbereinigung daraus ableiten.
+Getestet werden unter anderem: Legacy-/echte Neuprofile, reserveschonende atomare Metadaten, Profil-/SQLite-Busy, Fehler ohne leere DB-Neuanlage, Erinnerungsreferenzen, Kalendergrenzen, verdichteter Now/Next-Cache, 3.357 Kanäle, eigenes Temp-Cleanup, geschützte fremde Dateien, USB-Manifest/Unterbrechung/Hash/Originalerhalt/separate Originalbereinigung, simulierte Volume- und Boot-Identität, manuelles Bildmapping samt kaltem Readback, Quelle/Portal/Profilisolierung und unbekannte unzulässige Source-Änderungen.
 
-Native Linux Kodi 21.2, erster RC: tatsächlicher Home75-Fokus und Hero in 720p/1080p PASS, zwei echte Kodi-Neustarts mit 88/24/24 Inhalten und unveränderten 34 geschützten Dateien PASS. 60 Stop-/ACK-Zyklen PASS. CI-Run 43389588346 scheiterte anschließend an den inzwischen korrigierten historischen Kanalprüfungen. Sechs-Reihen-720p inklusive Audiowiedergabe PASS; 1080p-Audio FAIL mit ActiveAE-InitSink/BusyDialog. Der Testcontainer wird nun an seinen ausdrücklich erzeugten PCM-Sink xcmate_native gebunden; keine Abschwächung der echten Audio-Clock-/ACK-Prüfung. Neuer CI-Nachweis steht aus.
+**Modellgrenze:** Host-Volume-/Boot-Receipts in Migrationstests sind simuliert. Dateikopie, SHA, SQLite und Readback laufen tatsächlich. Das beweist weder ein Android-USB-Mount noch eine sichtbare Zieltextur auf der Box.
 
-## Letzte Sicherheits- und Datenpfadprüfung
+## Tatsächliche physische Freigabe im Hostmodell
 
-36 neue .92-Tests PASS: zusätzlich echter kombinierter Migrator-Test mit Programme-Dateien, simuliertem Prozesswechsel, gesonderter Originalbereinigung aus dynamischem internem Archiv und geschützter DB; Legacy-Merkliste ohne Timer; positive Neuinstallation/Erhalt alter FRESH-Profile; keine neuen GUI-Bildintents bei explizit deaktiviertem Bild-EPG; Now/Next hinter 90 kurzen alten Sendungen; 3.357 Kanäle mit zwei Ereignissen und begrenzter zweiter Textkopie; alter manueller Kandidatenmanager mit tatsächlicher Reader-API ohne close(). USB-Volume-Beweise/Prozesswechsel im Hostmodell ausdrücklich simuliert, keine Hardwareabnahme.
+[`reports02992/host-physical-cleanup.json`](reports02992/host-physical-cleanup.json): eigens für den Test erstellte und acht Tage gealterte eigene Tempdatei, 16.777.216 Bytes, tatsächlich entfernt; freie Bytes 2.193.416.192 → 2.210.189.312, beobachteter Zuwachs **16.773.120 Bytes**. Journal und Metadaten beanspruchen selbst Speicher; deshalb nicht einfach gelöschte Dateigröße als freien Platz ausgeben. Fremde Testdatei bleibt bytegleich. Dies ist eine Linux-Testmessung, **keine Messung der Android-Box**. Bei null beweisbar entbehrlichen Daten muss die Geräteanzeige null melden.
 
-Zwischenstand a920c0be: komplette Host-CI grün (Run 43398351922), exaktes ZIP mit sechs Reihen, nativer Audioclock und drei Kodi-Kaltneustarts grün bei 720p und 1080p (Run 43398351686). Die anschließenden Sicherheitskorrekturen erhalten einen eigenen abschließenden CI-Lauf. Ein paralleler lokaler Zwischenlauf wurde durch die inzwischen aktualisierten exakten Source-Fixtures ungültig; er ist kein reproduzierbarer Endstand und wird nicht als Abnahme verwendet.
+Großlast lokal PASS: 200.005 Filme + 200.005 Serien, je 109.380.521 tatsächliche HTTP-Bytes, DB 309.526.528 / 621.731.840 Bytes, 27,404 / 27,409 s, Peak-RSS 33.008 KiB. XMLTV-Großlast im vollständigen Lauf: mehr als 160.000 Programme und 95 MB XML. Synthetische lokale Dienste, kein realer Providerbenchmark.
 
-Zusätzlicher älterer .89-Nativlauf a920c0be endete in beiden Auflösungen mit Prozesssignal 137 vor vollständiger Prüfung; Ursache nicht als Add-on-Bildfehler behauptet. Haupt-Home-/Sechsreihen-Nativprüfungen davon getrennt ausweisen. Kein Testgate entfernt oder neu übersprungen.
+## Native Kodi-/BINGIE-Prüfungen
+
+[Exakter ZIP-Lauf auf `62c2bc39`](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43401683715): **720p und 1080p PASS**. Tatsächliches Linux-Kodi 21.2 und Original-BINGIE/Skinshortcuts; native Container 1510/1520/1530, alle sechs Reihen, Überschriften, animierter Spinner, konkrete ListItem-/Coverpixel, Zielaufrufe und Audio-PCM-Clock sowie drei vollständige Kodi-Kaltstarts. 88 Sender/24 Filme/24 Serien erhalten; persönliche und fremde gespeicherte Widgetpfade bleiben erhalten.
+
+Die Netzwerkquellen und Bilder im Nativtest sind ausdrücklich synthetisch; der aktive Originaldienst ist für diese isolierte GUI-Strecke deaktiviert und die Testbrücke steuert die vorbereiteten Quellen. Der Bericht ist **kein automatischer Erstinstallations-/echter Provider-/Android-Nachweis**. Auf dem .92-ZIP werden alle 866 Nichtmanifestdateien unverändert geprüft; der Fixture-Manifest/Entry-Handoff wird im Paketbeleg ausgewiesen.
+
+Home75 auf `62c2bc39`: 1080p PASS; 720p mit 30-Minuten-Idle durch den anschließenden neuen Commit abgebrochen, nicht als bestanden gewertet. 60 tatsächliche Linux-Kodi-Stop/ACK-Zyklen (20 pro Medientyp) PASS. Finale Gates siehe Abschlussnachtrag.
+
+Die Zusatzprüfungen .89/.90 sind eigenständige Gates, keine Ersatzmessungen für den ZIP-Sechsreihenlauf. Ihre Fehler werden ausdrücklich nicht versteckt:
+
+- .89: `LOGO89_PERSISTENT_LOGOS_MISSING`, 39 statt 88. Das Artefakt enthält `LOGO_VOLUME_UNVERIFIED` während der ausdrücklich injizierten 27-MiB-Negativphase, kein Container-OOM (`oom_kill=0`). Die folgende positive Kapazitätsphase lief nur 70 unmittelbare Aufrufe bzw. wenige Sekunden; die reale 60-Sekunden-Retry-Sperre der ersten Phase war noch aktiv. Der Fixture wartet nun innerhalb 90 Sekunden auf den unveränderten echten Backoff und die reguläre Worker-Kadenz, ohne _due zu leeren oder die Uhr zu mocken. Davon getrennt ist die durch Hosttests abgesicherte, konservative Behandlung begrenzter realer Messwertbewegung auf demselben Volume. Keine Reserveabsenkung; fremde/große Widersprüche bleiben blockiert.
+- .90: `GROUP90_NATIVE_VIDEO_NOT_OWNED`. Kodi öffnete `/root/navigation90.mp4|User-Agent=...` als lokalen Dateinamen; HTTP-Header werden jetzt ausschließlich HTTP(S)-URLs angehängt. Native Ownership-/Playerprüfung nicht gemockt, Timeouts nicht verlängert.
+- Früherer 1080p-PCM-Initfehler im Testcontainer durch explizite Bindung an dessen erzeugten Pulse-Nullsink behoben; tatsächliche Audio-Clock/ACK weiterhin Pflicht, kein Abschwächen des Sollwerts.
+- Frühere Exit-137-Läufe nicht pauschal als OOM oder Anwendungsfix behauptet; neuer Runner liefert Containerzustand, cgroup memory_events und RAM-Messung zur Diagnose.
+
+Lokales Docker-Kodi war vor App-Start durch zu wenig Platz im Test-Overlay blockiert. Die nativen Läufe erfolgen deshalb in GitHub Actions; keine Docker-/Benutzerdateien oder Systemkonfigurationen dafür bereinigt.
+
+## Historische Fehlversuche und Bestandsschutz
+
+Erster vollständiger Stand `97555c1e`: 3.898 Tests, 27 FAIL aus veralteten Publish-/Freeze- und Reserve-Injection-Erwartungen nach der freigegebenen .91; korrigiert an exakt festgehaltener Main-/Archive-Baseline, keine Testmethoden entfernt, keine neuen Skips. Zwischenlauf während veränderter exakter Source-Fixture ungültig, nicht als reproduzierbarer PASS benutzt. Lokale Großlast anfangs wegen vollem eigenen /tmp fehlgeschlagen; nur eigene bereits gespeicherte Worktree-/fehlgeschlagene Testartefakte freigegeben, danach vollständiger Großlast-PASS. Publizierte .90/.91, .5.26, Kodi-Daten und Kanäle bleiben geschützt.
+
+## Offene Freigabebedingungen
+
+Alle 22 Schritte in [ANDROID_ABNAHME_02992_DE.md](ANDROID_ABNAHME_02992_DE.md) bleiben **ANDROID_NOT_TESTED**, getrennt für Kodi 21.2 und 21.3. Box A bleibt unverändert. Benötigt werden reale Inventur/Quota, USB-Schreib-/Hash-/Render-/Reboot-/Offlineprüfung und tatsächlicher interner Platzgewinn, Mapping-Reboot sowie die bekannten Player-Exit-Reproduktionen.
+
+Noch OPEN: vollständige DB-/Quellfaktenkonsolidierung, externer XMLTV-Stream-Stage, sichere verwaiste Artwork-/Backup-Freigabe nach Referenznachweis, alte nicht inkrementelle DB-Kompaktierung, Android-Decoder-/StreamLoss-/AAC-Bootstrapursache; P1 Long-OK in allen Ansichten, manuelle eventgebundene XMLTV-Bildwahl, MP3-Alben-Anbindung und endgültige Postermaße. Details und Folge-Issues im Implementierungsbericht. **Keine vollständige P0-Erledigung oder Merge-Empfehlung.**
