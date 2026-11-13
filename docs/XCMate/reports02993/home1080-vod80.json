@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "native_button": true,
+  "actual_video": true,
+  "audio_streams": 1,
+  "video_streams": 1,
+  "native_stop_ack": true,
+  "detail_return": true,
+  "elapsed_ms": 3544.0,
+  "android": "ANDROID_NOT_TESTED"
+}

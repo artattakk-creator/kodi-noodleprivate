@@ -1,0 +1,426 @@
+{
+  "bingie_bootstrap": {
+    "addon_id": "script.gsmedia.bingie.bootstrap",
+    "origin_helper": "AchillesPunks/repository.titan.bingie.mod Omega",
+    "required": {
+      "repository.titan.bingie.mod": "2.0.1",
+      "script.bingie.helper": "1.1.2"
+    },
+    "status": "ANDROID_KODI_21_TEST_PENDING",
+    "version": "0.1.0"
+  },
+  "branding_space_blue": {
+    "android_device_test": "PENDING",
+    "channel": "PILOT_ONLY",
+    "id": "script.gsmedia.xcmate.branding",
+    "includes": [
+      "user-provided-7-second-h264-aac-intro",
+      "xcmate-logo",
+      "video-splash",
+      "space-blue-color-palette",
+      "original-backup-and-restore"
+    ],
+    "name": "XCMate BINGIE Space Blue Manager",
+    "sha256": "afa32cd38df59e12cf9889f05e2e080f1358ee03a169c7ce6cb211cde2d0fdaa",
+    "source_branch": "feature/xcmate-bingie-space-blue-branding-020",
+    "status": "ANDROID_NOT_TESTED",
+    "version": "0.2.0",
+    "zip": "https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/script.gsmedia.xcmate.branding/script.gsmedia.xcmate.branding-0.2.0.zip"
+  },
+  "channel": "GS_MEDIA_ONLINE_BETA_ONLY",
+  "ezmaintenanceplus": {
+    "android_test": "NOT_TESTED",
+    "id": "script.ezmaintenanceplus",
+    "license": "MIT",
+    "sha256": "08a367b5fd1ee367ead4150b2364063a0760fe9fbf7506c20db845a0126cd2e6",
+    "upstream_commit": "0e8a5bf26917f25ec79a67de1a896d440708c8e3",
+    "version": "2026.04.05.0"
+  },
+  "incremental_update_354": {
+    "android": "NOT_TESTED",
+    "index_url": "https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/addons.xml",
+    "installer_restarted": false,
+    "packages": {
+      "plugin.video.xtreammate": {
+        "sha256": "ebebf3c9cdb00b8730da436bfb7bd8909a8a5cdfd23ee36b61afa99f775a9a4d",
+        "url": "https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.71.zip",
+        "version": "0.1.29.71"
+      },
+      "script.gsmedia.setup": {
+        "sha256": "568a76b67d80d846ea09176d0ea1b9f6b6fed1fd86c2ace79ca865b4a8ccadbd",
+        "url": "https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.20.zip",
+        "version": "0.5.20"
+      }
+    },
+    "repository_id": "repository.gsmedia.pilot",
+    "repository_version": "1.9.12",
+    "source_ci": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/41723976215",
+    "source_merge": "f0a1bb40050e89e0220687722273e7cc859b9b5b"
+  },
+  "installer_0522": {
+    "android": "NOT_TESTED",
+    "auto_pilot_bootstrap": false,
+    "channel": "PILOT_ONLY",
+    "legacy_journal_preserved": true,
+    "note": "If pilot is missing, fail safely and prompt NeoDark3 repository ZIP installation",
+    "regular_catalog_unchanged": true,
+    "version": "0.5.22",
+    "zip_sha256": "66d98c8dc8061007f5dfbd82eeea483634730d915750e7677c9b6c0ff2fd8f91"
+  },
+  "installer_0523": {
+    "android": "NOT_TESTED",
+    "auto_pilot_bootstrap": false,
+    "channel": "PILOT_ONLY",
+    "legacy_journal_preserved": true,
+    "note": "If pilot is missing, fail safely and prompt NeoDark3 repository ZIP installation",
+    "regular_catalog_unchanged": false,
+    "version": "0.5.23",
+    "zip_sha256": "b85016c88444f998d5a8f5d4ac05e19ecb941815e1b2497c8d5ffb6e9240ecc0"
+  },
+  "installer_0524": {
+    "android": "NOT_TESTED",
+    "auto_pilot_bootstrap": false,
+    "channel": "PILOT_ONLY",
+    "legacy_journal_preserved": true,
+    "note": "If pilot is missing, fail safely and prompt NeoDark3 repository ZIP installation",
+    "regular_catalog_unchanged": false,
+    "version": "0.5.24",
+    "zip_sha256": "48a29757ca295cac3ca98f406b4e53de5c855729b0d2ad812aeee8605cda2267"
+  },
+  "installer_0525": {
+    "android": "NOT_TESTED",
+    "auto_pilot_bootstrap": false,
+    "channel": "PILOT_ONLY",
+    "legacy_journal_preserved": true,
+    "note": "If pilot is missing, fail safely and prompt NeoDark3 repository ZIP installation",
+    "regular_catalog_unchanged": false,
+    "version": "0.5.25",
+    "zip_sha256": "0b3706a114e16869860b0842857cc670217a914f124d4ffaad7cae5a2f0a95aa"
+  },
+  "installer_0526": {
+    "android": "NOT_TESTED",
+    "auto_pilot_bootstrap": false,
+    "channel": "PILOT_ONLY",
+    "legacy_journal_preserved": true,
+    "note": "If pilot is missing, fail safely and prompt NeoDark3 repository ZIP installation",
+    "regular_catalog_unchanged": false,
+    "version": "0.5.26",
+    "zip_sha256": "5aa5d101a57adda5dbb1f5d05319da1ec185676dc784817b25dea267322ae0af"
+  },
+  "jurialmunkey": {
+    "id": "script.module.jurialmunkey",
+    "license": "GPL-3.0-or-later",
+    "sha256": "80302314cdbc5a75611b0c2866eb1c7b4e93ccadaf20208ef7eb79b79c1fb749",
+    "source": "jurialmunkey/repository.jurialmunkey",
+    "version": "0.2.35"
+  },
+  "limitations": [
+    "SlyGuy repository bootstrap and SlyGuy dependency closure NOT_TESTED on Android",
+    "Full eleven-app one-click install not yet complete",
+    "XCMate .70 EPG/storage/artwork bugs remain"
+  ],
+  "mp3_echoed": {
+    "android_test": "NOT_TESTED",
+    "id": "plugin.audio.m3sr2019",
+    "license_notice": "addon.xml GPL-3.0; bundled LICENSE GPL-v2 inherited discrepancy",
+    "sha256": "75b7c06b8637b6f2e290c8885ff7589c5d62b247357caddae32784d05445dfac",
+    "source": "owner-authorised Drive source with L2501 pinned legacy media",
+    "version": "2026.1.0"
+  },
+  "native_upgrade": {
+    "bridge_addon": "script.gsmedia.skinshortcuts.bridge",
+    "minimum_skinshortcuts": "2.1.0",
+    "requires_temporary_user_consented_origin_setting": true,
+    "uses_kodi_dependency_manager": true
+  },
+  "original_resolver_batch": {
+    "android_test": "NOT_TESTED",
+    "plugin.video.cumination": "1.1.206",
+    "script.module.resolveurl": "5.1.212",
+    "script.module.resolveurl.xxx": "2.1.44"
+  },
+  "packaging_validation": "SOURCE_AND_ARCHIVE_LOCAL_PYTHON_IMPORT_CLOSURE",
+  "repository": {
+    "id": "repository.gsmedia.pilot",
+    "version": "1.9.12"
+  },
+  "skin_shortcuts": {
+    "license": "GPL-2.0-only",
+    "original_source": "AchillesPunks BINGIE MOD Omega",
+    "sha256": "865ee5ea5bf0accee27b82539caabce1c8a9fbb8f94b2900fe5ace4f82c80b23",
+    "version": "2.1.0"
+  },
+  "skinicons_wide_105": {
+    "channel": "GS_MEDIA_PILOT",
+    "device_test": "NOT_TESTED",
+    "id": "resource.images.skinicons.wide",
+    "sha256": "1b4469973407cc46eb80d227877cdac5f755fcb562c2b0f9129a149e1d73596d",
+    "source": "https://raw.githubusercontent.com/AchillesPunks/repository.titan.bingie.mod/master/omega/resource.images.skinicons.wide/resource.images.skinicons.wide-1.0.5.zip",
+    "unmodified_original_zip": true,
+    "upstream_git_blob": "cf9edf81fe32b2262f6fe296e0db04361697b7c2",
+    "version": "1.0.5"
+  },
+  "slyguy": {
+    "android_test": "NOT_TESTED",
+    "license_disclosed_by_upstream_repo": false,
+    "official_repo_feed": "https://slyguy.uk/.repo/repository.slyguy/addons.xml",
+    "original_source": "matthuisman/slyguy.addons",
+    "repo_id": "repository.slyguy",
+    "sha256": "079915885866a5cbb8f17191c5ee8f7d044d7a9e788e96d116c9f1bc8bb4c3c0",
+    "trailer_and_dependencies_mirrored": false,
+    "version": "0.0.9"
+  },
+  "slyguy_bootstrap": {
+    "addon_id": "script.gsmedia.slyguy.bootstrap",
+    "android_device_test": "PENDING",
+    "original_repository": "repository.slyguy",
+    "redistributes_original_slyguy_zip": false,
+    "requires": {
+      "script.module.slyguy": "0.87.6",
+      "slyguy.dependencies": "0.0.30",
+      "slyguy.trailers": "0.2.2"
+    },
+    "status": "LEGACY_UNUSED_DUE_TO_KODI_PARENT_ORIGIN_RESOLVER",
+    "version": "0.1.0"
+  },
+  "slyguy_original_parent": {
+    "android_runtime_test": "PENDING",
+    "dependency": "slyguy.dependencies",
+    "dependency_minimum": "0.0.30",
+    "local_binary_mirror": false,
+    "parent": "script.module.slyguy",
+    "repository": "repository.slyguy",
+    "version": "0.87.6"
+  },
+  "source_head": "f46d8ddaff419b6d4ca6fefb64fc7d11b203a9f3",
+  "source_run_id": 41610990814,
+  "upgrade_bridges": [
+    "script.gsmedia.upgrade.plugin.audio.m3sr2019",
+    "script.gsmedia.upgrade.plugin.program.autocompletion",
+    "script.gsmedia.upgrade.plugin.video.cumination",
+    "script.gsmedia.upgrade.plugin.video.themoviedb.helper",
+    "script.gsmedia.upgrade.plugin.video.youtube",
+    "script.gsmedia.upgrade.repository.slyguy",
+    "script.gsmedia.upgrade.resource.images.backgroundoverlays.basic",
+    "script.gsmedia.upgrade.resource.images.skinbackgrounds.titanium",
+    "script.gsmedia.upgrade.resource.images.skinicons.wide",
+    "script.gsmedia.upgrade.resource.images.studios.coloured",
+    "script.gsmedia.upgrade.script.bingie.helper",
+    "script.gsmedia.upgrade.script.ezmaintenanceplus",
+    "script.gsmedia.upgrade.script.module.addon.signals",
+    "script.gsmedia.upgrade.script.module.arrow",
+    "script.gsmedia.upgrade.script.module.beautifulsoup4",
+    "script.gsmedia.upgrade.script.module.infotagger",
+    "script.gsmedia.upgrade.script.module.jurialmunkey",
+    "script.gsmedia.upgrade.script.module.metadatautils",
+    "script.gsmedia.upgrade.script.module.musicbrainz",
+    "script.gsmedia.upgrade.script.module.pil",
+    "script.gsmedia.upgrade.script.module.requests",
+    "script.gsmedia.upgrade.script.module.resolveurl",
+    "script.gsmedia.upgrade.script.module.resolveurl.xxx",
+    "script.gsmedia.upgrade.script.module.simplecache",
+    "script.gsmedia.upgrade.script.module.simpleeval",
+    "script.gsmedia.upgrade.script.module.simplejson",
+    "script.gsmedia.upgrade.script.module.slyguy",
+    "script.gsmedia.upgrade.script.module.thetvdb",
+    "script.gsmedia.upgrade.script.module.unidecode",
+    "script.gsmedia.upgrade.script.module.websocket",
+    "script.gsmedia.upgrade.script.module.xbmcswift2",
+    "script.gsmedia.upgrade.script.module.xmltodict",
+    "script.gsmedia.upgrade.script.skin.helper.backgrounds",
+    "script.gsmedia.upgrade.script.skin.helper.service",
+    "script.gsmedia.upgrade.script.skin.helper.widgets",
+    "script.gsmedia.upgrade.slyguy.dependencies"
+  ],
+  "wizard": {
+    "display_name": "XCMate Media Center Installer",
+    "fix": "Separate Kodi-native BINGIE repository install before Helper; verified simplejson minimum. No legacy dual-dependency bootstrap.",
+    "id": "script.gsmedia.setup",
+    "main_installer_url": "https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/script.gsmedia.setup-0.5.26.zip",
+    "source_gate": "Drive source plus pinned upstream images and original MIT source",
+    "status": "PILOT_0526_MANDATORY_SPACE_BLUE_ANDROID_NOT_TESTED",
+    "version": "0.5.26"
+  },
+  "xcmate92": {
+    "android": "ANDROID_NOT_TESTED",
+    "channels": [
+      "pilot"
+    ],
+    "crc": "PASS",
+    "files": 867,
+    "host_ci": {
+      "result": "PASS",
+      "run": 43444188872
+    },
+    "installer_version_unchanged": "0.5.26",
+    "known_p0_open": [
+      "#451 Mini-EPG Untergruppen",
+      " #452 voller Kodi-Prozessabbruch"
+    ],
+    "native_ci": {
+      "note": "1080p rerun passed after transient runner exit 137",
+      "resolutions": [
+        "1280x720",
+        "1920x1080"
+      ],
+      "result": "PASS",
+      "run": 43444188760
+    },
+    "neodark3_direct_unchanged": true,
+    "regular_channel_unchanged": true,
+    "repository_released": true,
+    "source_bytes": "PASS",
+    "source_merge_sha": "ca7877d14a322328fbf18f25b4adbd7c54b77ecb",
+    "source_pr": 448,
+    "status": "USER_APPROVED_2026-11-13_PILOT_ONLY_HOST_AND_NATIVE_PASS_ANDROID_NOT_TESTED",
+    "version": "0.1.29.92",
+    "zip_sha256": "1db07f87e1f1e84581868c1acced91a89017c332fc934caade7f785ffd88f3b4",
+    "zip_size_bytes": 4697322
+  },
+  "xcmate93": {
+    "android_status": "ANDROID_NOT_TESTED",
+    "authorization_issue": 454,
+    "bytes": 4710998,
+    "crc": "PASS",
+    "files": 876,
+    "installer_version_unchanged": "0.5.26",
+    "repository_released": false,
+    "sha256": "48e0822827c2a8e8a854a812cbac0d0fb3407f6f6b9a5c3c2c2213f20fe77a95",
+    "source_base": "3e1d6f87787baa95d24cc4e7c83c24914db31364",
+    "source_bytes": "PASS",
+    "status": "RELEASE_CANDIDATE",
+    "version": "0.1.29.93"
+  },
+  "xcmate_02976": {
+    "addon": "plugin.video.xtreammate",
+    "android_test": "NOT_TESTED",
+    "bytes": 3426830,
+    "channel": "GS_MEDIA_PILOT_ONLY",
+    "files": 729,
+    "regular_channel_untouched": true,
+    "sha256": "c6b3813a6b2e9289251d3e14ea8425e0fe3fb35ee9a01dda457aa81a27e081cc",
+    "source": "docs/XCMate/test-builds/02976/plugin.video.xtreammate-0.1.29.76.zip",
+    "source_merge_pr": 370,
+    "version": "0.1.29.76"
+  },
+  "xcmate_02979": {
+    "android_test": "NOT_TESTED",
+    "channel": "GS_MEDIA_PILOT",
+    "neodark3_flat_unchanged": true,
+    "origin_review_zip": "docs/XCMate/test-builds/02979/plugin.video.xtreammate-0.1.29.79.zip",
+    "sha256": "cb68d09c84c7190bf1459d0d46532920d6c5a7dfea15a96a6d5e6cb4f244c20a",
+    "user_approved_pilot_update": true,
+    "version": "0.1.29.79"
+  },
+  "xcmate_02990": {
+    "android": "ANDROID_NOT_TESTED",
+    "channels": [
+      "regular",
+      "pilot",
+      "NeoDark3"
+    ],
+    "github_ci": "QUEUED_NO_RUNS",
+    "host_tests_reported": "3802/3802",
+    "installer_version_unchanged": "0.5.26",
+    "neodark3_root_latest_only": true,
+    "previous_02989_nested_archives_kept": true,
+    "source_merge_sha": "9bbf75040378dcaead9128880a909fe7978143a4",
+    "source_pr": 431,
+    "status": "USER_APPROVED_2026-11-11_CI_BLOCKED_ANDROID_NOT_TESTED",
+    "version": "0.1.29.90",
+    "zip_sha256": "e95b0a0cc46e745a3318a609e6e57a005ee3a88965f6e7de0c4b21c68f30f17f",
+    "zip_size_bytes": 4663852
+  },
+  "xcmate_02991": {
+    "android": "ANDROID_NOT_TESTED",
+    "channels": [
+      "regular",
+      "pilot",
+      "NeoDark3"
+    ],
+    "files": 859,
+    "github_ci": "HOST_AND_NATIVE91_PASS_HOME75_BASELINE_FAIL",
+    "host_tests_reported": "3870/3870",
+    "installer_version_unchanged": "0.5.26",
+    "known_remaining": [
+      "#174 player exit",
+      "#107 stream buffer",
+      "#161 EPG",
+      "#108 artwork cache",
+      "#436 retention",
+      "#433 Galileo matching"
+    ],
+    "neodark3_root_latest_only": true,
+    "source_merge_sha": "976e0674bb8b2478c2a184edd51517b63db3b4f6",
+    "source_pr": 440,
+    "status": "USER_APPROVED_2026-11-12_RELEASED_HOST_NATIVE_PASS_ANDROID_NOT_TESTED_HOME75_BASELINE_FAIL",
+    "version": "0.1.29.91",
+    "zip_sha256": "230fde5237e8a9aa2be548ef29ef95301a8b41080d043a03ed0d9fee7b4c198b",
+    "zip_size_bytes": 4677495
+  },
+  "xvault": {
+    "android_test": "NOT_TESTED",
+    "authoritative_plugin_feed": "https://xvault.repowork.de/addons.xml",
+    "original_source": "mojomedia1812/xVAULT",
+    "plugin_zip_mirrored": false,
+    "repo_id": "repository.xvault",
+    "sha256": "df6fd9f40c12c9e0f13f7cb04589286307550cd43376c734eb127aa4e1de27ab",
+    "version": "1.0.3"
+  },
+  "zip_sha256": {
+    "plugin.audio.m3sr2019": "75b7c06b8637b6f2e290c8885ff7589c5d62b247357caddae32784d05445dfac",
+    "plugin.video.cumination": "539073d804d6381105698eff054ea77ae1359b658e0f226c3807a7365a0d674c",
+    "plugin.video.noodleprivate": "b9d0afe06d6fc956bc0191fd51f4646ae9f54c6272009e7a8819255de7460364",
+    "plugin.video.xtreammate": "48e0822827c2a8e8a854a812cbac0d0fb3407f6f6b9a5c3c2c2213f20fe77a95",
+    "repository.gsmedia.pilot": "57ee7166f0caca2071e6fd36fed76e5660d9dc6f221d8c78d4e259d66a507489",
+    "repository.slyguy": "079915885866a5cbb8f17191c5ee8f7d044d7a9e788e96d116c9f1bc8bb4c3c0",
+    "repository.titan.bingie.mod": "dba0a2e670e2d93158cb030ea52fe3e237bb19177e0a165d99c8f72a8492ef46",
+    "repository.xvault": "df6fd9f40c12c9e0f13f7cb04589286307550cd43376c734eb127aa4e1de27ab",
+    "script.bingie.helper": "653b7391f5012a0a35867ec53e55045842efa02c4dca698ce8da0f5b39549358",
+    "script.ezmaintenanceplus": "08a367b5fd1ee367ead4150b2364063a0760fe9fbf7506c20db845a0126cd2e6",
+    "script.gsmedia.bingie.bootstrap": "6fa171c7d2e2071240f12302e5feb92546a206ddce88557462e274431ad14f04",
+    "script.gsmedia.setup": "5aa5d101a57adda5dbb1f5d05319da1ec185676dc784817b25dea267322ae0af",
+    "script.gsmedia.skinshortcuts.bridge": "f84da5931a4159bbf82b78ecf6a05c0b2ce8a6e0c08ebf109d1554eb84d4f72c",
+    "script.gsmedia.slyguy.bootstrap": "5c643097dad7e15728bc4c723b72cdd1c2fea67273bcf00cfec994db903d86e8",
+    "script.gsmedia.upgrade.plugin.audio.m3sr2019": "d026dabe4e120c3b6b581a613db326ed6cc09458b8db536e158af4a0d753a5cb",
+    "script.gsmedia.upgrade.plugin.program.autocompletion": "695ad1e88bfffd3d5353b871ec75a73aaa83c3d80f42eb02ebf4198763a694e4",
+    "script.gsmedia.upgrade.plugin.video.cumination": "65e4bce9968fee72b5e2e6f69556ca58ff66bd0332fb7b672b9de764dcce8120",
+    "script.gsmedia.upgrade.plugin.video.themoviedb.helper": "968ec9d00cb2ebd4c97531976fdb5bfd92c92d8027bc41025f7af6266d8109ba",
+    "script.gsmedia.upgrade.plugin.video.youtube": "0b4a864f5b1e2e8f0bbc3fd0363a906a769fe6566474142ee6a4b70d2c446022",
+    "script.gsmedia.upgrade.repository.slyguy": "2f5278a0ff7b6f77f8c43e421d1974c5ce8e5272e1471c81585e85edabcf108e",
+    "script.gsmedia.upgrade.resource.images.backgroundoverlays.basic": "126bf53ec5ec0f5251d8ad40fea4b02b1509bc6b5fe76250f55f7c01d8923caf",
+    "script.gsmedia.upgrade.resource.images.skinbackgrounds.titanium": "b0b31731849d1c1c03dcec8c806e34076ad0d45aada7c4acf0001a309f469095",
+    "script.gsmedia.upgrade.resource.images.skinicons.wide": "a713bc874d92fec0e4abe50203869e3b78f81699c55da50239a5d980b1013799",
+    "script.gsmedia.upgrade.resource.images.studios.coloured": "e279e48c7c05dd4871882f86960bfb93bc808e51de267f7cad878a1d3bd5e33f",
+    "script.gsmedia.upgrade.script.bingie.helper": "949be57fa453dd174d83c9908766fcff39046da763304b19143b6bc4923f8bf2",
+    "script.gsmedia.upgrade.script.ezmaintenanceplus": "5e918732d16e4b834156dc01b4e7b03420c0c13fc45dbc9edc577275eb93c1fb",
+    "script.gsmedia.upgrade.script.module.addon.signals": "ab92d99571f1207b7f04e88cc8526c9ef087c030a04977c9d2c61d579af2a821",
+    "script.gsmedia.upgrade.script.module.arrow": "b0143b291fcd73f597980a6acc2759e2706bd4113d198dc45a461d0486e60a4a",
+    "script.gsmedia.upgrade.script.module.beautifulsoup4": "841aa77f9726259cf4634c0e28acec88a6ecb0b5a1b871fc942804645d1be3ec",
+    "script.gsmedia.upgrade.script.module.infotagger": "3ca8195a7147e4253b3e2ad941796249e653c186374f494fc2231b44b1f087f8",
+    "script.gsmedia.upgrade.script.module.jurialmunkey": "c3f2753974356c96f70bc141f0ac8f910986d46aca65c542ca0b70e81c202c77",
+    "script.gsmedia.upgrade.script.module.metadatautils": "9c7c359c65f863ffc238c2faea6c85bc664cb4a05a6e9ef54fdddc2e6e7ab779",
+    "script.gsmedia.upgrade.script.module.musicbrainz": "e373a56d5cf0c9c3035e9777214a1d7a6ec89c338cc6642bbf241b15cdfd9d7f",
+    "script.gsmedia.upgrade.script.module.pil": "6376950c604e76209995e0f4d1a830d5926529cf6dd132a189a9c513a6f7f97a",
+    "script.gsmedia.upgrade.script.module.requests": "ad0e79b669e0c89a38c8c3020e3cdcac35c35e933379c779311fb40022358832",
+    "script.gsmedia.upgrade.script.module.resolveurl": "3497bd98812c3e5472944513f1bcc2f3b58f2959b0fff0f4f494eaca41fbf1c9",
+    "script.gsmedia.upgrade.script.module.resolveurl.xxx": "ce5ad01296390d79ed04992963b8eaadf029cab13394ababfcea221f7df8668c",
+    "script.gsmedia.upgrade.script.module.simplecache": "d39647ee88e34856bbd0b7fb878261cff0881630c740be6ca1c3f7b334402d64",
+    "script.gsmedia.upgrade.script.module.simpleeval": "eb4234bbf6d734c092da61207c53a027daaed1d4c7e396c6c77a1e06eb57f21b",
+    "script.gsmedia.upgrade.script.module.simplejson": "99d89cbb1a6b684567ea0b9c94c1ecf618cb96a6acb59e3416724b47a1d68af2",
+    "script.gsmedia.upgrade.script.module.slyguy": "855b5d8b3757705f36971d8d74bf919bb97969b56a6987ab6cb9189c6ff59173",
+    "script.gsmedia.upgrade.script.module.thetvdb": "97cc885ba6557df78a60e0be1871e33a985f8394507d72bb13db78be1597a707",
+    "script.gsmedia.upgrade.script.module.unidecode": "005aeef1e2d7229bf06fce6d67daed95f340f09c3524b079a54d2e8718199299",
+    "script.gsmedia.upgrade.script.module.websocket": "45d2ba3744d3050d21cf655b289944ec5987f0bf6f3cdd2ba08675c79f7b3847",
+    "script.gsmedia.upgrade.script.module.xbmcswift2": "d10faf8838f3cdfa7bc64764ac7e057cf2506b0d87a912201333bed8731a966b",
+    "script.gsmedia.upgrade.script.module.xmltodict": "c994ae8662dfe4fdd121ed81170bb5b604845898b88a5d2f51403bc44d72dbdf",
+    "script.gsmedia.upgrade.script.skin.helper.backgrounds": "36a8cacfb05fac9d4d7e5d4dae8e355c9904b1d9ee95542733780bdb04fd9391",
+    "script.gsmedia.upgrade.script.skin.helper.service": "ae2e555196ca49c50aaab6974dc436bb1266cfb16846062c793106a939890e33",
+    "script.gsmedia.upgrade.script.skin.helper.widgets": "3a271fb3fd7650d5a3d2df86099ec54c5ba245e78b32deaef81fe1512b953c5c",
+    "script.gsmedia.upgrade.slyguy.dependencies": "22f05d4e81a87defc8f1766303656ea69c767ecbfc79afb4e5c0ba532ad5f55d",
+    "script.module.jurialmunkey": "80302314cdbc5a75611b0c2866eb1c7b4e93ccadaf20208ef7eb79b79c1fb749",
+    "script.module.resolveurl": "28fb6b2340eccfb1337ba4421b6429aa1c8f2978834853d1229b42b2a947bc59",
+    "script.module.resolveurl.xxx": "d8bceeae5d492cfa111843cdf71f8681f0c9050fbc0fdd2952f77afe49ea30d5",
+    "script.skinshortcuts": "865ee5ea5bf0accee27b82539caabce1c8a9fbb8f94b2900fe5ace4f82c80b23"
+  }
+}

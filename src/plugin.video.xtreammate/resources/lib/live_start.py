@@ -27,3 +27,11 @@ def channel(portal, client):
                 return row if filter_entries([row],portal['id'],'live') else None
     except (OSError,ValueError,TypeError):return None
     return None
+
+
+def resolve(portal, client):
+    """A temporarily unreadable index is never evidence of invalid settings."""
+    if not portal.get('start_stream_id'):
+        return dict(code='START_NOT_CONFIGURED', channel=None)
+    row=channel(portal,client)
+    return dict(code='READY' if row else 'START_TEMPORARILY_UNAVAILABLE',channel=row)

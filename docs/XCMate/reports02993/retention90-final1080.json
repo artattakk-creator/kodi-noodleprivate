@@ -1,0 +1,68 @@
+{
+  "status": "PASS",
+  "run_id": 43511295707,
+  "job_id": 132181959747,
+  "source_commit": "86462cb1f4845bf4d80fcd1c111f478a59079be7",
+  "resolution": "1920x1080",
+  "warm_seconds": 900.1,
+  "cold_restarts": [
+    {
+      "cycle": 1,
+      "status": "PASS",
+      "mapping": {
+        "status": "PASS",
+        "cold_mapping": true,
+        "selected_id": 9003,
+        "android": "ANDROID_NOT_TESTED"
+      },
+      "protected_sha256": "PASS",
+      "persistent_logos": 88,
+      "native_candidate_no_implicit_write": {
+        "confirm_native": "PASS",
+        "back_native": "PASS",
+        "no_implicit_mapping_write": "PASS"
+      },
+      "cold": true,
+      "android": "ANDROID_NOT_TESTED"
+    },
+    {
+      "cycle": 2,
+      "status": "PASS",
+      "mapping": {
+        "status": "PASS",
+        "cold_mapping": true,
+        "selected_id": 9003,
+        "android": "ANDROID_NOT_TESTED"
+      },
+      "protected_sha256": "PASS",
+      "persistent_logos": 88,
+      "native_candidate_no_implicit_write": {
+        "confirm_native": "PASS",
+        "back_native": "PASS",
+        "no_implicit_mapping_write": "PASS"
+      },
+      "cold": true,
+      "android": "ANDROID_NOT_TESTED"
+    },
+    {
+      "cycle": 3,
+      "status": "PASS",
+      "mapping": {
+        "status": "PASS",
+        "cold_mapping": true,
+        "selected_id": 9003,
+        "android": "ANDROID_NOT_TESTED"
+      },
+      "protected_sha256": "PASS",
+      "persistent_logos": 88,
+      "native_candidate_no_implicit_write": {
+        "confirm_native": "PASS",
+        "back_native": "PASS",
+        "no_implicit_mapping_write": "PASS"
+      },
+      "cold": true,
+      "android": "ANDROID_NOT_TESTED"
+    }
+  ],
+  "android": "ANDROID_NOT_TESTED"
+}

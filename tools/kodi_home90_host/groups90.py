@@ -49,6 +49,12 @@ def run(portal,pump,capture,check):
    return nav._catalog_ready and not getattr(nav,'_catalog_partial46',False)
   until(complete90,'GROUP90_CATALOGUE_NOT_READY')
   check(len(nav.channels)==2740,('GROUP90_CHANNELS_MISSING',len(nav.channels)))
+  # Fault injection: only the start-group model is available to the GUI.
+  # Real on-demand group readers must reveal all other groups from SQLite,
+  # independently of EPG and without waiting for a complete GUI model.
+  partial93=__import__('live_prepare47').model(selected,client,groups,[r for r in streams if r['category_id']=='0'])
+  nav.channels=partial93['channels'];nav.index=partial93['index'];nav._catalog_partial46=True
+  check(len(nav.channels)==137,'GROUP93_PARTIAL_PRECONDITION')
   # Match the real service lifecycle: native video/fullscreen first, then
   # show its input owner. Showing a dialog on Home before Player.play lets
   # Kodi's later FullscreenVideo activation cover that dialog.
@@ -71,6 +77,7 @@ def run(portal,pump,capture,check):
      xbmc.executebuiltin('Action(Left)',wait=False);until(lambda:nav.mode==mode,'GROUP90_LEFT_LEVEL_'+mode)
     index=next(i for i,r in enumerate(nav.rows) if r[0]==str(group));nav.control.selectItem(index);xbmc.executebuiltin('Action(Select)',wait=False)
     until(lambda:nav.mode=='channels' and nav.category_id==str(group),'GROUP90_WRONG_GROUP')
+    until(lambda:len(nav.visible_channels)==137,'GROUP93_ASYNC_GROUP_PENDING')
     check(len(nav.visible_channels)==137,('GROUP90_FALSE_EMPTY',group,len(nav.visible_channels)))
     xbmc.executebuiltin('Action(PageDown)',wait=False);until(lambda:nav._highlight['channels']==100,'GROUP90_PAGE_NOT_MOVED')
     for _ in range(36):xbmc.executebuiltin('Action(Down)',wait=False);xbmc.sleep(30)
@@ -104,5 +111,5 @@ def run(portal,pump,capture,check):
    xbmc.sleep(50)
   check(not xbmc.Player().isPlaying(),'GROUP90_CLEANUP_STOP_NOT_RETURNED')
   xbmc.executebuiltin('ActivateWindow(Home)',wait=False);xbmc.sleep(500)
- report=dict(status='PASS',native_groups=20,native_station_changes=20,catalogue_rows=2740,page_size=100,wal_writer_held=True,cases=cases,screenshot=screenshot.name,android='ANDROID_NOT_TESTED')
+ report=dict(status='PASS',native_groups=20,native_station_changes=20,catalogue_rows=2740,initial_partial_gui_rows=137,targeted_group_reads=True,epg_required=False,page_size=100,wal_writer_held=True,cases=cases,screenshot=screenshot.name,android='ANDROID_NOT_TESTED')
  Path('/root/groups90.json').write_text(json.dumps(report,indent=2));print('GROUP90_NATIVE '+json.dumps(report),flush=True);return report

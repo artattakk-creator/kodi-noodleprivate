@@ -31,7 +31,7 @@ class Scope89(unittest.TestCase):
   names=['widget_skin88.py','widget_skin87.py','programme_window46.py','live_exit.py','playback_exit.py','exit_jobs.py','native_stop41.py','hero_art86.py']
   for name in names:
    path='src/plugin.video.xtreammate/resources/lib/'+name
-   actual=(ROOT/path).read_bytes()
+   actual=__import__('stabilization_contract93').without93((ROOT/path).read_bytes(),path)
    # P0-H explicitly adds the current-programme bookmark-only explanation.
    # Keep every other approved layout/player byte protected; this one delta
    # must match the separately reviewed exact patch, not an arbitrary rewrite.

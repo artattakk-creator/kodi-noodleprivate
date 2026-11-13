@@ -98,7 +98,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     from media_sources43 import SourceError
     from programme_sources57 import PROOFS,policy,attempts,trace as source_trace
     from helper_rpc57 import Error as HelperError
-    home86=__import__('home_schedule75').applicable()
+    home86=__import__('home_schedule75').applicable() and not event.get('_detail93')
     usable86=lambda v:not home86 or bool(__import__('hero_art86').classify(v))
     upgrade81=False;best86=None
     def retain86(v):
@@ -198,13 +198,20 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         mapping85=__import__('programme_mapping85').current(event)
         if mapping85 and mapping85.get('hidden'):return
         if mapping85 and mapping85.get('id'):
+            if mapping85.get('source') in ('tmdb','tvmaze') and not __import__('programme_candidates85').enabled(mapping85['source']):return
             # Existing proofs were checked above. New remote work must obey
             # the same visible-event admission as automatic lookups.
-            if not allow_lookup:return
-            manual85=__import__('programme_candidates85').candidate(event,cancel)
-            if manual85:yield manual85
+            if allow_lookup:
+                try:manual85=__import__('programme_candidates85').candidate(event,cancel)
+                except (SourceError,HelperError) as error85:
+                    failed(error85.code);manual85=None
+                if manual85:yield manual85
+            # A confirmed work mapping does not invalidate source-supplied
+            # artwork for this exact broadcast. Keep it while the chosen work
+            # image is unavailable; never substitute another automatic work.
+            yield from (c for c in candidates if c.get('source') in ('xmltv_event','provider_event') and c.get('match')=='EXACT_EVENT')
             return  # A deliberate user mapping is never silently replaced.
-        home86=__import__('home_schedule75').applicable()
+        home86=__import__('home_schedule75').applicable() and not event.get('_detail93')
         if not home86:yield from candidates  # EPG detail legacy event ordering.
         reference84=__import__('programme_reference84').get(event)
         if reference84 and reference84.get('candidate'):
@@ -301,7 +308,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             if isinstance(verified77,dict) and verified77.get('url'):url=verified77['url']
         except SourceError as exc:value['code']=exc.code;continue
         if cancel():return None
-        if __import__('home_schedule75').applicable():
+        if home86:
             quality86=dict(candidate,image_width77=(verified77 or {}).get('width',0),image_height77=(verified77 or {}).get('height',0))
             if not __import__('hero_art86').classify(quality86):
                 failed('HERO_QUALITY_REJECTED');continue
@@ -396,12 +403,13 @@ def enqueue(event,allow_lookup=False,local_image63=False,priority68=False,refere
         if not reference_only84 and not local_image63 and not setting_bool('programme_art_local69',False):
             from programme_session69 import get as session69
             available69=session69(event)
+            if available69 and __import__('home_schedule75').applicable() and not event.get('_detail93') and not __import__('hero_art86').classify(available69):available69=None
             if available69 and not (allow_lookup and __import__('programme_status70').retry(event,available69)):
                 from programme_requests68 import completed
                 completed(event,available69);return False
         if key in _pending:
             if priority68 and key in _queue:
-                old=_queue[key];_queue[key]=(old[0],old[1] or allow_lookup,old[2] or local_image63,old[3],bool(reference_only84))
+                old=_queue[key];bound93=dict(old[0],_detail93=True) if event.get('_detail93') else old[0];_queue[key]=(bound93,old[1] or allow_lookup,old[2] or local_image63,old[3],bool(reference_only84))
                 _urgent68.add(key)
                 if priority68==2:_queue.move_to_end(key,last=False)
             return False

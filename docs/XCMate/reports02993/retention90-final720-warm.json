@@ -1,0 +1,226 @@
+{
+  "first_epg90": {
+    "ms": 779,
+    "ready": 5,
+    "native_text": true,
+    "player_started": false
+  },
+  "manual90": {
+    "status": "PASS",
+    "candidates": 8,
+    "native_selected": 3,
+    "selected_id": 9003,
+    "save": "WRITE_COMMITTED + WRITE_READBACK",
+    "detail_reopens": 2,
+    "api": "Synthetic TMDB JSON, no external API/token",
+    "android": "ANDROID_NOT_TESTED"
+  },
+  "groups90": {
+    "status": "PASS",
+    "native_groups": 20,
+    "native_station_changes": 20,
+    "catalogue_rows": 2740,
+    "initial_partial_gui_rows": 137,
+    "targeted_group_reads": true,
+    "epg_required": false,
+    "page_size": 100,
+    "wal_writer_held": true,
+    "cases": [
+      {
+        "group": 0,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 1,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 2,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 3,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 4,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 5,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 6,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 7,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 8,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 9,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 10,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 11,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 12,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 13,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 14,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 15,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 16,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 17,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 18,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      },
+      {
+        "group": 19,
+        "total": 137,
+        "last_index": 136,
+        "correct_sid": true,
+        "native_video": true
+      }
+    ],
+    "screenshot": "visible84-groups90-native.png",
+    "android": "ANDROID_NOT_TESTED"
+  },
+  "status": "PASS",
+  "android": "ANDROID_NOT_TESTED",
+  "first_rail_pixels_ms": 5481,
+  "lowspace_injected_bytes": 120586240,
+  "global_reserve": 1073741824,
+  "persistent_logos": 88,
+  "duplicate_http": 0,
+  "duplicate_commits": 0,
+  "now_next_ready": 5,
+  "home_seconds": 900.7,
+  "focus_changes": 20,
+  "callback_failures": 0,
+  "foreign_ir": [
+    [
+      3540,
+      3550
+    ],
+    [
+      3550,
+      3560
+    ],
+    [
+      3560,
+      3550
+    ],
+    [
+      3550,
+      3540
+    ]
+  ],
+  "pixel_samples": [
+    {
+      "seconds": 0.4,
+      "pixels": 5011,
+      "screenshot": "visible84-start90-0.png"
+    },
+    {
+      "seconds": 450.2,
+      "pixels": 42421,
+      "screenshot": "visible84-start90-1.png"
+    },
+    {
+      "seconds": 899.1,
+      "pixels": 41012,
+      "screenshot": "visible84-start90-2.png"
+    },
+    {
+      "seconds": 900.0,
+      "pixels": 41012,
+      "screenshot": "visible84-start90-3.png"
+    }
+  ],
+  "protected_inventory": "011ea5b6d627e69e69bbe2030585396fb67c0cc74171ed07063df700094d0bf6"
+}

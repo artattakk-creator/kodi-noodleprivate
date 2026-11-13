@@ -1,0 +1,13 @@
+{
+  "overall_status": "FAIL",
+  "code": "SERIES85_SELECTION_WITHOUT_MANAGER_WROTE_MAPPING",
+  "warm_900_seconds": "PASS",
+  "cold_restart": "FAIL_OLD_EMPTY_MAPPING_ASSUMPTION",
+  "run_id": 43504728567,
+  "job_id": 132159417609,
+  "artifact_id": 14076708732,
+  "preserved_mapping_id": 9003,
+  "fix": "Compare mapping bytes before and after candidate-only dialog; preserve existing mapping; no reset",
+  "corrected_commit": "86462cb1f4845bf4d80fcd1c111f478a59079be7",
+  "android": "ANDROID_NOT_TESTED"
+}

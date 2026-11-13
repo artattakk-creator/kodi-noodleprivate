@@ -33,7 +33,7 @@ class Scope90(unittest.TestCase):
   protected={'live_exit.py','playback_exit.py','exit_jobs.py','native_stop41.py','hero_art86.py','widget_skin87.py','widget_skin88.py','tmdb_token61.py','token_write64.py','art_storage.py','artwork_config.py','artwork_migration.py'}
   for path in paths:
    if path.startswith(('src/script.gsmedia.setup/','src/plugin.video.xtreammate/resources/skins/')) or Path(path).name in protected:self.assertEqual(__import__('stabilization_contract92').without92((ROOT/path).read_bytes(),path),original(path),path)
-  path='src/plugin.video.xtreammate/resources/lib/live_overlay.py';before=ast.parse(original(path));after=ast.parse((ROOT/path).read_bytes())
+  path='src/plugin.video.xtreammate/resources/lib/live_overlay.py';before=ast.parse(original(path));after=ast.parse(__import__('stabilization_contract93').without93((ROOT/path).read_bytes(),path))
   def methods(tree):return {n.name:ast.dump(n,include_attributes=False) for c in tree.body if isinstance(c,ast.ClassDef) for n in c.body if isinstance(n,ast.FunctionDef)}
   old,new=methods(before),methods(after)
   for name in old:

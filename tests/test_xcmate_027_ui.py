@@ -53,7 +53,10 @@ class NavigationTests(Fixture,unittest.TestCase):
         self.router._play_start_direct.assert_called_once()
         self.router._play_start_direct.reset_mock();self.portal['start_stream_id']='missing'
         self.routes.dispatch(self.router)
-        self.router._play_start_direct.assert_not_called();self.dialog.yesno.assert_called_once()
+        self.router._play_start_direct.assert_not_called();self.dialog.yesno.assert_not_called()
+        self.dialog.notification.assert_called_once();self.assertEqual(self.portal['start_stream_id'],'missing')
+        self.portal['start_stream_id']='';self.routes.dispatch(self.router)
+        self.dialog.yesno.assert_called_once()
 
     def test_background_epg_refresh_reuses_coverage_without_running_download_on_service_thread(self):
         tree=ast.parse((ADDON/'service.py').read_text())

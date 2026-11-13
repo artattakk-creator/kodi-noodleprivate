@@ -1,3 +1,11 @@
+0.1.29.93 (2026-11-13)
+- Fehlende native Stop-Quittung: einmalige echte FIFO-Fortschrittsprobe, kein zweiter Stop und kein vorgetäuschter ACK. Native Decoderblockade weiterhin Gerätegate.
+- Gespeicherten Startsender bei temporär unvollständigem Katalog erhalten; Mini-EPG-Gruppen gezielt aus lokalem Index nachladen.
+- Eigenes lesbares Speicherfenster statt Plot/JSON; fortsetzbare Inventuren mit expliziten Messlücken.
+- Alte EPG-Sicherungen nur mit geprüfter aktueller Recovery-Kopie journalisiert begrenzen; unbekannte Rohdateien bleiben geschützt.
+- EPG-Details von der BINGIE-Hero-Mindestgröße trennen; exaktes XMLTV-Bild bei ausstehender manueller Bildquelle behalten.
+- Kein Merge oder Release, Android-Abnahme ausstehend.
+
 0.1.29.92 – Speicher-/EPG-Stabilisierung, unveröffentlichter Testkandidat
 - Verifizierte Senderlogos nach Kodi-Neustart unmittelbar im Widget verwenden; widerrufene Quellen bleiben gesperrt.
 - Eigene Speicherübersicht, sichere begrenzte Wartung mit Journal und gemessenem Platzdelta.

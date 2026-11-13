@@ -14,7 +14,11 @@ class Release92(unittest.TestCase):
  def test_entire_runtime_matches_reviewed_delta_and_no_unknown_module_is_admitted(self):
   delta=delta92();base=delta['base'];prefix='src/plugin.video.xtreammate/'
   paths=subprocess.check_output(['git','ls-tree','-r','--name-only',base,prefix],cwd=ROOT).decode().splitlines()
-  source={p.relative_to(ROOT).as_posix():p.read_bytes() for p in (ROOT/'src/plugin.video.xtreammate').rglob('*') if p.is_file() and '__pycache__' not in p.parts}
+  from stabilization_contract93 import delta93,without93
+  current={p.relative_to(ROOT).as_posix():p.read_bytes() for p in (ROOT/'src/plugin.video.xtreammate').rglob('*') if p.is_file() and '__pycache__' not in p.parts}
+  extra=delta93()['added']
+  for name,digest in extra.items():self.assertEqual(hashlib.sha256(current[name]).hexdigest(),digest)
+  source={name:without93(raw,name) for name,raw in current.items() if name not in extra}
   self.assertEqual(set(source),set(paths)|set(delta['added']))
   for name,change in delta['modules'].items():
    self.assertEqual(hashlib.sha256(source[name]).hexdigest(),change['new_sha256']);self.assertEqual(without92(source[name],name),change['old'].encode())
@@ -29,10 +33,12 @@ class Release92(unittest.TestCase):
   import release_candidate92 as candidate
   from package_xcmate71 import build
   original=ROOT/'docs/XCMate/test-builds/02992'/candidate.NAME
-  with tempfile.TemporaryDirectory() as folder:
+  from historical92 import baseline
+  with baseline(),tempfile.TemporaryDirectory() as folder:
    proof=build(folder);self.assertEqual(proof,candidate.inspect_package(original));self.assertEqual((Path(folder)/candidate.NAME).read_bytes(),original.read_bytes())
  def test_offline_proposal_does_not_publish_or_authorize_merge(self):
   import release_candidate92 as candidate
-  result=candidate.verify(ROOT/'docs/XCMate/test-builds/02992')
+  from historical92 import baseline
+  with baseline() as root92:result=candidate.verify(root92/'docs/XCMate/test-builds/02992')
   self.assertFalse(result['repository_released']);self.assertEqual(result['android'],'ANDROID_NOT_TESTED')
   plan=json.loads((ROOT/'docs/XCMate/test-builds/02992/pilot-plan.json').read_text());self.assertFalse(plan['source_merged']);self.assertFalse(plan['merge_or_publish_authorized'])
