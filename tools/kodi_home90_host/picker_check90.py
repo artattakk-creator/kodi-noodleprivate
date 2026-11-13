@@ -7,6 +7,14 @@ from pathlib import Path
 import xbmc,xbmcgui
 from PIL import Image
 
+def write_receipt90(path,report):
+ # Native supervisor runs concurrently. Publish the complete fixture result
+ # atomically so exists() cannot expose an empty/partial JSON document.
+ # Disposable test data only; all renderer/PCM/ownership assertions precede it.
+ path=Path(path);temporary=path.with_name(path.name+'.writing')
+ temporary.write_text(json.dumps(report,indent=2),encoding='utf-8')
+ temporary.replace(path)
+
 def home_position90(labels):
  positions=[i for i,label in enumerate(labels) if label.strip().casefold() in ('home','startseite')]
  if len(positions)!=1:raise RuntimeError(('PICKER90_HOME_MENU_NOT_UNIQUE',labels))
@@ -233,4 +241,4 @@ def check90(cycle,errors):
  check(len(foreign)>=2 and foreign==before['foreign_paths'],'PICKER90_FOREIGN_DEFINITIONS_CHANGED')
  check(hashlib.sha256(props.read_bytes()).hexdigest()==before['properties_sha256'],'PICKER90_NATIVE_REFRESH_CHANGED_PROPERTIES')
  report=dict(status='PASS',cycle=cycle,native_cases=cases,native_spinner438=spinners438,six_rows438=six438,foreign_definitions=len(foreign),properties_sha256=before['properties_sha256'],original_compiler_sha256=hashlib.sha256(tree.read_bytes()).hexdigest(),android='ANDROID_NOT_TESTED')
- Path('/root/picker90-cold-'+str(cycle)+'.json').write_text(json.dumps(report,indent=2));print('PICKER90_COLD '+json.dumps(report),flush=True);return report
+ write_receipt90('/root/picker90-cold-'+str(cycle)+'.json',report);print('PICKER90_COLD '+json.dumps(report),flush=True);return report

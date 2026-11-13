@@ -1,0 +1,12 @@
+{
+  "source_commit": "fa04b2710691845402de15c75eeaa84ca4ac80ef",
+  "tests": 3908,
+  "seconds": 927.995,
+  "status": "PASS",
+  "production_unchanged_since_source_commit": true,
+  "local_log_sha256": "04efc32755b711e24bbdf20c86ea1afa8a76e6337412f834bc1560f624ef20d7",
+  "full_log_published": false,
+  "additional_native_receipt_tests": 2,
+  "additional_native_receipt_status": "PASS",
+  "android": "ANDROID_NOT_TESTED"
+}
