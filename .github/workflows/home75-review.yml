@@ -81,6 +81,7 @@ jobs:
             ${{ runner.temp }}/native75/restart*.log
             ${{ runner.temp }}/native75/post75-error.txt
             ${{ runner.temp }}/native75/gui-error.txt
+            ${{ runner.temp }}/native75/vod80-native-kodi-tail.log
           retention-days: 30
 
   native-media77:

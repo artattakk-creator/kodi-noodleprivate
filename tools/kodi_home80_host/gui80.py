@@ -101,8 +101,33 @@ for _ in range(300):
 def failure80(code):
  facts80=dict(code=code,window=xbmcgui.getCurrentWindowId(),dialog=xbmcgui.getCurrentWindowDialogId(),control=xbmc.getInfoLabel('System.CurrentControlId'),selected_label=xbmc.getInfoLabel('Container(300).ListItem.Label')[:160],items=xbmc.getInfoLabel('Container(300).NumItems'),modal=xbmc.getCondVisibility('System.HasActiveModalDialog'))
  Path('/root/vod80-failure.json').write_text(json.dumps(facts80));print('VOD80_FAILURE '+json.dumps(facts80),flush=True)
+ # Synthetic CI profile only. Capture native failure evidence, not private
+ # Android logs; never infer a decoder/ownership cause from no-video alone.
+ try:
+  import xbmcvfs
+  for log92 in (Path('/root/.kodi/temp/kodi.log'),Path(xbmcvfs.translatePath('special://logpath'))/'kodi.log'):
+   if log92.is_file():
+    with log92.open('rb') as source92:
+     source92.seek(max(0,log92.stat().st_size-256*1024));Path('/root/vod80-native-kodi-tail.log').write_bytes(source92.read(256*1024))
+    break
+ except (OSError,ValueError,TypeError,RuntimeError):pass
  raise RuntimeError(code)
 if detail80 is None:failure80('VOD80_DETAIL_NOT_OPEN')
+# Labels can arrive before the native focus/visibility reconciliation. Use the
+# same 15s detail-opening budget and require a stable, enabled own Play control
+# before sending a single global Select. No retry/replay of a lost Play action.
+ready_since92=None;input_states92=[];deadline92=started80+15
+while time.monotonic()<deadline92:
+ state92=dict(window=xbmcgui.getCurrentWindowId(),dialog=xbmcgui.getCurrentWindowDialogId(),control=xbmc.getInfoLabel('System.CurrentControlId'),label=xbmc.getInfoLabel('Container(300).ListItem.Label'),items=xbmc.getInfoLabel('Container(300).NumItems'),visible=xbmc.getCondVisibility('Control.IsVisible(300)'),enabled=xbmc.getCondVisibility('Control.IsEnabled(300)'),modal=xbmc.getCondVisibility('System.HasActiveModalDialog'))
+ if not input_states92 or input_states92[-1]['state']!=state92:
+  input_states92.append(dict(elapsed_ms=round((time.monotonic()-started80)*1000,2),state=state92));ready_since92=None
+ ready92=(state92['window']==detail_id80 and state92['dialog'] in (0,-1,9999) and state92['control']=='300' and state92['label']==tr80(32512) and state92['visible'] and state92['enabled'] and not state92['modal'])
+ if not ready92:ready_since92=None
+ elif ready_since92 is None:ready_since92=time.monotonic()
+ elif time.monotonic()-ready_since92>=.3:break
+ xbmc.sleep(30)
+else:failure80('VOD80_INPUT_NOT_READY')
+Path('/root/vod80-input92.json').write_text(json.dumps(dict(states=input_states92,stable_ms=300,requested_global_selects=1,android='ANDROID_NOT_TESTED')))
 capture('home80-vod-detail')
 xbmc.executebuiltin('Action(Select)',wait=False)
 player80=xbmc.Player()

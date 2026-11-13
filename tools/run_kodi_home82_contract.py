@@ -76,6 +76,8 @@ def main():
             run('cp',name+':/root/post75.json',str(report/'post79-second.json'))
         print(json.dumps(json.loads((report/'home75.json').read_text())))
     finally:
+        for diagnostic92 in ('vod80-input92.json','vod80-native-kodi-tail.log'):
+            subprocess.run(docker+['cp',name+':/root/'+diagnostic92,str(report/diagnostic92)],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         # Preserve every actual screenshot on failure as well as success.
         try:
             captured80=json.loads(run('exec',name,'python3','-c',"import json;from pathlib import Path;print(json.dumps([str(p) for p in list(Path('/root').glob('home75-*.png'))+list(Path('/root').glob('home82-*.png'))]))",capture_output=True,text=True).stdout)
