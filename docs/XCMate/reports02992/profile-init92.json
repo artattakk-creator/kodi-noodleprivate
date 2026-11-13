@@ -1,0 +1,16 @@
+{
+  "production_source_commit": "c9b6bdf673f43331157e0a610ee4e78fb7dc2e96",
+  "prior_failed_jobs": [
+    131916224132,
+    131916223348
+  ],
+  "prior_error": "BlockingIOError in three of four initializer threads",
+  "changes": "Cold writer imports before config lock; GUI publication after config lock; durable policy before marker",
+  "lock_timeout_changed": false,
+  "targeted_tests": 59,
+  "status": "PASS_TARGETED",
+  "parallel_preflight_repetitions": 20,
+  "slow_gui_test": "3 readers finish while first initializer GUI publication is blocked, one identical marker, durable later policy",
+  "full_ci": "PENDING",
+  "android": "ANDROID_NOT_TESTED"
+}
