@@ -4,13 +4,13 @@
   "storage_issue": 443,
   "source_pr": 448,
   "installer_pr": 447,
-  "production_source_commit": "95e3578e882ae28399d806557291b6424efec00a",
-  "package_sha256": "9c40329b0f4f66544a55df809d61c34b4e78b029517824d194db692fbe7917bd",
+  "production_source_commit": "cb8d297cd96bf9ea66bedf122292b88b8326b939",
+  "package_sha256": "78fb7145a0e3f41f71aa0c34de24c65ebb21e17c04ed6b606e2c291943b86d3c",
   "host": {
-    "status": "PENDING_FINAL_INCREMENTAL_CI",
+    "status": "PENDING_FINAL_RESERVE_CI",
     "tests": 3914,
-    "ci_run": 43413915137,
-    "previous_production_source_commit": "6c52b6e08b78b889b014707a6325876632c89e2b"
+    "ci_run": 43424766944,
+    "previous_production_source_commit": "95e3578e882ae28399d806557291b6424efec00a"
   },
   "native_exact": {
     "status": "PREVIOUS_PACKAGE_PASS_FINAL_PACKAGE_PENDING",
@@ -41,7 +41,7 @@
     "previous_production_source_commit": "6c52b6e08b78b889b014707a6325876632c89e2b"
   },
   "additional_logo_reserve_cold": {
-    "status": "IN_PROGRESS",
+    "status": "PASS_PREVIOUS_COMPONENT_STAND",
     "ci_run": 43421851720
   },
   "android": "ANDROID_NOT_TESTED",

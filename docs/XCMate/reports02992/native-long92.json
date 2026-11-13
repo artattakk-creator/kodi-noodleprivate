@@ -1,92 +1,332 @@
 {
-  "platform": "REAL_LINUX_KODI_SYNTHETIC_SOURCES_NOT_ANDROID",
-  "source_commit": "3d4153dc7d7e816643530b9f83253720e1b9c3c2",
+  "overall": "PASS",
+  "run_id": 43421851720,
+  "fixture_commit": "13d18c2895efd399588a7ec817bf07b5a5c8034b",
   "production_source_commit": "6c52b6e08b78b889b014707a6325876632c89e2b",
-  "run_id": 43417529621,
-  "artifact_id": 14034260574,
-  "resolution": "1920x1080",
-  "overall": "FAIL",
-  "failure": "NATIVE90_ACTIVATION_NOT_READY_ON_COLD_START",
-  "warm_status": "PASS",
-  "warm_logos": {
-    "posters89": [
-      {
-        "kind": "vod",
-        "distinct_local_items": 5,
-        "pixels": 52020,
-        "screenshot": "visible84-poster89-vod-warm.png"
+  "scope": "REAL_LINUX_KODI_COMPONENT_PROOF_BEFORE_FINAL_SQLITE_COMPACTION_FIX_NOT_EXACT_CURRENT_ZIP",
+  "capacity": "SYNTHETIC_27_MIB_NEGATIVE_THEN_218_MIB_POSITIVE",
+  "resolutions": [
+    {
+      "resolution": "1280x720",
+      "artifact_id": 14035921844,
+      "status": "PASS",
+      "warm_logos": {
+        "posters89": [
+          {
+            "kind": "vod",
+            "distinct_local_items": 5,
+            "pixels": 62910,
+            "screenshot": "visible84-poster89-vod-warm.png"
+          },
+          {
+            "kind": "series",
+            "distinct_local_items": 5,
+            "pixels": 63019,
+            "screenshot": "visible84-poster89-series-warm.png"
+          }
+        ],
+        "status": "PASS",
+        "records": 88,
+        "own_references": 88,
+        "unique_files": 88,
+        "request_count": 0,
+        "after_restart_no_repeated_downloads": null,
+        "manifest_bytes": 34080,
+        "own_bytes": 58029,
+        "selected_free_injection": 228114432,
+        "global_reserve": 1073741824,
+        "actual_native_list_file": true,
+        "rail_pixels": 3235,
+        "screenshot": "visible84-logo89-warm.png",
+        "android": "ANDROID_NOT_TESTED"
       },
-      {
-        "kind": "series",
-        "distinct_local_items": 5,
-        "pixels": 58320,
-        "screenshot": "visible84-poster89-series-warm.png"
-      }
-    ],
-    "status": "PASS",
-    "records": 88,
-    "own_references": 88,
-    "unique_files": 88,
-    "request_count": 0,
-    "after_restart_no_repeated_downloads": null,
-    "manifest_bytes": 34080,
-    "own_bytes": 58029,
-    "selected_free_injection": 228114432,
-    "global_reserve": 1073741824,
-    "actual_native_list_file": true,
-    "rail_pixels": 3420,
-    "screenshot": "visible84-logo89-warm.png",
-    "android": "ANDROID_NOT_TESTED"
-  },
-  "warm_sticky": {
-    "status": "PASS",
-    "wall_seconds": 306.07,
-    "checkpoints": [
-      {
-        "seconds": 2.17,
-        "pixels": 253572,
-        "screenshot": "visible84-sticky88-2.png"
+      "sticky": {
+        "status": "PASS",
+        "wall_seconds": 306.12,
+        "checkpoints": [
+          {
+            "seconds": 2.07,
+            "pixels": 253204,
+            "screenshot": "visible84-sticky88-2.png"
+          },
+          {
+            "seconds": 46.05,
+            "pixels": 253204,
+            "screenshot": "visible84-sticky88-46.png"
+          },
+          {
+            "seconds": 121.02,
+            "pixels": 253204,
+            "screenshot": "visible84-sticky88-121.png"
+          },
+          {
+            "seconds": 305.08,
+            "pixels": 253204,
+            "screenshot": "visible84-sticky88-305.png"
+          }
+        ],
+        "negative_status_after": 45,
+        "android": "ANDROID_NOT_TESTED"
       },
-      {
-        "seconds": 46.2,
-        "pixels": 253572,
-        "screenshot": "visible84-sticky88-46.png"
+      "foreign_widgets": {
+        "status": "PASS",
+        "saved_definitions": 13,
+        "cycles": 10,
+        "unchanged": "PASS"
       },
-      {
-        "seconds": 121.01,
-        "pixels": 253572,
-        "screenshot": "visible84-sticky88-121.png"
+      "reminder": {
+        "state": "dismissed",
+        "bookmark_retained": true,
+        "status": "PASS",
+        "exactly_two_actions": [
+          "Switch now",
+          "Dismiss"
+        ],
+        "default_focus": 611,
+        "native_remote_select": true,
+        "screenshot": "visible84-reminder89-two-actions.png",
+        "selected_free_injection": 228114432,
+        "timer_reserve": 33554432,
+        "android": "ANDROID_NOT_TESTED"
       },
-      {
-        "seconds": 305.07,
-        "pixels": 253572,
-        "screenshot": "visible84-sticky88-305.png"
-      }
-    ],
-    "negative_status_after": 45,
-    "android": "ANDROID_NOT_TESTED"
+      "cold": [
+        {
+          "status": "PASS",
+          "cold": true,
+          "logos": {
+            "posters89": [
+              {
+                "kind": "vod",
+                "distinct_local_items": 5,
+                "pixels": 62368,
+                "screenshot": "visible84-poster89-vod-cold.png"
+              },
+              {
+                "kind": "series",
+                "distinct_local_items": 5,
+                "pixels": 62855,
+                "screenshot": "visible84-poster89-series-cold.png"
+              }
+            ],
+            "status": "PASS",
+            "records": 88,
+            "own_references": 88,
+            "unique_files": 88,
+            "request_count": 0,
+            "after_restart_no_repeated_downloads": true,
+            "manifest_bytes": 34080,
+            "own_bytes": 58029,
+            "selected_free_injection": 228114432,
+            "global_reserve": 1073741824,
+            "actual_native_list_file": true,
+            "rail_pixels": 3235,
+            "screenshot": "visible84-logo89-cold.png",
+            "android": "ANDROID_NOT_TESTED"
+          },
+          "restart": "native Application.Quit + supervised Kodi restart",
+          "foreign_widgets": "PASS"
+        },
+        {
+          "status": "PASS",
+          "cold": true,
+          "logos": {
+            "posters89": [
+              {
+                "kind": "vod",
+                "distinct_local_items": 5,
+                "pixels": 52394,
+                "screenshot": "visible84-poster89-vod-cold.png"
+              },
+              {
+                "kind": "series",
+                "distinct_local_items": 5,
+                "pixels": 61593,
+                "screenshot": "visible84-poster89-series-cold.png"
+              }
+            ],
+            "status": "PASS",
+            "records": 88,
+            "own_references": 88,
+            "unique_files": 88,
+            "request_count": 0,
+            "after_restart_no_repeated_downloads": true,
+            "manifest_bytes": 34080,
+            "own_bytes": 58029,
+            "selected_free_injection": 228114432,
+            "global_reserve": 1073741824,
+            "actual_native_list_file": true,
+            "rail_pixels": 3235,
+            "screenshot": "visible84-logo89-cold.png",
+            "android": "ANDROID_NOT_TESTED"
+          },
+          "restart": "native Application.Quit + supervised Kodi restart",
+          "foreign_widgets": "PASS"
+        }
+      ]
+    },
+    {
+      "resolution": "1920x1080",
+      "artifact_id": 14037435065,
+      "status": "PASS",
+      "warm_logos": {
+        "posters89": [
+          {
+            "kind": "vod",
+            "distinct_local_items": 5,
+            "pixels": 64800,
+            "screenshot": "visible84-poster89-vod-warm.png"
+          },
+          {
+            "kind": "series",
+            "distinct_local_items": 5,
+            "pixels": 57960,
+            "screenshot": "visible84-poster89-series-warm.png"
+          }
+        ],
+        "status": "PASS",
+        "records": 88,
+        "own_references": 88,
+        "unique_files": 88,
+        "request_count": 0,
+        "after_restart_no_repeated_downloads": null,
+        "manifest_bytes": 34080,
+        "own_bytes": 58029,
+        "selected_free_injection": 228114432,
+        "global_reserve": 1073741824,
+        "actual_native_list_file": true,
+        "rail_pixels": 3420,
+        "screenshot": "visible84-logo89-warm.png",
+        "android": "ANDROID_NOT_TESTED"
+      },
+      "sticky": {
+        "status": "PASS",
+        "wall_seconds": 306.25,
+        "checkpoints": [
+          {
+            "seconds": 2.02,
+            "pixels": 253572,
+            "screenshot": "visible84-sticky88-2.png"
+          },
+          {
+            "seconds": 46.09,
+            "pixels": 253572,
+            "screenshot": "visible84-sticky88-46.png"
+          },
+          {
+            "seconds": 121.05,
+            "pixels": 253572,
+            "screenshot": "visible84-sticky88-121.png"
+          },
+          {
+            "seconds": 305.14,
+            "pixels": 253572,
+            "screenshot": "visible84-sticky88-305.png"
+          }
+        ],
+        "negative_status_after": 45,
+        "android": "ANDROID_NOT_TESTED"
+      },
+      "foreign_widgets": {
+        "status": "PASS",
+        "saved_definitions": 13,
+        "cycles": 10,
+        "unchanged": "PASS"
+      },
+      "reminder": {
+        "state": "dismissed",
+        "bookmark_retained": true,
+        "status": "PASS",
+        "exactly_two_actions": [
+          "Switch now",
+          "Dismiss"
+        ],
+        "default_focus": 611,
+        "native_remote_select": true,
+        "screenshot": "visible84-reminder89-two-actions.png",
+        "selected_free_injection": 228114432,
+        "timer_reserve": 33554432,
+        "android": "ANDROID_NOT_TESTED"
+      },
+      "cold": [
+        {
+          "status": "PASS",
+          "cold": true,
+          "logos": {
+            "posters89": [
+              {
+                "kind": "vod",
+                "distinct_local_items": 5,
+                "pixels": 53460,
+                "screenshot": "visible84-poster89-vod-cold.png"
+              },
+              {
+                "kind": "series",
+                "distinct_local_items": 5,
+                "pixels": 53820,
+                "screenshot": "visible84-poster89-series-cold.png"
+              }
+            ],
+            "status": "PASS",
+            "records": 88,
+            "own_references": 88,
+            "unique_files": 88,
+            "request_count": 0,
+            "after_restart_no_repeated_downloads": true,
+            "manifest_bytes": 34080,
+            "own_bytes": 58029,
+            "selected_free_injection": 228114432,
+            "global_reserve": 1073741824,
+            "actual_native_list_file": true,
+            "rail_pixels": 3420,
+            "screenshot": "visible84-logo89-cold.png",
+            "android": "ANDROID_NOT_TESTED"
+          },
+          "restart": "native Application.Quit + supervised Kodi restart",
+          "foreign_widgets": "PASS"
+        },
+        {
+          "status": "PASS",
+          "cold": true,
+          "logos": {
+            "posters89": [
+              {
+                "kind": "vod",
+                "distinct_local_items": 5,
+                "pixels": 53460,
+                "screenshot": "visible84-poster89-vod-cold.png"
+              },
+              {
+                "kind": "series",
+                "distinct_local_items": 5,
+                "pixels": 53820,
+                "screenshot": "visible84-poster89-series-cold.png"
+              }
+            ],
+            "status": "PASS",
+            "records": 88,
+            "own_references": 88,
+            "unique_files": 88,
+            "request_count": 0,
+            "after_restart_no_repeated_downloads": true,
+            "manifest_bytes": 34080,
+            "own_bytes": 58029,
+            "selected_free_injection": 228114432,
+            "global_reserve": 1073741824,
+            "actual_native_list_file": true,
+            "rail_pixels": 3420,
+            "screenshot": "visible84-logo89-cold.png",
+            "android": "ANDROID_NOT_TESTED"
+          },
+          "restart": "native Application.Quit + supervised Kodi restart",
+          "foreign_widgets": "PASS"
+        }
+      ]
+    }
+  ],
+  "prior_failed_run": {
+    "run_id": 43417529621,
+    "overall": "FAIL",
+    "failure": "NATIVE90_ACTIVATION_NOT_READY_ON_COLD_START"
   },
-  "warm_foreign_widgets": {
-    "status": "PASS",
-    "saved_definitions": 13,
-    "cycles": 10,
-    "unchanged": "PASS"
-  },
-  "warm_reminders": {
-    "state": "dismissed",
-    "bookmark_retained": true,
-    "status": "PASS",
-    "exactly_two_actions": [
-      "Switch now",
-      "Dismiss"
-    ],
-    "default_focus": 611,
-    "native_remote_select": true,
-    "screenshot": "visible84-reminder89-two-actions.png",
-    "selected_free_injection": 228114432,
-    "timer_reserve": 33554432,
-    "android": "ANDROID_NOT_TESTED"
-  },
-  "cold": "NOT_COMPLETED",
   "android": "ANDROID_NOT_TESTED"
 }
