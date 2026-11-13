@@ -10,7 +10,7 @@ source82=source82.replace("if max(abs(a-b) for a,b in zip(rgb.getpixel((800,150)
 # .85 owns a bounded journal whose cold proofs are deliberately verified on
 # a worker. The disposable fixture disables the real service; model only its
 # local recovery step before keeping every original cold pixel assertion.
-recovery85="""if xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version') in ('0.1.29.85','0.1.29.86','0.1.29.87','0.1.29.88','0.1.29.89','0.1.29.90','0.1.29.91'):
+recovery85="""if xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version') in ('0.1.29.85','0.1.29.86','0.1.29.87','0.1.29.88','0.1.29.89','0.1.29.90','0.1.29.91','0.1.29.92'):
  import threading
  errors85=[];recovered85=[]
  def cold_worker85():
@@ -39,5 +39,5 @@ assert 'cases=[]' in source82
 source82=source82.replace('cases=[]',recovery85+'cases=[]',1)
 # Keep failure evidence precise; all original colour thresholds remain exact.
 source82=source82.replace("raise RuntimeError('COLD79_ACTUAL_HERO_TEXTURE_WRONG')", "raise RuntimeError(('COLD79_ACTUAL_HERO_TEXTURE_WRONG',kind,rgb.getpixel((800,150)),xbmc.getInfoLabel('ListItem.Art(poster)'),xbmc.getInfoLabel('ListItem.Art(fanart)')))")
-if xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version')in ('0.1.29.88','0.1.29.89','0.1.29.90','0.1.29.91'):source82=source82.replace('getpixel((800,150))','getpixel((1500,150))')
+if xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version')in ('0.1.29.88','0.1.29.89','0.1.29.90','0.1.29.91','0.1.29.92'):source82=source82.replace('getpixel((800,150))','getpixel((1500,150))')
 exec(compile(source82,'native-cold82','exec'),globals())

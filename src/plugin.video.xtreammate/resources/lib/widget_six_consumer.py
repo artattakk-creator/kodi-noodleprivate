@@ -31,7 +31,7 @@ def block(series,tail):
  for kind,title,cid,target in EXTRAS:
   call=E.Element('include',content='XCMate.SixRows.Row',condition=series[0]['attrs'].get('condition','true'))
   custom=dict(values,widgetid=str(cid),widgetName=title,widgetTarget=target,widgetPath='',widgetLimit='6' if kind=='mp3' else '24',widgetSortBy='',widgetSortOrder='',xcmateKind=kind,
-   up75='SetFocus($INFO[Window(Home).Property(XCMate.SixRows.'+kind+'.Up)])',down75='SetFocus($INFO[Window(Home).Property(XCMate.SixRows.'+kind+'.Down)])',xcmateTail=tail)
+   up75=values['widgetid'],down75=tail,xcmateTail=tail)
   for name,value in custom.items():E.SubElement(call,'param',name=name,value=value)
   parts.append(E.tostring(call,encoding='utf-8'))
  return BEGIN+b''.join(parts)+END
@@ -41,7 +41,13 @@ def patch(data):
  roots=own_groups(data)
  if len(roots)!=1:return data
  _,group=roots[0];series=group['series'];node,values=series
- directional='SetFocus($INFO[Window(Home).Property(XCMate.SixRows.series.Down)])'
+ directional=values.get('down75','')
+ # .92 uses a concrete fallback. Runtime control navigation connects loaded
+ # extras; an empty Home property can never compile into SetFocus().
+ if data.count(BEGIN)==1:
+  existing_calls=E.fromstring(b'<includes>'+data.split(BEGIN,1)[1].split(END,1)[0]+b'</includes>')
+  fallback=existing_calls.find("include/param[@name='xcmateTail']")
+  if fallback is not None:directional=fallback.get('value','')
  existing=data.count(BEGIN)
  if existing:
   if existing!=1 or data.count(END)!=1:raise ValueError('SIX_ROWS_UNVERIFIED')
@@ -50,8 +56,21 @@ def patch(data):
   tails={n.get('value','') for n in calls.findall("include/param[@name='xcmateTail']")}
   if len(tails)!=1:raise ValueError('SIX_ROWS_UNVERIFIED')
   tail=tails.pop()
-  if data[start:end]!=block(series,tail) or values.get('down75')!=directional:raise ValueError('SIX_ROWS_UNVERIFIED')
-  return data
+  expected=block(series,tail)
+  legacy=E.fromstring(b'<includes>'+expected[len(BEGIN):-len(END)]+b'</includes>')
+  for call in legacy.findall('include'):
+   kind=call.find("param[@name='xcmateKind']").get('value')
+   for direction in ('Up','Down'):
+    call.find("param[@name='"+direction.lower()+"75']").set('value','SetFocus($INFO[Window(Home).Property(XCMate.SixRows.'+kind+'.'+direction+')])')
+  previous=BEGIN+b''.join(E.tostring(n,encoding='utf-8') for n in legacy)+END
+  if data[start:end] not in (expected,previous) or values.get('down75') not in (tail,'SetFocus($INFO[Window(Home).Property(XCMate.SixRows.series.Down)])'):raise ValueError('SIX_ROWS_UNVERIFIED')
+  changes=[(start,end,expected)]
+  fields=[n for n in node['children'] if n['tag']=='param' and n['attrs'].get('name')=='down75']
+  if len(fields)!=1:raise ValueError('SIX_ROWS_FOCUS_UNVERIFIED')
+  field=fields[0]
+  replacement=E.tostring(E.Element('param',name='down75',value=tail),encoding='utf-8')
+  changes.append((field['start'],field['end']+len(b'</param>') if not field.get('selfclosing',False) and data[field['open']-2:field['open']]!=b'/>' else field['open'],replacement))
+  return edit(data,changes)
  if b'XCMate.SixRows.Row' in data or END in data:raise ValueError('SIX_ROWS_UNVERIFIED')
  all_ids={n['attrs'].get('value') for n in spans(data) if n['tag']=='param' and n['attrs'].get('name')=='widgetid'}
  if any(str(cid) in all_ids for _,_,cid,_ in EXTRAS):raise ValueError('SIX_ROWS_CONTROL_COLLISION')

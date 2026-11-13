@@ -15,4 +15,6 @@ def signature(portal,kind,offset=0,legacy90=False):
     value=['CONTEXT74',profile_scope(),identity,kind,portal.get('include_'+kind,True),
         portal.get('start_group_id') if kind=='live' or legacy90 else None,
         portal.get('start_stream_id') if kind=='live' or legacy90 else None,selection,offset,setting_int('recent_keep',100)]
+    home_filter92=__import__('home_filter92').signature(portal['id']) if kind=='vod' else ''
+    if home_filter92:value.append(home_filter92)
     return hashlib.sha256(json.dumps(value,sort_keys=True).encode()).hexdigest()

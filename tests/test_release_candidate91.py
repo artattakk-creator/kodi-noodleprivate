@@ -24,11 +24,11 @@ class Release91(unittest.TestCase):
         raw = subprocess.check_output(['git', 'archive', rc.BASE, 'src/plugin.video.xtreammate'], cwd=ROOT)
         with tarfile.open(fileobj=io.BytesIO(raw)) as archive:
             cls.baseline = {m.name: archive.extractfile(m).read() for m in archive if m.isfile()}
+        with zipfile.ZipFile(ROOT/'docs/XCMate/test-builds/02991'/rc.NAME) as archive:
+            cls.release91={'src/'+n:archive.read(n) for n in archive.namelist()}
 
     def test_only_two_metadata_files_change_all_runtime_and_artwork_bytes_are_preserved(self):
-        source = ROOT/'src/plugin.video.xtreammate'
-        current = {p.relative_to(ROOT).as_posix(): p.read_bytes() for p in source.rglob('*')
-                   if p.is_file() and '__pycache__' not in p.parts and p.name != '.DS_Store'}
+        current = self.release91
         self.assertEqual(current.keys(), self.baseline.keys())
         changed = {p for p in current if current[p] != self.baseline[p]}
         self.assertEqual(changed, {'src/plugin.video.xtreammate/addon.xml',
@@ -38,7 +38,7 @@ class Release91(unittest.TestCase):
 
     def test_metadata_normalizer_rejects_unknown_extra_edits_and_foreign_paths(self):
         for name, delta in metadata91()['modules'].items():
-            raw = (ROOT/name).read_bytes()
+            raw = self.release91[name]
             self.assertEqual(rc.sha(raw), delta['new_sha256'])
             self.assertEqual(rc.sha(self.baseline[name]), delta['old_sha256'])
             self.assertEqual(without_release91(raw+b'\nUNREVIEWED\n', name), raw+b'\nUNREVIEWED\n')
@@ -49,7 +49,7 @@ class Release91(unittest.TestCase):
         original91.cache_clear()
         with mock.patch('subprocess.check_output', side_effect=AssertionError('NO_HISTORY_FOR_NORMALIZER')):
             for name in metadata91()['modules']:
-                self.assertEqual(without_release91((ROOT/name).read_bytes(), name), self.baseline[name])
+                self.assertEqual(without_release91(self.release91[name], name), self.baseline[name])
 
     def test_native_screenshot_reader_waits_for_real_decodable_pixels(self):
         sys.path.insert(0, str(ROOT/'tools/kodi_home90_host'))
@@ -90,13 +90,15 @@ class Release91(unittest.TestCase):
         for name in ('tools/run_kodi_home82_contract.py', 'tools/kodi_home80_host/gui80.py', 'tools/kodi_home82_host/post82.py'):
             text = (ROOT/name).read_text()
             self.assertNotIn("'0.1.29.90')", text, name)
-            self.assertIn("'0.1.29.90','0.1.29.91')", text, name)
+            self.assertIn("'0.1.29.90','0.1.29.91','0.1.29.92')", text, name)
 
     def test_rc_zip_is_complete_and_byte_reproducible_with_the_repository_builder(self):
         from package_xcmate71 import build
         package = ROOT/'docs/XCMate/test-builds/02991'/rc.NAME
         with tempfile.TemporaryDirectory() as folder:
-            proof = build(folder)
+            source=Path(folder)/'historical/src';source.mkdir(parents=True)
+            with zipfile.ZipFile(package) as archive:archive.extractall(source)
+            with mock.patch('package_xcmate71.ROOT',source.parent):proof = build(folder)
             self.assertEqual(proof, rc.inspect_package(package))
             self.assertEqual((Path(folder)/rc.NAME).read_bytes(), package.read_bytes())
 
@@ -129,7 +131,8 @@ class Release91(unittest.TestCase):
                 rc.inspect_package(target)
 
     def test_pilot_proposal_verifies_update_detection_md5_and_only_nested_pilot_package(self):
-        folder = ROOT/'docs/XCMate/test-builds/02991'
+        temp=tempfile.TemporaryDirectory();self.addCleanup(temp.cleanup)
+        folder=Path(temp.name);rc.stage(folder)
         result = rc.verify(folder)
         self.assertFalse(result['repository_released'])
         self.assertEqual(result['android'], 'ANDROID_NOT_TESTED')
@@ -165,7 +168,7 @@ class Release91(unittest.TestCase):
     def test_existing_channels_old_packages_and_installer_have_no_delta_from_main(self):
         paths = ['addons.xml', 'addons.xml.md5', 'index.html', 'online-test',
                  'plugin.video.xtreammate', 'script.gsmedia.setup', 'src/script.gsmedia.setup']
-        result = subprocess.check_output(['git', 'diff', '--name-only', rc.BASE, '--']+paths, cwd=ROOT)
+        result = subprocess.check_output(['git', 'diff', '--name-only', '002ba995dc3ce6a6f72037261ad28c70e2d87d80', '--']+paths, cwd=ROOT)
         self.assertEqual(result, b'')
 
     def test_release_notes_supply_five_offline_popup_entries_with_preservation_notice(self):

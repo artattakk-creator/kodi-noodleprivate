@@ -43,9 +43,8 @@ def path():
 
 
 def _db():
-    from import_budget import check_space,ReserveBlocked
-    try:check_space(path(),65536)
-    except ReserveBlocked:raise StorageFailure('ARTWORK_JOURNAL_RESERVE_BLOCKED') from None
+    from storage_metadata92 import check
+    check(path(),65536,kind='migration')
     db=sqlite3.connect(path(),timeout=.03,factory=MigrationConnection);db.row_factory=sqlite3.Row
     try:
         required={'transfers','files','selected','probes','cleanup'}
@@ -121,7 +120,7 @@ def _shared_check(item, upcoming=4096):
         raise StorageFailure('TARGET_VOLUME_UNVERIFIED')
 
 
-def begin(target, *, shared=False, confirmed=False,strict87=False):
+def begin(target, *, shared=False, confirmed=False,strict87=False,reboot92=False):
     from artwork_config import initialize,read
     from artwork_vfs import target_root
     # No marker, journal, settings or directory write before the Android
@@ -141,6 +140,7 @@ def begin(target, *, shared=False, confirmed=False,strict87=False):
             proof=probe(target,config['profile'],confirmed=confirmed)
             config=dict(config,shared_storage83=dict(volume=proof['volume'],mount_key=proof['mount_key']))
             if strict87:config['strict_storage87']=True
+            if reboot92:config['storage92']={'prepared_boot':__import__('storage_transfer92').boot(), 'render_boot':''}
         elif target!='INTERNAL':prepare_target(target,config['profile'])
         source=json.dumps(config,sort_keys=True)
         db=_db()
@@ -160,6 +160,7 @@ def inventory(cancel=lambda:False,progress=lambda **kw:None):
         if not item:db.close();raise StorageFailure('NO_TRANSFER')
         try:
             _shared_check(item);_phase(db,item,'INVENTORY');config=json.loads(item['source']);count=0;size=0
+            if config.get('storage92') and db.execute('PRAGMA max_page_count=2048').fetchone()[0]>2048:raise StorageFailure('PILOT_JOURNAL_LIMIT')
             for kind in _kinds(config):
                 storage=_source(config,kind)
                 for entry in storage.enumerate_for_migration():
@@ -171,7 +172,10 @@ def inventory(cancel=lambda:False,progress=lambda **kw:None):
                     # no image/job/READY row is rewritten or deleted.
                     db.execute("INSERT INTO files VALUES(?,?,?,?,?,'PENDING') ON CONFLICT(transfer,kind,ident) DO UPDATE SET bytes=excluded.bytes,sha=excluded.sha,status='PENDING' WHERE files.sha!=excluded.sha OR files.bytes!=excluded.bytes",(item['id'],kind,entry['ident'],len(data),digest))
                     count+=1;size+=len(data)
-                    if count%64==0:db.commit();progress(stage='INVENTORY',files=count,bytes=size)
+                    if config.get('storage92') and (count>20000 or size>2*1024**3):raise StorageFailure('PILOT_TRANSFER_LIMIT')
+                    if count%64==0:
+                        db.commit();progress(stage='INVENTORY',files=count,bytes=size)
+                        if config.get('storage92'):__import__('storage_metadata92').check(path(),65536,kind='migration')
             _phase(db,item,'PAUSED');return status()
         except Exception:
             _phase(db,item,'PAUSED');raise
@@ -248,7 +252,12 @@ def approve_render(approved):
     try:
         item=_selected(db)
         if not item or item['stage'] not in ('VERIFIED','ACTIVE') or (approved is not True and approved is not False):raise StorageFailure('RENDER_NOT_VERIFIED')
-        with db:db.execute('UPDATE transfers SET rendered=? WHERE id=?',(int(approved),item['id']))
+        with db:
+            db.execute('UPDATE transfers SET rendered=? WHERE id=?',(int(approved),item['id']))
+            source=json.loads(item['source'])
+            if source.get('storage92'):
+                source['storage92']['render_boot']=__import__('storage_transfer92').boot() if approved else ''
+                db.execute('UPDATE transfers SET source=? WHERE id=?',(json.dumps(source,sort_keys=True),item['id']))
     finally:db.close()
 
 
@@ -262,6 +271,7 @@ def activate(cancel=lambda:False,progress=lambda **kw:None):
             if not item['rendered']:raise StorageFailure('RENDER_NOT_VERIFIED')
             _shared_check(item)
             source89=json.loads(item['source'])
+            if source89.get('storage92'):__import__('storage_transfer92').require_reboot(source89)
             # Old separate .87 programme archives carry a physical mount
             # proof. A generic USB/SMB activation must not leave that proof
             # pointing at another target and break every subsequent write.
@@ -297,7 +307,9 @@ def remove_originals(challenge='',cancel=lambda:False,progress=lambda **kw:None)
         try:
             if not item or not challenge or challenge!=item['id'] or item['stage'] not in ('ACTIVE','CLEANUP_PAUSED'):raise StorageFailure('CLEANUP_NOT_AUTHORIZED')
             config=read();source=json.loads(item['source'])
-            if source.get('strict_storage87'):raise StorageFailure('CLEANUP_NOT_AUTHORIZED')
+            if source.get('strict_storage87'):
+                if not source.get('storage92'):raise StorageFailure('CLEANUP_NOT_AUTHORIZED')
+                __import__('storage_transfer92').require_reboot(source)
             if source.get('archive_mode',source['mode'])!='internal' or config['mode']!='external' or config['target']!=item['target']:raise StorageFailure('CLEANUP_NOT_AUTHORIZED')
             if not verify(cancel,progress):return 0
             _phase(db,item,'CLEANUP_PAUSED')
@@ -312,7 +324,8 @@ def remove_originals(challenge='',cancel=lambda:False,progress=lambda **kw:None)
                     authorized=db.execute('SELECT 1 FROM cleanup WHERE transfer=? AND kind=? AND ident=?',(item['id'],row['kind'],row['ident'])).fetchone()
                     if authorized:continue
                     raise StorageFailure('SOURCE_CHANGED')
-                if os.path.islink(filename) or os.path.realpath(filename)!=os.path.join(os.path.realpath(original.root),row['ident']+'.img'):raise StorageFailure('SOURCE_CHANGED')
+                expected=__import__('storage_transfer92').original_path(original,row)
+                if os.path.islink(filename) or os.path.realpath(filename)!=expected:raise StorageFailure('SOURCE_CHANGED')
                 data=original.read(row['ident'],MAX_BYTES+1);copy=target.read(row['ident'],MAX_BYTES+1)
                 if hashlib.sha256(data).hexdigest()!=row['sha'] or data!=copy:raise StorageFailure('IMAGE_VERIFY_FAILED')
                 with db:db.execute('INSERT OR IGNORE INTO cleanup VALUES(?,?,?)',(item['id'],row['kind'],row['ident']))

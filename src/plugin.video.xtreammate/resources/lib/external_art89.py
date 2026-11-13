@@ -90,8 +90,8 @@ def store(role,key,body,receipt,cancel=lambda:False,config=None):
   values=records(role,config);record=dict(receipt,sha256=digest,width=width,height=height,bytes=len(body),at=time.time())
   values[key]=record;raw=json.dumps(dict(format=1,records=values),separators=(',',':')).encode()
   if len(values)>512 or len(raw)>512*1024:raise StorageFailure('EXTERNAL_RECEIPT_QUOTA')
-  from metadata_store89 import check as metadata_check
-  file=path(role,config);metadata_check(file,len(raw)+65536)
+  from storage_metadata92 import check as metadata_check
+  file=path(role,config);metadata_check(file,len(raw)+65536,kind='receipt')
   storage.write_verified(digest,body,image_valid)
   if storage.read(digest,len(body)+1)!=body:raise StorageFailure('IMAGE_VERIFY_FAILED')
   if cancel():raise InterruptedError('CANCELLED')
@@ -116,12 +116,12 @@ def confirm(role,key,record):
   if getattr(error,'code',str(error)) not in ('IMAGE_VERIFY_FAILED','UNVERIFIED_IMAGE'):raise
   from profile_transaction import writing
   from logo_store89 import atomic
-  from metadata_store89 import check
+  from storage_metadata92 import check
   with writing(timeout=.2):
    values=records(role)
    if values.get(key,{}).get('sha256')!=record.get('sha256'):return False
    values[key]=dict(record,invalid=True)
-   raw=json.dumps(dict(format=1,records=values),separators=(',',':')).encode();file=path(role);check(file,len(raw)+65536);atomic(file,raw)
+   raw=json.dumps(dict(format=1,records=values),separators=(',',':')).encode();file=path(role);check(file,len(raw)+65536,kind='receipt');atomic(file,raw)
   return False
  _checked[tag]=time.monotonic()+300
  while len(_checked)>512:_checked.pop(next(iter(_checked)))
@@ -252,7 +252,7 @@ def migration_backend(config,role):
 def migrate_receipts(source,target,verified):
  """Only after the existing full SHA/render gates, before target activation."""
  from utils import addon_data_dir
- from metadata_store89 import check
+ from storage_metadata92 import check
  from logo_store89 import atomic
  for role,kind in (('logo','logos'),('poster','posters89'),('programme','programme89')):
   if source.get('archive_mode',source['mode'])=='external':incoming=records(role,dict(source,mode='external'))
@@ -270,5 +270,5 @@ def migrate_receipts(source,target,verified):
   if not changed:continue
   raw=json.dumps(dict(format=1,records=outgoing),separators=(',',':')).encode();file=path(role,target)
   if len(outgoing)>512 or len(raw)>512*1024:raise OSError('EXTERNAL_RECEIPT_QUOTA')
-  check(file,len(raw)+65536);atomic(file,raw)
+  check(file,len(raw)+65536,kind='receipt');atomic(file,raw)
   if file.read_bytes()!=raw:raise OSError('EXTERNAL_RECEIPT_READBACK')

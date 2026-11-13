@@ -1,0 +1,36 @@
+# XCMate 0.1.29.92 – überprüfbarer Entwicklungsstand zu #443/#445
+
+Basis: origin/main 002ba995dc3ce6a6f72037261ad28c70e2d87d80 (.91). Source-Branch fix/xcmate-02992-storage-epg. Separater Installer-Entwurf .5.29: PR #447. Offene .5.27/.5.28- und Retention-PRs nicht übernommen. Kein Merge, keine Kanalveröffentlichung und keine Änderung an einer Android-Box.
+
+## Umgesetzt und noch zu prüfen
+
+| Bereich | Implementierung | Nachweis / Grenze |
+|---|---|---|
+| Inventur #443 | Eigene Seite Einstellungen → Speicher; begrenzte Klassensuche, logische und belegte Bytes, statvfs-bavail, Volume-/Mount-Identität, DB-Seiten/Freelist, WAL/SHM, interne und aktive externe Bildpfade; Kodi-Klassen nur lesen | FIXED_HOST; echte Android-Quota bleibt ausdrücklich unbekannt, Gerätemessung ANDROID_NOT_TESTED |
+| Automatische Wartung | Vor Prefetch im bestehenden Datenworker; intent/readback-Journal, unterbrochene Läufe wieder aufnehmen; spätere kleine Wartung; nur exakte geschlossene eigene Cache-Temporärdateien älter sieben Tage und abgelaufene EPG-Zeilen ohne Timer-/Reminderreferenz | FIXED_HOST; maximal 128 Dateien/4096 gesichtete Namen, DB-Batches 512 Zeilen/0,2s; kein globales Cache-Löschen |
+| Physischer Platz | Freie Bytes und DB/WAL-Dateigrößen vor/nach; sicherer TRUNCATE-Checkpoint, inkrementelle Freigabe nur bei bereits geeignetem DB-Modus und Reserve; neue Guide-DBs inkrementell | Keine Behauptung, DELETE verkleinere jede alte SQLite-Datei. Bestehende nicht inkrementelle DB-Kompaktierung: OPEN; kein ungesichertes VACUUM |
+| USB | Vorhandenen Migrator erweitert: getrennten verifizierten Pool verlangen, ausdrückliche Probe, Quellenmanifest, SHA256 und Readback, Renderbestätigung, echter Kodi-Prozesswechsel vor Aktivierung; separate doppelt bestätigte Originalbereinigung inklusive eigener Programme-Dateinamen | FIXED_HOST / ANDROID_NOT_TESTED. Zielreserve bleibt geschützt. Pilot maximal 2 GiB/20.000 Bilder; Journal begrenzt. Bei unbekanntem Mount oder gleichem Pool kein behaupteter Gewinn |
+| Kleine Metadaten | Mapping/Migrationsjournal/Policy/Wartungsjournal sowie eng begrenzte externe Bildquittungen mit eigener 4-MiB-Untergrenze; Receipts maximal 512 KiB und zusammen 4 MiB | FIXED_HOST. Keine Änderung der 32-MiB-Importreserve oder globalen 1-GiB-Bildreserve. Kein Freibrief für SQLite-/Bildarchive |
+| Bild-EPG und Installer | Ja/Nein/Später, Standard für Bestandsprofile unverändert; explizites Nein/Später stoppt neue automatische Programm-Bildjobs; alte Bilder bleiben lesbar. Separater Installer schließt seinen Modal vor Nonce-Handoff zum eigenen XCMate-Kontext | FIXED_HOST; frische Einrichtung mit .92 plus .5.29 auf Android noch prüfen. Kein erneuter 48-Komponenten-Lauf bei Upgrade |
+| EPG | Quellenbewusste zentrale Veröffentlichung beibehalten; Commit-Ergebnis und kalte Revisionsprüfung vor Kurzcache; begrenzter Now/Next-Cache statt voller zweiter Langzeitkopie; nächste verfügbare Zukunftssendung bleibt erreichbar. Raw-Bytes nicht dauerhaft archivieren; vor nächstem Quelldownload freigeben | FIXED_HOST; 7 lokale Kalendertage Vergangenheit, bestehende Importgrenze bis Tag 21; Quellenidentität, Bildermetadaten und Mappings erhalten |
+| Manuelle Bilder #433 | Begrenzte atomare Speicherung auch unter Bulk-Reserve; kalter Readback; Erfolg explizit getrennt von noch ausstehender Bildmaterialisierung; PROFILE_BUSY/RESERVE_BLOCKED/SQLITE_BUSY/WRITE_DENIED unterscheidbar | FIXED_HOST. Funktionierende TMDB-/TVMaze-Abfragen nicht umgeschrieben. Reboot-/Pixelabnahme ANDROID_NOT_TESTED |
+| Home75 / Parser | Leere dynamische SetFocus-Ziele durch konkrete XML-Fallbacks und native Control-Navigation für geladene Zusatzreihen ersetzen; verifizierte alte private Consumer gezielt aktualisieren. Statusbedingungen verwenden typisierte Kind-Metadaten statt clock50-URL in Boolean | FIXED_HOST; tatsächliches Down 2530→2540 und 720p/1080p: native CI erforderlich, Erwartungswerte nicht abgeschwächt |
+| Home-Filmfilter #444 | Eigene Auswahl nach Profil/Portalzugang und Provider-Gruppen-ID; SQL-Auswahl ausschließlich im Widgetreader; neue Kategorien erst nach Auswahl; Bibliothek und Live-/Serienpolitik unverändert | FIXED_HOST / ANDROID_NOT_TESTED |
+| Kodi-Puffer #107 | Einstieg in echte globale Kodi-Einstellungen; kein erfundener Streamregler | Vorhandene Kodi-21-Funktion, konkrete Gerätebedienung offen |
+
+## Bewusst nicht als repariert gemeldet
+
+- Die größte reale Datenklasse, die Android-Quota und der reale interne USB-Platzgewinn sind ohne verbundenes RK3528-Gerät nicht messbar. Nutzerangaben über 1,3 GB bzw. 3 GB USB sind keine statvfs-Messungen.
+- Komplettes Zusammenlegen sämtlicher alter Metadaten-/Artwork-SQLites, großer XMLTV-Download als externer Stream-Stage, sichere Alias-/Staging-/verwaiste Artwork-Freigabe nach vollständigem Referenzbeweis: OPEN in #443/#445/#108. Aktive DBs, WALs, letzte Backups und unbekannte Dateien bleiben geschützt.
+- Unbestätigte native STOP_TIMEOUT/StreamLoss/Player-Thread-Races und ungeplantes Home: OPEN #442/#174. Die funktionierende .42-Kompatibilität sowie Film-/Serienexit nicht ohne belegten neuen Fehlerpfad umgeschrieben. AAC-/CAddonMgr-Ausfall vor XCMate bleibt separater Kodi-Bootstrapfehler, kein behaupteter Add-on-Fix.
+- Long-OK-Zuweisung in allen drei Oberflächen und manuelle eventgebundene XMLTV-Bildwahl: OPEN #98/#161; vorhandene große Guide-Zuweisung, Vorschau und kurzes OK erhalten.
+- MP3-Neuheiten statt tatsächlicher gespeicherter Audio-Hauptroute: OPEN; ohne verifizierte Albenroute keine erfundenen URLs und kein Überschreiben der persönlichen Quelle. Funktionierende sechs Reihen bleiben erhalten.
+- Neue Postermaße warten auf den beauftragten Screenshot; kein blinder Geometrieumbau.
+
+## Artefakt und Freigabe
+
+Paket: test-builds/02992/plugin.video.xtreammate-0.1.29.92.zip plus .sha256; exakte Prüfsumme in reports02992/package.json. Dortige pilot-proposal ist ausschließlich eine Offline-Vorbereitung unter docs, kein Kodi-Updatekanal.
+
+.90-Fallback in regulär und Pilot unverändert: e95b0a0cc46e745a3318a609e6e57a005ee3a88965f6e7de0c4b21c68f30f17f. .91-Artefakte und veröffentlichter Installer .5.26 ebenfalls unverändert. Historische .91-Byteprüfungen jetzt ausdrücklich am eingefrorenen .91-Paket; neue .92-Tests prüfen den vollständigen aktuellen Source-Delta, jedes ZIP-Mitglied und unbekannte Zusatzänderungen.
+
+Status: Entwicklungs-/Gerätetestkandidat mit offenen P0-Abnahmen, keine vollständige Android-Reparaturzusage und derzeit keine Merge-Empfehlung. Abschließende Host-/CI-Ergebnisse werden im separaten Testbericht ergänzt.

@@ -39,7 +39,7 @@ class LocalizationTests(Fixture,unittest.TestCase):
         for locale,first,last in (('en_gb','Accounts & portals','Experimental'),
                                   ('de_de','Account & Portale','Experimentell')):
             self.ui_locale=locale;self.added.clear();self.home.settings(self.router,self.portal)
-            self.assertEqual(len(self.added),7)
+            self.assertEqual(len(self.added),8)
             self.assertEqual((self.labels()[0],self.labels()[-1]),(first,last))
             urls.append([u for u,_,_ in self.added])
         self.assertEqual(*urls)

@@ -5409,3 +5409,123 @@ msgstr "Die Dateigrößen auf dem gewählten Bildspeicher konnten nicht geprüft
 msgctxt "#37166"
 msgid "An older separate programme-image archive needs its verified migration before changing this target. Your previous storage choice is retained."
 msgstr "Ein älterer separater Sendungsbildbestand muss vor diesem Zielwechsel vollständig geprüft übertragen werden. Der bisherige Speicherort bleibt erhalten."
+
+msgctxt "#38700"
+msgid "Storage"
+msgstr "Speicher"
+
+msgctxt "#38701"
+msgid "Storage inventory (read only)"
+msgstr "Speicherinventur (nur lesen)"
+
+msgctxt "#38702"
+msgid "Run safe maintenance and measure space"
+msgstr "Sicher bereinigen und Platzgewinn messen"
+
+msgctxt "#38703"
+msgid "Image EPG: explicit choice"
+msgstr "Bild-EPG: ausdrückliche Auswahl"
+
+msgctxt "#38704"
+msgid "Enable image EPG"
+msgstr "Bild-EPG aktivieren"
+
+msgctxt "#38705"
+msgid "Disable image EPG"
+msgstr "Bild-EPG deaktivieren"
+
+msgctxt "#38706"
+msgid "Decide later"
+msgstr "Später entscheiden"
+
+msgctxt "#38707"
+msgid "Choose USB / SD target"
+msgstr "USB-/SD-Ziel auswählen"
+
+msgctxt "#38708"
+msgid "Copy or resume artwork transfer"
+msgstr "Bilder kopieren oder fortsetzen"
+
+msgctxt "#38709"
+msgid "Verify hashes and image display"
+msgstr "Prüfsummen und Bilddarstellung prüfen"
+
+msgctxt "#38710"
+msgid "Activate after Kodi restart"
+msgstr "Nach Kodi-Neustart aktivieren"
+
+msgctxt "#38711"
+msgid "Remove verified internal originals (separate confirmation)"
+msgstr "Verifizierte interne Originale entfernen (separate Bestätigung)"
+
+msgctxt "#38712"
+msgid "Existing artwork manager / NAS"
+msgstr "Bisherige Bildverwaltung / NAS"
+
+msgctxt "#38713"
+msgid "Migration, policy and maintenance status"
+msgstr "Status: Migration, Auswahl und Bereinigung"
+
+msgctxt "#38714"
+msgid "Kodi global cache settings"
+msgstr "Globale Kodi-Puffereinstellungen"
+
+msgctxt "#38715"
+msgid "Allow a small write/read probe and prepare the selected target? Original images remain unchanged."
+msgstr "Kleine Schreib-/Leseprobe erlauben und das Ziel vorbereiten? Originalbilder bleiben erhalten."
+
+msgctxt "#38716"
+msgid "Image check recorded. Restart Kodi, then activate the target here."
+msgstr "Bildprüfung gespeichert. Kodi neu starten, danach hier das Ziel aktivieren."
+
+msgctxt "#38717"
+msgid "Remove only the verified internal image originals? The external copies must remain available."
+msgstr "Nur die verifizierten internen Bildoriginale entfernen? Externe Kopien müssen verfügbar bleiben."
+
+msgctxt "#38718"
+msgid "Confirm permanent removal of these internal originals. Databases, settings and Kodi caches remain protected."
+msgstr "Dauerhaftes Entfernen dieser internen Originale bestätigen. Datenbanken, Einstellungen und Kodi-Caches bleiben geschützt."
+
+msgctxt "#38719"
+msgid "Storage operation paused. Review the diagnostic code and inventory."
+msgstr "Speichervorgang pausiert. Diagnosecode und Inventur prüfen."
+
+msgctxt "#38720"
+msgid "Assignment saved and independently read back. Image loading can still be pending."
+msgstr "Zuordnung gespeichert und unabhängig nachgelesen. Das Bild kann noch geladen werden."
+
+msgctxt "#38721"
+msgid "Metadata reserve blocked; inspect free space in Storage."
+msgstr "Metadatenreserve unterschritten; freien Platz unter Speicher prüfen."
+
+msgctxt "#38722"
+msgid "Profile or database busy; retry after the active job finishes."
+msgstr "Profil oder Datenbank belegt; nach Abschluss des aktiven Auftrags erneut versuchen."
+
+msgctxt "#38723"
+msgid "Write access denied; the previous assignment was preserved."
+msgstr "Schreibzugriff verweigert; die bisherige Zuordnung bleibt erhalten."
+
+msgctxt "#38724"
+msgid "Where should image data be stored?"
+msgstr "Wo sollen Bilddaten gespeichert werden?"
+
+msgctxt "#38725"
+msgid "Internal (keep current data)"
+msgstr "Intern (bisherige Daten beibehalten)"
+
+msgctxt "#38726"
+msgid "NAS / Samba (existing manager)"
+msgstr "NAS / Samba (bestehende Verwaltung)"
+
+msgctxt "#38727"
+msgid "Target prepared. Copy, verify image display and restart Kodi in XCMate → Settings → Storage before activation."
+msgstr "Ziel vorbereitet. Vor Aktivierung unter XCMate → Einstellungen → Speicher kopieren, Bilddarstellung prüfen und Kodi neu starten."
+
+msgctxt "#38728"
+msgid "NAS uses the existing verified VFS workflow. Unknown capacity is not a confirmed space gain."
+msgstr "NAS nutzt den bestehenden geprüften VFS-Ablauf. Unbekannte Kapazität gilt nicht als bestätigter Platzgewinn."
+
+msgctxt "#38729"
+msgid "Movie groups on Home (library unchanged)"
+msgstr "Filmgruppen auf Home (Bibliothek unverändert)"

@@ -122,3 +122,13 @@ def poll():
  for index,(kind,cid) in enumerate(populated):
   home.setProperty(PREFIX+kind+'.Up',str(populated[index-1][1] if index else base))
   home.setProperty(PREFIX+kind+'.Down',str(populated[index+1][1] if index+1<len(populated) else tail))
+
+ # Bind real Kodi controls. Static XML links remain safe before preparation.
+ try:
+  native=home.getControl(base)
+  native.controlDown(home.getControl(populated[0][1] if populated else tail))
+  for index,(kind,cid) in enumerate(populated):
+   current=home.getControl(cid)
+   current.controlUp(home.getControl(populated[index-1][1] if index else base))
+   current.controlDown(home.getControl(populated[index+1][1] if index+1<len(populated) else tail))
+ except (RuntimeError,AttributeError):pass  # Kodi can be rebuilding this Home.

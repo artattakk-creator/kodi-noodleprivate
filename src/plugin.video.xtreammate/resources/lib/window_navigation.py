@@ -18,7 +18,7 @@ DIALOG_ACTIONS=frozenset(('branding_status','theme_manager','art_status','art_re
     'xcmate_licenses','guide_timers','guide_status','about_xcmate','widget_manage49','widget_help49','playlist_editor'))
 WINDOW_ACTIONS=frozenset(('movies_home','series_home','media_detail','media_favourites','guide_browser','guide_grid'))
 _local=threading.Lock()
-DIALOG_ACTIONS=DIALOG_ACTIONS|frozenset(('navigation_rail','autoplay_diagnostic_mode','record_now','recordings_manage','setup_wizard','artwork_manage','device_info'))
+DIALOG_ACTIONS=DIALOG_ACTIONS|frozenset(('navigation_rail','autoplay_diagnostic_mode','record_now','recordings_manage','setup_wizard','home_filter92','storage92','storage_setup92','artwork_manage','device_info'))
 
 
 def trace(event,mode='',key=0,dispatch=''):

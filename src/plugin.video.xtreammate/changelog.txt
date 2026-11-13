@@ -1,3 +1,13 @@
+0.1.29.92 – Speicher-/EPG-Stabilisierung, unveröffentlichter Testkandidat
+- Eigene Speicherübersicht, sichere begrenzte Wartung mit Journal und gemessenem Platzdelta.
+- Kleine Bildzuordnungen und Migrationsjournale unter eigener begrenzter Metadatenreserve speichern.
+- USB-Migration mit Kopie, SHA256, Bildprüfung, Kodi-Neustart und separater Originalbereinigung.
+- Veraltete EPG-Quellfakten begrenzt entfernen; aktive Zuordnungen, Reminder und Backups schützen.
+- Now/Next-Snapshot nach bestätigtem zentralem EPG-Commit begrenzen; vollständigen Guide behalten.
+- Bild-EPG ausdrücklich wählbar; vorhandene Freigaben und Profile bei Updates erhalten.
+- Sichere Fokus-Ziele auch vor der Vorbereitung zusätzlicher Home-Reihen.
+- Android-Abnahme und weitere im Testbericht ausgewiesene Arbeiten offen. Kein Merge/Release.
+
 0.1.29.91 – Release Candidate aus den gemergten Widget-PRs #437 und #438
 - Gültige clock50-Widgetpfade wieder verwenden; Film- und Serienreihen zuverlässig anbinden.
 - Filme, Serien, Im Kino, Disney, Diese Woche im Trend und MP3s mit eigener Überschrift und Original-BINGIE-Ladekreisel.

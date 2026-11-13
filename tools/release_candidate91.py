@@ -23,10 +23,7 @@ def sha(raw):
 def inspect_package(path):
     """Every member must equal the current source; reject extras and traversal."""
     raw = Path(path).read_bytes()
-    source = ROOT/'src'/ADDON
-    expected = {ADDON+'/'+p.relative_to(source).as_posix(): p
-                for p in source.rglob('*') if p.is_file()
-                and '__pycache__' not in p.parts and p.name != '.DS_Store'}
+    expected=json.loads((ROOT/'tests/fixtures/release_02991_source_hashes.json').read_text())
     with zipfile.ZipFile(io.BytesIO(raw)) as archive:
         names = archive.namelist()
         if len(names) != len(set(names)) or set(names) != set(expected):
@@ -37,7 +34,7 @@ def inspect_package(path):
             if (Path(name).is_absolute() or '..' in Path(name).parts
                     or name.endswith(('.db', '.sqlite', '.log', '.pyc', '.pyo'))):
                 raise ValueError('RC91_PRIVATE_OR_UNSAFE_MEMBER')
-            if archive.read(name) != expected[name].read_bytes():
+            if sha(archive.read(name)) != expected[name]:
                 raise ValueError('RC91_SOURCE_BYTES')
         manifest = archive.read(ADDON+'/addon.xml')
         node = E.fromstring(manifest)
@@ -95,7 +92,14 @@ def safe_output(output):
 
 def stage(output):
     """Write a review-only changed-file overlay, not an online repository."""
-    from package_xcmate71 import build
+    from package_xcmate71 import build as current_build
+    def build(output):
+        import tempfile
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as temp:
+            source=Path(temp)/'src';source.mkdir()
+            with zipfile.ZipFile(ROOT/'docs/XCMate/test-builds/02991'/NAME) as archive:archive.extractall(source)
+            with patch('package_xcmate71.ROOT',Path(temp)):return current_build(output)
     output = safe_output(output)
     before = frozen()
     proof = build(output)

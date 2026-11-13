@@ -1,0 +1,12 @@
+{
+  "version": "0.1.29.92",
+  "sha256": "f4bc06c3eb4a4de0a018a3bf122c63c2c8e09128cebb9517da5a7dd12c3a9838",
+  "bytes": 4694436,
+  "files": 867,
+  "crc": "PASS",
+  "source_bytes": "PASS",
+  "status": "RC_READY_FOR_ANDROID",
+  "repository_staged": "OFFLINE_PILOT_ONLY",
+  "repository_released": false,
+  "android": "ANDROID_NOT_TESTED"
+}

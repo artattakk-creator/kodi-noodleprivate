@@ -11,7 +11,9 @@ def groups(reader,kind):
     if kind not in reader._groups44:
         from group_selection import enabled_ids
         rows=reader._query('SELECT * FROM groups WHERE pid=? AND kind=? ORDER BY ordinal',(reader.pid,kind))
-        allowed=enabled_ids(reader.pid,kind,[dict(category_id=g['cid']) for g in rows]);reader._selections[kind]=allowed
+        allowed=enabled_ids(reader.pid,kind,[dict(category_id=g['cid']) for g in rows])
+        if kind=='vod':allowed=__import__('home_filter92').allowed(reader.pid,allowed)
+        reader._selections[kind]=allowed
         reader._groups44[kind]=[g for g in rows if g['cid'] in allowed]
     return reader._groups44[kind]
 

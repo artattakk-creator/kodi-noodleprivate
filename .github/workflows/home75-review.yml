@@ -55,6 +55,7 @@ jobs:
           candidate_version="$(python -c 'import xml.etree.ElementTree as E; print(E.parse("src/plugin.video.xtreammate/addon.xml").getroot().get("version"))')"
           candidate_folder="media-spinner"
           if [ "$candidate_version" = "0.1.29.91" ]; then candidate_folder="02991"; fi
+          if [ "$candidate_version" = "0.1.29.92" ]; then candidate_folder="02992"; fi
           cmp "${{ runner.temp }}/package75/plugin.video.xtreammate-$candidate_version.zip" "docs/XCMate/test-builds/$candidate_folder/plugin.video.xtreammate-$candidate_version.zip"
           python tools/release_channel75.py
       - uses: actions/upload-artifact@v4

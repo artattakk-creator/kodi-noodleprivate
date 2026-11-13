@@ -135,6 +135,7 @@ def mark_seen(tag,policy,now):
   while len(_seen)>256:_seen.pop(next(iter(_seen)))
 
 def drain(cancel=lambda:False):
+ if not __import__('storage_policy92').images_enabled():return 0
  try:__import__('series_requests85').drain(cancel)
  except (OSError,ValueError,RuntimeError,AttributeError):pass
  try:__import__('programme_reference84').tick(cancel)

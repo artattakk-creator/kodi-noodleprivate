@@ -53,10 +53,26 @@ def media_heading(title,header,kinds=None,legacy=False):
  group.append(label);group.extend(media_spinners(header,kinds,legacy))
  return group
 
+def status_conditions92(group,restore=False):
+ """Never expand a clock-bearing URL inside a Kodi boolean expression."""
+ changed=False
+ for kind,action in (('vod','widget_recent_vod'),('series','widget_recent_series')):
+  labels=[node for node in group.findall("control[@type='label']") if node.findtext('label')=='$INFO[Window(Home).Property(XCMate.Home85.'+kind+'.Text)]']
+  if len(labels)!=1:raise ValueError('MEDIA_STATUS_UNVERIFIED')
+  old='[String.Contains($PARAM[widgetPath],action='+action+') | String.IsEqual(Container($PARAM[widgetid]).ListItem.Property(XCMate.WidgetKind41),'+kind+')]'
+  new='[String.IsEqual(Window(Home).Property(XCMate.Home85.$PARAM[xcmateKind].Kind),'+kind+') | String.IsEqual(Container($PARAM[widgetid]).ListItem.Property(XCMate.WidgetKind41),'+kind+')]'
+  suffix=' + !String.IsEmpty(Window(Home).Property(XCMate.Home85.'+kind+'.Text))'
+  visible=labels[0].find('visible')
+  if visible is None or visible.text not in (old+suffix,new+suffix):raise ValueError('MEDIA_STATUS_UNVERIFIED')
+  target=(old if restore else new)+suffix
+  changed|=visible.text!=target;visible.text=target
+ return changed
+
 def original_media_row(row,header):
  """Fail closed on any unrelated geometry or animation edit."""
  from widget_skin80 import digest
  original=copy.deepcopy(row);group=original.find('control')
+ status_conditions92(group,restore=True)
  params=original.findall("param[@name='xcmateKind']")
  if params:
   if len(params)!=1 or params[0].attrib!={'name':'xcmateKind','default':''}:raise ValueError('MEDIA_SPINNER_UNVERIFIED')
@@ -162,7 +178,8 @@ def upgrade(files):
  headings=group.findall("control[@id='84$PARAM[widgetid]']")
  expected_title=original_media_row(row,header).find("control/control[@type='label']")
  missing=not headings or digest(headings[0])!=digest(media_heading(expected_title,header))
- if declared is not None or missing:
+ status92=status_conditions92(group)
+ if declared is not None or missing or status92:
   if missing:
    if headings:
     position=list(group).index(headings[0]);title=original_media_row(row,header).find("control/control[@type='label']");group.remove(headings[0])

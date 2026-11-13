@@ -31,6 +31,7 @@ def connect(filename=None,write=False):
         return db
     from import_budget import check_space
     check_space(filename or path())
+    db.execute('PRAGMA auto_vacuum=INCREMENTAL')
     db.execute('PRAGMA journal_mode=WAL')
     db.execute('PRAGMA max_page_count=2147483646')
     db.executescript('''CREATE TABLE IF NOT EXISTS guide_meta(pid TEXT PRIMARY KEY,revision TEXT,updated REAL);

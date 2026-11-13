@@ -39,7 +39,7 @@ class Boundaries90(Fixture,unittest.TestCase):
   def locked(**kw):raise TimeoutError('synthetic lock');yield
   with mock.patch.object(q,'authoritative',return_value=actual),mock.patch('work_search86.details',return_value=self.candidate()),mock.patch('profile_transaction.writing',side_effect=locked):
    nonce=q.request(event,'save',candidate=self.candidate());q.drain()
-  self.assertEqual(q.result(nonce)['code'],'PERSISTENCE_BLOCKED');self.assertEqual(m.path().read_bytes(),before)
+  self.assertEqual(q.result(nonce)['code'],'PROFILE_BUSY');self.assertEqual(m.path().read_bytes(),before)
  def test_low_space_below_floor_stops_new_logo_commits_but_keeps_verified_previous(self):
   s=__import__('logo_store89');m=__import__('logo_manifest86');row=dict(sid='1',stream_icon='https://images.example.org/one.png')
   facts=dict(capacity82='SAME_VOLUME_VERIFIED',free=115*1024**2,total=4034297856,volume82='same')

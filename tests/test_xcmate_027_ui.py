@@ -31,7 +31,7 @@ class NavigationTests(Fixture,unittest.TestCase):
     def test_settings_ten_categories_and_maintenance_only_diagnostics(self):
         home=importlib.import_module('home_menu')
         home.settings(self.router,self.portal)
-        self.assertEqual(len(self.added),7)
+        self.assertEqual(len(self.added),8)
         self.assertFalse(any('popup_probe' in url for url,_,_ in self.added))
         self.added.clear();home.settings(self.router,self.portal,'maintenance')
         self.assertFalse(any('popup_probe' in url for url,_,_ in self.added))
