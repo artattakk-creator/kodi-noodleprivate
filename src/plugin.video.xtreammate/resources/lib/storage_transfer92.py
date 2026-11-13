@@ -24,7 +24,11 @@ def prepare(target,confirmed=False):
         # Existing NAS flow remains available, no invented free-space proof.
         raise StorageFailure('NAS_CAPACITY_NOT_VERIFIED_USE_ARTWORK_MANAGER')
     from artwork_migration import begin
-    return begin(target,shared=True,confirmed=True,strict87=True,reboot92=True)
+    inventory=__import__('storage_inventory92').collect(budget=1)
+    result=begin(target,shared=True,confirmed=True,strict87=True,reboot92=True)
+    # Keep changing measurement timestamps OUT of source identity: repeated
+    # preparation/resume must not create a new migration just for an audit.
+    return dict(result,inventory_before=inventory)
 
 def original_path(original,row):
     # Existing generic files are 64-hex .img; programme87 has exact owned names.

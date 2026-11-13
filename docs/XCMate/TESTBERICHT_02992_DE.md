@@ -1,13 +1,13 @@
 # XCMate 0.1.29.92 – Test- und Freigabebericht
 
-Stand: 13.11.2026. Source-PR [#448](https://github.com/artattakk-creator/kodi-noodleprivate/pull/448), getrennter Installer-PR [#447](https://github.com/artattakk-creator/kodi-noodleprivate/pull/447). Basis main `002ba995dc3ce6a6f72037261ad28c70e2d87d80` (.91). Finale Codekorrektur `fa04b2710691845402de15c75eeaa84ca4ac80ef`.
+Stand: 13.11.2026. Source-PR [#448](https://github.com/artattakk-creator/kodi-noodleprivate/pull/448), getrennter Installer-PR [#447](https://github.com/artattakk-creator/kodi-noodleprivate/pull/447). Basis main `002ba995dc3ce6a6f72037261ad28c70e2d87d80` (.91). Letzte Produktionskorrektur vor der verpflichtenden Vorher-Inventur: `fa04b2710691845402de15c75eeaa84ca4ac80ef`; abschließender Inventurstand erhält eigene Tests/CI.
 
 **Keine Android-Abnahme, kein Merge und keine Repository-Veröffentlichung.** Die Matrix im Implementierungsbericht benennt insbesondere noch offene native Android-Playerfehler und nicht bewiesene Hardware-Platzentlastung. Ein ausführbarer RC ist keine vollständige P0-Freigabe.
 
 ## Paket und Reproduzierbarkeit
 
-- `test-builds/02992/plugin.video.xtreammate-0.1.29.92.zip`, 4.695.958 Bytes, 867 Mitglieder.
-- SHA256: `ab8715438aa1156a281e023ee42687c5cf480dd62707628231d214d545fadd6c`.
+- `test-builds/02992/plugin.video.xtreammate-0.1.29.92.zip`, 4.696.450 Bytes, 867 Mitglieder.
+- SHA256: `e155bb26a4583d0a937242b5a2a44ac6534b02353cb4f068dcc31c06085e1915`.
 - Canonical Build und jeder Source-Byte/ZIP-Mitglied/CRC geprüft; keine Profil-SQLites, privaten Logs, pyc oder zusätzlichen Mitglieder. Manifest-ID und Version geprüft.
 - `python tools/release_candidate92.py --output docs/XCMate/test-builds/02992` prüft zudem das **nur unter docs abgelegte Offline-Pilot-Proposal**. Live-Indizes sowie .90/.91- und .5.26-Pakete bleiben unverändert.
 - Der separate Installer .5.29 ist kein Bestandteil des XCMate-ZIP: SHA256 `674eaea4254395a5963c24012b09f9a59632cb8bb57b29f652c65cf9f77ff30e`, PR #447, 8 gezielte Tests PASS und [Installer-CI](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43387039231) PASS. 31 unveränderte .5.26-Dateien, nur Versionsmanifest/UI plus neue Speicherbrücke. Kein erneuter 48-Komponenten-Lauf beauftragt.
@@ -24,7 +24,7 @@ Getestet werden unter anderem: Legacy-/echte Neuprofile, reserveschonende atomar
 
 ## Tatsächliche physische Freigabe im Hostmodell
 
-[`reports02992/host-physical-cleanup.json`](reports02992/host-physical-cleanup.json): eigens für den Test erstellte und acht Tage gealterte eigene Tempdatei, 16.777.216 Bytes, tatsächlich entfernt; freie Bytes 2.193.416.192 → 2.210.189.312, beobachteter Zuwachs **16.773.120 Bytes**. Journal und Metadaten beanspruchen selbst Speicher; deshalb nicht einfach gelöschte Dateigröße als freien Platz ausgeben. Fremde Testdatei bleibt bytegleich. Dies ist eine Linux-Testmessung, **keine Messung der Android-Box**. Bei null beweisbar entbehrlichen Daten muss die Geräteanzeige null melden.
+[`reports02992/host-physical-cleanup.json`](reports02992/host-physical-cleanup.json): eigens für den Test erstellte und acht Tage gealterte eigene Tempdatei, 16.777.216 Bytes, tatsächlich entfernt; freie Bytes 2.446.802.944 → 2.463.571.968, beobachteter Zuwachs **16.769.024 Bytes**. Journal und Metadaten beanspruchen selbst Speicher; deshalb nicht einfach gelöschte Dateigröße als freien Platz ausgeben. Fremde Testdatei bleibt bytegleich. Dies ist eine Linux-Testmessung, **keine Messung der Android-Box**. Bei null beweisbar entbehrlichen Daten muss die Geräteanzeige null melden.
 
 Großlast lokal PASS: 200.005 Filme + 200.005 Serien, je 109.380.521 tatsächliche HTTP-Bytes, DB 309.526.528 / 621.731.840 Bytes, 27,404 / 27,409 s, Peak-RSS 33.008 KiB. XMLTV-Großlast im vollständigen Lauf: mehr als 160.000 Programme und 95 MB XML. Synthetische lokale Dienste, kein realer Providerbenchmark.
 
@@ -49,6 +49,10 @@ Lokales Docker-Kodi war vor App-Start durch zu wenig Platz im Test-Overlay block
 ## Historische Fehlversuche und Bestandsschutz
 
 Erster vollständiger Stand `97555c1e`: 3.898 Tests, 27 FAIL aus veralteten Publish-/Freeze- und Reserve-Injection-Erwartungen nach der freigegebenen .91; korrigiert an exakt festgehaltener Main-/Archive-Baseline, keine Testmethoden entfernt, keine neuen Skips. Zwischenlauf während veränderter exakter Source-Fixture ungültig, nicht als reproduzierbarer PASS benutzt. Lokale Großlast anfangs wegen vollem eigenen /tmp fehlgeschlagen; nur eigene bereits gespeicherte Worktree-/fehlgeschlagene Testartefakte freigegeben, danach vollständiger Großlast-PASS. Publizierte .90/.91, .5.26, Kodi-Daten und Kanäle bleiben geschützt.
+
+## Abschließender Inventurvertrag
+
+Vor automatischer/manueller Wartung wird jetzt zwingend ein zeitgestempelter read-only Klassen-/Volume-Snapshot aufgenommen und vor der ersten Löschung im Wartungsjournal per Readback bestätigt. Auch USB-Vorbereitung und die separat bestätigte Originalbereinigung liefern den Snapshot; wechselnde Inventurzeitpunkte werden nicht in die Migration-Quellidentität aufgenommen und erzeugen keinen neuen Transfer. Ein abweichend konfigurierter lokaler normalisierter Cache wird ohne Probe-/Fallback-Schreibzugriff mitgemessen und bleibt als fremdes Ziel von der Löschung ausgeschlossen. Drei zusätzliche Regressionen prüfen die Reihenfolge, den Idle-Skip und die fehlende Quellidentitätsänderung. Neuer Gesamtlauf erforderlich.
 
 ## Offene Freigabebedingungen
 

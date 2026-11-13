@@ -12,6 +12,13 @@ def roots():
              ('TEMP_ARTWORK', 'artwork_temporary85'), ('NORMALIZED_CACHE', 'cache'),
              ('GUIDE_BACKUPS', 'guide_backups44'), ('RESTORE_PLANS', 'widget50_plans')]
     result = [(label, root/name, True) for label, name in names]
+    # Read the configured location without cache_dir(): that helper performs a
+    # write probe and may create a fallback. Inventory must remain read-only.
+    from utils import setting
+    selected=(setting('cache_dir') or '').strip()
+    if selected.startswith('special://'):selected=xbmcvfs.translatePath(selected)
+    if os.path.isabs(selected) and selected!=str(root/'cache'):
+        result.append(('SELECTED_NORMALIZED_CACHE',Path(selected),False))
     from artwork_backend import active_backend
     from android_artwork87 import programme_root
     for label,location in [('ACTIVE_MEDIA',active_backend('media').root),('ACTIVE_LOGOS',active_backend('logos').root),('ACTIVE_PROGRAMMES',programme_root())]:

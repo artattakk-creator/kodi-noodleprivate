@@ -380,8 +380,9 @@ def remove_probe(probe):
 def cleanup_report(challenge,cancel=lambda:False,progress=lambda **kw:None):
     import shutil
     from utils import addon_data_dir
+    inventory=__import__('storage_inventory92').collect(cancel,progress,budget=1)
     before=shutil.disk_usage(addon_data_dir()).free
     image_bytes=remove_originals(challenge,cancel,progress)
     after=shutil.disk_usage(addon_data_dir()).free
-    return dict(image_bytes_unlinked=image_bytes,free_before=before,free_after=after,
+    return dict(image_bytes_unlinked=image_bytes,free_before=before,free_after=after,inventory_before=inventory,
                 observed_free_change=after-before,measurement='Concurrent system activity may affect filesystem delta')

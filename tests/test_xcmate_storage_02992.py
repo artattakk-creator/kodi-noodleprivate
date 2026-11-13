@@ -34,6 +34,23 @@ class Storage92(Fixture,unittest.TestCase):
    self.assertEqual(player._build_header_string(uri,{'Referer':'https://fixture.invalid'}),(uri,''))
   base,headers=player._build_header_string('https://fixture.invalid/live.ts|Referer=https%3A%2F%2Ffixture.invalid',{'User-Agent':'synthetic92'})
   self.assertEqual(base,'https://fixture.invalid/live.ts');self.assertIn('User-Agent=synthetic92',headers);self.assertIn('Referer=https%3A%2F%2Ffixture.invalid',headers)
+ def test_cleanup_audits_before_journal_and_mutation_and_preserves_idle_shortcut(self):
+  seen=[];snapshot=dict(at=1,categories=[],measurement='READ_ONLY')
+  with mock.patch('storage_inventory92.collect',side_effect=lambda *a,**kw:seen.append('audit') or snapshot),mock.patch.object(self.maintenance,'journal',side_effect=lambda record:seen.append(('journal',record.get('inventory_before')))),mock.patch('artwork_migration.busy',return_value=False),mock.patch.object(self.maintenance,'expire_temp',side_effect=lambda *a:seen.append('delete') or dict(files=0,bytes=0)):
+   result=self.maintenance.run(force=True)
+  self.assertEqual(seen[:3],['audit',('journal',snapshot),'delete']);self.assertEqual(result['inventory_before'],snapshot)
+  with mock.patch.object(self.maintenance,'read',return_value=dict(version=self.maintenance.VERSION,state='DONE',at=time.time())),mock.patch('storage_inventory92.collect',side_effect=AssertionError('idle rescan')):
+   self.assertEqual(self.maintenance.run()['state'],'DONE')
+ def test_usb_audit_precedes_prepare_without_changing_source_identity(self):
+  seen=[];module=importlib.import_module('storage_transfer92');snapshot=dict(at=1,categories=[])
+  with mock.patch('storage_inventory92.collect',side_effect=lambda **kw:seen.append('audit') or snapshot),mock.patch('artwork_migration.begin',side_effect=lambda *a,**kw:seen.append('begin') or dict(stage='PREPARED')) as begin:
+   result=module.prepare('/synthetic-usb',confirmed=True)
+  self.assertEqual(seen,['audit','begin']);self.assertEqual(result['inventory_before'],snapshot);self.assertNotIn('inventory_before',begin.call_args.kwargs)
+ def test_selected_normalized_cache_inventory_never_uses_write_probe(self):
+  module=importlib.import_module('storage_inventory92');self.options['cache_dir']=str(self.folder/'custom-cache')
+  with mock.patch('utils.cache_dir',side_effect=AssertionError('inventory must not write')):
+   roots=module.roots()
+  self.assertIn(('SELECTED_NORMALIZED_CACHE',self.folder/'custom-cache',False),roots);self.assertFalse((self.folder/'custom-cache').exists())
  def free(self,n):return mock.patch.object(self.metadata.os,'statvfs',return_value=SimpleNamespace(f_bavail=n,f_frsize=1,f_bsize=1))
  def database(self,filename='guide_v1.sqlite',incremental=False):
   file=self.folder/filename;db=sqlite3.connect(file)
@@ -85,6 +102,9 @@ class Storage92(Fixture,unittest.TestCase):
   import test_xcmate_storage_02937 as baseline
   fixture=baseline.Storage37(methodName='runTest');fixture.setUp();self.addCleanup(fixture.doCleanups)
   fixture.seed(2);source=fixture.m.folder;programme=source/'programme_images46';programme.mkdir(exist_ok=True)
+  # Legacy VFS copy fixture did not need Kodi's native path translator.
+  # Give read-only inventory separate nonexistent Kodi roots, never a mock snapshot.
+  fixture.vfs.translatePath=lambda uri:str(source/'synthetic-kodi-inventory'/__import__('hashlib').sha256(uri.encode()).hexdigest())
   ident='blob46-'+'c'*64+'.png';(programme/ident).write_bytes(fixture.m.png)
   protected=source/'guide-protected.sqlite';protected.write_bytes(b'PROTECTED')
   with fixture.config.locked():

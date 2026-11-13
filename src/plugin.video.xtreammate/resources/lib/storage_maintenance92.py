@@ -158,12 +158,18 @@ def run(cancel=lambda:False,progress=lambda **kw:None,force=False):
     from profile_transaction import writing
     from guide_store import day_window
     if cancel():return dict(code='CANCELLED')
+    # Capture bounded read-only class/volume evidence before acquiring profile
+    # write locks or deleting anything. Never probe or create a cache here.
+    prior=read();now=time.time()
+    if not force and prior.get('version')==VERSION and prior.get('state')=='DONE' and now-prior.get('at',0)<3600:return prior
+    inventory=__import__('storage_inventory92').collect(cancel,progress,budget=1)
+    if cancel():return dict(code='CANCELLED')
     with writer(),writing(timeout=.1):
         from artwork_migration import busy
         if busy():return dict(code='ACTIVE_MIGRATION_PROTECTED')
         prior=read();now=time.time()
         if not force and prior.get('version')==VERSION and prior.get('state')=='DONE' and now-prior.get('at',0)<3600:return prior
-        record=dict(version=VERSION,state='RUNNING',at=now,free_before=free())
+        record=dict(version=VERSION,state='RUNNING',at=now,free_before=free(),inventory_before=inventory)
         journal(record)
         try:protected=reference_intervals()
         except (OSError,ValueError,sqlite3.Error):
