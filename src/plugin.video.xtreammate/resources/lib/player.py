@@ -28,6 +28,11 @@ def _isa_available() -> bool:
 
 def _build_header_string(url: str, extra_headers: dict = None) -> str:
 
+    # Kodi protocol options are HTTP headers only for HTTP(S). Appending the
+    # default UA to a local/VFS filename makes VideoPlayer open a nonexistent
+    # filename. Preserve non-HTTP paths/options exactly, including RTSP/SMB.
+    if urllib.parse.urlsplit(url.partition('|')[0]).scheme.lower() not in ('http', 'https'):
+        return url, ''
     base_url  = url
     existing  = {}
 

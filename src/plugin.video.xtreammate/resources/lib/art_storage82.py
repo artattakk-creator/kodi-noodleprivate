@@ -30,7 +30,7 @@ def mount_type(target):
     return best
 
 def capacity(location,usage=None):
-    target=existing(location);usage=usage or shutil.disk_usage(target)
+    target=existing(location);provided_usage=usage is not None;usage=usage or shutil.disk_usage(target)
     value=dict(free=usage.free,total=usage.total,backend82='LOCAL',location82='SELECTED_LOCAL',mount82=mount_type(target),capacity82='SHUTIL_ONLY')
     try:
         before=os.stat(target);vfs=os.statvfs(target);after=os.stat(target)
@@ -43,6 +43,21 @@ def capacity(location,usage=None):
         elif usage.total==total and abs(usage.free-free)<=max(unit,256*1024):
             # f_bavail is capacity available to this application, not root's f_bfree.
             value.update(free=min(usage.free,free),total=total,capacity82='SAME_VOLUME_VERIFIED')
+        elif not provided_usage and usage.total==total and abs(usage.free-free)<=32*1024**2:
+            # Both measurements were made here against the same resolved path,
+            # with unchanged st_dev. Parallel WAL/image writes may move free
+            # space between syscalls. Recheck identity and total, keep the
+            # lowest available value, and bound the accepted sample movement.
+            # Caller-supplied capacity and large disagreements still fail shut.
+            again=os.statvfs(target);last=os.stat(target)
+            again_unit=again.f_frsize or again.f_bsize
+            again_free=again.f_bavail*again_unit;again_total=again.f_blocks*again_unit
+            if last.st_dev!=before.st_dev:
+                value.update(free=None,total=None,capacity82='VOLUME_CHANGED')
+            elif again_total==total and 0<=again_free<=total and max(usage.free,free,again_free)-min(usage.free,free,again_free)<=32*1024**2:
+                value.update(free=min(usage.free,free,again_free),total=total,capacity82='SAME_VOLUME_VERIFIED',free_sample_delta82=max(usage.free,free,again_free)-min(usage.free,free,again_free))
+            else:
+                value.update(free=min(usage.free,free,max(0,again_free)),total=min(usage.total,total,again_total),capacity82='CAPACITY_DISAGREEMENT')
         else:
             # Never borrow a larger unrelated Android emulated volume to pass a check.
             value.update(free=min(usage.free,free),total=min(usage.total,total),capacity82='CAPACITY_DISAGREEMENT')

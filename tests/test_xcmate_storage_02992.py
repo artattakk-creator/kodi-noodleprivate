@@ -17,6 +17,23 @@ class Storage92(Fixture,unittest.TestCase):
   self.metadata=importlib.import_module('storage_metadata92')
   self.policy=importlib.import_module('storage_policy92')
   self.patches=mock.patch('utils.addon_data_dir',return_value=str(self.folder));self.patches.start();self.addCleanup(self.patches.stop)
+ def test_same_volume_free_sample_movement_keeps_lowest_without_borrowing_space(self):
+  module=importlib.import_module('art_storage82');unit=4096;total=8*1024**3
+  def sample(n):return SimpleNamespace(f_frsize=unit,f_bsize=unit,f_bavail=n//unit,f_blocks=total//unit)
+  usage=SimpleNamespace(total=total,free=100*1024**2)
+  with mock.patch.object(module.shutil,'disk_usage',return_value=usage),mock.patch.object(module.os,'statvfs',side_effect=[sample(98*1024**2),sample(97*1024**2)]):
+   result=module.capacity(str(self.folder))
+  self.assertEqual(result['capacity82'],'SAME_VOLUME_VERIFIED');self.assertEqual(result['free'],97*1024**2)
+  with mock.patch.object(module.os,'statvfs',return_value=sample(98*1024**2)):
+   self.assertEqual(module.capacity(str(self.folder),usage)['capacity82'],'CAPACITY_DISAGREEMENT')
+  with mock.patch.object(module.shutil,'disk_usage',return_value=usage),mock.patch.object(module.os,'statvfs',return_value=sample(50*1024**2)):
+   self.assertEqual(module.capacity(str(self.folder))['capacity82'],'CAPACITY_DISAGREEMENT')
+ def test_playback_headers_preserve_local_vfs_and_rtsp_paths_and_http_auth_headers(self):
+  import player
+  for uri in ('/root/navigation90.mp4','/storage/emulated/0/Movies/a film.mp4','special://profile/video.mp4','smb://fixture/video.mp4','rtsp://fixture/live','rtmp://fixture/live options'):
+   self.assertEqual(player._build_header_string(uri,{'Referer':'https://fixture.invalid'}),(uri,''))
+  base,headers=player._build_header_string('https://fixture.invalid/live.ts|Referer=https%3A%2F%2Ffixture.invalid',{'User-Agent':'synthetic92'})
+  self.assertEqual(base,'https://fixture.invalid/live.ts');self.assertIn('User-Agent=synthetic92',headers);self.assertIn('Referer=https%3A%2F%2Ffixture.invalid',headers)
  def free(self,n):return mock.patch.object(self.metadata.os,'statvfs',return_value=SimpleNamespace(f_bavail=n,f_frsize=1,f_bsize=1))
  def database(self,filename='guide_v1.sqlite',incremental=False):
   file=self.folder/filename;db=sqlite3.connect(file)
