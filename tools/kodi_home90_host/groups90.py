@@ -80,7 +80,19 @@ def run(portal,pump,capture,check):
     # native tune. Require the new C++ item tag AND actual restored input owner
     # before sending the next IR action. The service may legitimately show
     # its information bar after releasing the standard OSD; both use capture.
-    until(lambda:nav.sid==expected and nav.owns_playback() and native_sid90()==expected and active90() and nav.getFocusId()==nav.capture.getId(),'GROUP90_WRONG_STATION')
+    # Kodi publishes the new C++ item tag before opening its native BusyDialog
+    # and before AVStarted. A key sent in that interval is legitimately eaten
+    # by the player transition. Require a short continuous real GUI/AV-ready
+    # interval, not just the early item announcement; the 12s bound is intact.
+    ready_since90=None
+    def tuned90():
+     nonlocal ready_since90
+     busy90=any(xbmc.getCondVisibility('Window.IsVisible('+str(cid90)+')') for cid90 in (10138,10160))
+     ready90=(nav.sid==expected and nav.owns_playback() and native_sid90()==expected and active90() and nav.getFocusId()==nav.capture.getId() and not busy90 and xbmc.Player().isPlayingVideo() and xbmc.Player().getTime()>.2)
+     if not ready90:ready_since90=None;return False
+     if ready_since90 is None:ready_since90=time.monotonic()
+     return time.monotonic()-ready_since90>=.3
+    until(tuned90,'GROUP90_WRONG_STATION')
     tag=json.loads(xbmc.Player().getVideoInfoTag().getUniqueID('xcmate_live'));check(tag['sid']==expected,'GROUP90_PLAYER_TAG_MISMATCH')
     cases.append(dict(group=group,total=137,last_index=136,correct_sid=True,native_video=True))
    screenshot,_=capture('visible84-groups90-native')
