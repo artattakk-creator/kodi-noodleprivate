@@ -2,23 +2,23 @@
   "status": "PASS",
   "platform": "REAL_LINUX_KODI_21_2_SYNTHETIC_SOURCES",
   "resolution": "1920x1080",
-  "run_id": 43420656693,
-  "artifact_id": 14033114955,
+  "run_id": 43427632430,
+  "artifact_id": 14038650163,
   "package": {
     "version": "0.1.29.92",
-    "sha256": "744fba87fbb9cb067b28295b63111f8845796fcbd3e7ce0d2a1ef385000f8d3d",
-    "bytes": 4696799,
+    "sha256": "78fb7145a0e3f41f71aa0c34de24c65ebb21e17c04ed6b606e2c291943b86d3c",
+    "bytes": 4697052,
     "files": 867,
     "crc": "PASS",
     "source_bytes": "PASS",
-    "source_commit": "0d2bf8771084f9c5279a1f06c4d6b85126c5f42f",
+    "source_commit": "aa63715973844837f02cb1341e57c366291b6007",
     "installed_version": "0.1.29.92",
     "unchanged_installed_nonmanifest_files": 866,
     "fixture_manifest_adapted": true,
     "fixture_service_disabled": true,
     "fixture_plugin_entry": true,
     "android": "ANDROID_NOT_TESTED",
-    "production_source_commit": "6c52b6e08b78b889b014707a6325876632c89e2b"
+    "production_source_commit": "cb8d297cd96bf9ea66bedf122292b88b8326b939"
   },
   "cycles": [
     {
@@ -50,20 +50,20 @@
       "foreign_definitions": 3,
       "source_timings_ms": {
         "cinema": {
-          "started_ms": 113,
-          "ready_ms": 2858
+          "started_ms": 110,
+          "ready_ms": 1890
         },
         "disney": {
-          "started_ms": 2858,
-          "ready_ms": 4011
+          "started_ms": 1890,
+          "ready_ms": 2883
         },
         "trend": {
-          "started_ms": 4011,
-          "ready_ms": 5225
+          "started_ms": 2883,
+          "ready_ms": 3957
         },
         "mp3": {
-          "started_ms": 5225,
-          "ready_ms": 6746
+          "started_ms": 3957,
+          "ready_ms": 5006
         }
       },
       "extra_rows": [
@@ -131,20 +131,20 @@
       "foreign_definitions": 3,
       "source_timings_ms": {
         "cinema": {
-          "started_ms": 112,
-          "ready_ms": 1394
+          "started_ms": 176,
+          "ready_ms": 1271
         },
         "disney": {
-          "started_ms": 1394,
-          "ready_ms": 2664
+          "started_ms": 1271,
+          "ready_ms": 2401
         },
         "trend": {
-          "started_ms": 2664,
-          "ready_ms": 4292
+          "started_ms": 2401,
+          "ready_ms": 3526
         },
         "mp3": {
-          "started_ms": 4292,
-          "ready_ms": 5328
+          "started_ms": 3526,
+          "ready_ms": 5037
         }
       },
       "extra_rows": [
@@ -212,20 +212,20 @@
       "foreign_definitions": 3,
       "source_timings_ms": {
         "cinema": {
-          "started_ms": 80,
-          "ready_ms": 1234
+          "started_ms": 199,
+          "ready_ms": 1293
         },
         "disney": {
-          "started_ms": 1234,
-          "ready_ms": 2155
+          "started_ms": 1293,
+          "ready_ms": 2287
         },
         "trend": {
-          "started_ms": 2155,
-          "ready_ms": 3211
+          "started_ms": 2287,
+          "ready_ms": 3492
         },
         "mp3": {
-          "started_ms": 3211,
-          "ready_ms": 4822
+          "started_ms": 3492,
+          "ready_ms": 4731
         }
       },
       "extra_rows": [
@@ -235,7 +235,7 @@
           "target": "videos",
           "items": 6,
           "heading_visible": true,
-          "pixels": 129600
+          "pixels": 38880
         },
         {
           "kind": "disney",
@@ -293,20 +293,20 @@
       "foreign_definitions": 3,
       "source_timings_ms": {
         "cinema": {
-          "started_ms": 72,
-          "ready_ms": 1105
+          "started_ms": 188,
+          "ready_ms": 1023
         },
         "disney": {
-          "started_ms": 1105,
-          "ready_ms": 2148
+          "started_ms": 1023,
+          "ready_ms": 2052
         },
         "trend": {
-          "started_ms": 2148,
-          "ready_ms": 2883
+          "started_ms": 2052,
+          "ready_ms": 3093
         },
         "mp3": {
-          "started_ms": 2883,
-          "ready_ms": 4241
+          "started_ms": 3093,
+          "ready_ms": 4684
         }
       },
       "extra_rows": [

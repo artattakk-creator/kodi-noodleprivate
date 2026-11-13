@@ -26,8 +26,12 @@ source80=source80.replace("path,rgb=capture('home75-'+kind+'-'+str(index))", "pa
 def capture_selected80(kind,index):
  deadline80=time.monotonic()+5;name80='home75-'+kind+'-'+str(index);attempt80=0
  expected80=((180,100,30) if kind=='vod' and index==0 else tuple((v+index*step)%240 for v,step in zip((40,70,120) if kind=='vod' else (100,50,20),(19,31,13)))) if kind in ('vod','series') else None
+ modern80=xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version')in ('0.1.29.88','0.1.29.89','0.1.29.90','0.1.29.91','0.1.29.92')
+ point80=(1500,150) if modern80 else (1000,150)
+ if kind=='live' and index==0:
+  expected80=(20,80,130);point80=(1500,300) if modern80 else (500,300)
  while True:
-  path80,rgb80=capture(name80);actual80=rgb80.getpixel((1500,150) if xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version')in ('0.1.29.88','0.1.29.89','0.1.29.90','0.1.29.91','0.1.29.92') else (1000,150));attempt80+=1
+  path80,rgb80=capture(name80);actual80=rgb80.getpixel(point80);attempt80+=1
   if expected80 is None or max(abs(a-b) for a,b in zip(actual80,expected80))<=6:return path80,rgb80
   if time.monotonic()>=deadline80:
    Path('/root/render80-error.json').write_text(json.dumps(dict(kind=kind,index=index,actual=actual80,expected=expected80,attempts=attempt80)))

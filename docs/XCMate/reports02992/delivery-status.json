@@ -7,18 +7,19 @@
   "production_source_commit": "cb8d297cd96bf9ea66bedf122292b88b8326b939",
   "package_sha256": "78fb7145a0e3f41f71aa0c34de24c65ebb21e17c04ed6b606e2c291943b86d3c",
   "host": {
-    "status": "PENDING_FINAL_RESERVE_CI",
+    "status": "PASS",
     "tests": 3914,
-    "ci_run": 43424766944,
-    "previous_production_source_commit": "95e3578e882ae28399d806557291b6424efec00a"
+    "ci_run": 43427632454,
+    "previous_production_source_commit": "95e3578e882ae28399d806557291b6424efec00a",
+    "seconds": 999.971
   },
   "native_exact": {
-    "status": "PREVIOUS_PACKAGE_PASS_FINAL_PACKAGE_PENDING",
+    "status": "PASS",
     "resolutions": [
       "1280x720",
       "1920x1080"
     ],
-    "ci_run": 43420656693,
+    "ci_run": 43427632430,
     "groups": 20,
     "channels_per_group": 137,
     "station_changes_per_resolution": 20,
@@ -53,5 +54,13 @@
     "XCMate 0.1.29.91",
     "GS Media Setup 0.5.26"
   ],
-  "open_details": "ISSUE_MATRIX_02992_DE.md"
+  "open_details": "ISSUE_MATRIX_02992_DE.md",
+  "native_home75_current": {
+    "status": "FAIL_720P_EVENT_IMAGE_PIXELS",
+    "ci_run": 43427632473,
+    "native1080": "PASS",
+    "native_media77": "PASS",
+    "test_correction": "Await actual Live event texture within existing 5s, matching media precondition",
+    "rerun": "PENDING"
+  }
 }

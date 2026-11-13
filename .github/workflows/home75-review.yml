@@ -4,6 +4,12 @@ on:
     branches: [main]
     paths: ['src/plugin.video.xtreammate/**', 'tests/**', 'tools/**', '.github/workflows/**']
   workflow_dispatch:
+    inputs:
+      mode:
+        description: Full includes the 30-minute DB pause; initial-home diagnoses startup without that pause
+        type: choice
+        options: [full, initial-home]
+        default: full
 permissions:
   contents: read
 concurrency:
@@ -11,6 +17,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   native75:
+    name: native75 (${{ matrix.resolution }}, ${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'full' }})
     runs-on: ubuntu-latest
     timeout-minutes: 50
     strategy:
@@ -36,7 +43,12 @@ jobs:
             sudo apt-get install -y ffmpeg
           fi
       - name: Receiver gates, full bleed Hero, initial rows and actual detail playback
-        run: python tools/run_kodi_home82_contract.py --report-dir "${{ runner.temp }}/native75" --resolution "${{ matrix.resolution }}" --fault-idle-seconds "${{ matrix.fault_seconds }}"
+        env:
+          INITIAL_HOME_ONLY: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'initial-home' }}
+        run: |
+          fault_seconds="${{ matrix.fault_seconds }}"
+          if [ "$INITIAL_HOME_ONLY" = "true" ]; then fault_seconds=0; fi
+          python tools/run_kodi_home82_contract.py --report-dir "${{ runner.temp }}/native75" --resolution "${{ matrix.resolution }}" --fault-idle-seconds "$fault_seconds"
       - name: .75 code and preservation regressions
         run: |
           python -m unittest discover -s tests -p '*02975.py' -v

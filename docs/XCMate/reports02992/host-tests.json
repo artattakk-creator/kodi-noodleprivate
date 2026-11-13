@@ -1,5 +1,5 @@
 {
-  "current_status": "PENDING_FINAL_RESERVE_CI",
+  "current_status": "PASS",
   "production_source_commit": "cb8d297cd96bf9ea66bedf122292b88b8326b939",
   "native_gates": "SEPARATE_NOT_IMPLIED_BY_HOST_PASS",
   "android": "ANDROID_NOT_TESTED",
@@ -26,5 +26,15 @@
     "seconds": 6.747,
     "physical_incremental_bytes": 524288,
     "active_reader": "WAL_BUSY_WITH_SNAPSHOT_PROTECTED"
+  },
+  "complete_ci": {
+    "commit": "cb8d297cd96bf9ea66bedf122292b88b8326b939",
+    "fixture_commit": "aa63715973844837f02cb1341e57c366291b6007",
+    "run_id": 43427632454,
+    "tests": 3914,
+    "seconds": 999.971,
+    "status": "PASS",
+    "branding_pytest": 11,
+    "po_catalogs": 17
   }
 }
