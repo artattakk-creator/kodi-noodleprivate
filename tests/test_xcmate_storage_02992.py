@@ -184,16 +184,26 @@ class Storage92(Fixture,unittest.TestCase):
    self.assertEqual(result['code'],'SQLITE_BUSY');self.assertEqual(result['rows'],0)
   self.assertEqual(file.read_bytes(),before)
  def test_retention_never_unlinks_live_wal_or_forces_vacuum(self):
-  file=self.database();withheld=file.with_name(file.name+'-user-backup');withheld.write_bytes(b'KEEP')
+  file=self.database(incremental=True);withheld=file.with_name(file.name+'-user-backup');withheld.write_bytes(b'KEEP')
   with sqlite3.connect(file) as reader:
    reader.execute('BEGIN');reader.execute('SELECT * FROM programmes').fetchone()
    result=self.maintenance.expire_epg(file,('programmes',),1000,set(),limit=50,seconds=2)
    self.assertEqual(result['full_vacuum'],'NOT_RUN');self.assertTrue(Path(str(file)+'-wal').exists())
+   self.assertEqual(result['code'],'WAL_BUSY')
+   self.assertEqual(reader.execute('SELECT count(*) FROM programmes').fetchone()[0],1600)
+  reader.close()
   self.assertEqual(withheld.read_bytes(),b'KEEP')
  def test_incremental_compaction_is_only_used_on_incremental_databases(self):
-  file=self.database(incremental=True);result=self.maintenance.expire_epg(file,('programmes',),1600,set(),limit=2000,seconds=2)
+  file=self.database(incremental=True)
+  with sqlite3.connect(file) as db:
+   before_pages=db.execute('PRAGMA page_count').fetchone()[0];page_size=db.execute('PRAGMA page_size').fetchone()[0]
+  before_bytes=file.stat().st_size
+  result=self.maintenance.expire_epg(file,('programmes',),1600,set(),limit=2000,seconds=2)
   self.assertEqual(result['rows'],1600);self.assertIn('observed_file_delta',result)
-  with sqlite3.connect(file) as db:self.assertEqual(db.execute('PRAGMA quick_check').fetchone()[0],'ok')
+  with sqlite3.connect(file) as db:
+   self.assertEqual(db.execute('PRAGMA quick_check').fetchone()[0],'ok')
+   self.assertEqual(before_pages-db.execute('PRAGMA page_count').fetchone()[0],128)
+  self.assertEqual(before_bytes-file.stat().st_size,128*page_size)
  def test_journal_failure_prevents_any_cleanup(self):
   with mock.patch.object(self.maintenance,'journal',side_effect=OSError('READ_ONLY')),mock.patch('artwork_migration.busy',return_value=False),mock.patch.object(self.maintenance,'expire_temp') as cleanup:
    with self.assertRaises(OSError):self.maintenance.run()

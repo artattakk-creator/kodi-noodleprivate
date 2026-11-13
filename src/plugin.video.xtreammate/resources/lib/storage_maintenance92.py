@@ -106,7 +106,12 @@ def expire_epg(filename, tables, cutoff, protected, *, limit=512, seconds=.2):
         if removed and db.execute('PRAGMA auto_vacuum').fetchone()[0]==2:
             from import_budget import check_space
             check_space(str(file),65536)
-            db.execute('PRAGMA incremental_vacuum(128)')
+            # SQLite yields a row per released page. Exhaust this bounded
+            # cursor; execute() alone releases only the first page.
+            db.execute('PRAGMA incremental_vacuum(128)').fetchall()
+            # Vacuum writes to WAL too. Recheck through SQLite so real file
+            # shrink is visible now; a pinned reader remains WAL_BUSY.
+            check=db.execute('PRAGMA wal_checkpoint(TRUNCATE)').fetchone()
         code='MORE' if more else 'VERIFIED_RETENTION'
         if check and check[0]:code='WAL_BUSY'
     except (sqlite3.Error,OSError) as error:
