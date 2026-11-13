@@ -72,7 +72,9 @@ def verify():
         manifest=json.loads((ONLINE/"manifest.json").read_text(encoding="utf-8"))
         if manifest["zip_sha256"]["plugin.video.xtreammate"]!=digest:
             raise AssertionError("Pilot manifest checksum differs")
-        if manifest.get("xcmate92",{}).get("channels")!=["pilot"]:
+        if (manifest.get("xcmate"+pilot_version.rsplit(".",1)[-1],{}).get("version")!=pilot_version
+                or manifest.get("xcmate"+pilot_version.rsplit(".",1)[-1],{}).get("channels")!=["pilot"]
+                or manifest.get("xcmate"+pilot_version.rsplit(".",1)[-1],{}).get("repository_released") is not True):
             raise AssertionError("Pilot manifest release scope not isolated")
     print("PASS NeoDark3 direct latest-only:",direct_version,"| Pilot:",pilot_version,
           "| single direct ZIP, protected split and installer preserved")
