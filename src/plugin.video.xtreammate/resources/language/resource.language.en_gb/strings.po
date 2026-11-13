@@ -5717,3 +5717,23 @@ msgstr "Active programme image storage"
 msgctxt "#38756"
 msgid "This channel group is empty"
 msgstr "This channel group is empty"
+
+msgctxt "#38757"
+msgid "Completed"
+msgstr "Completed"
+
+msgctxt "#38758"
+msgid "Interrupted or not complete yet"
+msgstr "Interrupted or not complete yet"
+
+msgctxt "#38759"
+msgid "Cancelled"
+msgstr "Cancelled"
+
+msgctxt "#38780"
+msgid "Temporarily blocked – existing data is preserved"
+msgstr "Temporarily blocked – existing data is preserved"
+
+msgctxt "#38781"
+msgid "Operation running"
+msgstr "Operation running"

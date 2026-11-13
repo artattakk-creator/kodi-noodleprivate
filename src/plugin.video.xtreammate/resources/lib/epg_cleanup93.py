@@ -27,8 +27,9 @@ def proof(folder,name,cancel):
         if not file.is_file() or file.is_symlink():raise ValueError('SKIPPED_UNPROVEN')
     if receipt.stat().st_size>4096:raise ValueError('SKIPPED_UNPROVEN')
     value=json.loads(receipt.read_bytes());before=stamp(dbfile)
+    if not isinstance(value,dict):raise ValueError('SKIPPED_UNPROVEN')
     if value.get('code')!='BACKUP_VERIFIED' or value.get('backup')!=name or value.get('bytes')!=before[2]:raise ValueError('SKIPPED_UNPROVEN')
-    if not re.fullmatch('[a-f0-9]{64}',value.get('sha256','')) or digest(dbfile,cancel)!=value['sha256']:raise ValueError('SKIPPED_UNPROVEN')
+    if not isinstance(value.get('sha256'),str) or not re.fullmatch('[a-f0-9]{64}',value['sha256']) or digest(dbfile,cancel)!=value['sha256']:raise ValueError('SKIPPED_UNPROVEN')
     files=[dbfile,receipt]
     if value.get('source_config_sha256'):
         if config.is_symlink() or not config.is_file() or config.stat().st_size>4*1024**2:raise ValueError('SKIPPED_UNPROVEN')
@@ -50,7 +51,7 @@ def proof(folder,name,cancel):
 
 def active_hash(db):
     row=db.execute("SELECT backup_sha FROM guide44_authorization WHERE kind='VERIFIED_BACKUP' ORDER BY created DESC LIMIT 1").fetchone()
-    if not row or not re.fullmatch('[a-f0-9]{64}',row[0]):raise ValueError('NO_RECOVERY_AUTHORIZATION')
+    if not row or not isinstance(row[0],str) or not re.fullmatch('[a-f0-9]{64}',row[0]):raise ValueError('NO_RECOVERY_AUTHORIZATION')
     return row[0]
 
 def prune(cancel=lambda:False,journal=lambda value:None,maximum=2):
@@ -73,7 +74,8 @@ def prune(cancel=lambda:False,journal=lambda value:None,maximum=2):
             receipt=folder/(name+'.json')
             try:
                 if receipt.is_symlink() or receipt.stat().st_size>4096:continue
-                if json.loads(receipt.read_bytes()).get('sha256')!=wanted:continue
+                marker=json.loads(receipt.read_bytes())
+                if not isinstance(marker,dict) or marker.get('sha256')!=wanted:continue
                 keep=proof(folder,name,cancel);break
             except (OSError,ValueError,sqlite3.Error):continue
         if keep is None:return dict(result,code='RECOVERY_PROOF_BLOCKED')

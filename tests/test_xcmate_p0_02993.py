@@ -145,3 +145,18 @@ class P093(Fixture,unittest.TestCase):
   with mock.patch('programme_events46.load',return_value=event),mock.patch('programme_urls55.enqueue',return_value=True) as enqueue,mock.patch('programme_reference84.tick'),mock.patch('series_requests85.drain'),mock.patch('tmdb_token61.effective_tmdb_read_token',return_value='synthetic'):
    q.drain()
   enqueue.assert_called_once();self.assertTrue(enqueue.call_args.args[0]['_detail93'])
+ def test_manual_mapping_never_falls_back_to_an_old_automatic_work(self):
+  from programme_events46 import describe
+  from media_sources43 import SourceError
+  q=importlib.import_module('programme_urls55')
+  event=describe(self.portal,dict(sid='1',name='Station'),dict(title='Galileo',start=self.now,stop=self.now+600),'xml');event['_detail93']=True
+  old=dict(code='READY',source='tmdb_series',source_url='https://image.tmdb.org/t/p/w500/WRONG_WORK.jpg',fingerprint='WRONG',until=time.time()+300,match='EXACT_UNIQUE_TV_TITLE66')
+  with mock.patch('programme_mapping85.current',return_value={'id':1}),mock.patch('programme_candidates85.candidate',side_effect=SourceError('TIMEOUT')),mock.patch('programme_index46.art',return_value=old),mock.patch('event_art81.prior',return_value=None),mock.patch.object(q,'probe',side_effect=AssertionError('old work fallback')):
+   value=q.resolve(event,allow_lookup=True,url_mode69=True)
+  self.assertNotEqual(value.get('source'),'tmdb_series')
+ def test_malformed_backup_manifest_is_skipped_without_worker_exception(self):
+  m=importlib.import_module('epg_cleanup93');old,keep=self.seed_backups();folder=self.folder/'guide_backups44'
+  receipt=Path(str(folder/old['backup'])+'.json')
+  for value in ([],None,{'sha256':17},'bad'):
+   receipt.write_text(json.dumps(value));r=m.prune()
+   self.assertEqual(r['deleted_files'],0);self.assertTrue((folder/old['backup']).exists())

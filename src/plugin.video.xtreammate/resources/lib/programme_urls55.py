@@ -209,7 +209,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             # A confirmed work mapping does not invalidate source-supplied
             # artwork for this exact broadcast. Keep it while the chosen work
             # image is unavailable; never substitute another automatic work.
-            yield from candidates
+            yield from (c for c in candidates if c.get('source') in ('xmltv_event','provider_event') and c.get('match')=='EXACT_EVENT')
             return  # A deliberate user mapping is never silently replaced.
         home86=__import__('home_schedule75').applicable() and not event.get('_detail93')
         if not home86:yield from candidates  # EPG detail legacy event ordering.

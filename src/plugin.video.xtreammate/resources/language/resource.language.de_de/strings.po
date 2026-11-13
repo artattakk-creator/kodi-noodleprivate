@@ -5717,3 +5717,23 @@ msgstr "Aktive Sendungsbildablage"
 msgctxt "#38756"
 msgid "This channel group is empty"
 msgstr "Diese Sendergruppe ist leer"
+
+msgctxt "#38757"
+msgid "Completed"
+msgstr "Abgeschlossen"
+
+msgctxt "#38758"
+msgid "Interrupted or not complete yet"
+msgstr "Unterbrochen oder noch nicht vollständig"
+
+msgctxt "#38759"
+msgid "Cancelled"
+msgstr "Abgebrochen"
+
+msgctxt "#38780"
+msgid "Temporarily blocked – existing data is preserved"
+msgstr "Vorübergehend gesperrt – vorhandene Daten bleiben erhalten"
+
+msgctxt "#38781"
+msgid "Operation running"
+msgstr "Vorgang läuft"

@@ -8,6 +8,7 @@ def amount(n):
         n/=1024
 
 def report(value):
+    if value is True:return tr(38757)+'\n\n'+tr(38755)
     if not isinstance(value,dict):return tr(38734)
     rows=value.get('categories')
     if isinstance(rows,list):
@@ -32,7 +33,8 @@ def report(value):
         lines.append(tr(38747));return '\n'.join(lines)
     # Action receipts are intentionally not a raw dump of profile/paths/URLs.
     state=str(value.get('state') or value.get('code') or '')
-    lines=[tr(38748),tr(38749,state if __import__('re').fullmatch('[A-Z0-9_:-]{0,100}',state) else tr(38733))]
+    labels={'DONE':38757,'RUNNING':38781,'PAUSED':38758,'CANCELLED':38759,'ACTIVE_MIGRATION_PROTECTED':38780,'REFERENCE_PROOF_BLOCKED':38780}
+    lines=[tr(38748),tr(38749,tr(labels.get(state,38733)))]
     if 'free_before' in value:
         lines.append(tr(38750,amount(value['free_before']),amount(value.get('free_after'))))
         lines.append(tr(38751,amount(value.get('observed_free_change'))))
