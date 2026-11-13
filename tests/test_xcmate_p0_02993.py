@@ -136,3 +136,12 @@ class P093(Fixture,unittest.TestCase):
   with file.open('rb') as opened:
    self.assertTrue(opened.read(1));r=m.prune();self.assertEqual(r['deleted_files'],0);self.assertTrue(file.exists())
   r=m.prune();self.assertEqual(r['deleted_files'],1);self.assertFalse(file.exists())
+ def test_detail_request_can_replace_home_quality_negative_without_waiting_its_ttl(self):
+  q=importlib.import_module('programme_requests68');self.options.update(programme_tmdb46=True,tmdb_research43=True)
+  from programme_policy68 import negative_scope
+  event=dict(pid='p',sid='1',title='Galileo',start=self.now-10,stop=self.now+100,code='LOCAL_EVENT')
+  q.status(event,'NO_IMAGE',dict(code='NO_IMAGE',source='placeholder',until=time.time()+300,policy69=negative_scope({})))
+  self.assertTrue(q.request(dict(event,_detail93=True),priority=True))
+  with mock.patch('programme_events46.load',return_value=event),mock.patch('programme_urls55.enqueue',return_value=True) as enqueue,mock.patch('programme_reference84.tick'),mock.patch('series_requests85.drain'),mock.patch('tmdb_token61.effective_tmdb_read_token',return_value='synthetic'):
+   q.drain()
+  enqueue.assert_called_once();self.assertTrue(enqueue.call_args.args[0]['_detail93'])

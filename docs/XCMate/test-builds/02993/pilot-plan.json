@@ -12,19 +12,19 @@
   },
   "merge_or_publish_authorized": false,
   "package": {
-    "bytes": 4709799,
+    "bytes": 4709851,
     "crc": "PASS",
     "files": 873,
-    "sha256": "c7edde880c7cce2997a7f81403cd55b44e20ff8e0247e3ec2cbd96b3a9385006",
+    "sha256": "c3549502601a9bad5db163d6dd915c005fda4b6bc7b6f708e279c382c31ceeb4",
     "source_bytes": "PASS",
     "version": "0.1.29.93"
   },
   "proposed_sha256": {
     "online-test/addons.xml": "955eb520fa8f8218eef88a4ec98d51aca4f1996d3ee81f8e48495b144b5bff2f",
     "online-test/addons.xml.md5": "cde982ab2235ae341a0539d58485fc4c7f8927acb8a88cbd91606ea2da4e1baa",
-    "online-test/manifest.json": "54a880ccc118e7a65dfa8cacfdfa962fa8f32e52d8bf89c01ea677b1bba98179",
-    "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.93.zip": "c7edde880c7cce2997a7f81403cd55b44e20ff8e0247e3ec2cbd96b3a9385006",
-    "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.93.zip.sha256": "f3d3d1838f6ae43d673d698d62d6577616ca60d79596ba77a71de7759beb2eaf"
+    "online-test/manifest.json": "d720458bb9145cd8dc0c48f5748198b16165beaeb90c25d0e7d2fefa70711b9b",
+    "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.93.zip": "c3549502601a9bad5db163d6dd915c005fda4b6bc7b6f708e279c382c31ceeb4",
+    "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.93.zip.sha256": "bfe2dfffa463faea803c8586fcbbf5fba7d47ef1fb409809a9b2529c314be00d"
   },
   "repository_released": false,
   "source_base": "3e1d6f87787baa95d24cc4e7c83c24914db31364",

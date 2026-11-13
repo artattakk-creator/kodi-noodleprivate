@@ -88,7 +88,7 @@ def status(event,code,art=None):
     for field69 in fields69:payload.pop(field69,None)
   for tag in set(tags):
    adjusted=dict(payload,scope69=tag) if payload.get('url_verified69') else dict(payload)
-   value=dict(tag=tag,scope=scope(),at=time.time(),code=code,art=adjusted)
+   value=dict(tag=tag,scope=scope(),at=time.time(),code=code,art=adjusted,detail93=bool(event.get('_detail93')))
    raw=json.dumps(value,separators=(',',':'),allow_nan=False)
    if len(raw.encode())<=MAX_BYTES:_window().setProperty(PREFIX+'status.'+str(int(tag[:8],16)%SLOTS),raw)
  except (ImportError,AttributeError,RuntimeError,ValueError,TypeError,KeyError):pass
@@ -163,7 +163,8 @@ def drain(cancel=lambda:False):
     if artifact69.get('code') in __import__('programme_revision85').REASONS and artifact69.get('until',0)>time.time():continue
     positive77=artifact69.get('source') not in (None,'','placeholder')
     ready77=not positive77 or __import__('programme_image69').eligible(artifact69,event)
-    if ready77 and valid70(previous69) and artifact69.get('until',0)>time.time() and artifact69.get('policy69')==negative_scope({}) and not retry70(event,artifact69) and not __import__('programme_status70').legacy_negative(artifact69):continue
+    detail_upgrade93=bool(value.get('detail93') and not previous69.get('detail93'))
+    if not detail_upgrade93 and ready77 and valid70(previous69) and artifact69.get('until',0)>time.time() and artifact69.get('policy69')==negative_scope({}) and not retry70(event,artifact69) and not __import__('programme_status70').legacy_negative(artifact69):continue
     if previous69.get('code') in ('QUEUED','RUNNING') and 0<=time.time()-previous69.get('at',0)<60:
      if value.get('priority') and previous69.get('code')=='QUEUED':
       from programme_urls55 import promote_focus75
@@ -176,7 +177,7 @@ def drain(cancel=lambda:False):
    from tmdb_token61 import effective_tmdb_read_token,TokenError
    try:effective_tmdb_read_token()
    except TokenError:pass
-   policy=fingerprint(event);tag=value['tag'];now=time.monotonic()
+   policy=fingerprint(event)+('|detail93' if value.get('detail93') else '|home93');tag=value['tag'];now=time.monotonic()
    with _lock:prior=_seen.get((tag,policy),-1e9)
    if now-prior<10:continue
    reader=Reader(portal['id'])
