@@ -7,24 +7,25 @@
   "production_source_commit": "c9b6bdf673f43331157e0a610ee4e78fb7dc2e96",
   "package_sha256": "1db07f87e1f1e84581868c1acced91a89017c332fc934caade7f785ffd88f3b4",
   "host": {
-    "status": "PENDING_COLD_PROFILE_CI",
-    "tests": 3914,
-    "ci_run": 43427632454,
-    "previous_production_source_commit": "cb8d297cd96bf9ea66bedf122292b88b8326b939",
-    "seconds": 999.971,
-    "expected_tests": 3915
+    "status": "PASS",
+    "tests": 3915,
+    "ci_run": 43441528773,
+    "seconds": 642.602,
+    "branding": 11,
+    "po_catalogs": 17
   },
   "native_exact": {
-    "status": "PREVIOUS_PACKAGE_PASS_CURRENT_PENDING",
+    "status": "PASS_CURRENT_PACKAGE",
     "resolutions": [
       "1280x720",
       "1920x1080"
     ],
-    "ci_run": 43427632430,
+    "ci_run": 43441528517,
     "groups": 20,
     "channels_per_group": 137,
     "station_changes_per_resolution": 20,
-    "cold_restarts_per_resolution": 3
+    "cold_restarts_per_resolution": 3,
+    "fixture_commit": "4152c7f4b13fddad4735aa93488d680bc4f9d3c4"
   },
   "native_home75": {
     "status": "PASS",
@@ -32,15 +33,16 @@
       "1280x720",
       "1920x1080"
     ],
-    "ci_run": 43417534465,
-    "db_pause_seconds_720p": 1800.9,
-    "previous_production_source_commit": "6c52b6e08b78b889b014707a6325876632c89e2b"
+    "ci_run": 43434565300,
+    "db_pause_seconds_720p": 1800.71,
+    "previous_production_source_commit": "cb8d297cd96bf9ea66bedf122292b88b8326b939",
+    "fixture_commit": "9b0fd985e8baf27f6db38c9367b748f8a14f95c9"
   },
   "native_stop": {
     "status": "PASS",
     "cycles": 60,
-    "ci_run": 43417534465,
-    "previous_production_source_commit": "6c52b6e08b78b889b014707a6325876632c89e2b"
+    "ci_run": 43434586981,
+    "previous_production_source_commit": "cb8d297cd96bf9ea66bedf122292b88b8326b939"
   },
   "additional_logo_reserve_cold": {
     "status": "PASS_PREVIOUS_COMPONENT_STAND",
@@ -56,12 +58,20 @@
     "GS Media Setup 0.5.26"
   ],
   "open_details": "ISSUE_MATRIX_02992_DE.md",
-  "native_home75_current": {
+  "native_home75_previous_failure": {
     "status": "FAIL_720P_EVENT_IMAGE_PIXELS",
     "ci_run": 43427632473,
     "native1080": "PASS",
     "native_media77": "PASS",
     "test_correction": "Await actual Live event texture within existing 5s, matching media precondition",
-    "rerun": "PENDING"
+    "rerun": "PASS_FULL_720P_AND_1080P",
+    "rerun_id": 43434565300
+  },
+  "additional_current_full_native": {
+    "ci_run": 43441528705,
+    "native1080": "PASS",
+    "media77": "PASS",
+    "native720": "IN_PROGRESS",
+    "claim": "NOT_IMPLIED_BY_EARLIER_PASS"
   }
 }

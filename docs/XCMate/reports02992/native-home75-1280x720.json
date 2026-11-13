@@ -1,12 +1,714 @@
 {
   "status": "PASS",
-  "platform": "REAL_LINUX_KODI_WITH_SYNTHETIC_SOURCES_AND_EXPLICIT_DB_PAUSE_INJECTION",
+  "mode": "FULL",
+  "platform": "REAL_LINUX_KODI_SYNTHETIC_SOURCES_AND_EXPLICIT_DB_PAUSE_NOT_ANDROID",
+  "production_source_commit": "cb8d297cd96bf9ea66bedf122292b88b8326b939",
+  "fixture_commit": "9b0fd985e8baf27f6db38c9367b748f8a14f95c9",
+  "run_id": 43434565300,
+  "artifact_id": 14045402900,
   "resolution": "1280x720",
-  "run_id": 43417534465,
-  "artifact_id": 14034741742,
-  "fixture_commit": "3d4153dc7d7e816643530b9f83253720e1b9c3c2",
-  "production_source_commit": "6c52b6e08b78b889b014707a6325876632c89e2b",
   "kodi": "21.2 Debian package version: 2:21.2+dfsg-4",
+  "cases": [
+    {
+      "kind": "live",
+      "index": 0,
+      "focus": 2510,
+      "frames": [
+        [
+          645,
+          646
+        ],
+        [
+          707,
+          707
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 2967.44,
+      "sha256": "ca706d7feabdbf626737ce44d321a6ffdf4e467f817a2ec81683fc41ea4c16f5"
+    },
+    {
+      "kind": "vod",
+      "index": 0,
+      "focus": 2520,
+      "frames": [
+        [
+          930,
+          933
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 3342.14,
+      "sha256": "f63525f9dcb1604a4dfb37aa69bd29c1f661bba2be17a82809d64ac7b1dac83b"
+    },
+    {
+      "kind": "series",
+      "index": 0,
+      "focus": 2530,
+      "frames": [
+        [
+          1026,
+          1029
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 3220.23,
+      "sha256": "7fe7e2faf94ab66c1c4a7484f7df8e0859b4cfa5984ed9e5f6e2c0863cd421fe"
+    },
+    {
+      "kind": "live",
+      "index": 0,
+      "focus": 2510,
+      "frames": [
+        [
+          645,
+          646
+        ],
+        [
+          707,
+          707
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 3673.96,
+      "sha256": "73ff10ca071750857e4f42489df189f07a322467ef884988816a2f64f6ea59a7"
+    },
+    {
+      "kind": "vod",
+      "index": 1,
+      "focus": 2520,
+      "frames": [
+        [
+          930,
+          933
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 3483.19,
+      "sha256": "39f171744b37b1c3fc7cc481efc7626305b50bcd3fcfff47988e3945fdaec9ff"
+    },
+    {
+      "kind": "series",
+      "index": 2,
+      "focus": 2530,
+      "frames": [
+        [
+          1026,
+          1029
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 3273.17,
+      "sha256": "4b0268ac7a26e55553a4e0ad6ac5ed7aeff63384940a81293b8db268c62da6a7"
+    },
+    {
+      "kind": "live",
+      "index": 3,
+      "focus": 2510,
+      "frames": [
+        [
+          645,
+          646
+        ],
+        [
+          707,
+          707
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 3464.66,
+      "sha256": "7126b7c8944a3907f6ce7c4747a99def766325e67df02cd7cd5d1e70b0e31b5f"
+    },
+    {
+      "kind": "vod",
+      "index": 4,
+      "focus": 2520,
+      "frames": [
+        [
+          930,
+          933
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 3385.4,
+      "sha256": "17f083403743eec244ae5beb1e8bb3e7332bf3e5c31d7ccc3d2fb5fde1dd0c7b"
+    },
+    {
+      "kind": "series",
+      "index": 5,
+      "focus": 2530,
+      "frames": [
+        [
+          1026,
+          1029
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 3433.52,
+      "sha256": "0e81bdef32153803dd579276845c760a2aaf56c9b549842f2313d1b299bb8ab8"
+    },
+    {
+      "kind": "live",
+      "index": 6,
+      "focus": 2510,
+      "frames": [
+        [
+          645,
+          646
+        ],
+        [
+          707,
+          707
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 3674.99,
+      "sha256": "d0cef6f067e850ebf6eb39ca4765143ab8a06b4ed5ee9766409403f6711cd8d9"
+    },
+    {
+      "kind": "vod",
+      "index": 7,
+      "focus": 2520,
+      "frames": [
+        [
+          930,
+          933
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 3504.37,
+      "sha256": "c50c8e60772291380e60397eb0b4be583ac9166ee3609d5f21f4a33c5339139c"
+    },
+    {
+      "kind": "series",
+      "index": 8,
+      "focus": 2530,
+      "frames": [
+        [
+          1026,
+          1029
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 3354.49,
+      "sha256": "83884169b101213d96d462b4356561bcdbeb7a3b23bd19c8353b730baceb9c84"
+    },
+    {
+      "kind": "live",
+      "index": 9,
+      "focus": 2510,
+      "frames": [
+        [
+          645,
+          646
+        ],
+        [
+          707,
+          707
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 3487.77,
+      "sha256": "719dc008ca3dd0e84012fb7fd9be71032f1d848ac52f29374256c21e58f76e45"
+    },
+    {
+      "kind": "vod",
+      "index": 10,
+      "focus": 2520,
+      "frames": [
+        [
+          930,
+          933
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 3391.54,
+      "sha256": "9111f2dafa6a689d000f388f69833eba9ede9b4578ce0e665cdd59e28b59ae20"
+    },
+    {
+      "kind": "series",
+      "index": 11,
+      "focus": 2530,
+      "frames": [
+        [
+          1026,
+          1029
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 3416.1,
+      "sha256": "25a659d08f99bfd908c8df87bd65b2cd720c6bad58ca3eba9d743d7c78ed5f23"
+    },
+    {
+      "kind": "live",
+      "index": 12,
+      "focus": 2510,
+      "frames": [
+        [
+          645,
+          646
+        ],
+        [
+          707,
+          707
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 3394.78,
+      "sha256": "6c467add67bb28b38d1a5da2c9353dcf3799e825a08329294db574f95b7807f1"
+    },
+    {
+      "kind": "vod",
+      "index": 13,
+      "focus": 2520,
+      "frames": [
+        [
+          930,
+          933
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 3296.34,
+      "sha256": "62da4b088434e5b3a57ff2e6ade399f09f204fd9d3c6a9c39afbc3fdf6a58786"
+    },
+    {
+      "kind": "series",
+      "index": 14,
+      "focus": 2530,
+      "frames": [
+        [
+          1026,
+          1029
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 3270.37,
+      "sha256": "81528b305a22960ee77ac9c4a11dd2a3c49a3969a964d09df209aadf30f744b9"
+    },
+    {
+      "kind": "live",
+      "index": 15,
+      "focus": 2510,
+      "frames": [
+        [
+          645,
+          646
+        ],
+        [
+          707,
+          707
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 2548.04,
+      "sha256": "d6fe4639d1e9c29c5ab2efef412d80a3ac24583a8a84abb99acbb40f609dbadb"
+    },
+    {
+      "kind": "vod",
+      "index": 16,
+      "focus": 2520,
+      "frames": [
+        [
+          930,
+          933
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 2422.87,
+      "sha256": "babcfa7679816907eba5aa8cf04ad6a5545b4d9b88fef2f423f0f9ce68236903"
+    },
+    {
+      "kind": "series",
+      "index": 17,
+      "focus": 2530,
+      "frames": [
+        [
+          1026,
+          1029
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 2378.96,
+      "sha256": "318abf6959f4eb1b2735001d8328615a4ce640c83d27927b044ea9daea7c7a5a"
+    },
+    {
+      "kind": "live",
+      "index": 18,
+      "focus": 2510,
+      "frames": [
+        [
+          645,
+          646
+        ],
+        [
+          707,
+          707
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 2542.86,
+      "sha256": "c7003ad35a8487802119b7846c5def82a163ce9db4904adf2798c7c234015dba"
+    },
+    {
+      "kind": "vod",
+      "index": 19,
+      "focus": 2520,
+      "frames": [
+        [
+          930,
+          933
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 2339.77,
+      "sha256": "b2c13c06d503e95bb76ccf19dbdf069c62bf57863b98e49ce3a85d54129857f5"
+    },
+    {
+      "kind": "live",
+      "index": 5,
+      "focus": 2510,
+      "frames": [
+        [
+          645,
+          646
+        ],
+        [
+          707,
+          707
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 2587.12,
+      "sha256": "9b5f7d634953cc2f1d8fef9ee8b2fac2588b030d00048d46afb5e616562a1973"
+    },
+    {
+      "kind": "live",
+      "index": 6,
+      "focus": 2510,
+      "frames": [
+        [
+          645,
+          646
+        ],
+        [
+          707,
+          707
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 2489.58,
+      "sha256": "5ab553a733bd2a1912d9d6f0a9e0ab8edb168e89dfea6d6f5a9c4420f997057d"
+    },
+    {
+      "kind": "foreign-poster",
+      "index": 0,
+      "focus": 2540,
+      "frames": [
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 2017.63,
+      "sha256": "184775caa699b40e28bf650b4e4c7ec6ab60990efc6b1818c6c8663a2f859cef"
+    },
+    {
+      "kind": "foreign-poster",
+      "index": 23,
+      "focus": 2540,
+      "frames": [
+        [
+          645,
+          646
+        ],
+        [
+          964,
+          965
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 2005.09,
+      "sha256": "bdff91a539d03cd7260ca6c2e8089dacc819e175397d550c5590df9b30c924ec"
+    },
+    {
+      "kind": "foreign-music",
+      "index": 0,
+      "focus": 2550,
+      "frames": [
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 2003.13,
+      "sha256": "80751fa831486da6b6d496fe1b9fe4d2ae74c1c1563997668e0f5db1112d4ded"
+    },
+    {
+      "kind": "foreign-music",
+      "index": 23,
+      "focus": 2550,
+      "frames": [
+        [
+          645,
+          646
+        ],
+        [
+          964,
+          965
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 1999.99,
+      "sha256": "a3bdf46d297c8239c91d2d85b79fd3b5ee56c5aad7bcdb2c79b858414f97e596"
+    },
+    {
+      "kind": "foreign-television",
+      "index": 0,
+      "focus": 2560,
+      "frames": [
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 1999.75,
+      "sha256": "9d13564b80fd931da343f7d2173d65ca4ef5490899d3ab28c7e6ee66446f44e5"
+    },
+    {
+      "kind": "foreign-television",
+      "index": 23,
+      "focus": 2560,
+      "frames": [
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          130,
+          0
+        ],
+        1760,
+        620
+      ],
+      "settled_render_ms": 2004.37,
+      "sha256": "1d5f6fc7a36dbd2454c9a5f5612566861f30df47fee1f928155945996148283f"
+    }
+  ],
   "native_actions": [
     {
       "action": "Down",
@@ -89,74 +791,18 @@
       "focus": 2510
     }
   ],
-  "ordinary_soak_seconds": 180.30208234399998,
-  "ordinary_checkpoints": [
-    {
-      "elapsed": 0.018526745000031042,
-      "counts": [
-        88,
-        24,
-        24
-      ],
-      "picture": "home75-soak-0.png"
-    },
-    {
-      "elapsed": 30.19201596099998,
-      "counts": [
-        88,
-        24,
-        24
-      ],
-      "picture": "home75-soak-30.png"
-    },
-    {
-      "elapsed": 60.355628388000014,
-      "counts": [
-        88,
-        24,
-        24
-      ],
-      "picture": "home75-soak-60.png"
-    },
-    {
-      "elapsed": 90.42771043100004,
-      "counts": [
-        88,
-        24,
-        24
-      ],
-      "picture": "home75-soak-90.png"
-    },
-    {
-      "elapsed": 120.58330621200002,
-      "counts": [
-        88,
-        24,
-        24
-      ],
-      "picture": "home75-soak-120.png"
-    },
-    {
-      "elapsed": 150.76043539699998,
-      "counts": [
-        88,
-        24,
-        24
-      ],
-      "picture": "home75-soak-150.png"
-    }
-  ],
+  "ordinary_soak_seconds": 180.147540714,
   "stability": {
     "status": "PASS",
     "scope": "real Linux Kodi + injected artwork DB pause",
-    "seconds": 1800.9,
+    "seconds": 1800.71,
     "duplicate_polls": 443,
     "worker_threads": 1,
     "recovered_same_worker": true,
     "unhandled": [],
     "checkpoints": [
       {
-        "elapsed": 0.13,
+        "elapsed": 0.08,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -164,7 +810,7 @@
         }
       },
       {
-        "elapsed": 60.24,
+        "elapsed": 60.12,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -172,7 +818,7 @@
         }
       },
       {
-        "elapsed": 120.27,
+        "elapsed": 120.21,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -180,7 +826,7 @@
         }
       },
       {
-        "elapsed": 180.32,
+        "elapsed": 180.29,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -196,7 +842,7 @@
         }
       },
       {
-        "elapsed": 300.38,
+        "elapsed": 300.34,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -204,7 +850,7 @@
         }
       },
       {
-        "elapsed": 360.49,
+        "elapsed": 360.39,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -212,7 +858,7 @@
         }
       },
       {
-        "elapsed": 420.51,
+        "elapsed": 420.49,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -220,7 +866,7 @@
         }
       },
       {
-        "elapsed": 480.58,
+        "elapsed": 480.53,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -228,7 +874,7 @@
         }
       },
       {
-        "elapsed": 540.61,
+        "elapsed": 540.54,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -236,7 +882,7 @@
         }
       },
       {
-        "elapsed": 600.65,
+        "elapsed": 600.64,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -244,7 +890,7 @@
         }
       },
       {
-        "elapsed": 660.71,
+        "elapsed": 660.68,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -252,7 +898,7 @@
         }
       },
       {
-        "elapsed": 720.82,
+        "elapsed": 720.76,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -260,7 +906,7 @@
         }
       },
       {
-        "elapsed": 780.89,
+        "elapsed": 780.85,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -268,7 +914,7 @@
         }
       },
       {
-        "elapsed": 840.97,
+        "elapsed": 840.85,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -276,7 +922,7 @@
         }
       },
       {
-        "elapsed": 901.03,
+        "elapsed": 900.91,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -284,7 +930,7 @@
         }
       },
       {
-        "elapsed": 961.03,
+        "elapsed": 960.98,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -292,7 +938,7 @@
         }
       },
       {
-        "elapsed": 1021.14,
+        "elapsed": 1021.01,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -300,7 +946,7 @@
         }
       },
       {
-        "elapsed": 1081.15,
+        "elapsed": 1081.02,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -308,7 +954,7 @@
         }
       },
       {
-        "elapsed": 1141.16,
+        "elapsed": 1141.06,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -316,7 +962,7 @@
         }
       },
       {
-        "elapsed": 1201.23,
+        "elapsed": 1201.07,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -324,7 +970,7 @@
         }
       },
       {
-        "elapsed": 1261.26,
+        "elapsed": 1261.15,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -332,7 +978,7 @@
         }
       },
       {
-        "elapsed": 1321.34,
+        "elapsed": 1321.18,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -340,7 +986,7 @@
         }
       },
       {
-        "elapsed": 1381.35,
+        "elapsed": 1381.2,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -348,7 +994,7 @@
         }
       },
       {
-        "elapsed": 1441.45,
+        "elapsed": 1441.31,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -356,7 +1002,7 @@
         }
       },
       {
-        "elapsed": 1501.5,
+        "elapsed": 1501.39,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -364,7 +1010,7 @@
         }
       },
       {
-        "elapsed": 1561.5,
+        "elapsed": 1561.47,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -372,7 +1018,7 @@
         }
       },
       {
-        "elapsed": 1621.51,
+        "elapsed": 1621.58,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -380,7 +1026,7 @@
         }
       },
       {
-        "elapsed": 1681.54,
+        "elapsed": 1681.61,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -388,7 +1034,7 @@
         }
       },
       {
-        "elapsed": 1741.57,
+        "elapsed": 1741.66,
         "art": {
           "live": "REFERENCE_PARTIAL",
           "vod": "REFERENCE_READY",
@@ -406,7 +1052,7 @@
     "video_streams": 1,
     "native_stop_ack": true,
     "detail_return": true,
-    "elapsed_ms": 2978.53,
+    "elapsed_ms": 3325.73,
     "android": "ANDROID_NOT_TESTED"
   },
   "guide": {

@@ -2,23 +2,23 @@
   "status": "PASS",
   "platform": "REAL_LINUX_KODI_21_2_SYNTHETIC_SOURCES",
   "resolution": "1280x720",
-  "run_id": 43427632430,
-  "artifact_id": 14036699861,
+  "run_id": 43441528517,
+  "artifact_id": 14046865622,
   "package": {
     "version": "0.1.29.92",
-    "sha256": "78fb7145a0e3f41f71aa0c34de24c65ebb21e17c04ed6b606e2c291943b86d3c",
-    "bytes": 4697052,
+    "sha256": "1db07f87e1f1e84581868c1acced91a89017c332fc934caade7f785ffd88f3b4",
+    "bytes": 4697322,
     "files": 867,
     "crc": "PASS",
     "source_bytes": "PASS",
-    "source_commit": "aa63715973844837f02cb1341e57c366291b6007",
+    "source_commit": "4152c7f4b13fddad4735aa93488d680bc4f9d3c4",
     "installed_version": "0.1.29.92",
     "unchanged_installed_nonmanifest_files": 866,
     "fixture_manifest_adapted": true,
     "fixture_service_disabled": true,
     "fixture_plugin_entry": true,
     "android": "ANDROID_NOT_TESTED",
-    "production_source_commit": "cb8d297cd96bf9ea66bedf122292b88b8326b939"
+    "production_source_commit": "c9b6bdf673f43331157e0a610ee4e78fb7dc2e96"
   },
   "cycles": [
     {
@@ -50,20 +50,20 @@
       "foreign_definitions": 3,
       "source_timings_ms": {
         "cinema": {
-          "started_ms": 212,
-          "ready_ms": 2619
+          "started_ms": 237,
+          "ready_ms": 2804
         },
         "disney": {
-          "started_ms": 2619,
-          "ready_ms": 4270
+          "started_ms": 2804,
+          "ready_ms": 3844
         },
         "trend": {
-          "started_ms": 4270,
-          "ready_ms": 5411
+          "started_ms": 3844,
+          "ready_ms": 4860
         },
         "mp3": {
-          "started_ms": 5411,
-          "ready_ms": 6420
+          "started_ms": 4860,
+          "ready_ms": 6026
         }
       },
       "extra_rows": [
@@ -131,20 +131,20 @@
       "foreign_definitions": 3,
       "source_timings_ms": {
         "cinema": {
-          "started_ms": 218,
-          "ready_ms": 1096
+          "started_ms": 137,
+          "ready_ms": 1137
         },
         "disney": {
-          "started_ms": 1096,
-          "ready_ms": 2010
+          "started_ms": 1137,
+          "ready_ms": 2200
         },
         "trend": {
-          "started_ms": 2010,
-          "ready_ms": 2730
+          "started_ms": 2200,
+          "ready_ms": 3183
         },
         "mp3": {
-          "started_ms": 2730,
-          "ready_ms": 3966
+          "started_ms": 3183,
+          "ready_ms": 4243
         }
       },
       "extra_rows": [
@@ -212,20 +212,20 @@
       "foreign_definitions": 3,
       "source_timings_ms": {
         "cinema": {
-          "started_ms": 0,
-          "ready_ms": 974
+          "started_ms": 117,
+          "ready_ms": 1058
         },
         "disney": {
-          "started_ms": 974,
-          "ready_ms": 1945
+          "started_ms": 1058,
+          "ready_ms": 1915
         },
         "trend": {
-          "started_ms": 1945,
-          "ready_ms": 2851
+          "started_ms": 1915,
+          "ready_ms": 2847
         },
         "mp3": {
-          "started_ms": 2851,
-          "ready_ms": 3897
+          "started_ms": 2847,
+          "ready_ms": 3746
         }
       },
       "extra_rows": [
@@ -293,20 +293,20 @@
       "foreign_definitions": 3,
       "source_timings_ms": {
         "cinema": {
-          "started_ms": 14,
-          "ready_ms": 978
+          "started_ms": 148,
+          "ready_ms": 1142
         },
         "disney": {
-          "started_ms": 978,
-          "ready_ms": 1781
+          "started_ms": 1142,
+          "ready_ms": 2172
         },
         "trend": {
-          "started_ms": 1781,
-          "ready_ms": 2751
+          "started_ms": 2172,
+          "ready_ms": 3306
         },
         "mp3": {
-          "started_ms": 2751,
-          "ready_ms": 3471
+          "started_ms": 3306,
+          "ready_ms": 4550
         }
       },
       "extra_rows": [

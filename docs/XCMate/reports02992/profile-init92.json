@@ -8,9 +8,13 @@
   "changes": "Cold writer imports before config lock; GUI publication after config lock; durable policy before marker",
   "lock_timeout_changed": false,
   "targeted_tests": 59,
-  "status": "PASS_TARGETED",
+  "status": "PASS_HOST",
   "parallel_preflight_repetitions": 20,
   "slow_gui_test": "3 readers finish while first initializer GUI publication is blocked, one identical marker, durable later policy",
-  "full_ci": "PENDING",
+  "full_ci": {
+    "run_id": 43441528773,
+    "tests": 3915,
+    "status": "PASS"
+  },
   "android": "ANDROID_NOT_TESTED"
 }

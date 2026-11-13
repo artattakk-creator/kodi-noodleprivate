@@ -1,9 +1,9 @@
 {
   "status": "PASS",
-  "run_id": 43431097100,
-  "artifact_id": 14038668761,
+  "run_id": 43434586981,
+  "artifact_id": 14042896972,
   "source_commit": "cb8d297cd96bf9ea66bedf122292b88b8326b939",
-  "fixture_commit": "7df2395a0b6b9f5b9a89428f954b5803241abee6",
+  "fixture_commit": "9b0fd985e8baf27f6db38c9367b748f8a14f95c9",
   "platform": "REAL_LINUX_KODI_SYNTHETIC_VIDEO_320PX_NOT_ANDROID_MEDIACODEC",
   "cycles": 60,
   "by_kind": {
