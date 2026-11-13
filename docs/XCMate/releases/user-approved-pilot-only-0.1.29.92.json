@@ -1,0 +1,31 @@
+{
+  "addon_id": "plugin.video.xtreammate",
+  "version": "0.1.29.92",
+  "approval_date": "2026-11-13",
+  "authorization": "User explicitly requested 0.1.29.92 in Pilot repository first to test on one Android RK3528 box",
+  "user_approved_pilot_release": true,
+  "user_approved_regular_release": false,
+  "user_approved_neodark3_direct_release": false,
+  "channel": "pilot",
+  "source_merge_pr": 448,
+  "source_merge_sha": "ca7877d14a322328fbf18f25b4adbd7c54b77ecb",
+  "source_zip_path": "docs/XCMate/test-builds/02992/plugin.video.xtreammate-0.1.29.92.zip",
+  "zip_sha256": "1db07f87e1f1e84581868c1acced91a89017c332fc934caade7f785ffd88f3b4",
+  "zip_bytes": 4697322,
+  "zip_members": 867,
+  "pilot_catalog": "online-test/addons.xml",
+  "pilot_zip": "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.92.zip",
+  "regular_catalog_unchanged": true,
+  "neodark3_direct_unchanged": true,
+  "protected_fallback_0_1_29_90_sha256": "e95b0a0cc46e745a3318a609e6e57a005ee3a88965f6e7de0c4b21c68f30f17f",
+  "installer_0_5_26_unchanged": true,
+  "android_status": "NOT_TESTED",
+  "accepted_only_for_device_testing": true,
+  "open_p0_issues": [
+    451,
+    452
+  ],
+  "host_tests_3915": "PASS",
+  "native_kodi_720p_1080p": "PASS",
+  "notes": "Pilot-only release at user's instruction; not an Android stability guarantee. No release in regular repository or direct NeoDark3."
+}
