@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "native_title": "XCMate \u2013 storage analysis (read only)",
+  "partial_marked": true,
+  "raw_json": false,
+  "verified_texture_pixels": {
+    "panel": [
+      20,
+      29,
+      43
+    ],
+    "focus": [
+      95,
+      120,
+      153
+    ],
+    "button": [
+      37,
+      52,
+      71
+    ]
+  },
+  "screenshot": "storage93.png",
+  "back_returned": true,
+  "platform": "LINUX_KODI_SYNTHETIC",
+  "android": "ANDROID_NOT_TESTED"
+}

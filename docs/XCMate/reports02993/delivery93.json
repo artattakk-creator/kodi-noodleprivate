@@ -1,0 +1,69 @@
+{
+  "version": "0.1.29.93",
+  "status": "DRAFT_TEST_CANDIDATE",
+  "master_issue": 454,
+  "pull_request": 455,
+  "base_commit": "3e1d6f87787baa95d24cc4e7c83c24914db31364",
+  "source_commit": "0b842c16edf12647a3d012b06c478b4929ca99a3",
+  "master_complete": false,
+  "repository_released": false,
+  "merge_authorized": false,
+  "android": "ANDROID_NOT_TESTED",
+  "android_gates": 16,
+  "package": {
+    "path": "docs/XCMate/test-builds/02993/plugin.video.xtreammate-0.1.29.93.zip",
+    "sha256": "48e0822827c2a8e8a854a812cbac0d0fb3407f6f6b9a5c3c2c2213f20fe77a95",
+    "bytes": 4710998,
+    "files": 876
+  },
+  "native": {
+    "platform": "LINUX_NATIVE_KODI_SYNTHETIC_NOT_ANDROID",
+    "exact_zip_run": 43504728596,
+    "resolutions": [
+      "1280x720",
+      "1920x1080"
+    ],
+    "status": "PASS",
+    "cold_restarts": 3,
+    "groups": 20,
+    "stations_per_group": 137,
+    "initial_gui_stations": 137,
+    "epg_required": false,
+    "wal_writer_held": true,
+    "unchanged_nonmanifest_files": 875,
+    "storage_panel_and_focus_pixels_verified": true,
+    "media_stop_ack_cycles": 60,
+    "media_scope": "Linux decode and owned Stop/ACK/progress only; Android fullscreen/origin return NOT_TESTED",
+    "kodi_version": "21.2 Debian 2:21.2+dfsg-4"
+  },
+  "full_host": {
+    "run_id": 43504728614,
+    "status": "PASS",
+    "tests": 3939,
+    "seconds": 908.27,
+    "branding": 11,
+    "po": 17
+  },
+  "home_soak": {
+    "run_id": 43504729339,
+    "status": "IN_PROGRESS",
+    "scope": "Existing cumulative Home including 30-minute DB pause",
+    "native1080": "PASS"
+  },
+  "open": [
+    "NATIVE_ROCKCHIP_STOP_FREEZE",
+    "ANDROID_UNCLEAN_PROCESS_EXIT_CAUSE",
+    "ANDROID_VOLUME_QUOTA_USB_REAL_FREE_GAIN",
+    "LEGACY_SOURCE_DB_CONSOLIDATION",
+    "UNPROVEN_OLD_RAW_FILES_SKIPPED",
+    "OPTIONAL_P1_435_450_427"
+  ],
+  "archived_transport": {
+    "run_id": 43504728829,
+    "original_job": 132159401231,
+    "status": "FAILED_CONTAINER_EXIT_137_SINGLE_JOB_RERUN_IN_PROGRESS",
+    "archive_source": "0.1.29.74",
+    "cause": "UNPROVEN",
+    "publication_job": "SKIPPED"
+  }
+}

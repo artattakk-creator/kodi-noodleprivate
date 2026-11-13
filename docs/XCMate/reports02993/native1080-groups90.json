@@ -1,0 +1,155 @@
+{
+  "status": "PASS",
+  "native_groups": 20,
+  "native_station_changes": 20,
+  "catalogue_rows": 2740,
+  "initial_partial_gui_rows": 137,
+  "targeted_group_reads": true,
+  "epg_required": false,
+  "page_size": 100,
+  "wal_writer_held": true,
+  "cases": [
+    {
+      "group": 0,
+      "total": 137,
+      "last_index": 136,
+      "correct_sid": true,
+      "native_video": true
+    },
+    {
+      "group": 1,
+      "total": 137,
+      "last_index": 136,
+      "correct_sid": true,
+      "native_video": true
+    },
+    {
+      "group": 2,
+      "total": 137,
+      "last_index": 136,
+      "correct_sid": true,
+      "native_video": true
+    },
+    {
+      "group": 3,
+      "total": 137,
+      "last_index": 136,
+      "correct_sid": true,
+      "native_video": true
+    },
+    {
+      "group": 4,
+      "total": 137,
+      "last_index": 136,
+      "correct_sid": true,
+      "native_video": true
+    },
+    {
+      "group": 5,
+      "total": 137,
+      "last_index": 136,
+      "correct_sid": true,
+      "native_video": true
+    },
+    {
+      "group": 6,
+      "total": 137,
+      "last_index": 136,
+      "correct_sid": true,
+      "native_video": true
+    },
+    {
+      "group": 7,
+      "total": 137,
+      "last_index": 136,
+      "correct_sid": true,
+      "native_video": true
+    },
+    {
+      "group": 8,
+      "total": 137,
+      "last_index": 136,
+      "correct_sid": true,
+      "native_video": true
+    },
+    {
+      "group": 9,
+      "total": 137,
+      "last_index": 136,
+      "correct_sid": true,
+      "native_video": true
+    },
+    {
+      "group": 10,
+      "total": 137,
+      "last_index": 136,
+      "correct_sid": true,
+      "native_video": true
+    },
+    {
+      "group": 11,
+      "total": 137,
+      "last_index": 136,
+      "correct_sid": true,
+      "native_video": true
+    },
+    {
+      "group": 12,
+      "total": 137,
+      "last_index": 136,
+      "correct_sid": true,
+      "native_video": true
+    },
+    {
+      "group": 13,
+      "total": 137,
+      "last_index": 136,
+      "correct_sid": true,
+      "native_video": true
+    },
+    {
+      "group": 14,
+      "total": 137,
+      "last_index": 136,
+      "correct_sid": true,
+      "native_video": true
+    },
+    {
+      "group": 15,
+      "total": 137,
+      "last_index": 136,
+      "correct_sid": true,
+      "native_video": true
+    },
+    {
+      "group": 16,
+      "total": 137,
+      "last_index": 136,
+      "correct_sid": true,
+      "native_video": true
+    },
+    {
+      "group": 17,
+      "total": 137,
+      "last_index": 136,
+      "correct_sid": true,
+      "native_video": true
+    },
+    {
+      "group": 18,
+      "total": 137,
+      "last_index": 136,
+      "correct_sid": true,
+      "native_video": true
+    },
+    {
+      "group": 19,
+      "total": 137,
+      "last_index": 136,
+      "correct_sid": true,
+      "native_video": true
+    }
+  ],
+  "screenshot": "visible84-groups90-native.png",
+  "android": "ANDROID_NOT_TESTED"
+}
