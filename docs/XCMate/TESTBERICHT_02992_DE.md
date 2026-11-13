@@ -1,13 +1,13 @@
 # XCMate 0.1.29.92 – Test- und Freigabebericht
 
-Stand: 13.11.2026. Source-PR [#448](https://github.com/artattakk-creator/kodi-noodleprivate/pull/448), getrennter Installer-PR [#447](https://github.com/artattakk-creator/kodi-noodleprivate/pull/447). Basis main `002ba995dc3ce6a6f72037261ad28c70e2d87d80` (.91). Finaler Produktions-/Paketstand: `f6fac55f89ab53036ae2cb059f831a9242536bfa`. Nachfolgende Korrektur betrifft ausschließlich die minimale Service-Testumgebung, keinen ZIP-Inhalt.
+Stand: 13.11.2026. Source-PR [#448](https://github.com/artattakk-creator/kodi-noodleprivate/pull/448), getrennter Installer-PR [#447](https://github.com/artattakk-creator/kodi-noodleprivate/pull/447). Basis main `002ba995dc3ce6a6f72037261ad28c70e2d87d80` (.91). Aktueller Paketstand enthält zusätzlich die Cold-Logo-Korrektur; SHA unten und in reports02992/package.json. Vorheriger getesteter Stand f6fac55f/89f392db bleibt als historischer Nachweis unterschieden.
 
 **Keine Android-Abnahme, kein Merge und keine Repository-Veröffentlichung.** Die Matrix im Implementierungsbericht benennt insbesondere noch offene native Android-Playerfehler und nicht bewiesene Hardware-Platzentlastung. Ein ausführbarer RC ist keine vollständige P0-Freigabe.
 
 ## Paket und Reproduzierbarkeit
 
-- `test-builds/02992/plugin.video.xtreammate-0.1.29.92.zip`, 4.696.450 Bytes, 867 Mitglieder.
-- SHA256: `e155bb26a4583d0a937242b5a2a44ac6534b02353cb4f068dcc31c06085e1915`.
+- `test-builds/02992/plugin.video.xtreammate-0.1.29.92.zip`, 4.696.799 Bytes, 867 Mitglieder.
+- SHA256: `744fba87fbb9cb067b28295b63111f8845796fcbd3e7ce0d2a1ef385000f8d3d`.
 - Canonical Build und jeder Source-Byte/ZIP-Mitglied/CRC geprüft; keine Profil-SQLites, privaten Logs, pyc oder zusätzlichen Mitglieder. Manifest-ID und Version geprüft.
 - `python tools/release_candidate92.py --output docs/XCMate/test-builds/02992` prüft zudem das **nur unter docs abgelegte Offline-Pilot-Proposal**. Live-Indizes sowie .90/.91- und .5.26-Pakete bleiben unverändert.
 - Der separate Installer .5.29 ist kein Bestandteil des XCMate-ZIP: SHA256 `674eaea4254395a5963c24012b09f9a59632cb8bb57b29f652c65cf9f77ff30e`, PR #447, 8 gezielte Tests PASS und [Installer-CI](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43387039231) PASS. 31 unveränderte .5.26-Dateien, nur Versionsmanifest/UI plus neue Speicherbrücke. Kein erneuter 48-Komponenten-Lauf beauftragt.
@@ -46,11 +46,20 @@ Die Zusatzprüfungen .89/.90 sind eigenständige Gates, keine Ersatzmessungen f�
 
 Lokales Docker-Kodi war vor App-Start durch zu wenig Platz im Test-Overlay blockiert. Die nativen Läufe erfolgen deshalb in GitHub Actions; keine Docker-/Benutzerdateien oder Systemkonfigurationen dafür bereinigt.
 
-## Finales ZIP: bereits bestätigte native Teilprüfungen
+## Vorheriger Paketstand: bestätigte native Teilprüfungen
 
-Produktionsstand `f6fac55f`, SHA256 wie oben: [exakte native ZIP-Matrix](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43408127132) **720p und 1080p PASS**. Belege in reports02992/native-exact92-1280x720.json und native-exact92-1920x1080.json: 866 unveränderte Nichtmanifestdateien, vier sichtbare Prüfzyklen inklusive drei tatsächlicher Kodi-Neustarts, Container 1510/1520/1530 und vier Zusatzquellen, reale Cover-/Logo-Pixel. Die Fixture-Einschränkungen oben gelten unverändert.
+Vorheriger Produktionsstand `f6fac55f`, SHA256 `e155bb26a4583d0a937242b5a2a44ac6534b02353cb4f068dcc31c06085e1915` (nicht das aktuelle ZIP): [exakte native ZIP-Matrix](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43408127132) **720p und 1080p PASS**. Belege in reports02992/native-exact92-1280x720.json und native-exact92-1920x1080.json: 866 unveränderte Nichtmanifestdateien, vier sichtbare Prüfzyklen inklusive drei tatsächlicher Kodi-Neustarts, Container 1510/1520/1530 und vier Zusatzquellen, reale Cover-/Logo-Pixel. Die Fixture-Einschränkungen oben gelten unverändert.
 
 [Home75-/Player-Matrix](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43408126925): 1080p PASS; 720p-30-Minutenprüfung bei Berichtserstellung noch laufend. **60 native Stop-/ACK-Zyklen PASS**, je 20 Live/VOD/Episode, genau ein Stop pro Zyklus; reports02992/native-stop92.json. Synthetisches 320-Pixel-Linuxvideo, keine Android-MediaCodec-Abnahme.
+
+## Nachprüfung Cold-Logos und Gruppen-Testablauf
+
+Stand `89f392db`: [vollständige Host-CI](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43410439209) **3.913 PASS in 999,691 s**, 11 Branding-pytests und 17 PO-Kataloge PASS; Paket-/Kanalschutz PASS. Die älteren nativen Bildgates sind davon getrennt FAIL geblieben:
+
+- .89: Warmphase einschließlich 88 persistenter Logos erfolgreich, Cold-Neustart `LIVE84_NO_REFS`. Ursache: Worker erkennt das gute Manifest und vermeidet korrekterweise neue Netzwerk-Leases; der gemeinsame Widget-Bildleser nahm aber diese unabhängig bestätigten lokalen Dateien nicht in seine Ausgabe auf. Er übernimmt nun die tatsächlich account-/quell-/hash-geprüften Logos unmittelbar. Neuer echter 88-Dateien-Hosttest ohne DNS-/RAM-Freigaben oder HTTP, einschließlich geänderter und widerrufener Quellen, PASS. Dabei zusätzlich Legacy-Fallback nach Quellenwiderruf gesperrt. Keine Reaktivierung widerrufener oder falsch zugeordneter Bilder.
+- .90: Nach der reparierten lokalen Wiedergabe wurde das vor Player.play auf Home geöffnete Dialogfenster von Kodis anschließendem FullscreenVideo überlagert (`GROUP90_LEFT_LEVEL_channels`). Der isolierte native Gruppen-Test verwendet jetzt dieselbe Reihenfolge wie der reale Service: eigene native Wiedergabe/Fullscreen bestätigen, dann Navigator zeigen und tatsächlichen Dialog-Owner bestätigen. Kein manuelles Nachfokussieren zwischen Fernbedienungsaktionen, keine geänderten Gruppen-/Sender-/Paging-Sollwerte und keine Änderung der funktionierenden Live-Navigation.
+
+Aktueller Paketstand: 57 gezielte Speicher-/Logo-/Sicherheits-/Pakettests und danach 19 Logo-/Paket-/HTTP-/Live-Transporttests PASS (überlappend). Eine weitere neue Testmethode, nächster Gesamtlauf **3.914 Tests**. Abschließende native Wiederholung erforderlich; kein PASS des neuen Pakets aus den älteren Ergebnissen abgeleitet.
 
 ## Historische Fehlversuche und Bestandsschutz
 

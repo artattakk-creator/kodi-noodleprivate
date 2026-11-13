@@ -1,12 +1,26 @@
 {
-  "source_commit": "fa04b2710691845402de15c75eeaa84ca4ac80ef",
-  "tests": 3908,
-  "seconds": 927.995,
-  "status": "PASS",
-  "production_unchanged_since_source_commit": true,
-  "local_log_sha256": "04efc32755b711e24bbdf20c86ea1afa8a76e6337412f834bc1560f624ef20d7",
-  "full_log_published": false,
-  "additional_native_receipt_tests": 2,
-  "additional_native_receipt_status": "PASS",
+  "current_status": "PENDING_FINAL_COLD_LOGO_CI",
+  "last_complete_ci": {
+    "commit": "89f392db297019b4815d09656735e41aef28d4a9",
+    "run_id": 43410439209,
+    "tests": 3913,
+    "seconds": 999.691,
+    "status": "PASS",
+    "branding_pytest": 11,
+    "po_catalogs": 17
+  },
+  "older_local": {
+    "source_commit": "fa04b2710691845402de15c75eeaa84ca4ac80ef",
+    "tests": 3908,
+    "seconds": 927.995,
+    "status": "PASS",
+    "production_unchanged_since_source_commit": true,
+    "local_log_sha256": "04efc32755b711e24bbdf20c86ea1afa8a76e6337412f834bc1560f624ef20d7",
+    "full_log_published": false,
+    "additional_native_receipt_tests": 2,
+    "additional_native_receipt_status": "PASS",
+    "android": "ANDROID_NOT_TESTED"
+  },
+  "final_expected_tests": 3914,
   "android": "ANDROID_NOT_TESTED"
 }

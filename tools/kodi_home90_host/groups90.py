@@ -28,7 +28,16 @@ def run(portal,pump,capture,check):
    return nav._catalog_ready and not getattr(nav,'_catalog_partial46',False)
   until(complete90,'GROUP90_CATALOGUE_NOT_READY')
   check(len(nav.channels)==2740,('GROUP90_CHANNELS_MISSING',len(nav.channels)))
-  nav.show();nav._tune(nav.index.by_sid['1']);until(nav.owns_playback,'GROUP90_NATIVE_VIDEO_NOT_OWNED')
+  # Match the real service lifecycle: native video/fullscreen first, then
+  # show its input owner. Showing a dialog on Home before Player.play lets
+  # Kodi's later FullscreenVideo activation cover that dialog.
+  nav._tune(nav.index.by_sid['1']);until(nav.owns_playback,'GROUP90_NATIVE_VIDEO_NOT_OWNED')
+  until(lambda:xbmcgui.getCurrentWindowId()==12005,'GROUP90_NATIVE_FULLSCREEN_NOT_VISIBLE')
+  nav.show()
+  def active90():
+   try:return xbmcgui.Window(xbmcgui.getCurrentWindowDialogId()).getProperty('XtreamMate.NavigatorIdentity')==nav._window_nonce
+   except RuntimeError:return False
+  until(active90,'GROUP90_NATIVE_INPUT_OWNER_NOT_ACTIVE')
   cases=[]
   # Keep an actual WAL writer open: the generation-pinned read path and
   # existing EPG worker must remain independently usable. This is a WAL

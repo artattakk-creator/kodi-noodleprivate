@@ -18,6 +18,21 @@ class Logo89(Fixture,unittest.TestCase):
    self.assertEqual(len(read(changed,self.rows,with_fallback=False)),88)
   manifest=__import__('logo_manifest86').location()[1];data=json.loads(__import__('pathlib').Path(manifest).read_bytes());self.assertEqual(len(data['records']),88)
   self.assertTrue(all(v['storage89']=='PERSISTED_LOGO' for v in data['records'].values()))
+ def test_widget_reader_uses_all_verified_cold_logos_without_dns_ram_or_repeat_fetch(self):
+  from pathlib import Path
+  from contextlib import ExitStack
+  for row in self.rows:self.module.persist(self.portal,row,png())
+  self.module._verified.clear();self.properties.clear()
+  reader=__import__('widget_assets69')
+  with ExitStack() as stack:
+   for name in ('widget_refs74.read','widget_cache79.read','widget_cache82.read','render_cache81.references','poster_store89.read'):
+    stack.enter_context(mock.patch(name,return_value={}))
+   stack.enter_context(mock.patch('station_logos88.fetch',side_effect=AssertionError('cold logo must not refetch')))
+   result=reader.read(self.portal,'live',self.rows)
+   self.assertEqual(len(result),88);self.assertTrue(all(Path(row['poster']).is_file() for row in result.values()))
+   changed=[dict(self.rows[0],stream_icon='https://images.example.org/changed.png')]
+   self.assertEqual(reader.read(self.portal,'live',changed),{})
+   with mock.patch('widget_refs74.revoked',return_value=True):self.assertEqual(reader.read(self.portal,'live',self.rows),{})
  def test_floor_unknown_volume_and_no_room_fail_without_disabling_global_reserve(self):
   from art_storage import reserve
   self.assertGreaterEqual(reserve(),1024*1024**2)
