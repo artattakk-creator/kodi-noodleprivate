@@ -117,5 +117,18 @@ def apply(token,kind,targets,*,confirmed=False,restore=False):
             state(plan,'INTERRUPTED' if restore or blocked else 'ROLLED_BACK')
             raise
         state(plan,'RESTORED' if restore else 'APPLIED')
+        # The committed transaction is already durable: retention failure must
+        # never turn an otherwise successful skin edit into a reported error.
+        # Runs under the transaction's existing exclusive .lock.
+        try:
+            from widget_plan_retention import prune
+            prune(directory=root, commit=True, already_locked=True)
+        except Exception:
+            # Never log target paths, snapshots or credentials.
+            try:
+                import xbmc
+                xbmc.log('[XCMate][WIDGET50] Plan-retention deferred', xbmc.LOGWARNING)
+            except Exception:
+                pass
         return dict(code='RESTORED' if restore else 'SAVED',id=token)
     finally:lock.close()
