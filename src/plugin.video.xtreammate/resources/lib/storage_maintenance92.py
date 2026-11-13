@@ -105,7 +105,9 @@ def expire_epg(filename, tables, cutoff, protected, *, limit=512, seconds=.2):
         # Existing DBs are NOT converted using a space-hungry full VACUUM.
         if removed and db.execute('PRAGMA auto_vacuum').fetchone()[0]==2:
             from import_budget import check_space
-            check_space(str(file),65536)
+            page_size=db.execute('PRAGMA page_size').fetchone()[0]
+            # Budget moved pages plus pointer/index/WAL overhead before work.
+            check_space(str(file),520*page_size+65536)
             # SQLite yields a row per released page. Exhaust this bounded
             # cursor; execute() alone releases only the first page.
             db.execute('PRAGMA incremental_vacuum(128)').fetchall()

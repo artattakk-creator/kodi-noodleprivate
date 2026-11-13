@@ -80,6 +80,16 @@ print(len(files))
    (report/'package-proof91.json').write_text(json.dumps(proof,indent=2)+'\n')
 
  finally:
+  # Exit 137 alone does not identify OOM or an add-on defect. Preserve native
+  # container/console evidence before disposing of this synthetic test rig.
+  try:
+   state92=run('inspect','--format','{{json .State}}',name,capture_output=True,text=True).stdout
+   events92=subprocess.run(docker+['exec',name,'cat','/sys/fs/cgroup/memory.events'],env=env,capture_output=True,text=True)
+   stats92=subprocess.run(docker+['stats','--no-stream','--format','{{json .}}',name],env=env,capture_output=True,text=True)
+   (report/'container-resource90.json').write_text(json.dumps(dict(state=json.loads(state92),memory_events=events92.stdout,memory_events_returncode=events92.returncode,stats=stats92.stdout),indent=2))
+   with (report/'container-console90.log').open('w') as console92:
+    subprocess.run(docker+['logs',name],env=env,stdout=console92,stderr=subprocess.STDOUT)
+  except (ValueError,subprocess.CalledProcessError):pass
   files90=[('/root/picker90-diagnostic.json','picker90-diagnostic.json'),('/root/picker90-registry.json','picker90-registry.json'),('/root/picker90-history.json','picker90-history.json'),('/root/picker90.json','picker90.json'),('/root/picker90-error.txt','picker90-error.txt'),('/root/picker90-native-audio-sinks.txt','picker90-native-audio-sinks.txt'),('/tmp/xcmate-native-pulse.log','native-pulse.log'),('/root/.kodi/temp/kodi.log','synthetic-kodi.log')]
   files90.extend([('/root/groups90.json','groups90.json'),('/root/visible84-groups90-native.png','visible84-groups90-native.png'),('/root/visible84-groups90-failure.png','visible84-groups90-failure.png')])
   files90.append(('/root/picker90-native-audio-policy.json','picker90-native-audio-policy.json'))

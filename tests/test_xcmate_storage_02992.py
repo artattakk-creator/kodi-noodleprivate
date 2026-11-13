@@ -198,7 +198,10 @@ class Storage92(Fixture,unittest.TestCase):
   with sqlite3.connect(file) as db:
    before_pages=db.execute('PRAGMA page_count').fetchone()[0];page_size=db.execute('PRAGMA page_size').fetchone()[0]
   before_bytes=file.stat().st_size
-  result=self.maintenance.expire_epg(file,('programmes',),1600,set(),limit=2000,seconds=2)
+  from import_budget import check_space
+  with mock.patch('import_budget.check_space',wraps=check_space) as reserved:
+   result=self.maintenance.expire_epg(file,('programmes',),1600,set(),limit=2000,seconds=2)
+  self.assertGreaterEqual(reserved.call_args.args[1],128*page_size+65536)
   self.assertEqual(result['rows'],1600);self.assertIn('observed_file_delta',result)
   with sqlite3.connect(file) as db:
    self.assertEqual(db.execute('PRAGMA quick_check').fetchone()[0],'ok')
