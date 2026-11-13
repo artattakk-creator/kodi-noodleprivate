@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "run_id": 43408126925,
+  "job_id": 131827546822,
+  "source_commit": "f6fac55f89ab53036ae2cb059f831a9242536bfa",
+  "platform": "REAL_LINUX_KODI_SYNTHETIC_VIDEO_320PX_NOT_ANDROID_MEDIACODEC",
+  "cycles": 60,
+  "by_kind": {
+    "vod": 20,
+    "episode": 20,
+    "live": 20
+  },
+  "every_cycle_native_ack": true,
+  "every_cycle_single_stop": true,
+  "android": "ANDROID_NOT_TESTED"
+}

@@ -1,0 +1,350 @@
+{
+  "status": "PASS",
+  "platform": "REAL_LINUX_KODI_21_2_SYNTHETIC_SOURCES",
+  "resolution": "1280x720",
+  "run_id": 43408127132,
+  "artifact_id": 14028930287,
+  "package": {
+    "version": "0.1.29.92",
+    "sha256": "e155bb26a4583d0a937242b5a2a44ac6534b02353cb4f068dcc31c06085e1915",
+    "bytes": 4696450,
+    "files": 867,
+    "crc": "PASS",
+    "source_bytes": "PASS",
+    "source_commit": "f6fac55f89ab53036ae2cb059f831a9242536bfa",
+    "installed_version": "0.1.29.92",
+    "unchanged_installed_nonmanifest_files": 866,
+    "fixture_manifest_adapted": true,
+    "fixture_service_disabled": true,
+    "fixture_plugin_entry": true,
+    "android": "ANDROID_NOT_TESTED"
+  },
+  "cycles": [
+    {
+      "cycle": 0,
+      "status": "PASS",
+      "native_cases": [
+        {
+          "kind": "live",
+          "control": 1510,
+          "rows": 88,
+          "pixels": 4598,
+          "screenshot": "picker90-home-0-live.png"
+        },
+        {
+          "kind": "vod",
+          "control": 1520,
+          "rows": 24,
+          "pixels": 40660,
+          "screenshot": "picker90-home-0-vod.png"
+        },
+        {
+          "kind": "series",
+          "control": 1530,
+          "rows": 24,
+          "pixels": 40950,
+          "screenshot": "picker90-home-0-series.png"
+        }
+      ],
+      "foreign_definitions": 3,
+      "source_timings_ms": {
+        "cinema": {
+          "started_ms": 96,
+          "ready_ms": 846
+        },
+        "disney": {
+          "started_ms": 846,
+          "ready_ms": 1704
+        },
+        "trend": {
+          "started_ms": 1704,
+          "ready_ms": 2609
+        },
+        "mp3": {
+          "started_ms": 2609,
+          "ready_ms": 3308
+        }
+      },
+      "extra_rows": [
+        {
+          "kind": "cinema",
+          "title": "Im Kino",
+          "target": "videos",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 123200
+        },
+        {
+          "kind": "disney",
+          "title": "Disney",
+          "target": "videos",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 219800
+        },
+        {
+          "kind": "trend",
+          "title": "Diese Woche im Trend",
+          "target": "videos",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 219800
+        },
+        {
+          "kind": "mp3",
+          "title": "MP3s",
+          "target": "music",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 123200
+        }
+      ],
+      "source_status": "PASS"
+    },
+    {
+      "cycle": 1,
+      "status": "PASS",
+      "native_cases": [
+        {
+          "kind": "live",
+          "control": 1510,
+          "rows": 88,
+          "pixels": 4598,
+          "screenshot": "picker90-home-1-live.png"
+        },
+        {
+          "kind": "vod",
+          "control": 1520,
+          "rows": 24,
+          "pixels": 40664,
+          "screenshot": "picker90-home-1-vod.png"
+        },
+        {
+          "kind": "series",
+          "control": 1530,
+          "rows": 24,
+          "pixels": 40950,
+          "screenshot": "picker90-home-1-series.png"
+        }
+      ],
+      "foreign_definitions": 3,
+      "source_timings_ms": {
+        "cinema": {
+          "started_ms": 118,
+          "ready_ms": 905
+        },
+        "disney": {
+          "started_ms": 905,
+          "ready_ms": 1599
+        },
+        "trend": {
+          "started_ms": 1599,
+          "ready_ms": 2368
+        },
+        "mp3": {
+          "started_ms": 2368,
+          "ready_ms": 3083
+        }
+      },
+      "extra_rows": [
+        {
+          "kind": "cinema",
+          "title": "Im Kino",
+          "target": "videos",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 123200
+        },
+        {
+          "kind": "disney",
+          "title": "Disney",
+          "target": "videos",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 219800
+        },
+        {
+          "kind": "trend",
+          "title": "Diese Woche im Trend",
+          "target": "videos",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 219800
+        },
+        {
+          "kind": "mp3",
+          "title": "MP3s",
+          "target": "music",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 123200
+        }
+      ],
+      "source_status": "PASS"
+    },
+    {
+      "cycle": 2,
+      "status": "PASS",
+      "native_cases": [
+        {
+          "kind": "live",
+          "control": 1510,
+          "rows": 88,
+          "pixels": 4598,
+          "screenshot": "picker90-home-2-live.png"
+        },
+        {
+          "kind": "vod",
+          "control": 1520,
+          "rows": 24,
+          "pixels": 40664,
+          "screenshot": "picker90-home-2-vod.png"
+        },
+        {
+          "kind": "series",
+          "control": 1530,
+          "rows": 24,
+          "pixels": 40950,
+          "screenshot": "picker90-home-2-series.png"
+        }
+      ],
+      "foreign_definitions": 3,
+      "source_timings_ms": {
+        "cinema": {
+          "started_ms": 183,
+          "ready_ms": 1057
+        },
+        "disney": {
+          "started_ms": 1057,
+          "ready_ms": 1885
+        },
+        "trend": {
+          "started_ms": 1885,
+          "ready_ms": 2728
+        },
+        "mp3": {
+          "started_ms": 2728,
+          "ready_ms": 3753
+        }
+      },
+      "extra_rows": [
+        {
+          "kind": "cinema",
+          "title": "Im Kino",
+          "target": "videos",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 123200
+        },
+        {
+          "kind": "disney",
+          "title": "Disney",
+          "target": "videos",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 219800
+        },
+        {
+          "kind": "trend",
+          "title": "Diese Woche im Trend",
+          "target": "videos",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 219800
+        },
+        {
+          "kind": "mp3",
+          "title": "MP3s",
+          "target": "music",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 123200
+        }
+      ],
+      "source_status": "PASS"
+    },
+    {
+      "cycle": 3,
+      "status": "PASS",
+      "native_cases": [
+        {
+          "kind": "live",
+          "control": 1510,
+          "rows": 88,
+          "pixels": 4598,
+          "screenshot": "picker90-home-3-live.png"
+        },
+        {
+          "kind": "vod",
+          "control": 1520,
+          "rows": 24,
+          "pixels": 40664,
+          "screenshot": "picker90-home-3-vod.png"
+        },
+        {
+          "kind": "series",
+          "control": 1530,
+          "rows": 24,
+          "pixels": 40950,
+          "screenshot": "picker90-home-3-series.png"
+        }
+      ],
+      "foreign_definitions": 3,
+      "source_timings_ms": {
+        "cinema": {
+          "started_ms": 188,
+          "ready_ms": 1088
+        },
+        "disney": {
+          "started_ms": 1088,
+          "ready_ms": 1975
+        },
+        "trend": {
+          "started_ms": 1975,
+          "ready_ms": 2715
+        },
+        "mp3": {
+          "started_ms": 2715,
+          "ready_ms": 3522
+        }
+      },
+      "extra_rows": [
+        {
+          "kind": "cinema",
+          "title": "Im Kino",
+          "target": "videos",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 123200
+        },
+        {
+          "kind": "disney",
+          "title": "Disney",
+          "target": "videos",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 219800
+        },
+        {
+          "kind": "trend",
+          "title": "Diese Woche im Trend",
+          "target": "videos",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 219800
+        },
+        {
+          "kind": "mp3",
+          "title": "MP3s",
+          "target": "music",
+          "items": 6,
+          "heading_visible": true,
+          "pixels": 123200
+        }
+      ],
+      "source_status": "PASS"
+    }
+  ],
+  "native_cold_restarts": 3,
+  "android": "ANDROID_NOT_TESTED"
+}

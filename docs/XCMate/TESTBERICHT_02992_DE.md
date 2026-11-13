@@ -1,6 +1,6 @@
 # XCMate 0.1.29.92 – Test- und Freigabebericht
 
-Stand: 13.11.2026. Source-PR [#448](https://github.com/artattakk-creator/kodi-noodleprivate/pull/448), getrennter Installer-PR [#447](https://github.com/artattakk-creator/kodi-noodleprivate/pull/447). Basis main `002ba995dc3ce6a6f72037261ad28c70e2d87d80` (.91). Letzte Produktionskorrektur vor der verpflichtenden Vorher-Inventur: `fa04b2710691845402de15c75eeaa84ca4ac80ef`; abschließender Inventurstand erhält eigene Tests/CI.
+Stand: 13.11.2026. Source-PR [#448](https://github.com/artattakk-creator/kodi-noodleprivate/pull/448), getrennter Installer-PR [#447](https://github.com/artattakk-creator/kodi-noodleprivate/pull/447). Basis main `002ba995dc3ce6a6f72037261ad28c70e2d87d80` (.91). Finaler Produktions-/Paketstand: `f6fac55f89ab53036ae2cb059f831a9242536bfa`. Nachfolgende Korrektur betrifft ausschließlich die minimale Service-Testumgebung, keinen ZIP-Inhalt.
 
 **Keine Android-Abnahme, kein Merge und keine Repository-Veröffentlichung.** Die Matrix im Implementierungsbericht benennt insbesondere noch offene native Android-Playerfehler und nicht bewiesene Hardware-Platzentlastung. Ein ausführbarer RC ist keine vollständige P0-Freigabe.
 
@@ -46,13 +46,19 @@ Die Zusatzprüfungen .89/.90 sind eigenständige Gates, keine Ersatzmessungen f�
 
 Lokales Docker-Kodi war vor App-Start durch zu wenig Platz im Test-Overlay blockiert. Die nativen Läufe erfolgen deshalb in GitHub Actions; keine Docker-/Benutzerdateien oder Systemkonfigurationen dafür bereinigt.
 
+## Finales ZIP: bereits bestätigte native Teilprüfungen
+
+Produktionsstand `f6fac55f`, SHA256 wie oben: [exakte native ZIP-Matrix](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43408127132) **720p und 1080p PASS**. Belege in reports02992/native-exact92-1280x720.json und native-exact92-1920x1080.json: 866 unveränderte Nichtmanifestdateien, vier sichtbare Prüfzyklen inklusive drei tatsächlicher Kodi-Neustarts, Container 1510/1520/1530 und vier Zusatzquellen, reale Cover-/Logo-Pixel. Die Fixture-Einschränkungen oben gelten unverändert.
+
+[Home75-/Player-Matrix](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43408126925): 1080p PASS; 720p-30-Minutenprüfung bei Berichtserstellung noch laufend. **60 native Stop-/ACK-Zyklen PASS**, je 20 Live/VOD/Episode, genau ein Stop pro Zyklus; reports02992/native-stop92.json. Synthetisches 320-Pixel-Linuxvideo, keine Android-MediaCodec-Abnahme.
+
 ## Historische Fehlversuche und Bestandsschutz
 
 Erster vollständiger Stand `97555c1e`: 3.898 Tests, 27 FAIL aus veralteten Publish-/Freeze- und Reserve-Injection-Erwartungen nach der freigegebenen .91; korrigiert an exakt festgehaltener Main-/Archive-Baseline, keine Testmethoden entfernt, keine neuen Skips. Zwischenlauf während veränderter exakter Source-Fixture ungültig, nicht als reproduzierbarer PASS benutzt. Lokale Großlast anfangs wegen vollem eigenen /tmp fehlgeschlagen; nur eigene bereits gespeicherte Worktree-/fehlgeschlagene Testartefakte freigegeben, danach vollständiger Großlast-PASS. Publizierte .90/.91, .5.26, Kodi-Daten und Kanäle bleiben geschützt.
 
 ## Abschließender Inventurvertrag
 
-Vor automatischer/manueller Wartung wird jetzt zwingend ein zeitgestempelter read-only Klassen-/Volume-Snapshot aufgenommen und vor der ersten Löschung im Wartungsjournal per Readback bestätigt. Auch USB-Vorbereitung und die separat bestätigte Originalbereinigung liefern den Snapshot; wechselnde Inventurzeitpunkte werden nicht in die Migration-Quellidentität aufgenommen und erzeugen keinen neuen Transfer. Ein abweichend konfigurierter lokaler normalisierter Cache wird ohne Probe-/Fallback-Schreibzugriff mitgemessen und bleibt als fremdes Ziel von der Löschung ausgeschlossen. Drei zusätzliche Regressionen prüfen die Reihenfolge, den Idle-Skip und die fehlende Quellidentitätsänderung. Neuer Gesamtlauf erforderlich.
+Vor automatischer/manueller Wartung wird jetzt zwingend ein zeitgestempelter read-only Klassen-/Volume-Snapshot aufgenommen und vor der ersten Löschung im Wartungsjournal per Readback bestätigt. Auch USB-Vorbereitung und die separat bestätigte Originalbereinigung liefern den Snapshot; wechselnde Inventurzeitpunkte werden nicht in die Migration-Quellidentität aufgenommen und erzeugen keinen neuen Transfer. Ein abweichend konfigurierter lokaler normalisierter Cache wird ohne Probe-/Fallback-Schreibzugriff mitgemessen und bleibt als fremdes Ziel von der Löschung ausgeschlossen. Drei zusätzliche Regressionen prüfen die Reihenfolge, den Idle-Skip und die fehlende Quellidentitätsänderung. Gesamtlauf: 3.913 Tests, ein ImportError im alten .30-Scheduler-Modell ohne Einstellungs-API. Dieses Modell isoliert jetzt ausschließlich die eigentliche Inventur-IO, lässt Wartung/Journal/Cooldown real und prüft zusätzlich exakt eine Inventur bei 20 schnellen Katalogticks. Danach 52 gezielte Tests PASS mit Netzwerkzugriff für die tatsächliche Socket-Abbruchprüfung. Vollständige CI läuft erneut; kein Test entfernt oder abgeschwächt.
 
 ## Offene Freigabebedingungen
 
