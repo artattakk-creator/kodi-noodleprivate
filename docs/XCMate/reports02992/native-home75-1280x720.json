@@ -1,0 +1,462 @@
+{
+  "status": "PASS",
+  "platform": "REAL_LINUX_KODI_WITH_SYNTHETIC_SOURCES_AND_EXPLICIT_DB_PAUSE_INJECTION",
+  "resolution": "1280x720",
+  "run_id": 43417534465,
+  "artifact_id": 14034741742,
+  "fixture_commit": "3d4153dc7d7e816643530b9f83253720e1b9c3c2",
+  "production_source_commit": "6c52b6e08b78b889b014707a6325876632c89e2b",
+  "kodi": "21.2 Debian package version: 2:21.2+dfsg-4",
+  "native_actions": [
+    {
+      "action": "Down",
+      "focus": 2520
+    },
+    {
+      "action": "Down",
+      "focus": 2530
+    },
+    {
+      "action": "Down",
+      "focus": 2540
+    },
+    {
+      "action": "Down",
+      "focus": 2550
+    },
+    {
+      "action": "Down",
+      "focus": 2560
+    },
+    {
+      "action": "Up",
+      "focus": 2550
+    },
+    {
+      "action": "Up",
+      "focus": 2540
+    },
+    {
+      "action": "Up",
+      "focus": 2530
+    },
+    {
+      "action": "Up",
+      "focus": 2520
+    },
+    {
+      "action": "Up",
+      "focus": 2510
+    },
+    {
+      "action": "Down",
+      "focus": 2520
+    },
+    {
+      "action": "Down",
+      "focus": 2530
+    },
+    {
+      "action": "Down",
+      "focus": 2540
+    },
+    {
+      "action": "Down",
+      "focus": 2550
+    },
+    {
+      "action": "Down",
+      "focus": 2560
+    },
+    {
+      "action": "Up",
+      "focus": 2550
+    },
+    {
+      "action": "Up",
+      "focus": 2540
+    },
+    {
+      "action": "Up",
+      "focus": 2530
+    },
+    {
+      "action": "Up",
+      "focus": 2520
+    },
+    {
+      "action": "Up",
+      "focus": 2510
+    }
+  ],
+  "ordinary_soak_seconds": 180.30208234399998,
+  "ordinary_checkpoints": [
+    {
+      "elapsed": 0.018526745000031042,
+      "counts": [
+        88,
+        24,
+        24
+      ],
+      "picture": "home75-soak-0.png"
+    },
+    {
+      "elapsed": 30.19201596099998,
+      "counts": [
+        88,
+        24,
+        24
+      ],
+      "picture": "home75-soak-30.png"
+    },
+    {
+      "elapsed": 60.355628388000014,
+      "counts": [
+        88,
+        24,
+        24
+      ],
+      "picture": "home75-soak-60.png"
+    },
+    {
+      "elapsed": 90.42771043100004,
+      "counts": [
+        88,
+        24,
+        24
+      ],
+      "picture": "home75-soak-90.png"
+    },
+    {
+      "elapsed": 120.58330621200002,
+      "counts": [
+        88,
+        24,
+        24
+      ],
+      "picture": "home75-soak-120.png"
+    },
+    {
+      "elapsed": 150.76043539699998,
+      "counts": [
+        88,
+        24,
+        24
+      ],
+      "picture": "home75-soak-150.png"
+    }
+  ],
+  "stability": {
+    "status": "PASS",
+    "scope": "real Linux Kodi + injected artwork DB pause",
+    "seconds": 1800.9,
+    "duplicate_polls": 443,
+    "worker_threads": 1,
+    "recovered_same_worker": true,
+    "unhandled": [],
+    "checkpoints": [
+      {
+        "elapsed": 0.13,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 60.24,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 120.27,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 180.32,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 240.33,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 300.38,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 360.49,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 420.51,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 480.58,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 540.61,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 600.65,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 660.71,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 720.82,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 780.89,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 840.97,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 901.03,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 961.03,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 1021.14,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 1081.15,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 1141.16,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 1201.23,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 1261.26,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 1321.34,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 1381.35,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 1441.45,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 1501.5,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 1561.5,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 1621.51,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 1681.54,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      },
+      {
+        "elapsed": 1741.57,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      }
+    ],
+    "android": "ANDROID_NOT_TESTED"
+  },
+  "vod": {
+    "status": "PASS",
+    "native_button": true,
+    "actual_video": true,
+    "audio_streams": 1,
+    "video_streams": 1,
+    "native_stop_ack": true,
+    "detail_return": true,
+    "elapsed_ms": 2978.53,
+    "android": "ANDROID_NOT_TESTED"
+  },
+  "guide": {
+    "status": "PASS",
+    "selected_sid": "5",
+    "start_sid": "1",
+    "local_epg": true,
+    "long_title_bounded": true,
+    "focus_rgb": [
+      58,
+      75,
+      91
+    ],
+    "android": "ANDROID_NOT_TESTED"
+  },
+  "layout": "FULL_BLEED_CONTAIN_INITIAL_MOVIE_PIXELS",
+  "restarts": [
+    {
+      "status": "PASS",
+      "actual_restart": true,
+      "counts": [
+        88,
+        24,
+        24
+      ],
+      "origin_offline": true,
+      "personal_widgets": "UNCHANGED"
+    },
+    {
+      "status": "PASS",
+      "actual_restart": true,
+      "counts": [
+        88,
+        24,
+        24
+      ],
+      "origin_offline": true,
+      "personal_widgets": "UNCHANGED"
+    },
+    {
+      "status": "PASS",
+      "actual_restart": true,
+      "counts": [
+        88,
+        24,
+        24
+      ],
+      "origin_offline": true,
+      "personal_widgets": "UNCHANGED"
+    }
+  ],
+  "android": "ANDROID_NOT_TESTED"
+}

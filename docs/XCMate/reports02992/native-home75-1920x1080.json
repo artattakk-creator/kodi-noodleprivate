@@ -1,0 +1,230 @@
+{
+  "status": "PASS",
+  "platform": "REAL_LINUX_KODI_WITH_SYNTHETIC_SOURCES_AND_EXPLICIT_DB_PAUSE_INJECTION",
+  "resolution": "1920x1080",
+  "run_id": 43417534465,
+  "artifact_id": 14033046991,
+  "fixture_commit": "3d4153dc7d7e816643530b9f83253720e1b9c3c2",
+  "production_source_commit": "6c52b6e08b78b889b014707a6325876632c89e2b",
+  "kodi": "21.2 Debian package version: 2:21.2+dfsg-4",
+  "native_actions": [
+    {
+      "action": "Down",
+      "focus": 2520
+    },
+    {
+      "action": "Down",
+      "focus": 2530
+    },
+    {
+      "action": "Down",
+      "focus": 2540
+    },
+    {
+      "action": "Down",
+      "focus": 2550
+    },
+    {
+      "action": "Down",
+      "focus": 2560
+    },
+    {
+      "action": "Up",
+      "focus": 2550
+    },
+    {
+      "action": "Up",
+      "focus": 2540
+    },
+    {
+      "action": "Up",
+      "focus": 2530
+    },
+    {
+      "action": "Up",
+      "focus": 2520
+    },
+    {
+      "action": "Up",
+      "focus": 2510
+    },
+    {
+      "action": "Down",
+      "focus": 2520
+    },
+    {
+      "action": "Down",
+      "focus": 2530
+    },
+    {
+      "action": "Down",
+      "focus": 2540
+    },
+    {
+      "action": "Down",
+      "focus": 2550
+    },
+    {
+      "action": "Down",
+      "focus": 2560
+    },
+    {
+      "action": "Up",
+      "focus": 2550
+    },
+    {
+      "action": "Up",
+      "focus": 2540
+    },
+    {
+      "action": "Up",
+      "focus": 2530
+    },
+    {
+      "action": "Up",
+      "focus": 2520
+    },
+    {
+      "action": "Up",
+      "focus": 2510
+    }
+  ],
+  "ordinary_soak_seconds": 180.25236941599996,
+  "ordinary_checkpoints": [
+    {
+      "elapsed": 0.03840165200000456,
+      "counts": [
+        88,
+        24,
+        24
+      ],
+      "picture": "home75-soak-0.png"
+    },
+    {
+      "elapsed": 30.180313517000002,
+      "counts": [
+        88,
+        24,
+        24
+      ],
+      "picture": "home75-soak-30.png"
+    },
+    {
+      "elapsed": 60.399030907,
+      "counts": [
+        88,
+        24,
+        24
+      ],
+      "picture": "home75-soak-60.png"
+    },
+    {
+      "elapsed": 90.51591628200003,
+      "counts": [
+        88,
+        24,
+        24
+      ],
+      "picture": "home75-soak-90.png"
+    },
+    {
+      "elapsed": 120.61979082999994,
+      "counts": [
+        88,
+        24,
+        24
+      ],
+      "picture": "home75-soak-120.png"
+    },
+    {
+      "elapsed": 150.68104825,
+      "counts": [
+        88,
+        24,
+        24
+      ],
+      "picture": "home75-soak-150.png"
+    }
+  ],
+  "stability": {
+    "status": "PASS",
+    "scope": "real Linux Kodi + injected artwork DB pause",
+    "seconds": 2.7,
+    "duplicate_polls": 443,
+    "worker_threads": 1,
+    "recovered_same_worker": true,
+    "unhandled": [],
+    "checkpoints": [
+      {
+        "elapsed": 0.22,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      }
+    ],
+    "android": "ANDROID_NOT_TESTED"
+  },
+  "vod": {
+    "status": "PASS",
+    "native_button": true,
+    "actual_video": true,
+    "audio_streams": 1,
+    "video_streams": 1,
+    "native_stop_ack": true,
+    "detail_return": true,
+    "elapsed_ms": 3039.16,
+    "android": "ANDROID_NOT_TESTED"
+  },
+  "guide": {
+    "status": "PASS",
+    "selected_sid": "5",
+    "start_sid": "1",
+    "local_epg": true,
+    "long_title_bounded": true,
+    "focus_rgb": [
+      58,
+      75,
+      91
+    ],
+    "android": "ANDROID_NOT_TESTED"
+  },
+  "layout": "FULL_BLEED_CONTAIN_INITIAL_MOVIE_PIXELS",
+  "restarts": [
+    {
+      "status": "PASS",
+      "actual_restart": true,
+      "counts": [
+        88,
+        24,
+        24
+      ],
+      "origin_offline": true,
+      "personal_widgets": "UNCHANGED"
+    },
+    {
+      "status": "PASS",
+      "actual_restart": true,
+      "counts": [
+        88,
+        24,
+        24
+      ],
+      "origin_offline": true,
+      "personal_widgets": "UNCHANGED"
+    },
+    {
+      "status": "PASS",
+      "actual_restart": true,
+      "counts": [
+        88,
+        24,
+        24
+      ],
+      "origin_offline": true,
+      "personal_widgets": "UNCHANGED"
+    }
+  ],
+  "android": "ANDROID_NOT_TESTED"
+}
