@@ -63,8 +63,10 @@ def run(portal,pump,capture,check):
     until(lambda:nav._highlight['channels']==136,'GROUP90_LAST_PAGE_WRONG_POSITION')
     expected=str(group*1000+137);xbmc.executebuiltin('Action(Select)',wait=False)
     # Ownership deliberately accepts the previous verified session during a
-    # native tune. Require the new C++ item tag before declaring the zap done.
-    until(lambda:nav.sid==expected and nav.mode=='hidden' and nav.owns_playback() and native_sid90()==expected,'GROUP90_WRONG_STATION')
+    # native tune. Require the new C++ item tag AND actual restored input owner
+    # before sending the next IR action. The service may legitimately show
+    # its information bar after releasing the standard OSD; both use capture.
+    until(lambda:nav.sid==expected and nav.owns_playback() and native_sid90()==expected and active90() and nav.getFocusId()==nav.capture.getId(),'GROUP90_WRONG_STATION')
     tag=json.loads(xbmc.Player().getVideoInfoTag().getUniqueID('xcmate_live'));check(tag['sid']==expected,'GROUP90_PLAYER_TAG_MISMATCH')
     cases.append(dict(group=group,total=137,last_index=136,correct_sid=True,native_video=True))
    screenshot,_=capture('visible84-groups90-native')

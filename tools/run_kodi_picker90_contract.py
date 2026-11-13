@@ -36,6 +36,20 @@ def main():
 pulseaudio --system --daemonize=yes --exit-idle-time=-1 --load="module-native-protocol-unix socket=/tmp/xcmate-native-pulse.sock auth-anonymous=1" --load="module-null-sink sink_name=xcmate_native" --log-target=file:/tmp/xcmate-native-pulse.log
 export PULSE_SERVER=unix:/tmp/xcmate-native-pulse.sock
 pactl set-default-sink xcmate_native
+python3 - <<'PULSE_NATIVE92'
+import subprocess,json
+from pathlib import Path
+before=subprocess.check_output(['pactl','list','short','modules'],text=True)
+# No hardware power management is being tested in this disposable PCM sink.
+# Keep the real clock active instead of racing Pulse's idle suspend/resume.
+removed=[]
+for line in before.splitlines():
+ fields=line.split()
+ if len(fields)>1 and fields[0].isdigit() and fields[1]=='module-suspend-on-idle':
+  subprocess.run(['pactl','unload-module',fields[0]],check=True);removed.append(fields[1])
+after=subprocess.check_output(['pactl','list','short','modules'],text=True)
+Path('/root/picker90-native-audio-policy.json').write_text(json.dumps(dict(scope='DISPOSABLE_CONTAINER_ONLY',removed=removed,idle_suspend_loaded='module-suspend-on-idle' in after)))
+PULSE_NATIVE92
 pactl list short sinks > /root/picker90-native-audio-sinks.txt
 '''
  start=start.replace('while true; do',pulse438+'\nwhile true; do')
@@ -68,6 +82,7 @@ print(len(files))
  finally:
   files90=[('/root/picker90-diagnostic.json','picker90-diagnostic.json'),('/root/picker90-registry.json','picker90-registry.json'),('/root/picker90-history.json','picker90-history.json'),('/root/picker90.json','picker90.json'),('/root/picker90-error.txt','picker90-error.txt'),('/root/picker90-native-audio-sinks.txt','picker90-native-audio-sinks.txt'),('/tmp/xcmate-native-pulse.log','native-pulse.log'),('/root/.kodi/temp/kodi.log','synthetic-kodi.log')]
   files90.extend([('/root/groups90.json','groups90.json'),('/root/visible84-groups90-native.png','visible84-groups90-native.png'),('/root/visible84-groups90-failure.png','visible84-groups90-failure.png')])
+  files90.append(('/root/picker90-native-audio-policy.json','picker90-native-audio-policy.json'))
   files90.extend([('/root/picker90-experiments.json','picker90-experiments.json'),('/root/picker90-experiment-error.txt','picker90-experiment-error.txt')])
   for stage90 in ('params','self','bounds','combined','flat'):files90.append(('/root/picker90-experiment-'+stage90+'.png','picker90-experiment-'+stage90+'.png'))
   files90.extend([('/root/.kodi/addons/skin.titan.bingie.mod/xml/IncludesHomeWidgets.xml','installed-widgets90.xml'),('/root/.kodi/addons/skin.titan.bingie.mod/xml/IncludesHomeBingie.xml','installed-home90.xml'),('/root/.kodi/addons/skin.titan.bingie.mod/xml/script-skinshortcuts-includes.xml','original-generated90.xml'),('/root/.kodi/userdata/addon_data/script.skinshortcuts/skin.titan.bingie.mod.properties','original-saved90.properties')])
