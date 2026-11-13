@@ -74,6 +74,27 @@ class Storage92(Fixture,unittest.TestCase):
    self.assertFalse(self.policy.images_enabled())
    self.policy.path().unlink()  # Simulate the older .91 FRESH-origin profile without .92 policy.
    self.assertEqual(config.initialize()['origin'],'FRESH');self.assertEqual(self.policy.read()['image_epg'],'legacy')
+ def test_slow_initial_gui_publication_cannot_block_concurrent_marker_readers(self):
+  import threading,tempfile
+  fresh=tempfile.TemporaryDirectory();self.addCleanup(fresh.cleanup)
+  root_patch=mock.patch('utils.addon_data_dir',return_value=fresh.name);root_patch.start();self.addCleanup(root_patch.stop)
+  config=importlib.import_module('artwork_config');entered=threading.Event();release=threading.Event();rows=[];errors=[]
+  def publish(enabled):
+   self.assertFalse(enabled);entered.set();release.wait(2)
+  def initialize():
+   try:rows.append(config.initialize())
+   except Exception as error:errors.append(type(error).__name__)
+  with mock.patch.object(self.policy,'publish',side_effect=publish):
+   first=threading.Thread(target=initialize);first.start()
+   try:
+    self.assertTrue(entered.wait(1));self.assertEqual(config.read()['version'],config.VERSION)
+    self.assertEqual(self.policy.read()['image_epg'],'later')
+    others=[threading.Thread(target=initialize) for _ in range(3)]
+    for thread in others:thread.start()
+    for thread in others:thread.join(.4)
+    self.assertFalse(any(thread.is_alive() for thread in others));self.assertEqual(errors,[]);self.assertEqual(len(rows),3)
+   finally:release.set();first.join(1)
+  self.assertEqual(len(rows),4);self.assertTrue(all(row==rows[0] for row in rows));self.assertEqual(rows[0]['mode'],'dynamic')
  def test_explicit_deactivation_rejects_new_gui_intent_without_touching_lastgood(self):
   request=importlib.import_module('programme_requests68');event=dict(pid='p',sid='1',title='Monk',start=self.now,stop=self.now+100)
   self.policy.choose('no');self.assertFalse(request.request(event))

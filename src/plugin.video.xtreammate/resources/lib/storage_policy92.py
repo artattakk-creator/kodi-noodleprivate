@@ -28,15 +28,22 @@ def images_enabled():
     except (OSError,ValueError):enabled=False
     publish(enabled);return enabled
 
-def choose(decision):
+def prepare_choice(decision):
+    """Load write dependencies before any caller holds a config lock."""
     if decision not in ('yes','no','later'):raise ValueError('INVALID_IMAGE_EPG_CHOICE')
     from profile_transaction import writing
     from storage_metadata92 import check
     from logo_store89 import atomic
-    with writing(timeout=.2):
-        value = dict(read(), image_epg=decision)
-        raw = json.dumps(value,sort_keys=True).encode();check(path(),len(raw),kind='policy')
-        atomic(path(),raw)
-        if read()!=value:raise OSError('STORAGE_POLICY_READBACK')
+    def commit():
+        with writing(timeout=.2):
+            value = dict(read(), image_epg=decision)
+            raw = json.dumps(value,sort_keys=True).encode();check(path(),len(raw),kind='policy')
+            atomic(path(),raw)
+            if read()!=value:raise OSError('STORAGE_POLICY_READBACK')
+        return value
+    return commit
+
+def choose(decision):
+    value=prepare_choice(decision)()
     publish(decision=='yes')
     return value

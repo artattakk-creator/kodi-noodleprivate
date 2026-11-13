@@ -78,6 +78,11 @@ def initialize():
     # every widget/plugin interpreter. The locked recheck still owns creation.
     current=read()
     if current['version']==VERSION:return current
+    # Cold imports and GUI publication must not consume the short config-lock
+    # budget of simultaneous entry/service preflights. Keep durable policy
+    # creation before the atomic marker, so bulk workers always see 'later'.
+    from storage_policy92 import prepare_choice,publish
+    create_policy=prepare_choice('later')
     with locked():
         value=read()
         if value['version']==VERSION:return value
@@ -85,8 +90,10 @@ def initialize():
         fresh=not entries
         value=dict(version=VERSION,mode='dynamic' if fresh else 'internal',strategy='demand',target='',
                    profile=uuid.uuid4().hex,origin='FRESH' if fresh else 'LEGACY')
-        if fresh:__import__('storage_policy92').choose('later')
-        _write(value);return value
+        if fresh:create_policy()
+        _write(value)
+    if fresh:publish(False)
+    return value
 
 
 def choose(mode,*,target=None,strategy=None):

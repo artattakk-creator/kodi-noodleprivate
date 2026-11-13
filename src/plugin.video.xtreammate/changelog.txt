@@ -1,6 +1,7 @@
 0.1.29.92 – Speicher-/EPG-Stabilisierung, unveröffentlichter Testkandidat
 - Verifizierte Senderlogos nach Kodi-Neustart unmittelbar im Widget verwenden; widerrufene Quellen bleiben gesperrt.
 - Eigene Speicherübersicht, sichere begrenzte Wartung mit Journal und gemessenem Platzdelta.
+- Parallele Erststarts ohne lange Imports oder GUI-Veröffentlichung unter der kurzen Profilsperre; bestehende Profile bleiben unverändert.
 - Inkrementelle SQLite-Freigabe vollständig bis 128 Seiten ausführen und danach sicher per WAL-Checkpoint bestätigen; aktive Leser bleiben geschützt.
 - Kleine Bildzuordnungen und Migrationsjournale unter eigener begrenzter Metadatenreserve speichern.
 - USB-Migration mit Kopie, SHA256, Bildprüfung, Kodi-Neustart und separater Originalbereinigung.
