@@ -46,9 +46,10 @@
   },
   "home_soak": {
     "run_id": 43504729339,
-    "status": "IN_PROGRESS",
+    "status": "PASS",
     "scope": "Existing cumulative Home including 30-minute DB pause",
-    "native1080": "PASS"
+    "native1080": "PASS",
+    "native720": "PASS_1800_SECOND_DB_PAUSE"
   },
   "open": [
     "NATIVE_ROCKCHIP_STOP_FREEZE",
@@ -61,9 +62,31 @@
   "archived_transport": {
     "run_id": 43504728829,
     "original_job": 132159401231,
-    "status": "FAILED_CONTAINER_EXIT_137_SINGLE_JOB_RERUN_IN_PROGRESS",
+    "status": "PASS_ON_SINGLE_JOB_RERUN",
     "archive_source": "0.1.29.74",
     "cause": "UNPROVEN",
-    "publication_job": "SKIPPED"
+    "publication_job": "REVIEW_PACKAGE_ONLY_COMMIT_AND_PUBLISH_STEP_SKIPPED",
+    "rerun_job": 132168824812
+  },
+  "latest_test_harness_commit": "86462cb1f4845bf4d80fcd1c111f478a59079be7",
+  "latest_test_harness_scope": "No addon source or ZIP changes; preserve 900s soak and all gates, synthetic supervisor45min",
+  "latest_full_host": {
+    "run_id": 43511300880,
+    "status": "PASS",
+    "tests": 3940,
+    "seconds": 936.787,
+    "branding": 11,
+    "po": 17
+  },
+  "retention90": {
+    "initial_run": 43504728567,
+    "initial_status": "FAIL_VISIBLE84_TIMEOUT",
+    "corrected_run": 43511295707,
+    "status": "IN_PROGRESS",
+    "targeted_tests": 31,
+    "targeted_seconds": 4.487,
+    "android": "ANDROID_NOT_TESTED",
+    "cold_failure": "OLD_CANDIDATE_GATE_EXPECTED_NO_MAPPING_AFTER_EXPLICIT_PRIOR_SAVE",
+    "cold_fix": "Byte-identical before/after mapping guard, no reset"
   }
 }
