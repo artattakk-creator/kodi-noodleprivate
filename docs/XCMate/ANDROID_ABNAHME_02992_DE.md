@@ -24,7 +24,7 @@ Vor Beginn Version, Gerät, Android-/Kodi-Version, Montagezustand und Uhrzeit no
 | MAP92-02 | Nahe Reserve, schreibgeschützt, Profilbusy/SQLitebusy: eindeutiger Fehler, alte Zuordnung erhalten. Gespeichert mit noch ladendem Bild als getrennte Zustände | ANDROID_NOT_TESTED |
 | HOME92-01 | Sechs .91-Reihen und fremde Widgets, Überschriften/Spinner, Fokus Down 2530→2540, zurück und Scrollen; keine setfocus()- oder Misplaced-[-Fehler | ANDROID_NOT_TESTED |
 | HOME92-02 | Adult/Erotik/Sport/Boxen nur auf Film-Home ausblenden; Bibliothek weiterhin vollständig; unabhängiger Portalfilter, neue Gruppen nicht still aufnehmen | ANDROID_NOT_TESTED |
-| HOME92-03 | DB-Timeout/offline, Logos, Mini-/großes EPG, aktuelle Bilder fünf Minuten stehen lassen, Cover nach Neustart, Quellenattribution korrekt | ANDROID_NOT_TESTED |
+| HOME92-03 | DB-Timeout/offline; Home ohne vorherigen Senderstart; nach vollständigem Kodi-Neustart erste fünf Logos sofort und später die vollständige konfigurierte Startgruppe prüfen, keine neuen HTTP-Downloads bereits verifizierter Logos; Mini-/großes EPG, aktuelle Bilder fünf Minuten stehen lassen, Film-/Seriencover nach Neustart, Quellenattribution korrekt | ANDROID_NOT_TESTED |
 | PLAY92-01 | Erst einmal Live-TV-Zurück im bestätigten Kompatibilitätsmodus. Nur bei PASS Film, Serie, Stop, natürliches Ende/Autoplay und 5/20 Zyklen | ANDROID_NOT_TESTED |
 | PLAY92-02 | Fremder TMDB-Helper-Player bleibt fremd; Stop-ACK/Threads/Return getrennt notieren, kein automatischer Home-Sprung bei anderer Wiedergabe | ANDROID_NOT_TESTED |
 | BOOT92-01 | Kaltstart vor/nach Pflege; AAC-Verfügbarkeit/CAddonMgr vor XCMate getrennt von dessen Profil-/Speicherstatus beurteilen | ANDROID_NOT_TESTED |

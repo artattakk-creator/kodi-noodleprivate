@@ -55,6 +55,21 @@
       "path": "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.91.zip",
       "sha256": "230fde5237e8a9aa2be548ef29ef95301a8b41080d043a03ed0d9fee7b4c198b",
       "unchanged": true
+    },
+    {
+      "path": "online-test/script.gsmedia.setup-0.5.26.zip",
+      "sha256": "5aa5d101a57adda5dbb1f5d05319da1ec185676dc784817b25dea267322ae0af",
+      "unchanged": true
+    },
+    {
+      "path": "online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.26.zip",
+      "sha256": "5aa5d101a57adda5dbb1f5d05319da1ec185676dc784817b25dea267322ae0af",
+      "unchanged": true
+    },
+    {
+      "path": "script.gsmedia.setup/script.gsmedia.setup-0.5.26.zip",
+      "sha256": "5aa5d101a57adda5dbb1f5d05319da1ec185676dc784817b25dea267322ae0af",
+      "unchanged": true
     }
   ],
   "publication": "NOT_PERFORMED"

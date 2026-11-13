@@ -1,0 +1,92 @@
+{
+  "platform": "REAL_LINUX_KODI_SYNTHETIC_SOURCES_NOT_ANDROID",
+  "source_commit": "3d4153dc7d7e816643530b9f83253720e1b9c3c2",
+  "production_source_commit": "6c52b6e08b78b889b014707a6325876632c89e2b",
+  "run_id": 43417529621,
+  "artifact_id": 14034260574,
+  "resolution": "1920x1080",
+  "overall": "FAIL",
+  "failure": "NATIVE90_ACTIVATION_NOT_READY_ON_COLD_START",
+  "warm_status": "PASS",
+  "warm_logos": {
+    "posters89": [
+      {
+        "kind": "vod",
+        "distinct_local_items": 5,
+        "pixels": 52020,
+        "screenshot": "visible84-poster89-vod-warm.png"
+      },
+      {
+        "kind": "series",
+        "distinct_local_items": 5,
+        "pixels": 58320,
+        "screenshot": "visible84-poster89-series-warm.png"
+      }
+    ],
+    "status": "PASS",
+    "records": 88,
+    "own_references": 88,
+    "unique_files": 88,
+    "request_count": 0,
+    "after_restart_no_repeated_downloads": null,
+    "manifest_bytes": 34080,
+    "own_bytes": 58029,
+    "selected_free_injection": 228114432,
+    "global_reserve": 1073741824,
+    "actual_native_list_file": true,
+    "rail_pixels": 3420,
+    "screenshot": "visible84-logo89-warm.png",
+    "android": "ANDROID_NOT_TESTED"
+  },
+  "warm_sticky": {
+    "status": "PASS",
+    "wall_seconds": 306.07,
+    "checkpoints": [
+      {
+        "seconds": 2.17,
+        "pixels": 253572,
+        "screenshot": "visible84-sticky88-2.png"
+      },
+      {
+        "seconds": 46.2,
+        "pixels": 253572,
+        "screenshot": "visible84-sticky88-46.png"
+      },
+      {
+        "seconds": 121.01,
+        "pixels": 253572,
+        "screenshot": "visible84-sticky88-121.png"
+      },
+      {
+        "seconds": 305.07,
+        "pixels": 253572,
+        "screenshot": "visible84-sticky88-305.png"
+      }
+    ],
+    "negative_status_after": 45,
+    "android": "ANDROID_NOT_TESTED"
+  },
+  "warm_foreign_widgets": {
+    "status": "PASS",
+    "saved_definitions": 13,
+    "cycles": 10,
+    "unchanged": "PASS"
+  },
+  "warm_reminders": {
+    "state": "dismissed",
+    "bookmark_retained": true,
+    "status": "PASS",
+    "exactly_two_actions": [
+      "Switch now",
+      "Dismiss"
+    ],
+    "default_focus": 611,
+    "native_remote_select": true,
+    "screenshot": "visible84-reminder89-two-actions.png",
+    "selected_free_injection": 228114432,
+    "timer_reserve": 33554432,
+    "android": "ANDROID_NOT_TESTED"
+  },
+  "cold": "NOT_COMPLETED",
+  "android": "ANDROID_NOT_TESTED"
+}
