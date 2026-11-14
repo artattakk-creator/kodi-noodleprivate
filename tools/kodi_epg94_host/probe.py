@@ -30,6 +30,10 @@ for _ in range(1200):
  if Path('/root/epg94-error.txt').exists() and Path('/root/epg94-error.txt').stat().st_size:raise RuntimeError(Path('/root/epg94-error.txt').read_text())
  if Path('/root/epg94-finished.json').exists():break
  time.sleep(.1)
-else:raise RuntimeError('EPG94_NOT_COMPLETED')
+else:
+ for name in ('epg94-phase.txt','epg94-stacks.txt'):
+  file=Path('/root')/name
+  if file.exists():print('EPG94_DIAG '+name+'\n'+file.read_text(),flush=True)
+ raise RuntimeError('EPG94_NOT_COMPLETED')
 result=json.loads(Path('/root/epg94-finished.json').read_text());result.update(kodi=version,rpc_input_max_seconds=max(latencies))
 assert result['status']=='PASS';print(json.dumps(result,indent=2))

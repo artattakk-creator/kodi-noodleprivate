@@ -45,6 +45,10 @@ def main():
         if created:
             run('cp',name+':/root/.kodi/temp/kodi.log',str(report/'kodi-local-debug.log'))
             subprocess.run(docker+['cp',name+':/root/epg94-error.txt',str(report/'error.txt')],env=env)
+            for diagnostic94 in ('epg94-phase.txt','epg94-stacks.txt'):
+                path94=report/diagnostic94
+                subprocess.run(docker+['cp',name+':/root/'+diagnostic94,str(path94)],env=env)
+                if path94.exists():print(path94.read_text(),flush=True)
         raise
     finally:
         if created:

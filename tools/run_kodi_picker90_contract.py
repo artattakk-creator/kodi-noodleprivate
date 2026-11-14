@@ -86,7 +86,9 @@ print(len(files))
    state92=run('inspect','--format','{{json .State}}',name,capture_output=True,text=True).stdout
    events92=subprocess.run(docker+['exec',name,'cat','/sys/fs/cgroup/memory.events'],env=env,capture_output=True,text=True)
    stats92=subprocess.run(docker+['stats','--no-stream','--format','{{json .}}',name],env=env,capture_output=True,text=True)
-   (report/'container-resource90.json').write_text(json.dumps(dict(state=json.loads(state92),memory_events=events92.stdout,memory_events_returncode=events92.returncode,stats=stats92.stdout),indent=2))
+   resource94=dict(state=json.loads(state92),memory_events=events92.stdout,memory_events_returncode=events92.returncode,stats=stats92.stdout)
+   (report/'container-resource90.json').write_text(json.dumps(resource94,indent=2))
+   print('NATIVE94_RESOURCE '+json.dumps(resource94),flush=True)
    with (report/'container-console90.log').open('w') as console92:
     subprocess.run(docker+['logs',name],env=env,stdout=console92,stderr=subprocess.STDOUT)
   except (ValueError,subprocess.CalledProcessError):pass
