@@ -105,3 +105,11 @@ class Cleanup94(unittest.TestCase):
   with mock.patch.object(m,'volume',return_value=dict(device=7,filesystem=8,free=42)):
    value=m.confirmed(self.portal['id'],revision)
   self.assertEqual(value['free_before'],42);self.assertEqual(value['free_after'],42);self.assertEqual(value['observed_free_change'],0)
+
+class Capacity94(Fixture,unittest.TestCase):
+ def test_128_sources_remain_readable_without_unbounded_phase_history(self):
+  m=importlib.import_module('epg_jobs94');j=m.request('p');m.acknowledge('p',j['id'])
+  for i in range(128):
+   for phase in ('DOWNLOAD','PARSE','MATCHING','STAGING','COMMIT','READBACK','CLEANUP','DONE'):
+    m.observe('p',j['id'],format(i,'024x'),phase,bytes=123456789,channels=3357,programmes=2000000,matched=3357,staged=2000000,committed=2000000,verified=2000000,source_index=i+1,sources=128)
+  self.assertLess(os.path.getsize(m.path('p')),131072);self.assertEqual(len(m.read('p')['sources']),128)

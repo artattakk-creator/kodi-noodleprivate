@@ -6,6 +6,7 @@ import xbmc,xbmcgui,xbmcaddon
 sys.path.insert(0,'/root/.kodi/addons/plugin.video.xtreammate/resources/lib')
 import utils,portals,library_index,group_selection,epg,epg_sources,epg_jobs94
 utils.ADDON=xbmcaddon.Addon('plugin.video.xtreammate');utils.ADDON_ID='plugin.video.xtreammate'
+utils.ADDON.setSetting('xcmate_ui_language','de_de')
 owner=threading.get_ident();monitor=xbmc.Monitor();stop=threading.Event();server=None;manager=None
 stacks94=open('/root/epg94-stacks.txt','w');faulthandler.dump_traceback_later(25,repeat=True,file=stacks94)
 def phase94(name):Path('/root/epg94-phase.txt').write_text(name);print('EPG94_PHASE '+name,flush=True)
@@ -52,6 +53,7 @@ try:
  wait(lambda:epg_jobs94.read('epg94').get('sources',{}).get('provider',{}).get('bytes',0)>0,'WIRE_BYTES_MISSING')
  manager.setFocusId(200);manager.getControl(200).selectItem(0)
  Path('/root/epg94-observe.json').write_text(json.dumps(dict(ready=True)))
+ wait(lambda:getattr(manager,'_job94',{}).get('sources',{}).get('provider',{}).get('phase')=='DOWNLOAD' and manager.getControl(200).getListItem(0).getProperty('Busy94')=='true','DOWNLOAD_NOT_RENDERED')
  report['download_screenshot']=shot('epg94-downloading')
  # Native RPC drives focus concurrently while this owner pumps.
  wait(lambda:Path('/root/epg94-input-complete').exists(),'NATIVE_INPUT_NOT_COMPLETED',10)
@@ -59,7 +61,7 @@ try:
  wait(lambda:epg_jobs94.read('epg94').get('state') in epg_jobs94.TERMINAL,'IMPORT_NOT_COMPLETED',60)
  job=epg_jobs94.read('epg94');assert job['state']=='DONE',job
  wait(lambda:manager._job94.get('state')=='DONE','TERMINAL_UI_NOT_UPDATED')
- source=job['sources']['provider'];assert source['bytes']==len(compressed),(source,len(compressed));assert source['verified']==600,source
+ source=job['sources']['provider'];assert source['bytes']==len(compressed),(source,len(compressed));assert source['verified']==600 and source['matched']==1,source
  assert not manager.getControl(200).getListItem(0).getProperty('Busy94')
  assert manager.getControl(200).getSelectedPosition()==0
  phase94('first_readback_done');report['completed_screenshot']=shot('epg94-completed');report['source']=source

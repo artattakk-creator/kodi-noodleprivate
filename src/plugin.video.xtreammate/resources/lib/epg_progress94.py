@@ -10,10 +10,10 @@ def row(job,key):
     total=source.get('total_bytes',0);size=source.get('bytes',0)
     text=tr(PHASE.get(source.get('phase'),38807))
     if source.get('phase')=='DOWNLOAD':text+=' · '+tr(38824,size,total) if total else ' · '+tr(38825,size)
-    else:text+=' · '+tr(38826,source.get('channels',0),source.get('programmes',0),source.get('matched',0),source.get('staged',0))
+    stats=tr(38826,source.get('channels',0),source.get('programmes',0),source.get('matched',0),source.get('staged',0))
     if source.get('committed') is not None:text+=' · '+tr(38827,source['committed'],source.get('verified',0))
     if source.get('error_code'):text+=' · '+source['error_code']
-    return dict(text=text,busy=active and not job.get('stalled'),percent=min(100,100*size/total) if total else None)
+    return dict(text=text,stats=stats,busy=active and not job.get('stalled'),percent=min(100,100*size/total) if total and source.get('phase')=='DOWNLOAD' else None)
 
 
 def summary(job):

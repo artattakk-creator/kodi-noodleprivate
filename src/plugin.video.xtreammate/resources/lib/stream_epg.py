@@ -333,11 +333,11 @@ def _refresh44(portal,force=False,cancel=lambda:False):
         source_started53(pid,key,identity53,index)
         update(pid,key,'RUNNING',running=True,source_index=index)
         try:
-            last_progress59=[0,'']
+            last_progress59=[0,'',0]
             def progress59(value):
                 now59=time.monotonic()
-                if now59-last_progress59[0]<.5 and value.get('phase')==last_progress59[-1]:return
-                last_progress59[:]=[now59,value.get('phase')]
+                if now59-last_progress59[0]<.5 and value.get('phase')==last_progress59[1] and value.get('matched',0)==last_progress59[2]:return
+                last_progress59[:]=[now59,value.get('phase'),value.get('matched',0)]
                 observe94(key,value.get('phase','PARSE'),bytes=value.get('bytes',0),total_bytes=value.get('total_bytes',0),channels=value.get('channels',0),programmes=value.get('programmes',0),staged=value.get('stored',0),matched=value.get('matched',0))
                 code59={'DOWNLOAD':'DOWNLOADING','PARSE':'PARSING','STAGING':'SAVING','MATCHING':'PARSING'}.get(value.get('phase'),'RUNNING')
                 update(pid,key,code59,running=True,source_index=index,bytes=value.get('bytes',0),programmes=value.get('programmes',0),channels=value.get('channels',0),count=value.get('stored',0))
@@ -367,7 +367,7 @@ def _refresh44(portal,force=False,cancel=lambda:False):
         return {}
     for stage,outcome in zip(stages,outcomes):
         counts=stage['counts'];successes+=1
-        stage['observe94']('DONE',committed=stage['verified94']['rows'],verified=stage['verified94']['rows'],first=stage['verified94']['first'],last=stage['verified94']['last'])
+        stage['observe94']('DONE',matched=counts.get('matched_streams66',0),staged=counts.get('stored_unique66',counts['stored']),committed=stage['verified94']['rows'],verified=stage['verified94']['rows'],first=stage['verified94']['first'],last=stage['verified94']['last'])
         source_done53(pid,__import__('guide_publish44').source_id(stage['source'],stage['index']),'PARTIAL_PRESERVED' if outcome['code']=='PARTIAL_PRESERVED' else 'READY',counts,outcome)
         update(pid,stage['key'],'PARTIAL_PRESERVED' if outcome['code']=='PARTIAL_PRESERVED' else 'READY',running=False,
             source_index=stage['index'],channels=counts['channels'],programmes=counts['stored'],bytes=counts['bytes'])

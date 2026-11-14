@@ -68,7 +68,7 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
                 source['last_success']=job.get('finished',observation94.get('progress',0))
                 source['saved']=dict(source['saved'],programmes=observation94.get('verified',0),first=observation94.get('first'),last=observation94.get('last'))
             value=row(job,source['key']);item=control.getListItem(i)
-            item.setLabel2(value['text']);item.setProperty('Busy94','true' if value['busy'] else '')
+            item.setLabel2(value['text']);item.setProperty('Stats94',value['stats']);item.setProperty('Busy94','true' if value['busy'] else '')
             item.setProperty('Percent94',str(value['percent'] or 0));item.setProperty('KnownTotal94','true' if value['percent'] is not None else '')
         self._detail()
     def _detail(self):
@@ -79,7 +79,10 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
         progress=row.get('progress59',{})
         details=('Download/Import: '+str(progress.get('bytes',0))+' Bytes · '+str(progress.get('programmes',0))+' gelesen · '+str(progress.get('count',0))+' zugeordnet\n') if row.get('code') in ('RUNNING','DOWNLOADING','PARSING','SAVING','VERIFIED') else ''
         if progress.get('http_status'):details+='HTTP-Status: '+str(progress['http_status'])+'\n'
-        self.getControl(103).setText(details+'Letzter Versuch: '+stamp(row.get('last_attempt66'))+'\n'+'Letzter Erfolg: '+stamp(row['last_success'])+'\nLetzter protokollierter Fehler: '+stamp(row['last_failure'])+'\nGespeicherter Zeitraum: '+stamp(saved.get('first'))+' bis '+stamp(saved.get('last')))
+        lines=['Letzter Versuch: '+stamp(row.get('last_attempt66'))+' · Erfolg: '+stamp(row['last_success']),
+               'Gespeichert: '+stamp(saved.get('first'))+' bis '+stamp(saved.get('last'))]
+        lines.append(details.strip().replace('\n',' · ') if details else 'Letzter protokollierter Fehler: '+stamp(row['last_failure']))
+        self.getControl(103).setText('\n'.join(lines))
     def onFocus(self,cid):
         if cid==200:self._detail()
     def _query_failed(self,exc):self.getControl(102).setLabel('EPG-Zugriff oder Speichern nicht bestätigt. Daten bleiben erhalten.')
@@ -133,7 +136,7 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
             self.portal=get_by_id(self.portal['id']) or self.portal
             from epg import request_refresh
             ok=request_refresh(self.portal['id'],self.portal,force=True)
-            if ok:self._refresh_until58=time.monotonic()+600;self._next_status58=time.monotonic()+2
+            if ok:self._refresh_until58=time.monotonic()+600;self._next_status58=0
             self.getControl(102).setLabel('Aktualisierung angefordert; Speicherung noch nicht bestätigt.' if ok else 'Aktualisierung blockiert. Bestehende EPG-Sicherung und laufende Importe prüfen.')
         elif cid==403:self._reports()
         elif cid==404:self._load()

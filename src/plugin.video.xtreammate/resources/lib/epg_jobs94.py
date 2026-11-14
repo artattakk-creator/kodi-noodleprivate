@@ -53,7 +53,9 @@ def write(pid,value):
         from wizard_storage71 import protect
         protect(temp,fd=fd)
         with os.fdopen(fd,'w',encoding='utf-8') as stream:
-            fd=None;json.dump(value,stream,separators=(',',':'));stream.flush();os.fsync(stream.fileno())
+            fd=None;raw=json.dumps(value,separators=(',',':'))
+            if len(raw.encode())>131072:raise OSError('EPG_STATUS_BUDGET')
+            stream.write(raw);stream.flush();os.fsync(stream.fileno())
         os.replace(temp,filename);temp=None
     finally:
         if fd is not None:os.close(fd)
@@ -94,7 +96,7 @@ def observe(pid,identity,key,phase,**counts):
         if changed:row['progress']=now;value['progress']=now
         if previous.get('phase')!=phase:
             row['phase_started']=now
-            row.setdefault('phases',{})[phase]=dict(at=now,**safe)
+            row.setdefault('phases',{})[phase]=dict(at=now)
         if key not in rows and len(rows)>=128:return False
         rows[key]=row;value.update(phase=phase,source=key)
         write(pid,value);return True
