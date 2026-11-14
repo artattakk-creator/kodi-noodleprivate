@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Isolated real Kodi 21 EPG94 owner and native directory contract, explicitly not Android."""
-import argparse,json,os,subprocess,tempfile,uuid
+import argparse,json,os,subprocess,tempfile,uuid,base64
 from pathlib import Path
 
 
@@ -39,6 +39,7 @@ def main():
         assert result['status']=='PASS' and result['android']=='ANDROID_NOT_TESTED'
         for name94 in ('epg94-downloading.png','epg94-completed.png'):
             run('cp',name+':/root/'+name94,str(report/name94))
+            print('EPG94_SCREENSHOT '+name94+' '+base64.b64encode((report/name94).read_bytes()).decode(),flush=True)
         print(json.dumps(result))
     except BaseException:
         if created:
@@ -46,7 +47,10 @@ def main():
             subprocess.run(docker+['cp',name+':/root/epg94-error.txt',str(report/'error.txt')],env=env)
         raise
     finally:
-        if created:subprocess.run(docker+['rm','-f',name],env=env,check=False,stdout=subprocess.DEVNULL)
+        if created:
+            for file94 in ('epg94-downloading.png','epg94-completed.png'):
+                subprocess.run(docker+['cp',name+':/root/'+file94,str(report/file94)],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+            subprocess.run(docker+['rm','-f',name],env=env,check=False,stdout=subprocess.DEVNULL)
 
 
 if __name__=='__main__':main()
