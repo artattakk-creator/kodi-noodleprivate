@@ -18,7 +18,7 @@ for _ in range(12):
  time.sleep(.2)
 rpc('Addons.ExecuteAddon',dict(addonid='script.xcmate.epg94'))
 for _ in range(600):
- if Path('/root/epg94-error.txt').exists():raise RuntimeError(Path('/root/epg94-error.txt').read_text())
+ if Path('/root/epg94-error.txt').exists() and Path('/root/epg94-error.txt').stat().st_size:raise RuntimeError(Path('/root/epg94-error.txt').read_text())
  if Path('/root/epg94-observe.json').exists():break
  time.sleep(.1)
 else:raise RuntimeError('MANAGER_NOT_OBSERVED')
@@ -27,7 +27,7 @@ for method in ('Input.Down','Input.Up','Input.Right','Input.Left'):
  before=time.monotonic();rpc(method);latencies.append(time.monotonic()-before)
 Path('/root/epg94-input-complete').write_text('NATIVE_INPUT_SENT')
 for _ in range(1200):
- if Path('/root/epg94-error.txt').exists():raise RuntimeError(Path('/root/epg94-error.txt').read_text())
+ if Path('/root/epg94-error.txt').exists() and Path('/root/epg94-error.txt').stat().st_size:raise RuntimeError(Path('/root/epg94-error.txt').read_text())
  if Path('/root/epg94-finished.json').exists():break
  time.sleep(.1)
 else:raise RuntimeError('EPG94_NOT_COMPLETED')

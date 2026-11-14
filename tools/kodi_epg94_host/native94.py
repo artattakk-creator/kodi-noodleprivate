@@ -80,7 +80,7 @@ try:
  report['back_closed_only_manager']=True
  Path('/root/epg94-finished.json').write_text(json.dumps(report,indent=2));print(json.dumps(report),flush=True)
 except BaseException:
- Path('/root/epg94-error.txt').write_text(traceback.format_exc());raise
+ Path('/root/epg94-error.tmp').write_text(traceback.format_exc());Path('/root/epg94-error.tmp').replace('/root/epg94-error.txt');raise
 finally:
  stop.set()
  if manager and not manager._closed:manager.close()

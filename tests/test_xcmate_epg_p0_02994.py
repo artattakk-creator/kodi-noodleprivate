@@ -70,3 +70,13 @@ class EPG94(Fixture,unittest.TestCase):
    w._job_loaded94(j);w._job_loaded94(j)
   self.assertEqual(control.items,before);self.assertEqual(control.getSelectedPosition(),0)
   self.assertEqual(control.getListItem(0).getProperty('Busy94'),'true')
+ def test_xtream_explicit_provider_or_global_optout_survives_default(self):
+  self.client.get_xmltv_epg_url=lambda:'https://provider.invalid/xmltv.php'
+  for values in (dict(epg_show=False),dict(provider_epg_enabled=False),dict(epg_opt_out94=True)):
+   draft=importlib.import_module('setup_draft').Draft(dict(self.portal,**values))
+   try:self.assertFalse(draft.provider_epg)
+   finally:draft.dispose()
+ def test_unknown_legacy_false_is_not_silent_consent(self):
+  self.portal['epg_show']=False;self.portal.pop('epg_opt_out94',None)
+  self.real_sources().add_presets('p',['de_master'])
+  self.assertFalse(self.portal['epg_show']);self.assertNotIn('epg_opt_out94',self.portal)
