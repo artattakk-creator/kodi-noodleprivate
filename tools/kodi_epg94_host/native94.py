@@ -47,7 +47,7 @@ try:
  def poll():
   while not stop.wait(.05):epg.poll_refresh_request()
  worker=threading.Thread(target=poll,daemon=True);worker.start()
- phase94('first_request');manager.setFocusId(402);manager.onClick(402)
+ phase94('first_request');manager.setFocusId(402);xbmc.executebuiltin('Action(Select)',wait=False)
  wait(lambda:epg_jobs94.read('epg94').get('state')=='RUNNING','SERVICE_ACK_MISSING')
  job=epg_jobs94.read('epg94');identity=job['id'];report['job_id']=identity;report['ack_seconds']=job['ack']-job['requested'];assert report['ack_seconds']<=15
  wait(lambda:epg_jobs94.read('epg94').get('sources',{}).get('provider',{}).get('bytes',0)>0,'WIRE_BYTES_MISSING')
@@ -76,14 +76,14 @@ try:
  assert __import__('epg_gate46').access(path())=='READY'
  wait(lambda:not epg._WARMUP_THREADS['epg94'].is_alive(),'PRIOR_WORKER_NOT_RETURNED')
  wait(lambda:manager._pending_future is None,'PRIOR_GUI_JOB_NOT_RETURNED')
- phase94('retry_request');manager.onClick(402);phase94('retry_submitted');wait(lambda:epg_jobs94.read('epg94').get('id')!=identity and epg_jobs94.read('epg94').get('state')=='RUNNING','RETRY_NOT_STARTED')
+ phase94('retry_request');manager.setFocusId(402);xbmc.executebuiltin('Action(Select)',wait=False);phase94('retry_submitted');wait(lambda:epg_jobs94.read('epg94').get('id')!=identity and epg_jobs94.read('epg94').get('state')=='RUNNING','RETRY_NOT_STARTED')
  wait(lambda:epg_jobs94.read('epg94').get('sources',{}).get('provider',{}).get('bytes',0)>0,'RETRY_NO_BYTES')
  wait(lambda:getattr(manager,'_job94',{}).get('id')==epg_jobs94.read('epg94')['id'],'CANCEL_UI_STALE')
- phase94('cancel_request');manager.onClick(413);phase94('cancel_submitted');wait(lambda:epg_jobs94.read('epg94').get('state')=='CANCELLED','CANCEL_NOT_ACKNOWLEDGED')
+ phase94('cancel_request');manager.setFocusId(413);xbmc.executebuiltin('Action(Select)',wait=False);phase94('cancel_submitted');wait(lambda:epg_jobs94.read('epg94').get('state')=='CANCELLED','CANCEL_NOT_ACKNOWLEDGED')
  from wizard_epg54 import stored
  assert stored(portal,'provider')['rows']==600
  report['cancel_preserved_lastgood']=True
- phase94('close_manager');manager.onClick(406);assert manager._closed
+ phase94('close_manager');xbmc.executebuiltin('Action(Back)',wait=False);wait(lambda:manager._closed,'NATIVE_BACK_NOT_CLOSED')
  report['back_closed_only_manager']=True
  Path('/root/epg94-finished.json').write_text(json.dumps(report,indent=2));print(json.dumps(report),flush=True)
 except BaseException:
