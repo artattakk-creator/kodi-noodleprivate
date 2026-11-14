@@ -62,6 +62,8 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
         for i,source in enumerate(self.rows):
             if source['key'] not in job.get('sources',{}):continue
             observation94=job['sources'][source['key']]
+            source['last_attempt66']=job.get('ack',job.get('requested',source.get('last_attempt66',0)))
+            if observation94.get('phase')=='FAILED':source['last_failure']=observation94.get('progress',0)
             source['progress59']=dict(bytes=observation94.get('bytes',0),programmes=observation94.get('programmes',0),count=observation94.get('staged',0))
             source['code']={'DONE':'READY','FAILED':observation94.get('error_code','FAILED'),'DOWNLOAD':'DOWNLOADING','PARSE':'PARSING','STAGING':'SAVING','READBACK':'SAVING'}.get(observation94.get('phase'),'RUNNING')
             if observation94.get('phase')=='DONE':

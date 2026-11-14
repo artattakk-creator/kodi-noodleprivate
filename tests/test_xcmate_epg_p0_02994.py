@@ -65,11 +65,12 @@ class EPG94(Fixture,unittest.TestCase):
    w=module.Manager53('XCMateEPGManager53.xml',str(ADDON),'Default','720p');w.configure(self.portal)
   self.addCleanup(w.close);w.show();w._pool.drain();w.pump()
   control=w.getControl(200);before=list(control.items);control.selectItem(0)
-  j=dict(id='a'*32,state='RUNNING',source='provider',sources={'provider':dict(phase='PARSE',channels=5,programmes=12,staged=7)},stalled=False)
+  j=dict(id='a'*32,ack=12345,state='RUNNING',source='provider',sources={'provider':dict(phase='PARSE',channels=5,programmes=12,staged=7)},stalled=False)
   with mock.patch.object(control,'reset',side_effect=AssertionError('STATUS_MUST_NOT_RESET_LIST')):
    w._job_loaded94(j);w._job_loaded94(j)
   self.assertEqual(control.items,before);self.assertEqual(control.getSelectedPosition(),0)
   self.assertEqual(control.getListItem(0).getProperty('Busy94'),'true')
+  self.assertEqual(w.rows[0]['last_attempt66'],12345)
  def test_xtream_explicit_provider_or_global_optout_survives_default(self):
   self.client.get_xmltv_epg_url=lambda:'https://provider.invalid/xmltv.php'
   for values in (dict(epg_show=False),dict(provider_epg_enabled=False),dict(epg_opt_out94=True)):
