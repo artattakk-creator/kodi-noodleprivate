@@ -139,7 +139,7 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
             from epg import request_refresh
             ok=request_refresh(self.portal['id'],self.portal,force=True)
             if ok:self._refresh_until58=time.monotonic()+600;self._next_status58=0
-            self.getControl(102).setLabel('Aktualisierung angefordert; Speicherung noch nicht bestätigt.' if ok else 'Aktualisierung blockiert. Bestehende EPG-Sicherung und laufende Importe prüfen.')
+            self.getControl(102).setLabel('Aktualisierung angefordert; Speicherung noch nicht bestätigt.' if ok else 'Aktualisierung blockiert. Speicherplatz, Schreibrechte, EPG-Sicherung und laufende Importe prüfen.')
         elif cid==403:self._reports()
         elif cid==404:self._load()
         elif cid==405:self.next_action='guide';self.close()

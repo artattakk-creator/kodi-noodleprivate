@@ -158,7 +158,11 @@ def request_refresh(portal_id,p,force=False):
         update(portal_id,'refresh',state,running=False)
         diagnostic(state,running=False)
         return False
-    job=__import__('epg_jobs94').request(portal_id,force)
+    try:job=__import__('epg_jobs94').request(portal_id,force)
+    except OSError:
+        __import__('epg_status').update(portal_id,'refresh','CONTROL_STORAGE_UNAVAILABLE',running=False)
+        diagnostic('CONTROL_STORAGE_UNAVAILABLE',running=False)
+        return False
     xbmcgui.Window(10000).setProperty('XtreamMate.EPGRefreshRequest' ,json.dumps({
         'pid':str(portal_id),'force':bool(force),'at':time.time(),'nonce':job['id']}))
     from epg_status import update

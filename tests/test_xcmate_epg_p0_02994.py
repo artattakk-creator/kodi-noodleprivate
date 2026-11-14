@@ -81,3 +81,10 @@ class EPG94(Fixture,unittest.TestCase):
   self.portal['epg_show']=False;self.portal.pop('epg_opt_out94',None)
   self.real_sources().add_presets('p',['de_master'])
   self.assertFalse(self.portal['epg_show']);self.assertNotIn('epg_opt_out94',self.portal)
+
+ def test_job_control_storage_failure_is_readable_not_an_uncaught_gui_callback(self):
+  import importlib.util
+  spec=importlib.util.spec_from_file_location('epg94_storage_case',LIB/'epg.py');epg=importlib.util.module_from_spec(spec);spec.loader.exec_module(epg)
+  with mock.patch('epg_gate46.access',return_value='NOT_CREATED'),mock.patch('epg_jobs94.request',side_effect=OSError(28,'synthetic private storage detail')),mock.patch('epg_status.update') as status:
+   self.assertFalse(epg.request_refresh('p',self.portal,force=True))
+   status.assert_called_with('p','refresh','CONTROL_STORAGE_UNAVAILABLE',running=False)
