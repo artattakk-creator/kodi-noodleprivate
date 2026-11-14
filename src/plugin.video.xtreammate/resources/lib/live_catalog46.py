@@ -3,7 +3,7 @@ import json,os,sqlite3,time
 from urllib.parse import quote
 
 
-def read(portal,publish=lambda value:None,categories=None,only=None):
+def read(portal,publish=lambda value:None,categories=None,only=None,receipt94=None):
     from widget_data41 import WidgetReader
     from library_index import path,initial_group,IndexReadError
     reader=WidgetReader(portal['id']);state=reader.state('live')
@@ -20,7 +20,7 @@ def read(portal,publish=lambda value:None,categories=None,only=None):
         ordered=[g for g in groups if g['cid']==str(only)]
         if not ordered:raise IndexReadError('GROUP_NOT_AVAILABLE')
     db=sqlite3.connect('file:'+quote(reader.filename or path(),safe='/')+'?mode=ro',uri=True,timeout=.05);db.row_factory=sqlite3.Row
-    streams=[];seen=set()
+    streams=[];seen=set();head=None
     try:
         db.execute('PRAGMA query_only=ON');db.execute('BEGIN')
         for group in ordered:
@@ -44,6 +44,8 @@ def read(portal,publish=lambda value:None,categories=None,only=None):
         after=reader.state('live')
         if not after or (after.get('revision'),after.get('updated'))!=(state.get('revision'),state.get('updated')):
             raise IndexReadError('REVISION_CHANGED')
+        if receipt94 is not None:
+            receipt94.update(revision=state.get('revision'),updated=state.get('updated'),generation=head[0] if only is not None and head else None,count=len(streams))
         return categories,streams
     except (sqlite3.Error,ValueError,TypeError) as exc:
         raise IndexReadError('LOCAL_LIVE_UNAVAILABLE') from None

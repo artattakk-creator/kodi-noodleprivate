@@ -55,6 +55,7 @@ def add_presets(portal_id, preset_keys):
         added.append(key)
     if added:
         _save(portal_id, state)
+    if any(s.get('enabled',True) for s in state['sources']):__import__('epg_config94').source_added(portal_id)
     return added
 
 
@@ -129,6 +130,7 @@ def add_source(portal_id, title, uri, local=False):
             'uri': uri, 'local': bool(local), 'enabled': True}
     state['sources'].append(item)
     _save(portal_id, state)
+    __import__('epg_config94').source_added(portal_id)
     return item
 
 
@@ -152,6 +154,7 @@ def edit_source(portal_id, source_id, operation):
     else:
         raise ValueError('Ungültige EPG-Aktion')
     _save(portal_id, state)
+    if operation=='toggle' and state['sources'][index].get('enabled',True):__import__('epg_config94').source_added(portal_id)
     return True
 
 
@@ -348,6 +351,7 @@ def _choose_preset(portal):
         return False
     keys = ([PRESET_FEEDS[selection][0]] if selection < len(PRESET_FEEDS)
             else ['de_master', 'de_epgshare', 'at_epgshare', 'ch_epgshare'])
+    if not __import__('epg_config94').confirm_enable(portal):return False
     added = add_presets(portal['id'], keys)
     if not added:
         dialog.notification('XCMate EPG', 'EPG-Paket bereits vorhanden')
@@ -370,6 +374,7 @@ def _manage_source(portal, source):
         return False
     if choice == 3 and not d.yesno('XCMate EPG', 'EPG-Quelle wirklich löschen?'):
         return False
+    if choice==0 and not source.get('enabled',True) and not __import__('epg_config94').confirm_enable(portal):return False
     return edit_source(portal['id'], source['id'], operations[choice])
 
 

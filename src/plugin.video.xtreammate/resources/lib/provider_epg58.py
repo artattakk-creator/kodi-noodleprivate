@@ -15,11 +15,13 @@ def toggle(portal):
     with writing():
         value=current(portal)
         enabled=not value.get('provider_epg_enabled',True)
-        if not update(value['id'],{'provider_epg_enabled':enabled}):
+        if not update(value['id'],{'provider_epg_enabled':enabled,'provider_epg_opt_out94':not enabled}):
             raise OSError('PROVIDER_SAVE_FAILED')
         saved=current(value)
         if saved.get('provider_epg_enabled',True)!=enabled:
             raise OSError('PROVIDER_SAVE_UNVERIFIED')
+        if enabled:__import__('epg_config94').source_added(value['id'])
+        saved=current(value)
         return saved
 
 

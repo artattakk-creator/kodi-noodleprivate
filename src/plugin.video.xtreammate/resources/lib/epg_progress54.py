@@ -15,6 +15,8 @@ class Progress:
         class Reader:
             def read(self,size=-1):
                 value=stream.read(size)
-                if value:progress.emit('DOWNLOAD',bytes=progress.values['bytes']+len(value))
+                if value:
+                    wire=getattr(stream,'wire94',None)
+                    progress.emit('DOWNLOAD',bytes=wire['bytes'] if wire is not None else progress.values['bytes']+len(value),total_bytes=wire.get('total',0) if wire else 0)
                 return value
         return Reader()

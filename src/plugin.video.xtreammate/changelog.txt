@@ -1,3 +1,11 @@
+0.1.29.94 (2026-11-14) – EPG-Stabilisierung, Testkandidat
+- Neue Xtream-Einrichtung verwendet das tatsächliche Anbieter-EPG, wenn keine Quelle bewusst abgewählt wurde. Zugangsdaten und Passwörter bleiben erhalten.
+- EPGShare01 DE/AT/CH und Kaimandura nachrüstbar; ausgeschaltetes EPG wird nur mit bestätigter Absicht aktiviert.
+- Dauerhafter Importauftrag mit Dienstbestätigung, echten Byte-/Parser-/Mappingzählern und sicherem Abbruch. Quellenliste und Fernbedienungsfokus bleiben beim Statuspoll erhalten.
+- Datenbank-Commit über unabhängiges SQLite-Readback prüfen. Gestreamte XMLTV-Rohdaten werden nicht als Dateien archiviert; unbekannte Dateien und LastGood bleiben geschützt.
+- Mini-EPG lädt fehlende Sendergruppen auch bei vollständigem Hauptindex nach; Live-TV bleibt vom EPG-Import unabhängig.
+- .93-Player-, Bild- und Widget-Korrekturen vollständig übernommen. Android/RK3528-Prüfung offen; keine automatische Veröffentlichung.
+
 0.1.29.93 (2026-11-13)
 - Fehlende native Stop-Quittung: einmalige echte FIFO-Fortschrittsprobe, kein zweiter Stop und kein vorgetäuschter ACK. Native Decoderblockade weiterhin Gerätegate.
 - Gespeicherten Startsender bei temporär unvollständigem Katalog erhalten; Mini-EPG-Gruppen gezielt aus lokalem Index nachladen.

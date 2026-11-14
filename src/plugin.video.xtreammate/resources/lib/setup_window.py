@@ -273,6 +273,7 @@ class SetupWindow(GroupRows,WorkWindow):
             if urlsplit(uri).scheme not in ('http','https'): raise ValueError('invalid XMLTV URL')
             sources.append(dict(id=uuid.uuid4().hex,name=title,uri=uri,local=False,enabled=True))
         self.draft.epg_sources=sources;self.draft.scanned=False
+        __import__('epg_config94').selected(self.draft)
         self.status(0,str(len(sources)+int(self.draft.provider_epg))+' · '+tr(32706))
     def onClick(self,controlId):
         if controlId==18: self.close();return

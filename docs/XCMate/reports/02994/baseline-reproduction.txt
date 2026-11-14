@@ -1,0 +1,34 @@
+test_adding_dach_enables_only_known_implicit_global_disable (test_xcmate_epg_p0_02994.EPG94.test_adding_dach_enables_only_known_implicit_global_disable) ... FAIL
+test_adding_source_never_silently_overrides_explicit_optout (test_xcmate_epg_p0_02994.EPG94.test_adding_source_never_silently_overrides_explicit_optout) ... ok
+test_full_index_missing_selected_group_also_requests_targeted_rows (test_xcmate_epg_p0_02994.EPG94.test_full_index_missing_selected_group_also_requests_targeted_rows) ... FAIL
+test_new_xtream_defaults_to_actual_provider_xmltv_without_external_choice (test_xcmate_epg_p0_02994.EPG94.test_new_xtream_defaults_to_actual_provider_xmltv_without_external_choice) ... FAIL
+
+======================================================================
+FAIL: test_adding_dach_enables_only_known_implicit_global_disable (test_xcmate_epg_p0_02994.EPG94.test_adding_dach_enables_only_known_implicit_global_disable)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/xcmate-02994/tests/test_xcmate_epg_p0_02994.py", line 23, in test_adding_dach_enables_only_known_implicit_global_disable
+    self.assertTrue(self.portal['epg_show'])
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_full_index_missing_selected_group_also_requests_targeted_rows (test_xcmate_epg_p0_02994.EPG94.test_full_index_missing_selected_group_also_requests_targeted_rows)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/xcmate-02994/tests/test_xcmate_epg_p0_02994.py", line 39, in test_full_index_missing_selected_group_also_requests_targeted_rows
+    self.assertEqual(len(nav.visible_channels),137);self.assertEqual(len(labels),100);read.assert_called_once()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 137
+
+======================================================================
+FAIL: test_new_xtream_defaults_to_actual_provider_xmltv_without_external_choice (test_xcmate_epg_p0_02994.EPG94.test_new_xtream_defaults_to_actual_provider_xmltv_without_external_choice)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/xcmate-02994/tests/test_xcmate_epg_p0_02994.py", line 17, in test_new_xtream_defaults_to_actual_provider_xmltv_without_external_choice
+    self.assertTrue(draft.provider_epg)
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.413s
+
+FAILED (failures=3)

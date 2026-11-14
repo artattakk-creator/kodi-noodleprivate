@@ -121,7 +121,7 @@ class Session:
             self.data={k:v for k,v in draft.data.items() if k!='id'}
             self.state['name_confirmed']=True
             self.state.update(pid=draft.pid,folder=os.path.basename(draft.folder),stage=stage or self.state.get('stage','groups'),
-                selected={k:sorted(draft.selected[k]) for k in KINDS},provider_epg=bool(draft.provider_epg),
+                selected={k:sorted(draft.selected[k]) for k in KINDS},provider_epg=bool(draft.provider_epg),epg_intent94={k:draft.data[k] for k in ('epg_opt_out94','provider_epg_opt_out94') if k in draft.data},
                 epg_sources=[dict(s) for s in draft.epg_sources],scanned=bool(draft.scanned),signature=draft._scan_signature,
                 report={k:draft.report.get(k,0) for k in ('groups','live','vod','series','epg')})
             if getattr(draft,'phased54',False):self.state.update(phased54=True,published54=bool(draft.saved))
@@ -197,6 +197,9 @@ class Session:
             draft.categories={k:list(categories.get(k,[])) for k in KINDS}
             draft.selected={k:set(map(str,self.state.get('selected',{}).get(k,[]))) for k in KINDS}
             draft.provider_epg=bool(self.state.get('provider_epg'));draft.epg_sources=list(self.state.get('epg_sources',[]))
+            intent=self.state.get('epg_intent94')
+            if isinstance(intent,dict):draft.data.update({k:v for k,v in intent.items() if k in ('epg_opt_out94','provider_epg_opt_out94') and type(v) is bool})
+            elif not draft.provider_epg and not draft.epg_sources:draft.data.pop('epg_opt_out94',None)
             draft.report.update(self.state.get('report',{}));draft._scan_signature=self.state.get('signature')
             draft.adapter=for_portal(draft.data,filename=draft.index,playlist=draft.playlist)
             # Only a validated owned .53 folder for the same Xtream account

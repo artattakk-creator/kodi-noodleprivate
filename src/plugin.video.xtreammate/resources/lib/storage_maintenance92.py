@@ -12,7 +12,7 @@ import time
 from pathlib import Path
 from urllib.parse import quote
 
-VERSION = '0.1.29.93'
+VERSION = '0.1.29.94'
 _due = 0
 
 def root():

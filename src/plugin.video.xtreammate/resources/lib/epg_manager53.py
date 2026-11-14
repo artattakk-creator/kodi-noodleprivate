@@ -10,12 +10,14 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
     _native_surface='dialog'
     def configure(self,portal):
         self._configure_owner();self.portal=portal;self._pool=ThreadPoolExecutor(max_workers=1)
-        self._generation=0;self._closed=False;self.rows=[];self.mode='sources';self._last=0;self.scroll=0;self.next_action=None
+        self._status_future94=None;self._generation=0;self._closed=False;self.rows=[];self.mode='sources';self._last=0;self.scroll=0;self.next_action=None
     @native_init
     def onInit(self):
         self.getControl(101).setLabel('XCMate · EPG-Manager')
         self.getControl(412).setLabel(__import__('localization').tr(38030))
         for cid,label in [(401,'Quellen hinzufügen'),(402,'Jetzt aktualisieren'),(403,'Aktualisierungsbericht anzeigen'),(404,'Quellenliste'),(405,'Großes EPG / Senderzuordnung'),(406,'Zurück'),(407,'Automatisches Intervall'),(408,'Bericht nach oben'),(409,'Bericht nach unten')]:self.getControl(cid).setLabel(label)
+        self.getControl(413).setLabel(__import__('localization').tr(38831))
+        self.getControl(413).setEnabled(False)
         self._load();self.setFocusId(410 if self.portal.get('type')=='xtream' else 401)
     def _load(self):
         from epg_report53 import overview
@@ -44,6 +46,24 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
         self.getControl(102).setLabel('Automatisch alle '+str(min(interval(),86400)//3600)+' Stunden · OK: Quelle verwalten · Einzelzuordnung im großen EPG · Menü: Senderabdeckung')
         self.getControl(402).setLabel('Jetzt aktualisieren')
         self.getControl(411).setEnabled(bool(getattr(self,'_setup_pending54',False)))
+        self._detail()
+        self._next_status58=0
+    def _job_poll94(self):
+        self._next_status58=time.monotonic()+.5
+        self._status_future94=self._pool.submit(lambda:__import__('epg_jobs94').snapshot(self.portal['id']))
+    def _job_loaded94(self,job):
+        if not job:return
+        from epg_progress94 import row,summary
+        self._job94=job
+        self.getControl(102).setLabel(summary(job))
+        self.getControl(413).setEnabled(job.get('state') in ('QUEUED','RUNNING','CANCELLING'))
+        self.getControl(402).setEnabled(job.get('state') not in ('QUEUED','RUNNING','CANCELLING'))
+        control=self.getControl(200)
+        for i,source in enumerate(self.rows):
+            if source['key'] not in job.get('sources',{}):continue
+            value=row(job,source['key']);item=control.getListItem(i)
+            item.setLabel2(value['text']);item.setProperty('Busy94','true' if value['busy'] else '')
+            item.setProperty('Percent94',str(value['percent'] or 0));item.setProperty('KnownTotal94','true' if value['percent'] is not None else '')
         self._detail()
     def _detail(self):
         if self.mode!='sources' or not self.rows:return
@@ -76,6 +96,10 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
             return
         if self._pending_future:return
         import epg_sources as sources
+        if cid==413:
+            job=getattr(self,'_job94',{})
+            if job.get('id'):self._request(lambda:__import__('epg_jobs94').cancel(self.portal['id'],job['id']),lambda value:None)
+            return
         if cid==410:
             self._toggle_provider58()
         elif cid==401:
@@ -83,7 +107,7 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
             if choice==0:sources._choose_preset(self.portal)
             elif choice in (1,2):
                 uri=xbmcgui.Dialog().input('XMLTV-Adresse (HTTP/HTTPS)') if choice==1 else xbmcgui.Dialog().browse(1,'XMLTV-Datei auswählen','files','.xml|.gz|.xml.gz',False,False,'')
-                if uri:
+                if uri and __import__('epg_config94').confirm_enable(self.portal):
                     name=xbmcgui.Dialog().input('Name dieser EPG-Quelle',defaultt='XMLTV')
                     try:
                         from provider_epg58 import add_source
@@ -98,6 +122,8 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
             self.next_action='resume_epg54';self.close();return
         elif cid==402:
             from portals import get_by_id
+            self.portal=get_by_id(self.portal['id']) or self.portal
+            if not __import__('epg_config94').confirm_enable(self.portal):return
             self.portal=get_by_id(self.portal['id']) or self.portal
             from epg import request_refresh
             ok=request_refresh(self.portal['id'],self.portal,force=True)
@@ -125,8 +151,13 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
     def pump(self):
         super().pump()
         now=time.monotonic()
-        if not self._closed and self.mode=='sources' and not self._pending_future and now<getattr(self,'_refresh_until58',0) and now>=getattr(self,'_next_status58',0):
-            self._next_status58=now+2;self._load()
+        status94=self._status_future94
+        if status94 is not None and status94.done():
+            self._status_future94=None
+            try:self._job_loaded94(status94.result())
+            except (OSError,ValueError):pass
+        if not self._closed and self.mode=='sources' and not self._pending_future and self._status_future94 is None and now>=getattr(self,'_next_status58',0):
+            self._job_poll94()
     def _coverage66(self):
         from epg_coverage66 import report
         from stream_epg import active_streams
@@ -151,6 +182,7 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
 
     def _toggle_provider58(self):
         from provider_epg58 import toggle
+        if not self.portal.get('provider_epg_enabled',True) and not __import__('epg_config94').confirm_enable(self.portal):return
         def ready(portal):
             self.portal=portal
             self._load()
@@ -169,6 +201,7 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
         if self._closed:return
         self._closed=True;self._generation+=1
         if self._pending_future:self._pending_future.cancel()
+        if self._status_future94 is not None:self._status_future94.cancel()
         self._pending_future=self._pending_apply=None;self._pool.shutdown(wait=False,cancel_futures=True);super().close()
 
 

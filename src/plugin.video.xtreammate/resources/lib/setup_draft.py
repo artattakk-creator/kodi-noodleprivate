@@ -36,6 +36,8 @@ class Draft:
         self.report=dict(groups=0,live=0,vod=0,series=0,epg=0,sources=[],warnings=[])
         from source_adapters import for_portal
         self.adapter=for_portal(self.data,filename=self.index,playlist=self.playlist)
+        from epg_config94 import setup_default
+        setup_default(self)
 
     from wizard_deadline48 import discovery
     @discovery

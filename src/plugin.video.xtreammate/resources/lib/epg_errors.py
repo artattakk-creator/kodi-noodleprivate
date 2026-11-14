@@ -1,5 +1,6 @@
 """Safe EPG error classification; never copy exception messages or source URLs."""
 import gzip
+import socket,ssl,sqlite3
 import zlib
 from xml.etree import ElementTree as ET
 
@@ -13,7 +14,14 @@ class EmptyGuideError(ValueError):
 
 def failure_details(exc, stage):
     fields = {'failure_stage': stage, 'exception_class': type(exc).__name__}
-    if isinstance(exc, (XMLTVLimitError, ResponseLimitError)):
+    if isinstance(exc,sqlite3.Error):
+        code={5:'SQLITE_BUSY',6:'SQLITE_BUSY',13:'SQLITE_FULL',10:'SQLITE_IO',9:'SQLITE_CANCELLED'}.get(getattr(exc,'sqlite_errorcode',0)&255,'SQLITE_ERROR')
+    elif isinstance(exc,InterruptedError):code='CANCELLED'
+    elif isinstance(getattr(exc,'reason',exc),socket.gaierror):code='DNS_FAILED'
+    elif isinstance(getattr(exc,'reason',exc),ssl.SSLError):code='TLS_FAILED'
+    elif getattr(exc,'code69','') in ('SAFE_RESERVE_BLOCKED','RESERVE_BLOCKED'):code='RESERVE_BLOCKED'
+    elif isinstance(exc,OSError) and str(exc) in ('EPG_READBACK_MISMATCH','EPG_READBACK_REVISION_CHANGED'):code=str(exc)
+    elif isinstance(exc, (XMLTVLimitError, ResponseLimitError)):
         kind = exc.kind
         fields['limit_kind'] = kind
         fields['limit_value'] = {'channels': MAX_CHANNELS,

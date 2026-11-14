@@ -36,7 +36,9 @@ def show(portal):
             def verified(self,proof):
                 self.status(None,tr(38035,proof['channels'],proof['programmes']))
                 if xbmcgui.Dialog().yesno(tr(38030),tr(38036,proof['channels'],proof['programmes'])):
-                    self.work(lambda:activate(portal,country,source,confirmed=True),self.activated)
+                    if __import__('epg_config94').confirm_enable(portal):
+                        self.work(lambda:activate(portal,country,source,confirmed=True),self.activated)
+                    else:self.close()
                 else:self.close()
             def activated(self,requested):
                 xbmcgui.Dialog().ok('XCMate',tr(38037 if requested else 38038));self.close()

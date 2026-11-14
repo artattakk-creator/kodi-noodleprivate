@@ -168,7 +168,7 @@ class Release91(unittest.TestCase):
     def test_existing_channels_old_packages_and_installer_have_no_delta_from_main(self):
         paths = ['addons.xml', 'addons.xml.md5', 'index.html', 'online-test',
                  'plugin.video.xtreammate', 'script.gsmedia.setup', 'src/script.gsmedia.setup']
-        result = subprocess.check_output(['git', 'diff', '--name-only', '3e1d6f87787baa95d24cc4e7c83c24914db31364', '--']+paths, cwd=ROOT)
+        result = subprocess.check_output(['git', 'diff', '--name-only', '85c9f1b9dc4aafea6eae6a055961ff159ad6e254', '--']+paths, cwd=ROOT)
         self.assertEqual(result, b'')
 
     def test_release_notes_supply_five_offline_popup_entries_with_preservation_notice(self):

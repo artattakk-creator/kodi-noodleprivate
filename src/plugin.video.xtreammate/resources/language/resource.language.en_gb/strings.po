@@ -5737,3 +5737,119 @@ msgstr "Temporarily blocked – existing data is preserved"
 msgctxt "#38781"
 msgid "Operation running"
 msgstr "Operation running"
+
+msgctxt "#38800"
+msgid "EPG is disabled. Explicitly enable it for this source now?"
+msgstr "EPG is disabled. Explicitly enable it for this source now?"
+
+msgctxt "#38804"
+msgid "Loading channel group …"
+msgstr "Loading channel group …"
+
+msgctxt "#38805"
+msgid "Channel group verified: no channels available"
+msgstr "Channel group verified: no channels available"
+
+msgctxt "#38806"
+msgid "Channel group unavailable. Select it again to retry."
+msgstr "Channel group unavailable. Select it again to retry."
+
+msgctxt "#38807"
+msgid "Waiting for the service"
+msgstr "Waiting for the service"
+
+msgctxt "#38808"
+msgid "Downloading"
+msgstr "Downloading"
+
+msgctxt "#38809"
+msgid "Parsing XMLTV"
+msgstr "Parsing XMLTV"
+
+msgctxt "#38810"
+msgid "Matching channels"
+msgstr "Matching channels"
+
+msgctxt "#38811"
+msgid "Writing staging data"
+msgstr "Writing staging data"
+
+msgctxt "#38812"
+msgid "Committing database"
+msgstr "Committing database"
+
+msgctxt "#38813"
+msgid "Verifying saved data"
+msgstr "Verifying saved data"
+
+msgctxt "#38814"
+msgid "Checking temporary data"
+msgstr "Checking temporary data"
+
+msgctxt "#38815"
+msgid "Completed"
+msgstr "Completed"
+
+msgctxt "#38816"
+msgid "Failed; previous data preserved"
+msgstr "Failed; previous data preserved"
+
+msgctxt "#38817"
+msgid "Cancelled; previous data preserved"
+msgstr "Cancelled; previous data preserved"
+
+msgctxt "#38818"
+msgid "Waiting for channel catalogue"
+msgstr "Waiting for channel catalogue"
+
+msgctxt "#38819"
+msgid "Service confirmed"
+msgstr "Service confirmed"
+
+msgctxt "#38820"
+msgid "Cancelling safely"
+msgstr "Cancelling safely"
+
+msgctxt "#38821"
+msgid "Partially completed"
+msgstr "Partially completed"
+
+msgctxt "#38822"
+msgid "Interrupted; retry available"
+msgstr "Interrupted; retry available"
+
+msgctxt "#38823"
+msgid "Service did not confirm within 15 seconds"
+msgstr "Service did not confirm within 15 seconds"
+
+msgctxt "#38824"
+msgid "{0} of {1} bytes"
+msgstr "{0} of {1} bytes"
+
+msgctxt "#38825"
+msgid "{0} bytes; total unknown"
+msgstr "{0} bytes; total unknown"
+
+msgctxt "#38826"
+msgid "{0} channels · {1} programmes read · {2} matched · {3} staged"
+msgstr "{0} channels · {1} programmes read · {2} matched · {3} staged"
+
+msgctxt "#38827"
+msgid "{0} committed · {1} verified"
+msgstr "{0} committed · {1} verified"
+
+msgctxt "#38828"
+msgid "Job {0}"
+msgstr "Job {0}"
+
+msgctxt "#38829"
+msgid "Source {0} of {1}"
+msgstr "Source {0} of {1}"
+
+msgctxt "#38830"
+msgid "No new progress; cancellation remains available"
+msgstr "No new progress; cancellation remains available"
+
+msgctxt "#38831"
+msgid "Cancel import"
+msgstr "Cancel import"

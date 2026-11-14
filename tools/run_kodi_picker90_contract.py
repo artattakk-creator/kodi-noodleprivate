@@ -10,7 +10,7 @@ def main():
  root=Path(__file__).resolve().parents[1];report=a.report_dir.resolve();report.mkdir(parents=True,exist_ok=True);archive=report/'skin.zip'
  addon_source=root/'src/plugin.video.xtreammate'
  if a.addon_zip:
-  from release_candidate93 import inspect_package
+  from release_candidate94 import inspect_package
   proof=inspect_package(a.addon_zip)
   unpacked=report/'verified-addon91'
   unpacked.mkdir()

@@ -5,6 +5,7 @@ An explicit/manual bulk refresh is separate from startup short-EPG preparation.
 """
 from contextlib import contextmanager
 import os
+import sqlite3
 import time
 import uuid
 
@@ -59,13 +60,18 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         if key:names.setdefault(key,[]).append(sid)
     from programme_store46 import Stage as ProgrammeStage46
     metadata46=ProgrammeStage46(pid,generation,source_index,filename,source_identity=__import__('guide_publish44').source_id(source,source_index))
-    batch=[];stored=0;now=time.time();keep_stage=False;right46=__import__('programme_index46').bounds(now)[1]
+    batch=[];stored=0;unique94=0;now=time.time();keep_stage=False;right46=__import__('programme_index46').bounds(now)[1]
     def flush():
+        nonlocal unique94
         if not batch: return
         check_space(target,sum(len(r[-1])+len(r[-2]) for r in batch)*4)
-        with db: db.executemany('''INSERT INTO xml_stage VALUES(?,?,?,?,?,?) ON CONFLICT(generation,cid,start,stop) DO UPDATE SET title=excluded.title,description=excluded.description WHERE length(excluded.description)>length(xml_stage.description)''',batch)
+        with db:
+            before94=db.total_changes
+            db.executemany('INSERT OR IGNORE INTO xml_stage VALUES(?,?,?,?,?,?)',batch)
+            unique94+=db.total_changes-before94
+            db.executemany('UPDATE xml_stage SET title=?,description=? WHERE generation=? AND cid=? AND start=? AND stop=? AND length(description)<?',[(r[4],r[5],*r[:4],len(r[5])) for r in batch])
         batch.clear()
-        progress54.emit('SAVING',stored=stored)
+        progress54.emit('STAGING',stored=unique94)
     def channel(cid,name):
         metadata46.channel48(cid,name)
         key=_channel_name_key(name)
@@ -102,7 +108,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
             except Exception: pass
             raise
         flush();metadata46.flush()
-        progress54.emit('SAVING',force=True,stored=stored)
+        progress54.emit('MATCHING',force=True,stored=unique94)
         if not stored:
             from epg_errors import EmptyGuideError
             error=EmptyGuideError('No matching current programmes')
@@ -124,15 +130,17 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
             clean_stage(db,'xml_stage',' WHERE generation=?',(generation,))
         from epg_source66 import receipt
         counts.update(receipt(db,generation))
+        counts['stored']=counts['stored_unique66']
         counts['selected_streams66']=len(streams)
         counts['matched_streams66']=sum(bool(db.execute('SELECT 1 FROM xml_stage WHERE generation=? AND cid=? LIMIT 1',(generation,cid)).fetchone()) for cid in aliases.values())
+        progress54.emit('MATCHING',force=True,stored=counts['stored'],matched=counts['matched_streams66'])
         stage=dict(generation=generation,source=source,index=source_index,aliases=aliases,meta_pid46=str(pid),metadata_ok46=not metadata46.failed,index_ok46=not metadata46.facts46.failed,
-                   now=now,counts=dict(counts,stored=stored),streams52=streams,mappings52=mappings,proofs52={str(row['sid']):('manual' if str(row['sid']) in mappings else 'name' if channel_names.get(_channel_name_key(row.get('name')))==aliases.get(str(row['sid'])) and __import__('epg_variant53').compatible(row.get('name'),row.get('epg_channel_id'),variant_names53.get(aliases.get(str(row['sid'])),''),aliases.get(str(row['sid']))) else 'provider_id') for row in streams})
+                   now=now,counts=dict(counts),streams52=streams,mappings52=mappings,proofs52={str(row['sid']):('manual' if str(row['sid']) in mappings else 'name' if channel_names.get(_channel_name_key(row.get('name')))==aliases.get(str(row['sid'])) and __import__('epg_variant53').compatible(row.get('name'),row.get('epg_channel_id'),variant_names53.get(aliases.get(str(row['sid'])),''),aliases.get(str(row['sid']))) else 'provider_id') for row in streams})
         if stage_only:
             keep_stage=True
             return stage
         outcome=publish_stages44(pid,[stage],filename,cancel)[0]
-        counts.update(stored=stored,publish_code=outcome['code'],added=outcome['added'],corrected=outcome['corrected'],conflicts=outcome['conflicts'])
+        counts.update(publish_code=outcome['code'],added=outcome['added'],corrected=outcome['corrected'],conflicts=outcome['conflicts'])
         return counts
     finally:
         # SQL rollback restores the complete previous guide on ENOSPC or error.
@@ -161,7 +169,7 @@ def publish_stages44(pid,stages,filename=None,cancel=lambda:False):
     """All verified sources become visible at one commit/revision, never midway."""
     from guide_store import connect
     from guide_publish44 import publish,source_id
-    db=connect(filename,write=True);outcomes=[];revision='stream-'+uuid.uuid4().hex
+    db=connect(filename,write=True);outcomes=[];proofs94=[];revision='stream-'+uuid.uuid4().hex
     try:
         with db:
             old=db.execute('SELECT revision FROM guide_meta WHERE pid=?',(pid,)).fetchone()
@@ -186,11 +194,34 @@ def publish_stages44(pid,stages,filename=None,cancel=lambda:False):
                 code='PARTIAL_PRESERVED' if totals['conflicts'] else 'VERIFIED' if totals['added'] or totals['corrected'] else 'UNCHANGED'
                 db.execute('INSERT OR REPLACE INTO guide44_outcomes VALUES(?,?,?)',(pid,code,json.dumps(totals)))
             if cancel():raise InterruptedError('EPG import cancelled')
+            from epg_readback94 import digest
+            for stage in stages:
+                identity94=source_id(stage['source'],stage['index'])
+                expected94=digest(db,pid,identity94,cancel)
+                proof_revision94=db.execute('SELECT revision FROM guide_meta WHERE pid=?',(pid,)).fetchone()[0]
+                proofs94.append((stage,identity94,expected94,proof_revision94))
+        from epg_readback94 import verify
+        from guide_store import path as guide_path94
+        for stage,identity94,expected94,proof_revision94 in proofs94:
+            observe94=stage.get('observe94',lambda *a,**k:None)
+            observe94('READBACK',committed=expected94['rows'])
+            stage['verified94']=verify(filename or guide_path94(),pid,identity94,expected94,proof_revision94,cancel,lambda count:observe94('READBACK',verified=count))
+            observe94('CLEANUP',verified=stage['verified94']['rows'],raw_deleted_bytes=0)
         from programme_store46 import finish as finish_metadata46
         for stage in stages:
             finish_metadata46(pid,stage['generation'],stage.get('metadata_ok46',True),filename,index_ok46=stage.get('index_ok46',True),index_publish46=True)
             from epg_merge52 import publish_aliases
             publish_aliases(pid,source_id(stage['source'],stage['index']),stage['aliases'],stage.get('streams52',()),stage.get('mappings52',{}),filename,proofs=stage.get('proofs52'))
+        if filename is None and proofs94:
+            try:
+                cleanup94=__import__('epg_cleanup94').confirmed(pid,proofs94[-1][3])
+                for stage in stages:
+                    stage['cleanup94']=cleanup94
+                    stage.get('observe94',lambda *a,**k:None)('CLEANUP',free_before=cleanup94['free_before'],free_after=cleanup94['free_after'],raw_deleted_bytes=0)
+            except (OSError,ValueError,sqlite3.Error):
+                # A failed inventory is not an import failure and authorizes
+                # no deletion. Leave explicit evidence instead of success.
+                for stage in stages:stage['cleanup94']=dict(code='CLEANUP_UNVERIFIED',raw_deleted_bytes=0)
         return outcomes
     finally:db.close()
 
@@ -254,6 +285,13 @@ def _refresh44(portal,force=False,cancel=lambda:False):
     from source_adapters import for_portal
     from epg import _save_disk,_mem_set
     pid=portal['id']
+    identity94=portal.get('_epg_job94')
+    def observe94(key,phase,**counts):
+        if identity94:
+            try:__import__('epg_jobs94').observe(pid,identity94,key,phase,**counts)
+            except OSError:update(pid,'telemetry94','STATUS_WRITE_DEFERRED',running=True)
+    if not portal.get('epg_show',True):
+        update(pid,'refresh','EPG_DISABLED',running=False);return {}
     from guide_store import connect
     from guide_publish44 import ready
     db=connect()
@@ -288,24 +326,27 @@ def _refresh44(portal,force=False,cancel=lambda:False):
         from guide_publish44 import source_id
         sources=[s for s in sources if source_id(s[1],s[2]) in selected53]
     successes=0;failures=provider_failure52;stages=[]
-    for key,source,index in sources:
+    for number94,(key,source,index) in enumerate(sources,1):
+        observe94(key,'DOWNLOAD',source_index=number94,sources=len(sources))
         if cancel(): break
         identity53=__import__('guide_publish44').source_id(source,index)
         source_started53(pid,key,identity53,index)
         update(pid,key,'RUNNING',running=True,source_index=index)
         try:
-            last_progress59=[0]
+            last_progress59=[0,'']
             def progress59(value):
                 now59=time.monotonic()
-                if now59-last_progress59[0]<1:return
-                last_progress59[0]=now59
-                code59={'DOWNLOAD':'DOWNLOADING','PARSE':'PARSING','SAVING':'SAVING'}.get(value.get('phase'),'RUNNING')
+                if now59-last_progress59[0]<.5 and value.get('phase')==last_progress59[-1]:return
+                last_progress59[:]=[now59,value.get('phase')]
+                observe94(key,value.get('phase','PARSE'),bytes=value.get('bytes',0),total_bytes=value.get('total_bytes',0),channels=value.get('channels',0),programmes=value.get('programmes',0),staged=value.get('stored',0),matched=value.get('matched',0))
+                code59={'DOWNLOAD':'DOWNLOADING','PARSE':'PARSING','STAGING':'SAVING','MATCHING':'PARSING'}.get(value.get('phase'),'RUNNING')
                 update(pid,key,code59,running=True,source_index=index,bytes=value.get('bytes',0),programmes=value.get('programmes',0),channels=value.get('channels',0),count=value.get('stored',0))
             stage=import_source(pid,source,index,streams,config['mappings'],cancel=cancel,stage_only=True,progress=progress59)
-            stage['key']=key;stages.append(stage)
+            stage['key']=key;stage['observe94']=lambda phase,_key=key,**counts:observe94(_key,phase,**counts);stages.append(stage)
             update(pid,key,'VERIFIED',running=True,source_index=index)
         except Exception as exc:
             code,fields=failure_details(exc,getattr(exc,'xcmate_stage','MERGE'))
+            observe94(key,'FAILED',error_code=code)
             update(pid,key,code,running=False,source_index=index,**fields);failures+=1
             source_done53(pid,identity53,code)
     if cancel():
@@ -314,15 +355,19 @@ def _refresh44(portal,force=False,cancel=lambda:False):
         update(pid,'refresh','CANCELLED',running=False)
         return {}
     try:
+        for stage94 in stages:stage94['observe94']('COMMIT')
         outcomes=publish_stages44(pid,stages,cancel=cancel) if stages else []
     except Exception as exc:
         discard_stages44(stages)
         code,fields=failure_details(exc,'MERGE')
-        for stage in stages:update(pid,stage['key'],code,running=False,**fields)
+        for stage in stages:
+            stage['observe94']('FAILED',error_code=code)
+            update(pid,stage['key'],code,running=False,**fields)
         update(pid,'refresh',code,running=False,**fields)
         return {}
     for stage,outcome in zip(stages,outcomes):
         counts=stage['counts'];successes+=1
+        stage['observe94']('DONE',committed=stage['verified94']['rows'],verified=stage['verified94']['rows'])
         source_done53(pid,__import__('guide_publish44').source_id(stage['source'],stage['index']),'PARTIAL_PRESERVED' if outcome['code']=='PARTIAL_PRESERVED' else 'READY',counts,outcome)
         update(pid,stage['key'],'PARTIAL_PRESERVED' if outcome['code']=='PARTIAL_PRESERVED' else 'READY',running=False,
             source_index=stage['index'],channels=counts['channels'],programmes=counts['stored'],bytes=counts['bytes'])

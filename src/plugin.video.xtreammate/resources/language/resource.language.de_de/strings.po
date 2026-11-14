@@ -5737,3 +5737,119 @@ msgstr "Vorübergehend gesperrt – vorhandene Daten bleiben erhalten"
 msgctxt "#38781"
 msgid "Operation running"
 msgstr "Vorgang läuft"
+
+msgctxt "#38800"
+msgid "EPG is disabled. Explicitly enable it for this source now?"
+msgstr "EPG ist ausgeschaltet. Für diese Quelle jetzt ausdrücklich einschalten?"
+
+msgctxt "#38804"
+msgid "Loading channel group …"
+msgstr "Sendergruppe wird geladen …"
+
+msgctxt "#38805"
+msgid "Channel group verified: no channels available"
+msgstr "Sendergruppe geprüft: keine Sender vorhanden"
+
+msgctxt "#38806"
+msgid "Channel group unavailable. Select it again to retry."
+msgstr "Sendergruppe derzeit nicht verfügbar. Erneut auswählen zum Wiederholen."
+
+msgctxt "#38807"
+msgid "Waiting for the service"
+msgstr "Wartet auf den Dienst"
+
+msgctxt "#38808"
+msgid "Downloading"
+msgstr "Download läuft"
+
+msgctxt "#38809"
+msgid "Parsing XMLTV"
+msgstr "XMLTV wird gelesen"
+
+msgctxt "#38810"
+msgid "Matching channels"
+msgstr "Sender werden zugeordnet"
+
+msgctxt "#38811"
+msgid "Writing staging data"
+msgstr "Zwischenstand wird gespeichert"
+
+msgctxt "#38812"
+msgid "Committing database"
+msgstr "Datenbank wird übernommen"
+
+msgctxt "#38813"
+msgid "Verifying saved data"
+msgstr "Gespeicherte Daten werden geprüft"
+
+msgctxt "#38814"
+msgid "Checking temporary data"
+msgstr "Temporäre Daten werden geprüft"
+
+msgctxt "#38815"
+msgid "Completed"
+msgstr "Abgeschlossen"
+
+msgctxt "#38816"
+msgid "Failed; previous data preserved"
+msgstr "Fehlgeschlagen; bisherige Daten erhalten"
+
+msgctxt "#38817"
+msgid "Cancelled; previous data preserved"
+msgstr "Abgebrochen; bisherige Daten erhalten"
+
+msgctxt "#38818"
+msgid "Waiting for channel catalogue"
+msgstr "Wartet auf Senderkatalog"
+
+msgctxt "#38819"
+msgid "Service confirmed"
+msgstr "Dienstübernahme bestätigt"
+
+msgctxt "#38820"
+msgid "Cancelling safely"
+msgstr "Wird sicher abgebrochen"
+
+msgctxt "#38821"
+msgid "Partially completed"
+msgstr "Teilweise abgeschlossen"
+
+msgctxt "#38822"
+msgid "Interrupted; retry available"
+msgstr "Unterbrochen; Wiederholung möglich"
+
+msgctxt "#38823"
+msgid "Service did not confirm within 15 seconds"
+msgstr "Keine Dienstbestätigung innerhalb von 15 Sekunden"
+
+msgctxt "#38824"
+msgid "{0} of {1} bytes"
+msgstr "{0} von {1} Bytes"
+
+msgctxt "#38825"
+msgid "{0} bytes; total unknown"
+msgstr "{0} Bytes; Gesamtgröße unbekannt"
+
+msgctxt "#38826"
+msgid "{0} channels · {1} programmes read · {2} matched · {3} staged"
+msgstr "{0} Sender · {1} Sendungen gelesen · {2} zugeordnet · {3} zwischengespeichert"
+
+msgctxt "#38827"
+msgid "{0} committed · {1} verified"
+msgstr "{0} übernommen · {1} geprüft"
+
+msgctxt "#38828"
+msgid "Job {0}"
+msgstr "Auftrag {0}"
+
+msgctxt "#38829"
+msgid "Source {0} of {1}"
+msgstr "Quelle {0} von {1}"
+
+msgctxt "#38830"
+msgid "No new progress; cancellation remains available"
+msgstr "Kein neuer Fortschritt; Abbruch weiterhin möglich"
+
+msgctxt "#38831"
+msgid "Cancel import"
+msgstr "Import abbrechen"

@@ -539,9 +539,11 @@ class LiveNavigator(xbmcgui.WindowDialog):
                     'Keine EPG-Daten - Quellenstatus im XCMate-Hauptmenü prüfen']
         self.visible_channels, positions = self.index.selection(self.category_id,self.enabled)
         empty93=False
-        if getattr(self,'_catalog_partial46',False) and self.category_id!='*':
+        if self.category_id!='*' and (not self.visible_channels or getattr(self,'_catalog_partial46',False) or getattr(self,'_group_task93',None) or str(self.category_id) in getattr(self,'_group_verify94',set())):
             group93=__import__('live_group93').rows(self)
             if group93 is not None:
+                if group93 and getattr(self,'_visible_group94',None)!=(self.category_id,id(group93)):
+                    __import__('live_group93').trace94(self,'GROUP_UI_VISIBLE',len(group93));self._visible_group94=(self.category_id,id(group93))
                 self.visible_channels=group93;empty93=not group93
                 positions={str(c.extra.get('stream_id')):i for i,c in enumerate(group93)}
         pos = self._highlight['channels']
@@ -554,7 +556,11 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self._row_offset = 0
         page = self.visible_channels[self._page_start:self._page_start+CHANNEL_PAGE_SIZE]
         labels = [c.name for c in page]
-        if empty93:return [__import__('localization').tr(38756)]
+        if empty93:return [__import__('localization').tr(38805)]
+        if not labels:
+            state94=__import__('live_group93').state(self)
+            if state94 in ('LOADING_GROUP','GROUP_UNAVAILABLE'):
+                return [__import__('localization').tr(38804 if state94=='LOADING_GROUP' else 38806)]
         return labels or ['Senderkatalog wird vorbereitet' if not self._catalog_ready or getattr(self,'_catalog_partial46',False) else 'Keine aktivierten Sender']
 
     def _row_value44(self,control,method,*values):
@@ -733,7 +739,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         if self.mode=='info' and self._info_deadline is not None and now>=self._info_deadline:
             self._switch('hidden')
             return
-        if self.mode=='channels' and getattr(self,'_catalog_partial46',False):
+        if self.mode=='channels':
             task93=getattr(self,'_group_task93',None)
             if task93 and task93[1].done():self._render(focus=False)
         if now-self._last_tick<1: return
@@ -830,6 +836,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 cid, _, active = self.rows[i]
                 if not active: return
                 self.category_id = cid
+                __import__('live_group93').selected(self)
                 self._scroll_to_current = False
                 self._highlight['channels'] = 0
                 self._switch('channels')
