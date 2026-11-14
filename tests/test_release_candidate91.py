@@ -90,7 +90,7 @@ class Release91(unittest.TestCase):
         for name in ('tools/run_kodi_home82_contract.py', 'tools/kodi_home80_host/gui80.py', 'tools/kodi_home82_host/post82.py'):
             text = (ROOT/name).read_text()
             self.assertNotIn("'0.1.29.90')", text, name)
-            self.assertIn("'0.1.29.90','0.1.29.91','0.1.29.92','0.1.29.93')", text, name)
+            self.assertIn("'0.1.29.90','0.1.29.91','0.1.29.92','0.1.29.93','0.1.29.94')", text, name)
 
     def test_rc_zip_is_complete_and_byte_reproducible_with_the_repository_builder(self):
         from package_xcmate71 import build

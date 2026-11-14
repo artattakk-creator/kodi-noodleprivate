@@ -58,6 +58,7 @@ def run(portal,rows,pump,capture,cold,check,home,early_logo,early_epg):
  if not cold:
   from groups90 import run as group_run90
   groups90=group_run90(portal,pump,capture,check)
+  groups90['full_model94']=group_run90(portal,pump,capture,check,full_flag94=True)
  from manual90 import run as manual_run90
  manual90=manual_run90(portal,rows,pump,capture,cold,check)
  # Continuous 15-minute Home run. Every focus is a real native ListItem;

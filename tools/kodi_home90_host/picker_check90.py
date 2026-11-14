@@ -255,6 +255,7 @@ def check90(cycle,errors):
    raise RuntimeError('GROUP92_SCREENSHOT_INCOMPLETE')
   portals92=__import__('portals').get_active();check(bool(portals92),'GROUP92_FIXTURE_NO_PORTAL')
   groups92=__import__('groups90').run(portals92[0],service_poll90,group_capture92,check)
+  groups92['full_model94']=__import__('groups90').run(portals92[0],service_poll90,group_capture92,check,full_flag94=True)
  six438=__import__('six_rows438').run(home,bindings,spinner_receipts438,service_poll90,cycle=cycle)
  if cycle==0:storage93(until,check)
  rows=ast.literal_eval(props.read_text(encoding='utf-8'));foreign=[r for r in rows if r[2].startswith('widgetPath') and 'plugin://script.skin.helper.widgets/' in r[3]]
