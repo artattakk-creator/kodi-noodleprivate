@@ -1,0 +1,149 @@
+{
+  "recorded_at": "2026-11-14",
+  "source_commit": "ae6bc677",
+  "runtime_commit": "9527b54f",
+  "zip_sha256": "e34e0cebd37591100c4606124aab3ef6b7310fb3fb0015be56a312af4e0d874d",
+  "runner": "GitHub Actions / real Kodi 21.2 Linux",
+  "workflow_run": 43635532547,
+  "jobs": {
+    "1280x720": 132571466383,
+    "1920x1080": 132571466571
+  },
+  "results": {
+    "1280x720": {
+      "android": "ANDROID_NOT_TESTED",
+      "native": true,
+      "transport": "SYNTHETIC_LOOPBACK_XMLTV",
+      "events": [],
+      "job_id": "2ad67b213a834d509b50352d58837613",
+      "ack_seconds": 0.22927355766296387,
+      "download_screenshot": "epg94-downloading.png",
+      "list_identity_before": 1,
+      "completed_screenshot": "epg94-completed.png",
+      "source": {
+        "source_index": 1,
+        "sources": 1,
+        "phase": "DONE",
+        "progress": 1794686790.43982,
+        "phase_started": 1794686790.43982,
+        "phases": {
+          "DOWNLOAD": {
+            "at": 1794686786.8721673
+          },
+          "PARSE": {
+            "at": 1794686786.4732893
+          },
+          "MATCHING": {
+            "at": 1794686789.8769352
+          },
+          "COMMIT": {
+            "at": 1794686789.9507608
+          },
+          "READBACK": {
+            "at": 1794686790.1816282
+          },
+          "CLEANUP": {
+            "at": 1794686790.3181915
+          },
+          "DONE": {
+            "at": 1794686790.43982
+          }
+        },
+        "bytes": 362543,
+        "total_bytes": 362543,
+        "channels": 1,
+        "programmes": 600,
+        "staged": 600,
+        "matched": 1,
+        "committed": 600,
+        "verified": 600,
+        "raw_deleted_bytes": 0,
+        "free_before": 91186200576,
+        "free_after": 91186200576,
+        "first": 1794684984,
+        "last": 1795764984
+      },
+      "status": "PASS",
+      "wire_bytes_verified": true,
+      "cold_readback_rows": 600,
+      "native_focus_usable": true,
+      "spinner_stopped": true,
+      "source_rows_preserved": true,
+      "cancel_preserved_lastgood": true,
+      "back_closed_only_manager": true,
+      "kodi": {
+        "major": 21,
+        "minor": 2,
+        "revision": "20250330-nogitfound",
+        "tag": "stable"
+      },
+      "rpc_input_max_seconds": 0.0010965510000033873
+    },
+    "1920x1080": {
+      "android": "ANDROID_NOT_TESTED",
+      "native": true,
+      "transport": "SYNTHETIC_LOOPBACK_XMLTV",
+      "events": [],
+      "job_id": "22843482ed714957a8957cbae2862c45",
+      "ack_seconds": 0.32427549362182617,
+      "download_screenshot": "epg94-downloading.png",
+      "list_identity_before": 1,
+      "completed_screenshot": "epg94-completed.png",
+      "source": {
+        "source_index": 1,
+        "sources": 1,
+        "phase": "DONE",
+        "progress": 1794686841.161851,
+        "phase_started": 1794686841.161851,
+        "phases": {
+          "DOWNLOAD": {
+            "at": 1794686835.9206703
+          },
+          "MATCHING": {
+            "at": 1794686840.7455084
+          },
+          "COMMIT": {
+            "at": 1794686840.8068085
+          },
+          "READBACK": {
+            "at": 1794686840.978661
+          },
+          "CLEANUP": {
+            "at": 1794686841.0489411
+          },
+          "DONE": {
+            "at": 1794686841.161851
+          }
+        },
+        "bytes": 362543,
+        "total_bytes": 362543,
+        "channels": 1,
+        "programmes": 600,
+        "staged": 600,
+        "matched": 1,
+        "committed": 600,
+        "verified": 600,
+        "raw_deleted_bytes": 0,
+        "free_before": 91191250944,
+        "free_after": 91191250944,
+        "first": 1794685035,
+        "last": 1795765035
+      },
+      "status": "PASS",
+      "wire_bytes_verified": true,
+      "cold_readback_rows": 600,
+      "native_focus_usable": true,
+      "spinner_stopped": true,
+      "source_rows_preserved": true,
+      "cancel_preserved_lastgood": true,
+      "back_closed_only_manager": true,
+      "kodi": {
+        "major": 21,
+        "minor": 2,
+        "revision": "20250330-nogitfound",
+        "tag": "stable"
+      },
+      "rpc_input_max_seconds": 0.004045743000006041
+    }
+  }
+}
