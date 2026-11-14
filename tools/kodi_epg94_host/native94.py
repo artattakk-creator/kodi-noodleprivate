@@ -67,7 +67,10 @@ try:
  # A second real import is cancelled via the actual control during download.
  from guide_backup44 import authorize
  from guide_store import path
- phase94('backup_begin');assert authorize(path())['code']=='BACKUP_VERIFIED';phase94('backup_done')
+ phase94('backup_begin');backup94=[]
+ manager._request(lambda:authorize(path()),backup94.append)
+ wait(lambda:bool(backup94),'BACKUP_WORKER_NOT_COMPLETED')
+ assert backup94[0]['code']=='BACKUP_VERIFIED';phase94('backup_done')
  assert __import__('epg_gate46').access(path())=='READY'
  wait(lambda:not epg._WARMUP_THREADS['epg94'].is_alive(),'PRIOR_WORKER_NOT_RETURNED')
  wait(lambda:manager._pending_future is None,'PRIOR_GUI_JOB_NOT_RETURNED')
