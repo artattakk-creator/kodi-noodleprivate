@@ -204,7 +204,7 @@ def _run(portal,cancel,status):
                     if not actual or not actual['rows']:raise ValueError('EPG_PUBLICATION_UNVERIFIED')
                     state['sources'][identity]=dict(code='READY',fingerprint=fingerprint,completed=time.time(),verified=actual)
                     write(portal,state)
-                    observe94(key,'DONE',committed=actual['rows'],verified=actual['rows'])
+                    observe94(key,'DONE',committed=actual['rows'],verified=actual['rows'],first=actual['first'],last=actual['last'])
                     counts=stage['counts'];update(portal['id'],key,'READY',running=False,source_index=rank,channels=counts['channels'],programmes=counts['stored'],bytes=counts['bytes'])
                     source_done(portal['id'],identity,'READY',counts,outcome)
                     status(None,prefix+'\nQuelle erfolgreich abgeschlossen · '+str(actual['rows'])+' gespeicherte Sendungen')

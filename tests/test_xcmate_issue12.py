@@ -292,15 +292,16 @@ class RefreshJobTests(unittest.TestCase):
         gui.Window=lambda _:types.SimpleNamespace(getProperty=lambda k:props.get(k,''),setProperty=props.__setitem__)
         portals=types.ModuleType('portals')
         portals.get_by_id=lambda _:dict(id='p',enabled=True)
+        portals.get_active=lambda:[dict(id='p',enabled=True)]
         # Only these functions are needed; run original definitions without a
         # fake HTTP implementation or bypassing the real queue semantics.
         tree=ast.parse((LIB/'epg.py').read_text())
         nodes=[n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name in ('request_refresh','poll_refresh_request')]
         started=[]
-        ns=dict(json=json,time=time,_LAST_REFRESH_REQUEST='',diagnostic=lambda *a,**kw:None,
+        ns=dict(json=json,time=time,_LAST_REFRESH_REQUEST='',_WARMUP_THREADS={},diagnostic=lambda *a,**kw:None,
                 warmup_async=lambda *a,**kw:started.append((a,kw)))
         exec(compile(ast.Module(body=nodes,type_ignores=[]),'epg jobs','exec'),ns)
-        with mock.patch.dict(sys.modules,dict(xbmcgui=gui,portals=portals,guide_store=types.SimpleNamespace(path=lambda:'/fixture/missing-guide.sqlite'),guide_publish44=types.SimpleNamespace(access=lambda _: 'NOT_CREATED'))):
+        with tempfile.TemporaryDirectory() as profile94,mock.patch.dict(sys.modules,dict(utils=types.SimpleNamespace(addon_data_dir=lambda:profile94),xbmcgui=gui,portals=portals,guide_store=types.SimpleNamespace(path=lambda:'/fixture/missing-guide.sqlite'),guide_publish44=types.SimpleNamespace(access=lambda _: 'NOT_CREATED'))):
             ns['request_refresh']('p',{'id':'p'},force=True)
             self.assertEqual(started,[])
             ns['poll_refresh_request']();ns['poll_refresh_request']()

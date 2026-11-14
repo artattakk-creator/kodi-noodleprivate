@@ -23,7 +23,7 @@ def state(nav):
 
 def rows(nav):
     cid=str(nav.category_id)
-    if cid=='*' or cid not in nav.enabled:return None
+    if cid=='*' or not nav.enabled or cid not in nav.enabled:return None
     pid=str(nav.portal['id'])
     base=getattr(nav,'_group_base94',None)
     if getattr(nav,'_group_owner94',pid)!=pid or base is not None and base is not getattr(nav,'index',None):

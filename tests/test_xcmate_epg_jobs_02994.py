@@ -81,3 +81,27 @@ class Pipeline94(unittest.TestCase):
   self.assertEqual([f.read_bytes() for f in self.files],before)
   from guide_store import path
   with sqlite3.connect(path()) as db:self.assertEqual(db.execute('SELECT count(*) FROM xml_stage').fetchone()[0],0)
+
+class Cleanup94(unittest.TestCase):
+ setUp=resume54.EPG54.setUp
+ def test_two_imports_and_interruption_leave_no_raw_sump_and_measure_same_volume(self):
+  from pathlib import Path
+  from guide_store import path
+  mod=importlib.import_module('epg_cleanup94');self.mod.run(self.portal)
+  receipt=Path(path()).parent/'epg_cleanup94.json';first=json.loads(receipt.read_text())
+  self.assertEqual(first['raw_deleted_bytes'],0);self.assertIn('guide_v1.sqlite',first['classes'])
+  self.m.draft.adapter.entries=mock.Mock(side_effect=AssertionError('NO_CATALOG_REIMPORT'))
+  self.mod.run(self.portal);second=json.loads(receipt.read_text())
+  self.assertEqual((first['volume'],first['filesystem']),(second['volume'],second['filesystem']))
+  self.assertEqual(second['raw_deleted_files'],0)
+  local=Path(path()).parent/'unproven.xml.gz';local.write_bytes(b'USER_DATA')
+  classes=mod.inventory(local.parent);self.assertEqual(classes['raw']['code'],'SKIPPED_UNPROVEN');self.assertEqual(local.read_bytes(),b'USER_DATA')
+  state=self.mod.read(self.portal);state['phase']='PARTIAL';state['sources'].clear();self.mod.write(self.portal,state)
+  with self.assertRaises(InterruptedError):self.mod.run(self.portal,cancel=lambda:True)
+  self.assertEqual(local.read_bytes(),b'USER_DATA');self.assertEqual(json.loads(receipt.read_text()),second)
+ def test_low_space_cleanup_does_not_forge_physical_reclamation(self):
+  m=importlib.import_module('epg_cleanup94');self.mod.run(self.portal);from guide_store import path
+  with sqlite3.connect(path()) as db:revision=db.execute('SELECT revision FROM guide_meta WHERE pid=?',(self.portal['id'],)).fetchone()[0]
+  with mock.patch.object(m,'volume',return_value=dict(device=7,filesystem=8,free=42)):
+   value=m.confirmed(self.portal['id'],revision)
+  self.assertEqual(value['free_before'],42);self.assertEqual(value['free_after'],42);self.assertEqual(value['observed_free_change'],0)

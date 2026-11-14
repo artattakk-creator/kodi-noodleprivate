@@ -8,7 +8,7 @@ ACTIVE={'QUEUED','RUNNING','CANCELLING'}
 TERMINAL={'DONE','PARTIAL','FAILED','CANCELLED','INTERRUPTED','SERVICE_NOT_CONFIRMED'}
 FAILURES={'DNS_FAILED','TLS_FAILED','DOWNLOAD_TIMEOUT','PARSE_TIMEOUT','DOWNLOAD_FAILED','PARSE_FAILED','HTTP_COMPRESSION_FAILED','GZIP_INVALID','INVALID_XMLTV','XMLTV_UNSAFE_DECLARATION','NO_CHANNEL_MATCH','EMPTY_GUIDE','SQLITE_BUSY','SQLITE_FULL','SQLITE_IO','SQLITE_ERROR','SQLITE_CANCELLED','RESERVE_BLOCKED','EPG_READBACK_MISMATCH','EPG_READBACK_REVISION_CHANGED','SOURCE_UNAVAILABLE','BACKUP_REQUIRED','CANCELLED'}
 PHASES={'QUEUED','DOWNLOAD','PARSE','MATCHING','STAGING','COMMIT','READBACK','CLEANUP','DONE','FAILED','CANCELLED','WAIT_CATALOG'}
-COUNTERS={'bytes','total_bytes','channels','programmes','matched','staged','committed','verified','source_index','sources','free_before','free_after','raw_deleted_bytes'}
+COUNTERS={'bytes','total_bytes','channels','programmes','matched','staged','committed','verified','source_index','sources','free_before','free_after','raw_deleted_bytes','first','last'}
 
 
 def path(pid):
@@ -141,8 +141,18 @@ def reconcile(pid):
     The service calls this only when its own warmup thread is not alive.
     """
     value=read(pid)
-    if value.get('state') not in ('RUNNING','CANCELLING'):return False
+    if value.get('state') not in ('RUNNING','CANCELLING') or time.time()-value.get('ack',0)<5:return False
     from stream_epg import portal_lease44
     with portal_lease44(pid) as held:
         if not held:return False
         return finish(pid,value['id'],'INTERRUPTED')
+
+
+def adopt(pid,identity,requested,force=False):
+    """Upgrade bridge for a still-running pre-.94 root's Window request."""
+    if not re.fullmatch('[a-f0-9]{32}',str(identity)) or not isinstance(requested,(int,float)) or not 0<=time.time()-requested<=15:return None
+    with locked(pid):
+        value=read(pid)
+        if value.get('state') in ACTIVE:return value
+        value=dict(version=1,id=identity,state='QUEUED',requested=requested,force=bool(force),cancel=False,phase='QUEUED',sources={})
+        write(pid,value);return value

@@ -38,3 +38,35 @@ class EPG94(Fixture,unittest.TestCase):
   with mock.patch('live_group93.rows',return_value=channels) as read:
    labels=ns['_list_content'](nav)
   self.assertEqual(len(nav.visible_channels),137);self.assertEqual(len(labels),100);read.assert_called_once()
+ def test_group_change_does_not_apply_foreign_portal_future(self):
+  from concurrent.futures import Future
+  m=importlib.import_module('live_group93');future=Future();future.set_result(dict(pid94='old',base_index93=None,channels=['WRONG'],merged_channels93=['WRONG'],merged_index93=None))
+  nav=SimpleNamespace(portal=self.portal,xc=self.client,category_id='disabled',enabled={'b'},_group_task93=('b',future),_group_rows93={'b':['OLD']},_group_owner94='old',index=None)
+  nav.category_id='b'
+  with mock.patch.object(m._slots,'acquire',return_value=False):self.assertIsNone(m.rows(nav))
+  self.assertEqual(nav._group_rows93,{})
+ def test_confirmed_empty_requires_published_group_head(self):
+  m=importlib.import_module('live_catalog46')
+  self.index.import_group('p','live','b',[dict(stream_id='9',category_id='b',name='Previous')])
+  # Simulate an independently verified empty generation, not a failed API.
+  with self.index.connect() as db:db.execute("DELETE FROM items_v2 WHERE pid='p' AND kind='live' AND cid='b'")
+  proof={};_,rows=m.read(self.portal,only='b',receipt94=proof)
+  self.assertEqual(rows,[]);self.assertTrue(proof['generation']);self.assertEqual(proof['count'],0)
+ def test_reselecting_full_group_probes_new_local_generation(self):
+  from concurrent.futures import Future
+  m=importlib.import_module('live_group93');nav=SimpleNamespace(portal=self.portal,xc=self.client,category_id='b',enabled={'a','b'},index=None,_group_rows93={'b':['OLD']})
+  m.selected(nav)
+  with mock.patch.object(m._slots,'acquire',return_value=False):self.assertIsNone(m.rows(nav))
+  self.assertIn('b',nav._group_verify94)
+ def test_manager_status_poll_does_not_reset_items_or_remote_selection(self):
+  from xcmate027_fixture import ADDON,QueuedPool
+  module=importlib.import_module('epg_manager53')
+  with mock.patch.object(module,'ThreadPoolExecutor',QueuedPool):
+   w=module.Manager53('XCMateEPGManager53.xml',str(ADDON),'Default','720p');w.configure(self.portal)
+  self.addCleanup(w.close);w.show();w._pool.drain();w.pump()
+  control=w.getControl(200);before=list(control.items);control.selectItem(0)
+  j=dict(id='a'*32,state='RUNNING',source='provider',sources={'provider':dict(phase='PARSE',channels=5,programmes=12,staged=7)},stalled=False)
+  with mock.patch.object(control,'reset',side_effect=AssertionError('STATUS_MUST_NOT_RESET_LIST')):
+   w._job_loaded94(j);w._job_loaded94(j)
+  self.assertEqual(control.items,before);self.assertEqual(control.getSelectedPosition(),0)
+  self.assertEqual(control.getListItem(0).getProperty('Busy94'),'true')

@@ -367,7 +367,7 @@ def _refresh44(portal,force=False,cancel=lambda:False):
         return {}
     for stage,outcome in zip(stages,outcomes):
         counts=stage['counts'];successes+=1
-        stage['observe94']('DONE',committed=stage['verified94']['rows'],verified=stage['verified94']['rows'])
+        stage['observe94']('DONE',committed=stage['verified94']['rows'],verified=stage['verified94']['rows'],first=stage['verified94']['first'],last=stage['verified94']['last'])
         source_done53(pid,__import__('guide_publish44').source_id(stage['source'],stage['index']),'PARTIAL_PRESERVED' if outcome['code']=='PARTIAL_PRESERVED' else 'READY',counts,outcome)
         update(pid,stage['key'],'PARTIAL_PRESERVED' if outcome['code']=='PARTIAL_PRESERVED' else 'READY',running=False,
             source_index=stage['index'],channels=counts['channels'],programmes=counts['stored'],bytes=counts['bytes'])

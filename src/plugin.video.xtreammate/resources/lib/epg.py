@@ -174,15 +174,22 @@ def poll_refresh_request():
     import xbmcgui,portals
     global _LAST_REFRESH_REQUEST
     from epg_jobs94 import snapshot
+    try:
+        raw94=xbmcgui.Window(10000).getProperty('XtreamMate.EPGRefreshRequest')
+        hint94=json.loads(raw94) if raw94 and len(raw94)<=4096 else {}
+    except (ValueError,TypeError):hint94={}
+    if not isinstance(hint94,dict):hint94={}
     # Persistent queue also survives a root interpreter ending or another
     # portal replacing the legacy Window-property hint.
     for p in portals.get_active():
+        if str(p['id'])==hint94.get('pid') and hint94.get('nonce')!=_LAST_REFRESH_REQUEST:
+            __import__('epg_jobs94').adopt(p['id'],hint94.get('nonce'),hint94.get('at'),hint94.get('force',False))
         thread94=_WARMUP_THREADS.get(p['id'])
         if not thread94 or not thread94.is_alive():__import__('epg_jobs94').reconcile(p['id'])
         job=snapshot(p['id'])
-        if job.get('state')!='QUEUED' or not p.get('epg_show',True):continue
+        if job.get('state')!='QUEUED' or job.get('id')==_LAST_REFRESH_REQUEST or not p.get('epg_show',True):continue
         value=dict(p,_epg_job94=job['id'])
-        if warmup_async(p['id'],value,force=True):_LAST_REFRESH_REQUEST=job['id']
+        if warmup_async(p['id'],value,force=True) is not False:_LAST_REFRESH_REQUEST=job['id']
 
 
 def _mem_get(portal_id):
@@ -715,6 +722,7 @@ def warmup_async(portal_id, p, force=False):
     if not force and _is_fresh(portal_id):
         return True
     with _WARMUP_LOCK:
+        if _REFRESH_LOCK.locked() or any(worker94.is_alive() for worker94 in _WARMUP_THREADS.values()):return False
         t = _WARMUP_THREADS.get(portal_id)
         if t and t.is_alive():
             return False

@@ -14,7 +14,7 @@ def wait(predicate,message,seconds=30):
   if manager and not manager._closed:manager.pump()
   if predicate():return
   if monitor.waitForAbort(.025):raise RuntimeError('KODI_ABORTED')
- raise AssertionError(message)
+ raise AssertionError(message+' · '+json.dumps(dict(job=epg_jobs94.snapshot('epg94'),pending=bool(manager and manager._pending_future),label=manager.getControl(102).getLabel() if manager and not manager._closed else 'closed')))
 def shot(name):
  file=Path('/root/'+name+'.png');xbmc.executebuiltin('TakeScreenshot('+str(file)+')',wait=False);wait(file.exists,'SCREENSHOT_MISSING');return file.name
 try:
@@ -66,6 +66,9 @@ try:
  from guide_backup44 import authorize
  from guide_store import path
  assert authorize(path())['code']=='BACKUP_VERIFIED'
+ assert __import__('epg_gate46').access(path())=='READY'
+ wait(lambda:not epg._WARMUP_THREADS['epg94'].is_alive(),'PRIOR_WORKER_NOT_RETURNED')
+ wait(lambda:manager._pending_future is None,'PRIOR_GUI_JOB_NOT_RETURNED')
  manager.onClick(402);wait(lambda:epg_jobs94.read('epg94').get('id')!=identity and epg_jobs94.read('epg94').get('state')=='RUNNING','RETRY_NOT_STARTED')
  wait(lambda:epg_jobs94.read('epg94').get('sources',{}).get('provider',{}).get('bytes',0)>0,'RETRY_NO_BYTES')
  wait(lambda:getattr(manager,'_job94',{}).get('id')==epg_jobs94.read('epg94')['id'],'CANCEL_UI_STALE')

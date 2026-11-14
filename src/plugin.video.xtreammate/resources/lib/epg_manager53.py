@@ -61,6 +61,12 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
         control=self.getControl(200)
         for i,source in enumerate(self.rows):
             if source['key'] not in job.get('sources',{}):continue
+            observation94=job['sources'][source['key']]
+            source['progress59']=dict(bytes=observation94.get('bytes',0),programmes=observation94.get('programmes',0),count=observation94.get('staged',0))
+            source['code']={'DONE':'READY','FAILED':observation94.get('error_code','FAILED'),'DOWNLOAD':'DOWNLOADING','PARSE':'PARSING','STAGING':'SAVING','READBACK':'SAVING'}.get(observation94.get('phase'),'RUNNING')
+            if observation94.get('phase')=='DONE':
+                source['last_success']=job.get('finished',observation94.get('progress',0))
+                source['saved']=dict(source['saved'],programmes=observation94.get('verified',0),first=observation94.get('first'),last=observation94.get('last'))
             value=row(job,source['key']);item=control.getListItem(i)
             item.setLabel2(value['text']);item.setProperty('Busy94','true' if value['busy'] else '')
             item.setProperty('Percent94',str(value['percent'] or 0));item.setProperty('KnownTotal94','true' if value['percent'] is not None else '')
