@@ -26,7 +26,7 @@ jobs:
       - name: Compile and run .69 regression cases
         run: |
           python -m compileall -q src tools
-          python -m unittest discover -s tests -p '*02969.py' -v
+          python tools/run_host94_contract.py -- python -m unittest discover -s tests -p '*02969.py' -v
       - name: Measure pinned .68 versus .69 under failed persistence
         run: python tools/benchmark_xcmate69.py --output xcmate69-host-evidence.json
       - name: Upload replay measurement

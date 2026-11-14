@@ -51,16 +51,16 @@ jobs:
           python tools/run_kodi_home82_contract.py --report-dir "${{ runner.temp }}/native75" --resolution "${{ matrix.resolution }}" --fault-idle-seconds "$fault_seconds"
       - name: .75 code and preservation regressions
         run: |
-          python -m unittest discover -s tests -p '*02975.py' -v
-          python -m unittest discover -s tests -p '*02976.py' -v
-          python -m unittest discover -s tests -p '*02977.py' -v
-          python -m unittest discover -s tests -p '*02978.py' -v
-          python -m unittest discover -s tests -p '*02979.py' -v
-          python -m unittest discover -s tests -p '*02980.py' -v
-          python -m unittest discover -s tests -p '*02981.py' -v
-          python -m unittest discover -s tests -p '*02982.py' -v
-          python -m unittest discover -s tests -p '*02983.py' -v
-          python -m unittest discover -s tests -p '*02984.py' -v
+          python tools/run_host94_contract.py -- python -m unittest discover -s tests -p '*02975.py' -v
+          python tools/run_host94_contract.py -- python -m unittest discover -s tests -p '*02976.py' -v
+          python tools/run_host94_contract.py -- python -m unittest discover -s tests -p '*02977.py' -v
+          python tools/run_host94_contract.py -- python -m unittest discover -s tests -p '*02978.py' -v
+          python tools/run_host94_contract.py -- python -m unittest discover -s tests -p '*02979.py' -v
+          python tools/run_host94_contract.py -- python -m unittest discover -s tests -p '*02980.py' -v
+          python tools/run_host94_contract.py -- python -m unittest discover -s tests -p '*02981.py' -v
+          python tools/run_host94_contract.py -- python -m unittest discover -s tests -p '*02982.py' -v
+          python tools/run_host94_contract.py -- python -m unittest discover -s tests -p '*02983.py' -v
+          python tools/run_host94_contract.py -- python -m unittest discover -s tests -p '*02984.py' -v
       - name: Verify review ZIP exactly matches source
         run: |
           python tools/package_xcmate71.py "${{ runner.temp }}/package75"

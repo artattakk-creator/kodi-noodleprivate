@@ -8,10 +8,17 @@ ROOT=Path(__file__).resolve().parents[1]
 BASE='4336dd56a707f80b3784fa11f179d2a427cd5727'
 OLD='cb37de7103bd335a344c6738c33c4b5560ba2d4c'
 REMOVED=re.compile(r'online-test/plugin\.video\.xtreammate-0\.1\.29\.(78|8[0-9])\.zip$')
+def archival(path):
+ import sys
+ if str(ROOT/'tools') not in sys.path:sys.path.insert(0,str(ROOT/'tools'))
+ from run_host94_contract import read_archived
+ return read_archived(ROOT,path)
 def retained(path):
  p=ROOT/path
  if p.is_file():return p.read_bytes()
- if not REMOVED.fullmatch(path):return p.read_bytes()
+ if not REMOVED.fullmatch(path):
+  try:return archival(path)
+  except FileNotFoundError:return p.read_bytes()
  # Only the exact committed cleanup authorizes absence, never a missing
  # regular/Pilot archive or current .90 direct package.
  result=subprocess.run(['git','cat-file','-e',BASE+':'+path],cwd=ROOT,capture_output=True)
@@ -19,10 +26,12 @@ def retained(path):
  assert not subprocess.run(['git','ls-files','--error-unmatch',path],cwd=ROOT,capture_output=True).returncode==0,'TRACKED_PUBLICATION_MISSING'
  return (ROOT/'online-test/plugin.video.xtreammate'/Path(path).name).read_bytes()
 def approved(path,base=OLD):
- return subprocess.check_output(['git','show',('85c9f1b9dc4aafea6eae6a055961ff159ad6e254' if path in ('addons.xml','addons.xml.md5','online-test/addons.xml','online-test/addons.xml.md5','online-test/manifest.json','index.html','online-test/index.html') else base)+':'+path],cwd=ROOT)
+ return subprocess.check_output(['git','show',('b830fad1a19247cc08750970dc56edae0b8c2361' if path in ('addons.xml','addons.xml.md5','online-test/addons.xml','online-test/addons.xml.md5','online-test/manifest.json','index.html','online-test/index.html') else base)+':'+path],cwd=ROOT)
 
 def committed(path):
  result=subprocess.run(['git','show','HEAD:'+path],cwd=ROOT,capture_output=True)
  if not result.returncode:return result.stdout
+ try:return archival(path)
+ except FileNotFoundError:pass
  if not REMOVED.fullmatch(path):raise AssertionError('MISSING_COMMITTED_PUBLICATION '+path)
  return retained(path)

@@ -4,7 +4,7 @@
   "live_baseline_sha256": {
     "addons.xml": "c094b14edc1320f22aa2ca48c67cdc06b6e4899bf160e72d50a4b1515a27427b",
     "addons.xml.md5": "f17de59cc2e0fbff7d7ad1ab55946b9e92d47aab0343ce5c70b484f625b780c7",
-    "index.html": "43fe808d970653ddaee32202753ea1633342c1bd631afbc485f1559d6acb6076",
+    "index.html": "54d62f7ecdad83994e47263a2b5244eaf25bfe0c436ae5f3b3f26cad591b15e3",
     "online-test/addons.xml": "955eb520fa8f8218eef88a4ec98d51aca4f1996d3ee81f8e48495b144b5bff2f",
     "online-test/addons.xml.md5": "cde982ab2235ae341a0539d58485fc4c7f8927acb8a88cbd91606ea2da4e1baa",
     "online-test/index.html": "cc3385380a7ae1c66219ec20ea44d5be4cb744777f755ab91c76569557fd10d6",
@@ -22,12 +22,12 @@
   "proposed_sha256": {
     "online-test/addons.xml": "fa1b3bd5fb1164daeabc7cf208b215b5b42924d5f727bd2ae221ad4b780d32e6",
     "online-test/addons.xml.md5": "3ad2740ae3da2d36c2b12c4a635026f43dd3f15b37ac35506ba6b03c2ac08444",
-    "online-test/manifest.json": "223976325188603363cff4ff087000d925bd1517bc71b658cc677b65daf349da",
+    "online-test/manifest.json": "85fa647d3648b8c111358af88488b6b0d71d1478e02340020bb87eb0bd72aff3",
     "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.94.zip": "e34e0cebd37591100c4606124aab3ef6b7310fb3fb0015be56a312af4e0d874d",
     "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.94.zip.sha256": "f037cab5e7b7ce6313bcfb696b31aaf7647d36b9651207030e81117c18026540"
   },
   "repository_released": false,
-  "source_base": "85c9f1b9dc4aafea6eae6a055961ff159ad6e254",
+  "source_base": "b830fad1a19247cc08750970dc56edae0b8c2361",
   "source_merged": false,
   "status": "REPOSITORY_STAGED_OFFLINE",
   "version": "0.1.29.94",

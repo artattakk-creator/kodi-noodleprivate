@@ -26,7 +26,7 @@ jobs:
       - name: Compile and run .68 regressions
         run: |
           python -m compileall -q src tests
-          python -m unittest discover -s tests -p '*02968.py' -v
+          python tools/run_host94_contract.py -- python -m unittest discover -s tests -p '*02968.py' -v
       - name: Measure cold local EPG and warm RAM seed
         run: python tools/benchmark_xcmate68.py xcmate68-host-evidence.json
       - name: Upload timing evidence

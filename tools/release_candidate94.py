@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 ADDON = 'plugin.video.xtreammate'
 VERSION = '0.1.29.94'
 NAME = ADDON+'-'+VERSION+'.zip'
-BASE = '85c9f1b9dc4aafea6eae6a055961ff159ad6e254'
+BASE = 'b830fad1a19247cc08750970dc56edae0b8c2361'
 FROZEN = ('addons.xml', 'addons.xml.md5', 'index.html',
           'online-test/addons.xml', 'online-test/addons.xml.md5',
           'online-test/manifest.json', 'online-test/index.html')
