@@ -1,0 +1,64 @@
+name: XCMate .94 EPG job, readback and native UI
+on:
+  pull_request:
+    branches: [main]
+    paths: ['src/plugin.video.xtreammate/**', 'tests/**', 'tools/**', '.github/workflows/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: xcmate94-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+jobs:
+  host94:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'Pillow>=11,<13' 'simpleeval==0.9.13' 'pytest>=8,<9' 'impacket==0.12.0'
+      - name: Full regression, private profiles and exact candidate
+        run: |
+          set -o pipefail
+          python -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/host94.txt"
+          python -m pytest tests -q 2>&1 | tee "$RUNNER_TEMP/pytest94.txt"
+          python tools/validate_kodi_po.py
+          python tools/release_candidate94.py --output docs/XCMate/test-builds/02994
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xcmate94-host
+          path: |
+            ${{ runner.temp }}/host94.txt
+            ${{ runner.temp }}/pytest94.txt
+            docs/XCMate/test-builds/02994/*.zip
+            docs/XCMate/test-builds/02994/*.sha256
+  native-epg94:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        resolution: [1280x720, 1920x1080]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Exact .94 ZIP, real Kodi worker ACK, source counters, focus and cancel
+        run: python tools/run_kodi_epg94_contract.py --report-dir "$RUNNER_TEMP/epg94" --addon-zip docs/XCMate/test-builds/02994/plugin.video.xtreammate-0.1.29.94.zip --resolution '${{ matrix.resolution }}'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xcmate94-native-epg-${{ matrix.resolution }}
+          path: |
+            ${{ runner.temp }}/epg94/*.json
+            ${{ runner.temp }}/epg94/*.png
+            ${{ runner.temp }}/epg94/*.txt
+            ${{ runner.temp }}/epg94/*.log

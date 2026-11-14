@@ -200,7 +200,8 @@ class Pipeline68(Fixture,unittest.TestCase):
   with mock.patch('live_group93.rows',return_value=None):
    self.assertEqual(LiveNavigator._list_content(owner),['Senderkatalog wird vorbereitet'])
   owner._catalog_partial46=False
-  self.assertEqual(LiveNavigator._list_content(owner),['Keine aktivierten Sender'])
+  with mock.patch('live_group93.rows',return_value=None):
+   self.assertEqual(LiveNavigator._list_content(owner),['Keine aktivierten Sender'])
 
 class Dynamic68(Fixture,unittest.TestCase):
  def setUp(self):

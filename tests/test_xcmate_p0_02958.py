@@ -23,6 +23,7 @@ class Provider58(Fixture,unittest.TestCase):
         before=copy.deepcopy(self.portals)
         self.provider.toggle(self.portal)
         before[0]['provider_epg_enabled']=True
+        before[0]['provider_epg_opt_out94']=False
         self.assertEqual(self.portals,before)
     def test_missing_portal_cannot_be_created_or_enabled(self):
         with self.assertRaises(ValueError):self.provider.toggle(dict(self.portal,id='missing'))
