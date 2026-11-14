@@ -64,6 +64,8 @@ def main(argv=None):
     command=list(sys.argv[1:] if argv is None else argv)
     if command[:1]==['--']:command=command[1:]
     if not command:raise SystemExit('Pass a host-test command after --')
+    if subprocess.run(['git','diff','--quiet','HEAD','--','src/plugin.video.xtreammate','tests','tools'],cwd=ROOT).returncode:
+        raise ValueError('HOST_TEST_REQUIRES_COMMITTED_SOURCE')
     head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT).decode().strip()
     with tempfile.TemporaryDirectory(prefix='xcmate94-host-',dir=os.environ.get('RUNNER_TEMP') or None) as temp:
         shadow=Path(temp)/'repo'
