@@ -155,6 +155,8 @@ def adopt(pid,identity,requested,force=False):
     if not re.fullmatch('[a-f0-9]{32}',str(identity)) or not isinstance(requested,(int,float)) or not 0<=time.time()-requested<=15:return None
     with locked(pid):
         value=read(pid)
-        if value.get('state') in ACTIVE:return value
+        # A stale pre-service Window hint must not resurrect the very same
+        # cancelled/completed job after a service restart or early Cancel.
+        if value.get('id')==identity or value.get('state') in ACTIVE:return value
         value=dict(version=1,id=identity,state='QUEUED',requested=requested,force=bool(force),cancel=False,phase='QUEUED',sources={})
         write(pid,value);return value

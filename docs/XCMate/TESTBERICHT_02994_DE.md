@@ -10,10 +10,10 @@ Stand 14.11.2026. Master [#458](https://github.com/artattakk-creator/kodi-noodle
 | Kumulative .93-Sourcebasis | PR #455, `f2e87846fe63b75b16916f1b9121aaee49553a8e`; lokaler Integrationsstand `a571998b` |
 | .93-Quell-/Pilotvergleich | Alle 876 ZIP-Mitglieder bytegleich; SHA256 `48e0822827c2a8e8a854a812cbac0d0fb3407f6f6b9a5c3c2c2213f20fe77a95` |
 | Aktuelle main-Basis | `b830fad1a19247cc08750970dc56edae0b8c2361`, einschließlich unabhängiger historischer Archivierung #461; nach main wurde nichts gemergt |
-| Letzter Laufzeit-Codecommit | `9527b54f`; nachfolgende Änderungen betreffen Tests, CI und Dokumentation |
+| Laufzeit-Code | .93 plus gezielte .94-Korrekturen, einschließlich idempotentem frühen Abbruch in `epg_jobs94.adopt`; tatsächlichen finalen PR-/CI-Commit verwenden |
 | ZIP | [plugin.video.xtreammate-0.1.29.94.zip](test-builds/02994/plugin.video.xtreammate-0.1.29.94.zip) |
-| SHA256 | `e34e0cebd37591100c4606124aab3ef6b7310fb3fb0015be56a312af4e0d874d` |
-| Paketprüfung | 4.724.767 Bytes, 882 eindeutige Mitglieder, CRC PASS, jedes Mitglied bytegleich zum aktuellen Source; keine privaten DBs/Rohlogs/pyc |
+| SHA256 | `07047d02d6331a755185e37e445f9a2b24a882dfc4febbe270500bf92196a6f6` |
+| Paketprüfung | 4.724.840 Bytes, 882 eindeutige Mitglieder, CRC PASS, jedes Mitglied bytegleich zum aktuellen Source; keine privaten DBs/Rohlogs/pyc |
 | Regulär/Pilot/NeoDark3 | Unverändert; lediglich ein ausdrücklich nicht veröffentlichtes Pilot-Overlay im Testbuild-Verzeichnis |
 | Installer | 0.5.26 unverändert |
 
@@ -64,6 +64,16 @@ Am eingefrorenen Übergabestand `ce976ec8` bestand der .94-CI-Host zunächst all
 Die gemeinsame Einrichtung liegt nun in `HelperFixture57` ohne TestCase-Vererbung. `Helper57` und `Episode57` sind getrennte TestCase-Klassen und behalten unverändert ihre Film- beziehungsweise Episodenfälle. **Alle 30 ursprünglichen unittest-Test-IDs sind vor/nach exakt identisch**, keine Assertion geändert, keine Tests übersprungen und keine Produktlogik angepasst. Danach bestehen beide Frameworks gezielt mit **30/30 PASS**. [Reproduktion](reports/02994/helper-pytest-before.txt), [korrigierter Lauf](reports/02994/helper-pytest-after.txt) und [ursprüngliche eindeutige Test-IDs](reports/02994/helper-original-test-ids.json).
 
 Diese erforderliche Testkorrektur ist ausdrücklich kein kosmetischer Nachschub. Programmcode, ZIP und SHA256 bleiben unverändert. Der neue Testcommit wird einmalig erneut durch die vollständigen CI-Gates geprüft und anschließend nicht mehr geändert. Finale Ergebnisse gehören zum Abschlusskommentar in #458/#460; der fehlgeschlagene Vorläufer wird nicht als PASS ausgewiesen.
+
+### Früher Abbruch: weiterer bestätigter P0-Übergabefehler
+
+Die anschließende Abschlussprüfung des Abbruchs **vor** Dienst-ACK reproduziert einen echten Produktfehler: `request → cancel → adopt(altes Kodi-Signal)` änderte CANCELLED/cancel=true wieder in QUEUED/cancel=false. Dasselbe Signal konnte einen bereits abgeschlossenen Auftrag nach Dienstneustart erneut einreihen. [Vorher-Reproduktion](reports/02994/early-cancel-before.txt).
+
+Die Legacy-Übernahme lässt eine bereits bekannte identische Job-ID nun vollständig unverändert. Abgebrochen bleibt abgebrochen, abgeschlossen bleibt abgeschlossen; ein neuer ausdrücklicher Refresh erzeugt weiter eine neue Job-ID. Zwei zusätzliche Tests prüfen dies einschließlich verweigerter erneuter ACK. Zusammen bestehen **29 gezielte EPG-/Job-/Gruppentests**: [Nachherprotokoll](reports/02994/early-cancel-after.txt). Genau ein Laufzeitmodul wurde dafür geändert und seine geprüfte Source-Hashgrenze aktualisiert.
+
+**Wichtig zur Provenienz:** Der davor vollständig grüne Hoststand `b73e7f65` hatte 3.975 unittest- und 3.986 pytest-PASS, einschließlich GitHub-Hostjob 132588978617. Dessen vollständiger CI-Artefakt-Download war bytegleich mit dem Vorläufer-ZIP SHA256 `e34e0cebd37591100c4606124aab3ef6b7310fb3fb0015be56a312af4e0d874d`. Diese Belege bleiben historisch erhalten und werden nicht als Volltest des neuen Abbruchfixes ausgegeben. Das neue Paket ist die oben genannte SHA256 `07047d02…`; dessen erwarteter vollständiger Umfang ist 3.977 unittest-/3.988 pytest-Fälle, erst tatsächlicher CI-Abschluss zählt als PASS. Kein weiterer kosmetischer Push.
+
+Ein separater Linux-Kodi-Startversuch in native-clock437/1080p endete auf b73e7f65 mit SIGSEGV (Container139, OOMKilled=false; RPC-Verbindungsabbruch), der unveränderte Einzelretry bestand. Ursache nicht geklärt; Erstfehler/Artefakt und Wiederholung im PR dokumentiert. Kein Android-/Decoder-FIXED daraus ableiten.
 
 ## Native Kodi-Tests – kein Android
 

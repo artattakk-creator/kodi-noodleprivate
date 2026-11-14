@@ -24,7 +24,7 @@ Alle folgenden Ergebnisse zunächst **ANDROID_NOT_TESTED**; je Gerät PASS/FAIL 
 | JOB94-02 | Je Quelle reale Downloadbytes, XMLTV-Sender/Programme, Zuordnungen, Zwischenstand, Commit und Readback prüfen. Prozent nur bei bestätigter Gesamtgröße. |
 | JOB94-03 | Während des Imports Quellenwahl und Fokus bewegen; keine zyklischen Listenneuaufbauten und kein Fernbedienungsstillstand. |
 | JOB94-04 | Manager schließen und erneut öffnen: Auftrag läuft weiter, gleiche Auftragskennung und aktueller Stand. Schließen ist kein Cancel. |
-| JOB94-05 | Während Download und Parser über „Import abbrechen“ abbrechen. Alte Daten bleiben lesbar; kein falsches READY, Spinner endet. |
+| JOB94-05 | Sofort vor Dienstübernahme sowie während Download und Parser über „Import abbrechen“ abbrechen. Das alte Kodi-Anforderungssignal darf den abgebrochenen Auftrag auch nach Dienstneustart nicht erneut starten. Alte Daten bleiben lesbar; kein falsches READY, Spinner endet. |
 | JOB94-06 | Wiederholen/Einrichtung fortsetzen: neue Quelle bzw. neuer sicherer Streamlauf. Setup überspringt ausschließlich unabhängig erneut geprüfte vollständige Quellen. Kein behauptetes HTTP-Byte-Resume. |
 | JOB94-07 | Dienst/Kodi während eines Testimports regulär beenden; Neustart zeigt Unterbrechung oder fortsetzbare Einrichtung, kein doppelter Import. |
 | JOB94-08 | Offlinequelle, ungültiges XML/GZIP und Quelle ohne passende Kanäle prüfen: unterschiedliche Diagnosen, NO_CHANNEL_MATCH erkennbar, funktionierende andere Quellen/LastGood erhalten. |

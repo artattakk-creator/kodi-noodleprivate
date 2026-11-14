@@ -16,6 +16,16 @@ class Jobs94(Fixture,unittest.TestCase):
   m=self.jobs();j=m.request('p')
   with mock.patch.object(m.time,'time',return_value=j['requested']+16):self.assertFalse(m.acknowledge('p',j['id']))
   self.assertEqual(m.read('p')['state'],'SERVICE_NOT_CONFIRMED')
+ def test_legacy_hint_cannot_resurrect_cancelled_job_before_service_ack(self):
+  m=self.jobs();j=m.request('p');self.assertTrue(m.cancel('p',j['id']))
+  m.adopt('p',j['id'],j['requested']);value=m.read('p')
+  self.assertEqual(value['id'],j['id']);self.assertEqual(value['state'],'CANCELLED')
+  self.assertTrue(value['cancel']);self.assertFalse(m.acknowledge('p',j['id']))
+ def test_legacy_hint_cannot_restart_completed_job_after_service_restart(self):
+  m=self.jobs();j=m.request('p');m.acknowledge('p',j['id']);m.finish('p',j['id'],'DONE')
+  m.adopt('p',j['id'],j['requested']);value=m.read('p')
+  self.assertEqual(value['id'],j['id']);self.assertEqual(value['state'],'DONE')
+  self.assertFalse(m.acknowledge('p',j['id']))
  def test_single_flight_and_cross_thread_updates_are_atomic(self):
   m=self.jobs()
   with ThreadPoolExecutor(max_workers=6) as pool:values=list(pool.map(lambda _:m.request('p'),range(12)))
