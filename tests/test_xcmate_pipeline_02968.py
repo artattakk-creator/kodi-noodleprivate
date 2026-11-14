@@ -197,7 +197,8 @@ class Pipeline68(Fixture,unittest.TestCase):
   with mock.patch.object(sys.modules['xbmcgui'],'WindowDialog',object,create=True):spec.loader.exec_module(module)
   LiveNavigator=module.LiveNavigator
   owner=types.SimpleNamespace(mode='channels',index=types.SimpleNamespace(selection=lambda *args:([],{})),category_id='a',enabled={'a'},_highlight={'channels':0},_scroll_to_current=False,_catalog_ready=True,_catalog_partial46=True)
-  self.assertEqual(LiveNavigator._list_content(owner),['Senderkatalog wird vorbereitet'])
+  with mock.patch('live_group93.rows',return_value=None):
+   self.assertEqual(LiveNavigator._list_content(owner),['Senderkatalog wird vorbereitet'])
   owner._catalog_partial46=False
   self.assertEqual(LiveNavigator._list_content(owner),['Keine aktivierten Sender'])
 

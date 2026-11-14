@@ -11,7 +11,7 @@ def observe(value):
     from native_stop41 import returned
     from live_stop42 import ACK
     import xbmc,xbmcgui
-    key=hashlib.sha256(str(value['token'][1].get('nonce','')).encode()).hexdigest()[:12]
+    key=hashlib.sha256(__import__('json').dumps([value['token'][0],value['token'][1].get('nonce')]).encode()).hexdigest()[:12]
     posted=value.get('posted_at75')
     if type(posted) not in (int,float):return
     age=time.monotonic()-posted
@@ -23,6 +23,7 @@ def observe(value):
     # Window properties do not take the native player lock. No isPlaying,
     # InfoTag, getPlayingFile, ActivateWindow or Stop while the ACK is absent.
     fields=' native_ack='+str(int(ack))+' elapsed_ms='+str(max(0,int(age*1000)))
+    fields+=' queue_probe='+str(int(bool(value.get('progress_posted93'))))
     fields+=' strategy='+('fullscreen42' if value.get('strategy42')=='fullscreen42' else 'direct41')
     fields+=' prepare_ack='+str(int(bool(value.get('prepare_ack42') and xbmcgui.Window(10000).getProperty(ACK)==value['prepare_ack42'])))
     try:xbmc.log('[XCMate][STOP75] session='+key+' stage='+stage+fields,xbmc.LOGINFO)

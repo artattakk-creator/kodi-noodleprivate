@@ -127,6 +127,7 @@ def poll():
             from media_stop77 import observe as media_observe
             media_observe(value)
         if value.get('native_posted') and not value.get('worker_done'):
+            __import__('stop_barrier93').observe(value)
             from live_stop75 import observe as observe75
             observe75(value)
             from native_stop41 import returned,finish

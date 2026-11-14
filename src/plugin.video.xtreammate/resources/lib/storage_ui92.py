@@ -2,9 +2,29 @@
 import json
 from localization import tr
 
+def create_window(value):
+    import xbmcgui,xbmcaddon
+    from storage_report93 import report
+    class StorageReport(xbmcgui.WindowXMLDialog):
+        def onInit(self):
+            self.page=0
+            self.getControl(101).setLabel(tr(38730))
+            self.getControl(103).setText(report(value))
+            self.getControl(501).setLabel(tr(36101));self.getControl(502).setLabel(tr(38731))
+            self.setFocusId(501)
+        def onClick(self,cid):
+            if cid==501:self.close()
+            elif cid==502:xbmcgui.Dialog().textviewer(tr(38731),json.dumps(value,ensure_ascii=False,indent=2))
+        def onAction(self,action):
+            key=action.getId()
+            if key in (9,10,92):self.close()
+            elif key in (3,4,5,6):
+                self.page=max(0,self.page+(-1 if key in (3,5) else 1))
+                self.getControl(103).scroll(self.page)
+    return StorageReport('XCMateStorage93.xml',xbmcaddon.Addon().getAddonInfo('path'),'Default','720p')
+
 def show(value):
-    import xbmcgui
-    xbmcgui.Dialog().textviewer(tr(38700),json.dumps(value,ensure_ascii=False,indent=2))
+    if value is not None:create_window(value).doModal()
 
 def image_choice():
     import xbmcgui

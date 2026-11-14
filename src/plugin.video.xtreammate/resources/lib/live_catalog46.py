@@ -3,7 +3,7 @@ import json,os,sqlite3,time
 from urllib.parse import quote
 
 
-def read(portal,publish=lambda value:None,categories=None):
+def read(portal,publish=lambda value:None,categories=None,only=None):
     from widget_data41 import WidgetReader
     from library_index import path,initial_group,IndexReadError
     reader=WidgetReader(portal['id']);state=reader.state('live')
@@ -16,6 +16,9 @@ def read(portal,publish=lambda value:None,categories=None):
     categories=categories if categories is not None else [dict(category_id=g['cid'],category_name=g['title']) for g in groups]
     start=reader.get('live',str(portal.get('start_stream_id') or ''));cid=initial_group(portal,groups,start)
     ordered=sorted(groups,key=lambda g:g['cid']!=cid)
+    if only is not None:
+        ordered=[g for g in groups if g['cid']==str(only)]
+        if not ordered:raise IndexReadError('GROUP_NOT_AVAILABLE')
     db=sqlite3.connect('file:'+quote(reader.filename or path(),safe='/')+'?mode=ro',uri=True,timeout=.05);db.row_factory=sqlite3.Row
     streams=[];seen=set()
     try:
@@ -36,7 +39,11 @@ def read(portal,publish=lambda value:None,categories=None):
                     seen.add(row['sid']);item=json.loads(row['payload']);streams.append(dict(item,stream_id=item['sid']))
                     if len(streams)>50000:return categories,None
                 last=(rows[-1]['ordinal'],rows[-1]['ordinal'],rows[-1]['sid'])
+            if only is not None and not streams and not head:raise IndexReadError('GROUP_NOT_IMPORTED')
             if group['cid']==cid:publish((categories,list(streams)))
+        after=reader.state('live')
+        if not after or (after.get('revision'),after.get('updated'))!=(state.get('revision'),state.get('updated')):
+            raise IndexReadError('REVISION_CHANGED')
         return categories,streams
     except (sqlite3.Error,ValueError,TypeError) as exc:
         raise IndexReadError('LOCAL_LIVE_UNAVAILABLE') from None

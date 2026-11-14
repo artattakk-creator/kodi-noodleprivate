@@ -12,7 +12,7 @@ import time
 from pathlib import Path
 from urllib.parse import quote
 
-VERSION = '0.1.29.92'
+VERSION = '0.1.29.93'
 _due = 0
 
 def root():
@@ -193,6 +193,15 @@ def run(cancel=lambda:False,progress=lambda **kw:None,force=False):
         record.update(state='PAUSED' if cancel() or any(r['code'] not in ('NOT_CREATED','VERIFIED_RETENTION') for r in results) else 'DONE',
                       temp=temp,databases=results,free_after=free(),artwork_orphans='OPEN_REFERENCE_PROOF_REQUIRED',
                       kodi_cache='PROTECTED',fallback90='PROTECTED')
+        if not cancel():
+            previous93=prior.get('epg_cleanup93',{}) if prior.get('version')==VERSION else {}
+            if previous93.get('code')=='VERIFIED_BACKUP_RETENTION':record['epg_cleanup93']=previous93
+            else:
+                def journal93(value):
+                    record['epg_cleanup93']=dict(value);journal(record)
+                record['epg_cleanup93']=__import__('epg_cleanup93').prune(cancel,journal93)
+                if record['epg_cleanup93']['code'] in ('MORE','CANCELLED'):record['state']='PAUSED'
+        record['free_after']=free()
         record['observed_free_change']=record['free_after']-record['free_before']
         journal(record);return record
 

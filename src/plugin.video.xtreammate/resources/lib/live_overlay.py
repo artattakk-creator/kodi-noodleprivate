@@ -538,6 +538,12 @@ class LiveNavigator(xbmcgui.WindowDialog):
                     time.strftime('%H:%M',time.localtime(e['stop'])),e['title']) for e in self._programme_events] or [
                     'Keine EPG-Daten - Quellenstatus im XCMate-Hauptmenü prüfen']
         self.visible_channels, positions = self.index.selection(self.category_id,self.enabled)
+        empty93=False
+        if getattr(self,'_catalog_partial46',False) and self.category_id!='*':
+            group93=__import__('live_group93').rows(self)
+            if group93 is not None:
+                self.visible_channels=group93;empty93=not group93
+                positions={str(c.extra.get('stream_id')):i for i,c in enumerate(group93)}
         pos = self._highlight['channels']
         if self._scroll_to_current:
             pos = positions.get(self.sid,pos)
@@ -548,6 +554,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self._row_offset = 0
         page = self.visible_channels[self._page_start:self._page_start+CHANNEL_PAGE_SIZE]
         labels = [c.name for c in page]
+        if empty93:return [__import__('localization').tr(38756)]
         return labels or ['Senderkatalog wird vorbereitet' if not self._catalog_ready or getattr(self,'_catalog_partial46',False) else 'Keine aktivierten Sender']
 
     def _row_value44(self,control,method,*values):
@@ -726,6 +733,9 @@ class LiveNavigator(xbmcgui.WindowDialog):
         if self.mode=='info' and self._info_deadline is not None and now>=self._info_deadline:
             self._switch('hidden')
             return
+        if self.mode=='channels' and getattr(self,'_catalog_partial46',False):
+            task93=getattr(self,'_group_task93',None)
+            if task93 and task93[1].done():self._render(focus=False)
         if now-self._last_tick<1: return
         self._last_tick=now
         if self.mode=='info': self._render_info()

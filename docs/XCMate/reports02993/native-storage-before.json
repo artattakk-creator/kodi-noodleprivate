@@ -1,0 +1,12 @@
+{
+  "source_commit": "1d3df02be47dbdce974532094475024f0a29e5df",
+  "run_id": 43502865270,
+  "artifact_id": 14074933430,
+  "resolution": "1280x720",
+  "native_controls_and_back": "PASS",
+  "visual_review": "FAIL_BACKGROUND_TRANSPARENT",
+  "cause": "Unbundled skin-relative white.png; screenshot showed underlying Home",
+  "correction": "Own opaque bundled panel/button/focus PNGs plus real native pixel assertions",
+  "screenshot": "storage93-before-720.png",
+  "android": "ANDROID_NOT_TESTED"
+}

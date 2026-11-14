@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "selected_sid": "5",
+  "start_sid": "1",
+  "local_epg": true,
+  "long_title_bounded": true,
+  "focus_rgb": [
+    58,
+    75,
+    91
+  ],
+  "android": "ANDROID_NOT_TESTED"
+}

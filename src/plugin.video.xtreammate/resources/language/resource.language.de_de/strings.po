@@ -5529,3 +5529,211 @@ msgstr "NAS nutzt den bestehenden geprüften VFS-Ablauf. Unbekannte Kapazität g
 msgctxt "#38729"
 msgid "Movie groups on Home (library unchanged)"
 msgstr "Filmgruppen auf Home (Bibliothek unverändert)"
+
+msgctxt "#38730"
+msgid "XCMate – storage analysis (read only)"
+msgstr "XCMate – Speicheranalyse (nur lesend)"
+
+msgctxt "#38731"
+msgid "Technical details (JSON)"
+msgstr "Technische Details (JSON)"
+
+msgctxt "#38732"
+msgid "The saved startup channel is temporarily unavailable in the local catalogue. Settings are preserved. Please retry."
+msgstr "Der gespeicherte Startsender ist momentan nicht im lokalen Katalog verfügbar. Einstellungen bleiben erhalten. Bitte erneut versuchen."
+
+msgctxt "#38733"
+msgid "Unknown"
+msgstr "Unbekannt"
+
+msgctxt "#38734"
+msgid "Measurement cancelled or not available yet."
+msgstr "Messung abgebrochen oder noch nicht verfügbar."
+
+msgctxt "#38735"
+msgid "Observed storage usage. Incomplete values are lower bounds, not empty folders."
+msgstr "Beobachtete Speicherbelegung. Unvollständige Werte sind Untergrenzen, keine leeren Ordner."
+
+msgctxt "#38736"
+msgid "Other data class"
+msgstr "Weitere Datenklasse"
+
+msgctxt "#38737"
+msgid "measured completely"
+msgstr "vollständig gemessen"
+
+msgctxt "#38738"
+msgid "measurement incomplete"
+msgstr "Messung noch unvollständig"
+
+msgctxt "#38739"
+msgid "not fully readable"
+msgstr "nicht vollständig lesbar"
+
+msgctxt "#38740"
+msgid "empty / not created yet"
+msgstr "leer / noch nicht angelegt"
+
+msgctxt "#38741"
+msgid "Observed: {} in {} files"
+msgstr "Erfasst: {} in {} Dateien"
+
+msgctxt "#38742"
+msgid "Volume cannot currently be measured reliably."
+msgstr "Volume momentan nicht eindeutig messbar."
+
+msgctxt "#38743"
+msgid "Available: {} / Total: {} / Reserve: {}"
+msgstr "Verfügbar: {} / Gesamt: {} / Reserve: {}"
+
+msgctxt "#38744"
+msgid "Volume {} · Mount {} · Filesystem {}"
+msgstr "Volume {} · Mount {} · Dateisystem {}"
+
+msgctxt "#38745"
+msgid "SQLite WAL: {} · SHM: {}"
+msgstr "SQLite-WAL: {} · SHM: {}"
+
+msgctxt "#38746"
+msgid "Reusable inside SQLite: {} (not physically free space)"
+msgstr "SQLite intern wiederverwendbar: {} (kein physisch freier Speicher)"
+
+msgctxt "#38747"
+msgid "Android quota unknown. Categories can overlap on the same storage pool and must not simply be added together. Analysis did not modify files."
+msgstr "Android-Quota unbekannt. Kategorien können denselben Speicherbereich überlappen und dürfen nicht pauschal addiert werden. Keine Dateien wurden durch die Analyse verändert."
+
+msgctxt "#38748"
+msgid "Storage operation – result"
+msgstr "Speichervorgang – Ergebnis"
+
+msgctxt "#38749"
+msgid "Status: {}"
+msgstr "Status: {}"
+
+msgctxt "#38750"
+msgid "Free before: {} · Free after: {}"
+msgstr "Frei vorher: {} · Frei nachher: {}"
+
+msgctxt "#38751"
+msgid "Actually observed change: {}"
+msgstr "Tatsächlich beobachtete Änderung: {}"
+
+msgctxt "#38752"
+msgid "EPG: {} expired rows · observed file change: {}"
+msgstr "EPG: {} abgelaufene Zeilen · gemessene Dateiänderung: {}"
+
+msgctxt "#38753"
+msgid "Removed owned temporary data: {}"
+msgstr "Entfernte eigene temporäre Daten: {}"
+
+msgctxt "#38754"
+msgid "Verified removed old EPG backups: {}"
+msgstr "Verifiziert entfernte alte EPG-Sicherungen: {}"
+
+msgctxt "#38755"
+msgid "Saved mappings, active databases and internal original images remain protected. A negative or missing storage delta is not a space gain."
+msgstr "Gespeicherte Zuordnungen, aktive Datenbanken und interne Originalbilder bleiben geschützt. Ein negatives oder fehlendes Speicher-Delta ist kein Platzgewinn."
+
+msgctxt "#38760"
+msgid "Movie/series covers"
+msgstr "Film-/Seriencover"
+
+msgctxt "#38761"
+msgid "External programme image receipts"
+msgstr "Externe Sendungsbild-Quittungen"
+
+msgctxt "#38762"
+msgid "Programme images"
+msgstr "Sendungsbilder"
+
+msgctxt "#38763"
+msgid "Channel logos"
+msgstr "Senderlogos"
+
+msgctxt "#38764"
+msgid "Temporary images"
+msgstr "Temporäre Bilder"
+
+msgctxt "#38765"
+msgid "Normalized EPG/catalogue caches"
+msgstr "Normalisierte EPG-/Katalogcaches"
+
+msgctxt "#38766"
+msgid "EPG recovery copies"
+msgstr "EPG-Wiederherstellungskopien"
+
+msgctxt "#38767"
+msgid "Widget restore plans"
+msgstr "Widget-Wiederherstellungspläne"
+
+msgctxt "#38768"
+msgid "Active EPG database"
+msgstr "Aktive EPG-Datenbank"
+
+msgctxt "#38769"
+msgid "EPG image metadata"
+msgstr "EPG-Bildmetadaten"
+
+msgctxt "#38770"
+msgid "Programme/image index"
+msgstr "Sendungs-/Bildindex"
+
+msgctxt "#38771"
+msgid "Migration journal"
+msgstr "Migrationsjournal"
+
+msgctxt "#38772"
+msgid "Kodi thumbnails (read only)"
+msgstr "Kodi-Vorschaubilder (nur lesend)"
+
+msgctxt "#38773"
+msgid "Kodi databases (read only)"
+msgstr "Kodi-Datenbanken (nur lesend)"
+
+msgctxt "#38774"
+msgid "Kodi installation packages (read only)"
+msgstr "Kodi-Installationspakete (nur lesend)"
+
+msgctxt "#38775"
+msgid "Kodi temporary files (read only)"
+msgstr "Kodi-Temp (nur lesend)"
+
+msgctxt "#38776"
+msgid "Separately selected cache"
+msgstr "Separat gewählter Cache"
+
+msgctxt "#38777"
+msgid "Active cover storage"
+msgstr "Aktive Coverablage"
+
+msgctxt "#38778"
+msgid "Active logo storage"
+msgstr "Aktive Logoablage"
+
+msgctxt "#38779"
+msgid "Active programme image storage"
+msgstr "Aktive Sendungsbildablage"
+
+msgctxt "#38756"
+msgid "This channel group is empty"
+msgstr "Diese Sendergruppe ist leer"
+
+msgctxt "#38757"
+msgid "Completed"
+msgstr "Abgeschlossen"
+
+msgctxt "#38758"
+msgid "Interrupted or not complete yet"
+msgstr "Unterbrochen oder noch nicht vollständig"
+
+msgctxt "#38759"
+msgid "Cancelled"
+msgstr "Abgebrochen"
+
+msgctxt "#38780"
+msgid "Temporarily blocked – existing data is preserved"
+msgstr "Vorübergehend gesperrt – vorhandene Daten bleiben erhalten"
+
+msgctxt "#38781"
+msgid "Operation running"
+msgstr "Vorgang läuft"

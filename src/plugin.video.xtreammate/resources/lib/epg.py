@@ -624,6 +624,7 @@ def _refresh_portal_epg_inner(portal_id, p, force=False):
         if not imported92 or not committed(portal_id,revision92):
             diagnostic('IMPORT_READBACK_FAILED',running=False)
             return {}  # Last-good cache and source data remain untouched.
+        __import__('epg_cleanup93').imported(portal_id,revision92)
         snapshot92=short(programmes,now)
         _save_disk(portal_id, snapshot92)
         _mem_set(portal_id, snapshot92)
