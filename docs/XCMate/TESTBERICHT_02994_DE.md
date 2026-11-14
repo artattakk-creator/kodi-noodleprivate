@@ -57,6 +57,14 @@ python tools/release_candidate94.py --output docs/XCMate/test-builds/02994
 
 Der Testklon verwendet den vollständig committeten aktuellen Source. Uncommittete Änderungen in src/tests/tools werden abgelehnt. Bei einem zunächst ungeeigneten Host-Dependency-Stand scheiterten acht SMB-Fälle; mit der auch in CI festgelegten Version impacket 0.13.0 bestehen diese und der vollständige Lauf. Eine weitere CI-Störung betraf fehlende archivierte Testpakete in einem gemischten historischen/aktuellen Workflow; dieser verwendet jetzt denselben verifizierten Testkontext samt vollständiger Git-Historie. Diese Zwischenstände sind keine endgültigen Produkt-PASS-Berichte.
 
+### Vollständiger pytest-Lauf: belegter historischer Testklassenfehler
+
+Am eingefrorenen Übergabestand `ce976ec8` bestand der .94-CI-Host zunächst alle **3.975 unittest-Tests in 887,408 s**. Der anschließende vollständige pytest-Lauf meldete **12 FAIL / 3.997 PASS**. Sämtliche Fehler gehörten zu Filmtests, die pytest zusätzlich in `Episode57(Helper57)` erbte und dort mit Serien-Testdaten ausführte. Der bestehende `load_tests`-Hook schloss genau diese geerbten Filmfälle unter unittest bereits aus; pytest berücksichtigt diesen Hook nicht. Der Fehler ist lokal mit ausschließlich `tests/test_xcmate_helper_02957.py` reproduziert: 12 FAIL / 41 PASS.
+
+Die gemeinsame Einrichtung liegt nun in `HelperFixture57` ohne TestCase-Vererbung. `Helper57` und `Episode57` sind getrennte TestCase-Klassen und behalten unverändert ihre Film- beziehungsweise Episodenfälle. **Alle 30 ursprünglichen unittest-Test-IDs sind vor/nach exakt identisch**, keine Assertion geändert, keine Tests übersprungen und keine Produktlogik angepasst. Danach bestehen beide Frameworks gezielt mit **30/30 PASS**. [Reproduktion](reports/02994/helper-pytest-before.txt), [korrigierter Lauf](reports/02994/helper-pytest-after.txt) und [ursprüngliche eindeutige Test-IDs](reports/02994/helper-original-test-ids.json).
+
+Diese erforderliche Testkorrektur ist ausdrücklich kein kosmetischer Nachschub. Programmcode, ZIP und SHA256 bleiben unverändert. Der neue Testcommit wird einmalig erneut durch die vollständigen CI-Gates geprüft und anschließend nicht mehr geändert. Finale Ergebnisse gehören zum Abschlusskommentar in #458/#460; der fehlgeschlagene Vorläufer wird nicht als PASS ausgewiesen.
+
 ## Native Kodi-Tests – kein Android
 
 Reales **Linux-Kodi 21.2**, exaktes .94-ZIP, frisches ausschließlich synthetisches Testprofil. Testmanifest-Abhängigkeiten werden nur im wegwerfbaren Harnessprofil angepasst. Kein Benutzerprofil, keine private Providerverbindung, keine physische Android-Box.

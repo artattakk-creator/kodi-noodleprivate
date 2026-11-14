@@ -15,7 +15,7 @@ def movie(title=TITLE,year=2002,remote=672):
         art={'fanart':'image://'+URL.replace(':','%3a').replace('/','%2f')+'/'})
 
 
-class Helper57(Fixture,unittest.TestCase):
+class HelperFixture57(Fixture):
     def setUp(self):
         super().setUp();self.options.update(programme_helper57=True,programme_catalog57=False)
         self.helper=importlib.import_module('programme_helper57');self.rpc=importlib.import_module('helper_rpc57')
@@ -40,6 +40,7 @@ class Helper57(Fixture,unittest.TestCase):
         with mock.patch.object(sys.modules['xbmc'],'executeJSONRPC',side_effect=self.native,create=True),mock.patch('media_sources43.get',side_effect=AssertionError('No personal TMDb API')):
             with ThreadPoolExecutor(1) as pool:return pool.submit(self.urls.resolve,self.event,allow_lookup=True,check=mock.Mock(),**kwargs).result(5)
 
+class Helper57(HelperFixture57,unittest.TestCase):
     def test_helper_finds_exact_2002_movie_without_any_xcmate_api_token(self):
         value=self.resolve();self.assertEqual(value['code'],'READY');self.assertEqual(value['source'],'tmdb_helper')
         self.assertEqual(value['provider_id'],672);self.assertEqual(value['matched_year56'],2002)
@@ -185,8 +186,8 @@ class Helper57(Fixture,unittest.TestCase):
         self.assertEqual(len(seen),2);self.assertEqual(seen[0]['title'],'Short 1');self.assertEqual(seen[1]['title'],TITLE)
 
 
-class Episode57(Helper57):
-    # Keep only episode-specific methods in this subclass's executed suite.
+class Episode57(HelperFixture57,unittest.TestCase):
+    # Share fixture utilities, never inherit the movie scenario assertions.
     def setUp(self):
         super().setUp();self.event.update(title='Test Series',season=2,episode=3,subtitle='Test Episode');self.event.pop('year',None)
         self.event['key']=importlib.import_module('programme_events46').key('p','1',self.event)
