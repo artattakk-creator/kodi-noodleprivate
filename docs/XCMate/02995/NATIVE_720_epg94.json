@@ -1,0 +1,74 @@
+{
+  "android": "ANDROID_NOT_TESTED",
+  "native": true,
+  "transport": "SYNTHETIC_LOOPBACK_XMLTV",
+  "events": [],
+  "job_id": "34d73fef3d2c479ea2c587f74ee60f01",
+  "ack_seconds": 0.21495342254638672,
+  "download_screenshot": "epg94-downloading.png",
+  "list_identity_before": 1,
+  "completed_screenshot": "epg94-completed.png",
+  "source": {
+    "source_index": 1,
+    "sources": 1,
+    "phase": "DONE",
+    "progress": 1794734034.6965601,
+    "phase_started": 1794734034.6965601,
+    "phases": {
+      "DOWNLOAD": {
+        "at": 1794734029.5148032
+      },
+      "MATCHING": {
+        "at": 1794734034.120478
+      },
+      "COMMIT": {
+        "at": 1794734034.1836565
+      },
+      "READBACK": {
+        "at": 1794734034.4323854
+      },
+      "CLEANUP": {
+        "at": 1794734034.5615568
+      },
+      "DONE": {
+        "at": 1794734034.6965601
+      }
+    },
+    "bytes": 362552,
+    "total_bytes": 362552,
+    "channels": 1,
+    "programmes": 600,
+    "staged": 600,
+    "matched": 1,
+    "committed": 600,
+    "verified": 600,
+    "raw_deleted_bytes": 0,
+    "free_before": 91173617664,
+    "free_after": 91173617664,
+    "first": 1794732228,
+    "last": 1795812228
+  },
+  "status": "PASS",
+  "wire_bytes_verified": true,
+  "cold_readback_rows": 600,
+  "native_focus_usable": true,
+  "spinner_stopped": true,
+  "source_rows_preserved": true,
+  "gate95": {
+    "code": "IMPORT_AUTHORIZED",
+    "checked_at": 1794734035.4145696,
+    "files_checked": 111,
+    "backup_bytes": 2686976,
+    "sha_prefix": "c0556d6d202abc87",
+    "elapsed_ms": 92.21
+  },
+  "cancel_preserved_lastgood": true,
+  "back_closed_only_manager": true,
+  "kodi": {
+    "major": 21,
+    "minor": 2,
+    "revision": "20250330-nogitfound",
+    "tag": "stable"
+  },
+  "rpc_input_max_seconds": 0.003151338999998643
+}
