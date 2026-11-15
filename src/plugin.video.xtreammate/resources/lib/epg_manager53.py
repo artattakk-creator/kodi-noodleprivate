@@ -39,6 +39,8 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
         items=[]
         for row in rows:
             saved=row['saved'];counts=(str(saved.get('channels',0))+' Sender · '+str(saved.get('programmes',0))+' Sendungen') if row['statistics_code']=='READY' else 'Bestand derzeit nicht sicher lesbar'
+            if row.get('historical95'):counts='Letzter bestätigter Bestand: '+str(saved.get('programmes',0))+' Sendungen · aktuelle Inventur beschäftigt'
+            elif row.get('inventory95') not in (None,'READY'):counts='Aktuelle Inventur: '+str(row['inventory95'])+' · kein Nachweis fehlender Daten'
             items.append(xbmcgui.ListItem(('✓ ' if row['enabled'] else '○ ')+str(row['rank'])+' · '+row['name'],label2=meaning(row['code'])+' · '+counts))
         control.addItems(items)
         if items:control.selectItem(min(pos,len(items)-1))
@@ -55,7 +57,8 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
         if not job:return
         from epg_progress94 import row,summary
         self._job94=job
-        self.getControl(102).setLabel(summary(job))
+        blocked95=getattr(self,'_gate_block95',None)
+        self.getControl(102).setLabel(__import__('epg_gate95').message(blocked95[1]) if blocked95 and job.get('requested',0)<blocked95[0] else summary(job))
         self.getControl(413).setEnabled(job.get('state') in ('QUEUED','RUNNING','CANCELLING'))
         self.getControl(402).setEnabled(job.get('state') not in ('QUEUED','RUNNING','CANCELLING'))
         control=self.getControl(200)
@@ -88,6 +91,17 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
     def onFocus(self,cid):
         if cid==200:self._detail()
     def _query_failed(self,exc):self.getControl(102).setLabel('EPG-Zugriff oder Speichern nicht bestätigt. Daten bleiben erhalten.')
+    def _refresh_ready95(self,ok):
+        if ok:
+            self._gate_block95=None
+            self._refresh_until58=time.monotonic()+600;self._next_status58=0
+            self.getControl(102).setLabel('Aktualisierung angefordert; Dienstübernahme noch ausstehend.')
+        else:
+            from epg_status import read
+            from epg_gate95 import message
+            code=read(self.portal['id']).get('refresh',{}).get('code','UNAVAILABLE')
+            self._gate_block95=(time.time(),code)
+            self.getControl(102).setLabel(message(code))
     def _reports(self):
         from epg_report53 import history
         def ready(runs):
@@ -137,9 +151,8 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
             if not __import__('epg_config94').confirm_enable(self.portal):return
             self.portal=get_by_id(self.portal['id']) or self.portal
             from epg import request_refresh
-            ok=request_refresh(self.portal['id'],self.portal,force=True)
-            if ok:self._refresh_until58=time.monotonic()+600;self._next_status58=0
-            self.getControl(102).setLabel('Aktualisierung angefordert; Speicherung noch nicht bestätigt.' if ok else 'Aktualisierung blockiert. Speicherplatz, Schreibrechte, EPG-Sicherung und laufende Importe prüfen.')
+            self.getControl(102).setLabel('Importfreigabe wird unabhängig geprüft …')
+            self._request(lambda:request_refresh(self.portal['id'],self.portal,force=True),self._refresh_ready95)
         elif cid==403:self._reports()
         elif cid==404:self._load()
         elif cid==405:self.next_action='guide';self.close()

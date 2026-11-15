@@ -13,7 +13,7 @@ class GateFlow46(Fixture,unittest.TestCase):
  def populate(self):self.g.import_cache('p',{'xml':[dict(name='Stored',channel='xml',start_timestamp=self.now-30,stop_timestamp=self.now+300)]})
  def test_populated_guide_schema_alone_is_not_backup_authorization(self):
   self.populate();before=Path(self.g.path()).read_bytes();self.assertEqual(importlib.import_module('guide_publish44').access(self.g.path()),'READY')
-  self.assertEqual(self.gate.access(self.g.path()),'BACKUP_REQUIRED');self.assertEqual(Path(self.g.path()).read_bytes(),before)
+  self.assertEqual(self.gate.access(self.g.path()),'DB_AUTHORIZATION_MISSING');self.assertEqual(Path(self.g.path()).read_bytes(),before)
  def test_real_sqlite_wal_backup_receipt_allows_readonly_gate(self):
   self.populate();backup=importlib.import_module('guide_backup44');result=backup.authorize(self.g.path())
   self.assertEqual(result['code'],'BACKUP_VERIFIED');before=Path(self.g.path()).read_bytes()
@@ -21,7 +21,7 @@ class GateFlow46(Fixture,unittest.TestCase):
  def test_missing_or_tampered_backup_receipt_refuses_refresh(self):
   self.populate();result=importlib.import_module('guide_backup44').authorize(self.g.path())
   receipt=self.folder/'guide_backups44'/(result['backup']+'.json');value=json.loads(receipt.read_text());value['sha256']='f'*64;receipt.write_text(json.dumps(value))
-  self.assertEqual(self.gate.access(self.g.path()),'BACKUP_REQUIRED')
+  self.assertEqual(self.gate.access(self.g.path()),'BACKUP_RECEIPT_MISMATCH')
  def test_empty_new_guide_and_missing_database_are_distinct_safe_states(self):
   self.assertEqual(self.gate.access(self.g.path()),'NOT_CREATED');self.g.connect().close();self.assertEqual(self.gate.access(self.g.path()),'READY')
  def test_existing_artwork_mode_needs_no_exclusive_lock_or_directory_scan(self):

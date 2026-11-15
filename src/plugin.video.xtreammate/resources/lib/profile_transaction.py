@@ -11,11 +11,27 @@ import time
 
 _guard=threading.RLock()
 _local=threading.local()
+_observed95={};_last95=0
+
+def observe95(code,wait,held):
+    """Bounded anonymous timing only; no lock paths, account or thread names."""
+    global _last95
+    if code not in ('PROFILE_LOCK','REMINDER_LOCK'):return
+    value=dict(code=code,wait_ms=round(wait*1000,2),held_ms=round(held*1000,2),at=time.time())
+    _observed95[code]=value
+    if max(wait,held)>=.15 and time.monotonic()-_last95>=30:
+        _last95=time.monotonic()
+        try:
+            from utils import info
+            import json
+            info('[PROFILE95] '+json.dumps(value,separators=(',',':')))
+        except (ImportError,AttributeError):pass
 
 
 @contextmanager
 def writing(timeout=1):
     from utils import addon_data_dir
+    started95=time.monotonic()
     if not _guard.acquire(timeout=timeout): raise TimeoutError('profile write busy')
     try:
         if getattr(_local,'depth',0):
@@ -33,8 +49,11 @@ def writing(timeout=1):
                     if time.monotonic()>=deadline: raise TimeoutError('profile write busy')
                     time.sleep(.02)
             _local.depth=1
+            acquired95=time.monotonic()
             try: yield
-            finally: _local.depth=0;fcntl.flock(descriptor,fcntl.LOCK_UN)
+            finally:
+                _local.depth=0;fcntl.flock(descriptor,fcntl.LOCK_UN)
+                observe95('PROFILE_LOCK',acquired95-started95,time.monotonic()-acquired95)
         finally: os.close(descriptor)
     finally: _guard.release()
 

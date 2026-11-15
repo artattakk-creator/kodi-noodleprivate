@@ -208,7 +208,7 @@ class EPG52(Fixture,unittest.TestCase):
         with mock.patch.object(self.stream,'source_stream',side_effect=AssertionError('must not download')):
             for force in (False,True):self.assertEqual(self.stream.refresh(self.portal,force=force),{})
         self.assertEqual(self.master(),before)
-        self.assertTrue(all(c.args[2]=='BACKUP_REQUIRED' for c in sys.modules['epg_status'].update.call_args_list))
+        self.assertTrue(all(c.args[2]=='DB_AUTHORIZATION_MISSING' for c in sys.modules['epg_status'].update.call_args_list))
 
     def test_coverage_includes_preexisting_twenty_day_facts_without_reimport(self):
         self.put('a',[self.event(),self.event(20,'Future')])

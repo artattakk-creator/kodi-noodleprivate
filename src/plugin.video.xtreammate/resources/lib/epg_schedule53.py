@@ -18,7 +18,10 @@ def plan(portal,now=None):
     # A missing live catalogue is transient, not a day-long failure latch.
     from epg_source66 import restart_anchors
     anchors=restart_anchors(portal['id'])
-    if runs and runs[-1].get('code') in ('BACKUP_REQUIRED','CANCELLED') and now-runs[-1]['started']<period:return []
+    blocked95={'BACKUP_REQUIRED','CANCELLED','BACKUP_MISSING','BACKUP_RECEIPT_MISMATCH','BACKUP_DIR_UNAVAILABLE','DB_AUTHORIZATION_MISSING','DB_SCHEMA_MISSING','STORAGE_FULL','STORAGE_ACCESS_DENIED'}
+    transient95={'DB_BUSY','BACKUP_GATE_TIMEOUT','DB_INTERRUPTED','DB_AUTHORIZATION_CHANGED','STORAGE_IO'}
+    if runs and runs[-1].get('code') in blocked95 and now-runs[-1]['started']<period:return []
+    if runs and runs[-1].get('code') in transient95 and now-runs[-1]['started']<900:return []
     if runs and runs[-1].get('code') in ('WAIT_ACTIVE_CATALOG','IMPORT_BUSY_OR_LOCK_UNAVAILABLE') and now-runs[-1]['started']<60:return []
     for source in configured(portal):
         if not source['enabled']:continue

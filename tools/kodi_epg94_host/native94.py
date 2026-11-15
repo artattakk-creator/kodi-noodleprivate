@@ -73,7 +73,23 @@ try:
  manager._request(lambda:authorize(path()),backup94.append)
  wait(lambda:bool(backup94),'BACKUP_WORKER_NOT_COMPLETED')
  assert backup94[0]['code']=='BACKUP_VERIFIED';phase94('backup_done')
- assert __import__('epg_gate46').access(path())=='READY'
+ # .95 gate proof runs on the existing owner worker, with slow I/O and >128 entries.
+ gate95=[]
+ def verify95():
+  import sqlite3
+  from unittest import mock
+  folder=Path(path()).parent/'guide_backups44'
+  for n in range(150):(folder/('unrelated-native-'+str(n))).write_text('USER_DATA')
+  real=sqlite3.connect
+  class Slow(sqlite3.Connection):
+   def execute(self,sql,*a,**k):
+    if sql.startswith('SELECT 1 FROM programmes'):time.sleep(.08)
+    return super().execute(sql,*a,**k)
+  with mock.patch.object(sqlite3,'connect',side_effect=lambda *a,**k:real(*a,**dict(k,factory=Slow))):
+   return __import__('epg_gate95').inspect(path())
+ manager._request(verify95,gate95.append);wait(lambda:bool(gate95),'GATE95_WORKER_NOT_COMPLETED')
+ assert gate95[0]['code']=='IMPORT_AUTHORIZED',gate95
+ report['gate95']=gate95[0]
  wait(lambda:not epg._WARMUP_THREADS['epg94'].is_alive(),'PRIOR_WORKER_NOT_RETURNED')
  wait(lambda:manager._pending_future is None,'PRIOR_GUI_JOB_NOT_RETURNED')
  phase94('retry_request');manager.setFocusId(402);xbmc.executebuiltin('Action(Select)',wait=False);phase94('retry_submitted');wait(lambda:epg_jobs94.read('epg94').get('id')!=identity and epg_jobs94.read('epg94').get('state')=='RUNNING','RETRY_NOT_STARTED')

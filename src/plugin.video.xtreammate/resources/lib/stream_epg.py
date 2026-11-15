@@ -368,7 +368,9 @@ def _refresh44(portal,force=False,cancel=lambda:False):
     for stage,outcome in zip(stages,outcomes):
         counts=stage['counts'];successes+=1
         stage['observe94']('DONE',matched=counts.get('matched_streams66',0),staged=counts.get('stored_unique66',counts['stored']),committed=stage['verified94']['rows'],verified=stage['verified94']['rows'],first=stage['verified94']['first'],last=stage['verified94']['last'])
-        source_done53(pid,__import__('guide_publish44').source_id(stage['source'],stage['index']),'PARTIAL_PRESERVED' if outcome['code']=='PARTIAL_PRESERVED' else 'READY',counts,outcome)
+        verified95=stage['verified94']
+        history_counts95=dict(counts,committed=verified95['rows'],verified=verified95['rows'],verified_first=verified95['first'],verified_last=verified95['last'])
+        source_done53(pid,__import__('guide_publish44').source_id(stage['source'],stage['index']),'PARTIAL_PRESERVED' if outcome['code']=='PARTIAL_PRESERVED' else 'READY',history_counts95,outcome)
         update(pid,stage['key'],'PARTIAL_PRESERVED' if outcome['code']=='PARTIAL_PRESERVED' else 'READY',running=False,
             source_index=stage['index'],channels=counts['channels'],programmes=counts['stored'],bytes=counts['bytes'])
     result=fast_snapshot(pid,streams,config['mappings'])

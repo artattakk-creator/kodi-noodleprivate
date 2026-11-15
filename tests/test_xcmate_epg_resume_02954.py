@@ -68,7 +68,7 @@ class EPG54(unittest.TestCase):
         self.mod.run(self.portal);state=self.mod.read(self.portal);state['phase']='PARTIAL';state['sources'].clear();self.mod.write(self.portal,state)
         with mock.patch.object(self.stream,'import_source',side_effect=AssertionError('backup gate')):
             result=self.mod.run(self.portal)
-        self.assertEqual(result['code'],'BACKUP_REQUIRED');self.assertIsNotNone(self.m.portals.get_by_id(self.portal['id']))
+        self.assertEqual(result['code'],'DB_AUTHORIZATION_MISSING');self.assertIsNotNone(self.m.portals.get_by_id(self.portal['id']))
     def test_checkpoints_are_private_and_have_no_raw_urls_passwords_or_programme_text(self):
         self.mod.run(self.portal);file=Path(self.mod.path(self.portal));raw=file.read_text()
         for value in ('SECRET','https://',str(self.files[0]),'Actual source description','Source 1'):self.assertNotIn(value,raw)

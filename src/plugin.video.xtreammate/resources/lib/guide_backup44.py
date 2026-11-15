@@ -94,6 +94,8 @@ def poll():
             monitor=xbmc.Monitor()
             result=authorize(path(),monitor.abortRequested)
             fields={k:result[k] for k in ('code','bytes','events')}
+            from epg_gate95 import inspect
+            fields['import_gate95']=inspect(path(),cancel=monitor.abortRequested)
         except Exception as exc:
             fields=dict(code='BACKUP_FAILED',error=type(exc).__name__)
         home.setProperty('XCMate.GuideBackup44Status',json.dumps(fields))
@@ -103,10 +105,19 @@ def poll():
 def show():
     import xbmcgui
     from localization import tr
-    d=xbmcgui.Dialog();status=xbmcgui.Window(10000).getProperty('XCMate.GuideBackup44Status')
+    from guide_store import path
+    from epg_gate95 import latest,request as probe,message
+    home=xbmcgui.Window(10000);d=xbmcgui.Dialog();status=home.getProperty('XCMate.GuideBackup44Status')
+    def completed(result):
+        home.setProperty('XCMate.GuideGate95Status',json.dumps(result))
+        d.notification('XCMate EPG',message(result['code']))
+    previous=latest(path());probe(path(),completed)
     if status:
         try:status=json.loads(status)
         except ValueError:status={}
-        d.ok('XCMate EPG',tr(35963)+'\n'+str(status.get('code','UNKNOWN')))
-    if d.yesno('XCMate EPG',tr(35961),yeslabel=tr(35962)):
+        check=previous or status.get('import_gate95',{})
+        d.ok('XCMate EPG',tr(35963)+'\n'+str(status.get('code','UNKNOWN'))+'\nLetzte unabhängige Importprüfung: '+message(check.get('code','CHECKING'))+'\nEine Sicherungsmeldung allein erteilt keine Importfreigabe.')
+    choice=d.select('XCMate EPG',['Importfreigabe prüfen – keine neue Sicherung','Neue Sicherung ausdrücklich anfordern','Zurück'])
+    if choice==0:probe(path(),completed);return
+    if choice==1 and d.yesno('XCMate EPG',tr(35961),yeslabel=tr(35962)):
         request();d.notification('XCMate EPG',tr(35964))

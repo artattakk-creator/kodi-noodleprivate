@@ -1,3 +1,10 @@
+0.1.29.95 (2026-11-15) – EPG-Sicherungsfreigabe, Testkandidat
+- Historische Sicherungsmeldung und tatsächliche Importfreigabe unabhängig prüfen. Gesperrte Datenbanken, Zeitbudgets, fehlende Belege und Speicherfehler eindeutig unterscheiden.
+- Sicherungsprüfung im Hintergrund: mehr als 128 Archive und langsame Datenträger unterstützt; keine automatische neue Sicherung und keine Löschung vorhandener Daten.
+- Profilsperren entlasten: untätiger Erinnerungstimer schreibt nicht mehr sekündlich; unveränderte, zuvor verifizierte Portaldateien bei vorübergehender Sperre weiter lesbar.
+- EPG-Bestand quellweise und begrenzt prüfen. Bestätigte frühere Importzahlen bleiben bei vorübergehend beschäftigter Inventur als historische Nachweise sichtbar.
+- Alle .94-Korrekturen übernommen. Android-Abnahme offen; kein Merge und keine Repository-Veröffentlichung.
+
 0.1.29.94 (2026-11-14) – EPG-Stabilisierung, Testkandidat
 - Neue Xtream-Einrichtung verwendet das tatsächliche Anbieter-EPG, wenn keine Quelle bewusst abgewählt wurde. Zugangsdaten und Passwörter bleiben erhalten.
 - EPGShare01 DE/AT/CH und Kaimandura nachrüstbar; ausgeschaltetes EPG wird nur mit bestätigter Absicht aktiviert.

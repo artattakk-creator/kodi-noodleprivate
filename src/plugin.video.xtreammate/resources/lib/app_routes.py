@@ -44,8 +44,12 @@ def dispatch(router):
         run(router._params.get('token',''));return
     from portal_snapshot import PortalReadError
     try:portal=portal_for(router)
-    except PortalReadError:
-        if action!='media_play':raise
+    except PortalReadError as exc:
+        if action!='media_play':
+            if getattr(exc,'reason','') not in ('PROFILE_BUSY','PROFILE_RACE'):raise
+            _end(router)
+            xbmcgui.Dialog().notification('XCMate','Profil beschäftigt. Bitte kurz warten und erneut versuchen.')
+            return
         from media_intent import failed
         failed(str(router._params.get('intent') or ''),str(router._params.get('pid') or ''))
         import xbmcplugin

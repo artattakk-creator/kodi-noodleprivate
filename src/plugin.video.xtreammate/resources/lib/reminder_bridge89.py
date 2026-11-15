@@ -70,14 +70,14 @@ def apply(conn,ident,intent):
  with conn:conn.execute('DELETE FROM bookmark_intents89 WHERE id=?',(ident,))
 
 def recover(conn):
- from profile_transaction import writing
+ from reminder_transaction95 import writing
  with writing(timeout=.2):
   init(conn)
   for row in conn.execute('SELECT id,payload FROM bookmark_intents89 LIMIT 64').fetchall():apply(conn,row[0],json.loads(row[1]))
 
 def toggle(event,cancel=lambda:False,wanted=None):
  from programme_actions88 import bookmark_id,_toggle88
- from profile_transaction import writing
+ from reminder_transaction95 import writing
  from guide_timers import db
  clean={k:event[k] for k in ('pid','sid','title','start','stop')};clean.update(pid=str(clean['pid']),sid=str(clean['sid']),title=str(clean['title'])[:512],start=int(clean['start']),stop=int(clean['stop']))
  if not clean['sid'] or not 0<clean['start']<clean['stop']:raise ValueError('BOOKMARK_INVALID')

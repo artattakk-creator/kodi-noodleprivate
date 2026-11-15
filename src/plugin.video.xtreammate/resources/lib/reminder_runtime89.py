@@ -4,6 +4,28 @@ from urllib.parse import urlencode
 _guard=threading.Lock();_next=0;_legacy_stamp=None
 INSTANCE89=uuid.uuid4().hex
 PREFIX='XCMate.Reminder89.'
+def needed95(now,ready,choice):
+ """Read-only preflight: an idle timer must not acquire any write lease."""
+ if ready or choice:return True
+ from utils import addon_data_dir
+ from pathlib import Path
+ import sqlite3
+ from urllib.parse import quote
+ root=Path(addon_data_dir());legacy_file=root/'reminders.json';filename=root/'guide_timers_v1.sqlite'
+ try:
+  if legacy_file.exists():
+   s=legacy_file.stat()
+   if (str(legacy_file),s.st_mtime_ns,s.st_size)!=_legacy_stamp:return True
+  if not filename.exists():return False
+  db=sqlite3.connect('file:'+quote(str(filename),safe='/')+'?mode=ro',uri=True,timeout=.05)
+  try:
+   end=time.monotonic()+.15;db.set_progress_handler(lambda:int(time.monotonic()>end),1000)
+   if not db.execute("SELECT 1 FROM sqlite_master WHERE name='bookmark_intents89'").fetchone():return True
+   if db.execute('SELECT 1 FROM bookmark_intents89 LIMIT 1').fetchone():return True
+   if db.execute("SELECT 1 FROM alarm_dispatch89 WHERE state!='closed' LIMIT 1").fetchone():return True
+   return bool(db.execute("SELECT 1 FROM timers WHERE state='pending' AND (notify_at<=? OR stop<=?) LIMIT 1",(now,now)).fetchone())
+  finally:db.close()
+ except (OSError,sqlite3.Error):return False # Transient read pressure; next poll retries.
 def window():
  import xbmcgui
  return xbmcgui.Window(10000)
@@ -69,9 +91,10 @@ def worker(now=None):
   if choice and choice.get('nonce')!=ready.get('nonce'):window().clearProperty(PREFIX+'Choice');choice={}
   if now is None and time.monotonic()<_next and not choice:return
   _next=time.monotonic()+1;now=int(time.time() if now is None else now)
+  if not needed95(now,ready,choice):return
   from guide_timers import db
   from reminder_bridge89 import recover
-  from profile_transaction import writing
+  from reminder_transaction95 import writing
   with writing(timeout=.2):
    # Another service interpreter may have published a claim while this caller
    # waited for the profile lock. Never retire it using an earlier snapshot.

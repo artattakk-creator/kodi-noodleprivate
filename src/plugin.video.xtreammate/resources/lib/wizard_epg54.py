@@ -206,7 +206,7 @@ def _run(portal,cancel,status):
                     write(portal,state)
                     observe94(key,'DONE',matched=stage['counts'].get('matched_streams66',0),staged=stage['counts'].get('stored_unique66',0),committed=actual['rows'],verified=actual['rows'],first=actual['first'],last=actual['last'])
                     counts=stage['counts'];update(portal['id'],key,'READY',running=False,source_index=rank,channels=counts['channels'],programmes=counts['stored'],bytes=counts['bytes'])
-                    source_done(portal['id'],identity,'READY',counts,outcome)
+                    source_done(portal['id'],identity,'READY',dict(counts,committed=actual['rows'],verified=actual['rows'],verified_first=actual['first'],verified_last=actual['last']),outcome)
                     status(None,prefix+'\nQuelle erfolgreich abgeschlossen · '+str(actual['rows'])+' gespeicherte Sendungen')
                 except InterruptedError:raise
                 except Exception as exc:
