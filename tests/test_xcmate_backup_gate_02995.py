@@ -60,3 +60,14 @@ class BackupGate95(Fixture,unittest.TestCase):
   before={p:hashlib.sha256(p.read_bytes()).hexdigest() for p in paths if p.is_file() and not p.name.endswith('-shm')}
   self.assertEqual(self.inspect()['code'],'IMPORT_AUTHORIZED')
   self.assertEqual(before,{p:hashlib.sha256(p.read_bytes()).hexdigest() for p in before})
+ def test_valid_receipt_after_150_other_backup_receipts_is_found(self):
+  folder=self.folder/'guide_backups44'
+  for i in range(150):
+   name='guide-'+str(1000000000000000000+i)+'.sqlite'
+   (folder/(name+'.json')).write_text(json.dumps(dict(code='BACKUP_VERIFIED',backup=name,bytes=0,sha256='f'*64)))
+  original=os.scandir
+  @contextlib.contextmanager
+  def ordered(path):
+   with original(path) as entries:rows=list(entries)
+   yield iter(sorted(rows,key=lambda e:e.name==self.result['backup']+'.json'))
+  with mock.patch.object(os,'scandir',ordered):self.assertEqual(self.inspect()['code'],'IMPORT_AUTHORIZED')

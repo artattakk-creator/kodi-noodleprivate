@@ -51,6 +51,21 @@ class GateUI95(Fixture,unittest.TestCase):
    w.onClick(402);self.assertEqual(calls,[]);w._pool.drain();w.pump()
   self.assertEqual(calls,['worker']);self.assertIn('DB_BUSY',w.getControl(102).label)
   w._job_loaded94(dict(requested=0,state='DONE',sources={}));self.assertIn('DB_BUSY',w.getControl(102).label)
+ def test_concurrent_source_revision_change_during_backup_is_not_authorized(self):
+  module=importlib.import_module('guide_backup44');real=module.hashlib.sha256;changed=[]
+  def race(*args,**kw):
+   if not changed:
+    changed.append(True)
+    with sqlite3.connect(self.g.path()) as db:db.execute("UPDATE guide_meta SET revision='CONCURRENT_WRITER'")
+   return real(*args,**kw)
+  with mock.patch.object(module.hashlib,'sha256',side_effect=race):
+   with self.assertRaisesRegex(ValueError,'GUIDE_CHANGED_RETRY_BACKUP'):module.authorize(self.g.path())
+  with sqlite3.connect(self.g.path()) as db:self.assertEqual(db.execute('SELECT count(*) FROM guide44_authorization').fetchone()[0],0)
+ def test_gate_cannot_trust_locator_after_archive_moves_and_recovers_after_manual_restore(self):
+  backup=importlib.import_module('guide_backup44').authorize(self.g.path());self.assertEqual(self.m.inspect(self.g.path())['code'],'IMPORT_AUTHORIZED')
+  folder=self.folder/'guide_backups44';moved=self.folder/'USER_MOVED_BACKUPS';folder.rename(moved)
+  self.assertEqual(self.m.inspect(self.g.path())['code'],'BACKUP_DIR_UNAVAILABLE')
+  moved.rename(folder);self.m=importlib.reload(self.m);self.assertEqual(self.m.inspect(self.g.path())['code'],'IMPORT_AUTHORIZED')
 
 class GatePipeline95(unittest.TestCase):
  setUp=resume.EPG54.setUp

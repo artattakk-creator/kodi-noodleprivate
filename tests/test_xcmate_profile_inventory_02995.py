@@ -35,6 +35,15 @@ class Profile95(Fixture,unittest.TestCase):
   with mock.patch('profile_transaction.writing',side_effect=AssertionError('GLOBAL_PROFILE_LOCK')),mock.patch('guide_timers.db',side_effect=AssertionError('IDLE_WRITE')):runtime.worker(now=int(time.time()))
   self.assertFalse((self.folder/'guide_timers_v1.sqlite').exists())
 
+ def test_automatic_maintenance_never_mutates_active_guide_or_prunes_backups95(self):
+  module=importlib.import_module('storage_maintenance92');guide=importlib.import_module('guide_store');guide.connect().close()
+  folder=self.folder/'guide_backups44';folder.mkdir();old=folder/'saved.sqlite';old.write_bytes(b'USER_BACKUP')
+  before=Path(guide.path()).read_bytes();seen=[]
+  with mock.patch.object(module,'expire_epg',side_effect=lambda path,*a:seen.append(path.name) or dict(code='NOT_CREATED')),mock.patch.object(module,'reference_intervals',return_value=[]),mock.patch('storage_inventory92.collect',return_value={}),mock.patch('artwork_migration.busy',return_value=False),mock.patch('epg_cleanup93.prune',side_effect=AssertionError('BACKUP_DELETION')):
+   result=module.run(force=True)
+  self.assertNotIn('guide_v1.sqlite',seen);self.assertEqual(result['epg_cleanup93']['code'],'PROTECTED_95')
+  self.assertEqual(Path(guide.path()).read_bytes(),before);self.assertEqual(old.read_bytes(),b'USER_BACKUP')
+
 class Inventory95(Fixture,unittest.TestCase):
  def setUp(self):
   super().setUp();self.g=importlib.import_module('guide_store');self.g.connect().close();self.m=importlib.import_module('epg_inventory95')
