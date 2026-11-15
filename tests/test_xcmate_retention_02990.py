@@ -62,7 +62,8 @@ class Retention90(Fixture,unittest.TestCase):
   for content in (json.dumps([dict(self.portal,xc_pass='new test value')]),None):
    if content is None:file.unlink()
    else:file.write_text(content)
-   with mock.patch('profile_transaction.reading',side_effect=locked),self.assertRaises(TimeoutError):reader.read(str(file),['xtream'])
+   with mock.patch('profile_transaction.reading',side_effect=locked),self.assertRaises(m.PortalReadError) as error:reader.read(str(file),['xtream'])
+   self.assertEqual(error.exception.reason,'PROFILE_BUSY')
 
  def test_native_picker_root_with_real_portal_is_three_folders_and_never_autoplays(self):
   self.portal['autoplay_start']=True
