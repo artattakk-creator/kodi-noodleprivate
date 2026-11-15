@@ -67,6 +67,28 @@ class GateUI95(Fixture,unittest.TestCase):
   self.assertEqual(self.m.inspect(self.g.path())['code'],'BACKUP_DIR_UNAVAILABLE')
   moved.rename(folder);self.m=importlib.reload(self.m);self.assertEqual(self.m.inspect(self.g.path())['code'],'IMPORT_AUTHORIZED')
 
+ def test_automatic_scheduler_backs_off_gate_failure_before_any_import_history_exists(self):
+  module=importlib.import_module('epg_schedule53');now=100000
+  source=dict(id='provider',key='provider',enabled=True)
+  with mock.patch('wizard_epg54.pending',return_value=False),mock.patch('epg_report53.history',return_value=[]),mock.patch('epg_report53.configured',return_value=[source]),mock.patch('epg_source66.restart_anchors',return_value={}),mock.patch.object(module,'interval',return_value=86400):
+   for code,delay in [('DB_BUSY',900),('BACKUP_RECEIPT_MISMATCH',86400),('DB_AUTHORIZATION_MISSING',86400)]:
+    with mock.patch('epg_status.read',return_value={'refresh':dict(code=code,at=now-60)}):
+     self.assertEqual(module.plan(dict(id='p',epg_show=True),now),[],code)
+     self.assertEqual(module.plan(dict(id='p',epg_show=True),now+delay),['provider'],code)
+
+ def test_cancelled_owner_during_gate_cannot_enqueue_late_import(self):
+  epg=real_epg();jobs=importlib.import_module('ui_jobs86');stop=[False];entered=threading.Event();release=threading.Event();results=[]
+  status=importlib.import_module('epg_status');status.update=mock.Mock()
+  def slow(filename,**kw):
+   entered.set();release.wait(2);return dict(code='CANCELLED' if kw['cancel']() else 'IMPORT_AUTHORIZED')
+  def work():
+   try:
+    with jobs.scope(lambda:stop[0],seconds=35):results.append(epg.request_refresh('p',dict(epg_show=True)))
+   except InterruptedError:pass
+  with mock.patch.object(self.m,'inspect',side_effect=slow),mock.patch('epg_jobs94.request',side_effect=AssertionError('LATE_IMPORT')):
+   worker=threading.Thread(target=work);worker.start();self.assertTrue(entered.wait(1));stop[0]=True;release.set();worker.join(2);self.assertFalse(worker.is_alive())
+  self.assertEqual(results,[False]);self.assertEqual(status.update.call_args.args[2],'CANCELLED')
+
 class GatePipeline95(unittest.TestCase):
  setUp=resume.EPG54.setUp
  backup=resume.EPG54.backup

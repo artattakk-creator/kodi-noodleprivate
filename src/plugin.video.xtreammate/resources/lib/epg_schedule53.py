@@ -20,6 +20,11 @@ def plan(portal,now=None):
     anchors=restart_anchors(portal['id'])
     blocked95={'BACKUP_REQUIRED','CANCELLED','BACKUP_MISSING','BACKUP_RECEIPT_MISMATCH','BACKUP_DIR_UNAVAILABLE','DB_AUTHORIZATION_MISSING','DB_SCHEMA_MISSING','STORAGE_FULL','STORAGE_ACCESS_DENIED'}
     transient95={'DB_BUSY','BACKUP_GATE_TIMEOUT','DB_INTERRUPTED','DB_AUTHORIZATION_CHANGED','STORAGE_IO'}
+    # A gate refusal precedes the import worker and may have no history row.
+    # Its durable refresh status must also prevent minute-by-minute rechecks.
+    refused95=state.get('refresh',{})
+    if refused95.get('code') in blocked95 and 0<=now-refused95.get('at',0)<period:return []
+    if refused95.get('code') in transient95 and 0<=now-refused95.get('at',0)<900:return []
     if runs and runs[-1].get('code') in blocked95 and now-runs[-1]['started']<period:return []
     if runs and runs[-1].get('code') in transient95 and now-runs[-1]['started']<900:return []
     if runs and runs[-1].get('code') in ('WAIT_ACTIVE_CATALOG','IMPORT_BUSY_OR_LOCK_UNAVAILABLE') and now-runs[-1]['started']<60:return []

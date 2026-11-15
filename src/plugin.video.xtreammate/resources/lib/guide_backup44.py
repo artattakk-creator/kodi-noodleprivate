@@ -121,7 +121,8 @@ def show():
         check=previous or status.get('import_gate95',{})
         failure='\n'+message(status['error_code95']) if status.get('error_code95') else ''
         d.ok('XCMate EPG',tr(35963)+'\n'+str(status.get('code','UNKNOWN'))+failure+'\n'+tr(38919,status=message(check.get('code','CHECKING')))+'\n'+tr(38920))
-    choice=d.select('XCMate EPG',[tr(38916),tr(38917),tr(38918)])
+    from menu_icons45 import select
+    choice=select(d,'XCMate EPG',[tr(38916),tr(38917),tr(38918)])
     if choice==0:probe(path(),completed);return
     if choice==1 and d.yesno('XCMate EPG',tr(35961),yeslabel=tr(35962)):
         request();d.notification('XCMate EPG',tr(35964))

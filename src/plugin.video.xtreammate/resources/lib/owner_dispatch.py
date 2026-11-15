@@ -109,13 +109,13 @@ class OwnerDispatch:
             self._window_mark('THREAD_MISMATCH')
             raise RuntimeError('XM-WINDOW-GUI-THREAD')
 
-    def _request(self,job,apply):
+    def _request(self,job,apply,*,seconds=4):
         self._gui()
         self._generation+=1
         if self._pending_future is not None: self._pending_future.cancel()
         self._pending_apply=apply;self._pending_generation=self._generation
         generation=self._pending_generation
-        self._pending_future=self._pool.submit(lambda:__import__('ui_jobs86').run(self,generation,job))
+        self._pending_future=self._pool.submit(lambda:__import__('ui_jobs86').run(self,generation,job,seconds=seconds))
 
     def pump(self):
         self._gui()

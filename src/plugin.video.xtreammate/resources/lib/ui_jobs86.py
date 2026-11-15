@@ -23,8 +23,8 @@ def scope(cancel,seconds=4):
  try:check();yield;check()
  finally:_local.cancel,_local.deadline=previous
 
-def run(view,generation,job):
+def run(view,generation,job,*,seconds=4):
  import xbmc
  monitor=xbmc.Monitor();abort=getattr(monitor,'abortRequested',lambda:False)
  cancel=lambda:getattr(view,'_closed',False) or getattr(view,'_generation',generation)!=generation or abort()
- with scope(cancel):return job()
+ with scope(cancel,seconds=max(.1,min(35,seconds))):return job()

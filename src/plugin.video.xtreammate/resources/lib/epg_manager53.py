@@ -152,7 +152,7 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
             self.portal=get_by_id(self.portal['id']) or self.portal
             from epg import request_refresh
             self.getControl(102).setLabel('Importfreigabe wird unabhängig geprüft …')
-            self._request(lambda:request_refresh(self.portal['id'],self.portal,force=True),self._refresh_ready95)
+            self._request(lambda:request_refresh(self.portal['id'],self.portal,force=True),self._refresh_ready95,seconds=35)
         elif cid==403:self._reports()
         elif cid==404:self._load()
         elif cid==405:self.next_action='guide';self.close()

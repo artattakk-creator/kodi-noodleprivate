@@ -21,7 +21,7 @@ Der Reminder-Worker betrat auch im Leerlauf sekündlich den globalen Profilschre
 
 ### Unabhängige Sicherungsfreigabe
 
-`epg_gate95.py`, `epg_gate46.py`, `guide_backup44.py`, `epg_manager53.py`:
+`epg_gate95.py`, `epg_gate46.py`, `guide_backup44.py`, `epg_manager53.py`, `owner_dispatch.py`, `ui_jobs86.py`:
 
 1. Guide ausschließlich über SQLite `mode=ro`, query_only und eigene Lesetransaktion prüfen. Schema, gespeicherte Programme und letzter dauerhafter DB-Autorisierungs-SHA werden getrennt festgestellt.
 2. Sicherung und Beleg ausschließlich aus demselben Add-on-Profilverzeichnis akzeptieren. Gültiger Beleg, exakter Dateiname, Dateigröße, tatsächlicher SHA256 und gegebenenfalls Quellkonfigurations-SHA müssen übereinstimmen. Symlinks werden nicht als Sicherung akzeptiert.
@@ -29,11 +29,11 @@ Der Reminder-Worker betrat auch im Leerlauf sekündlich den globalen Profilschre
 4. Verzeichnisprüfung auf 16.384 Einträge und insgesamt 30 s begrenzen; SQLite-Wartezeit .25 s und SQL-Teilbudget 3 s. Manuelle Neuprüfung ist möglich, ohne eine weitere Sicherung anzulegen.
 5. Privater Locator ist ausschließlich ein Hinweis auf den früheren Dateinamen. Er ersetzt keinen Beleg, Hash oder DB-Nachweis. Hashcache ist auf 16 Einträge begrenzt und an Device/Inode/Größe/mtime/ctime gebunden. Auch gleich große veränderte Sicherungen werden abgelehnt.
 6. BACKUP_VERIFIED beschreibt die vergangene Sicherungsarbeit. IMPORT_AUTHORIZED beschreibt nur eine tatsächlich bestandene unabhängige Gate-Prüfung. Historische GUI-Eigenschaften erteilen keine Freigabe.
-7. GUI-Prüfung im vorhandenen Owner-Worker; keine GUI-Verzeichnis-/Hashschleife. Einzelprobe ist single-flight. Eine alte Importanzeige darf einen neueren Gate-Fehler nicht überschreiben.
+7. GUI-Prüfung im vorhandenen Owner-Worker mit ausdrücklich auf 35 s begrenztem Jobbudget; andere Owner-Jobs behalten ihr bisheriges 4-s-Budget. Die Gate-Prüfung respektiert Fensterschließung, Generation und Kodi-Abbruch, damit nach Zurück kein verspäteter Importauftrag entstehen kann. Keine GUI-Verzeichnis-/Hashschleife. Einzelprobe ist single-flight. Eine alte Importanzeige darf einen neueren Gate-Fehler nicht überschreiben.
 
 Diagnose enthält nur Code, Zeitpunkt, Dauer, geprüfte Dateianzahl, Bytezahl, gekürzten SHA und gegebenenfalls numerischen SQLite-Code. Keine privaten Pfade, Konten, Sendernamen oder Quelladressen. Dauerhafte Statusdatei ist eine datensparsame Beobachtung und keine Autorisierungsdatei. Neue Sidecars werden mit 0600 atomar gespeichert; ein Schreibfehler macht einen gültigen vorhandenen Sicherungsnachweis nicht ungültig.
 
-Codes: DB_BUSY, BACKUP_GATE_TIMEOUT, DB_INTERRUPTED, BACKUP_MISSING, BACKUP_RECEIPT_MISMATCH, BACKUP_DIR_UNAVAILABLE, DB_SCHEMA_MISSING, DB_AUTHORIZATION_MISSING, DB_AUTHORIZATION_CHANGED, STORAGE_FULL, STORAGE_ACCESS_DENIED, STORAGE_IO, CANCELLED. Zeitweilige Fehler werden vom Scheduler begrenzt zurückgestellt; es wird keine neue Sicherung automatisch ausgelöst.
+Codes: DB_BUSY, BACKUP_GATE_TIMEOUT, DB_INTERRUPTED, BACKUP_MISSING, BACKUP_RECEIPT_MISMATCH, BACKUP_DIR_UNAVAILABLE, DB_SCHEMA_MISSING, DB_AUTHORIZATION_MISSING, DB_AUTHORIZATION_CHANGED, STORAGE_FULL, STORAGE_ACCESS_DENIED, STORAGE_IO, CANCELLED. Zeitweilige Fehler werden vom Scheduler begrenzt zurückgestellt, auch bei Ablehnung vor dem ersten Importbericht anhand des vorhandenen Refresh-Status; es wird keine neue Sicherung automatisch ausgelöst.
 
 ### Profilsperren und Erinnerungen
 

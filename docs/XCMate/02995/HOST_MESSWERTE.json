@@ -1,0 +1,23 @@
+{
+  "platform": "Linux Python 3.12 host, synthetic local SQLite; NOT Android",
+  "source_commit": "5c502d25",
+  "slow_local_io_80ms": {
+    "before94": {
+      "code": "BACKUP_REQUIRED",
+      "elapsed_ms": 80.864
+    },
+    "after95": {
+      "code": "READY",
+      "elapsed_ms": 85.418
+    }
+  },
+  "inventory": {
+    "source_rows": [
+      60000,
+      60000
+    ],
+    "cold_ms": 230.169,
+    "same_generation_ms": 0.041,
+    "code": "READY"
+  }
+}
