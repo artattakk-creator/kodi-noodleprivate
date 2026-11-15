@@ -139,7 +139,7 @@ else: raise AssertionError('FIFO accepted')
         for _ in range(6): self.run_entry()
         sys.modules.pop('main',None);sys.modules.pop('portals',None);self.run_entry()
         self.assertEqual(len(self.ends),7)
-        self.assertEqual({p.name:p.read_bytes() for p in self.profile.iterdir() if p.name not in ('.artwork-config.lock','artwork_config_v1.json')},before)
+        self.assertEqual({p.name:p.read_bytes() for p in self.profile.iterdir() if p.name not in ('.artwork-config.lock','artwork_config_v1.json','portals.json.snapshot95.json')},before)
         self.assertEqual(json.loads((self.profile/'artwork_config_v1.json').read_text())['mode'],'internal')
 
     def test_init_error_and_post_completion_error_finish_exactly_once(self):

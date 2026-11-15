@@ -29,11 +29,11 @@ class Preservation437(unittest.TestCase):
         self.assertEqual(without_clock437(d['new'], 'foreign_module.py'), d['new'])
 
     def test_every_published_channel_and_installer_file_stays_at_main(self):
-        paths = subprocess.check_output(['git','ls-tree','-r','--name-only','b830fad1a19247cc08750970dc56edae0b8c2361',
+        paths = subprocess.check_output(['git','ls-tree','-r','--name-only','459817b43fe59664acbcccc68a757ecd946a5839',
             'addons.xml','addons.xml.md5','index.html','online-test',
             'plugin.video.xtreammate','script.gsmedia.setup','src/script.gsmedia.setup'], cwd=ROOT).decode().splitlines()
         for name in paths:
-            self.assertEqual((ROOT/name).read_bytes(), subprocess.check_output(['git','show','b830fad1a19247cc08750970dc56edae0b8c2361:'+name], cwd=ROOT), name)
+            self.assertEqual((ROOT/name).read_bytes(), subprocess.check_output(['git','show','459817b43fe59664acbcccc68a757ecd946a5839:'+name], cwd=ROOT), name)
 
     def test_candidate_zip_matches_every_current_source_byte(self):
         archive = ROOT/'docs/XCMate/test-builds/pr437/plugin.video.xtreammate-0.1.29.90.zip'

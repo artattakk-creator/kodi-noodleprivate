@@ -97,7 +97,10 @@ def poll():
             from epg_gate95 import inspect
             fields['import_gate95']=inspect(path(),cancel=monitor.abortRequested)
         except Exception as exc:
-            fields=dict(code='BACKUP_FAILED',error=type(exc).__name__)
+            import errno
+            number=getattr(exc,'errno',None);sql=getattr(exc,'sqlite_errorcode',0)&255
+            code='STORAGE_FULL' if number==errno.ENOSPC or sql==13 else 'STORAGE_ACCESS_DENIED' if number in (errno.EACCES,errno.EPERM) else 'DB_BUSY' if sql in (5,6) else 'CANCELLED' if isinstance(exc,InterruptedError) else 'STORAGE_IO'
+            fields=dict(code='BACKUP_FAILED',error=type(exc).__name__,error_code95=code)
         home.setProperty('XCMate.GuideBackup44Status',json.dumps(fields))
     _worker=threading.Thread(target=work,name='XCMate-guide-backup44',daemon=True);_worker.start()
 
@@ -116,8 +119,9 @@ def show():
         try:status=json.loads(status)
         except ValueError:status={}
         check=previous or status.get('import_gate95',{})
-        d.ok('XCMate EPG',tr(35963)+'\n'+str(status.get('code','UNKNOWN'))+'\nLetzte unabhängige Importprüfung: '+message(check.get('code','CHECKING'))+'\nEine Sicherungsmeldung allein erteilt keine Importfreigabe.')
-    choice=d.select('XCMate EPG',['Importfreigabe prüfen – keine neue Sicherung','Neue Sicherung ausdrücklich anfordern','Zurück'])
+        failure='\n'+message(status['error_code95']) if status.get('error_code95') else ''
+        d.ok('XCMate EPG',tr(35963)+'\n'+str(status.get('code','UNKNOWN'))+failure+'\n'+tr(38919,status=message(check.get('code','CHECKING')))+'\n'+tr(38920))
+    choice=d.select('XCMate EPG',[tr(38916),tr(38917),tr(38918)])
     if choice==0:probe(path(),completed);return
     if choice==1 and d.yesno('XCMate EPG',tr(35961),yeslabel=tr(35962)):
         request();d.notification('XCMate EPG',tr(35964))

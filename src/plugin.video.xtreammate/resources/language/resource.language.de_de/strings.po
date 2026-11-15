@@ -5853,3 +5853,89 @@ msgstr "Kein neuer Fortschritt; Abbruch weiterhin möglich"
 msgctxt "#38831"
 msgid "Cancel import"
 msgstr "Import abbrechen"
+
+# .95 independent EPG authorization and profile busy handling
+
+msgctxt "#38900"
+msgid "Import authorization independently confirmed."
+msgstr "Importfreigabe unabhängig bestätigt."
+
+msgctxt "#38901"
+msgid "EPG database is busy. Wait for current work, then check again. No new backup is needed."
+msgstr "EPG-Datenbank beschäftigt. Laufende Arbeit abwarten, dann erneut prüfen. Keine neue Sicherung nötig."
+
+msgctxt "#38902"
+msgid "Backup verification reached its time budget. Check again explicitly; do not create another backup."
+msgstr "Sicherungsprüfung hat ihr Zeitbudget erreicht. Gezielt erneut prüfen; keine neue Sicherung erzeugen."
+
+msgctxt "#38903"
+msgid "Backup file or receipt is missing at the expected location. Check the backup; delete nothing."
+msgstr "Sicherungsbeleg oder Datei fehlt am erwarteten Speicherort. Sicherung prüfen, nichts löschen."
+
+msgctxt "#38904"
+msgid "Backup file and receipt do not match. Import remains blocked; check the backup."
+msgstr "Sicherungsdatei und Beleg stimmen nicht überein. Keine Importfreigabe; Sicherung prüfen."
+
+msgctxt "#38905"
+msgid "Backup directory is unavailable. Check storage and permissions."
+msgstr "Sicherungsverzeichnis nicht erreichbar. Speicher und Rechte prüfen."
+
+msgctxt "#38906"
+msgid "EPG database schema could not be read completely. Preserve existing data and check diagnostics."
+msgstr "EPG-Datenbankschema nicht vollständig lesbar. Bestehende Daten schützen und Diagnose prüfen."
+
+msgctxt "#38907"
+msgid "Durable backup authorization is missing. Check existing backups first."
+msgstr "Dauerhafte Sicherungsfreigabe fehlt. Vorhandene Sicherungen zuerst prüfen."
+
+msgctxt "#38908"
+msgid "EPG authorization changed during verification. Wait for current work."
+msgstr "EPG-Freigabe wurde während der Prüfung geändert. Laufende Arbeit abwarten."
+
+msgctxt "#38909"
+msgid "Database verification was interrupted. Check again without resetting data."
+msgstr "Datenbankprüfung wurde unterbrochen. Erneut prüfen, keine Daten zurücksetzen."
+
+msgctxt "#38910"
+msgid "Storage is insufficient for the requested work. Do not delete files automatically."
+msgstr "Speicher reicht für die angeforderte Arbeit nicht aus. Keine Dateien automatisch löschen."
+
+msgctxt "#38911"
+msgid "Storage access denied. Check permissions and destination."
+msgstr "Speicherzugriff verweigert. Rechte und Speicherziel prüfen."
+
+msgctxt "#38912"
+msgid "Storage could not be read safely. Import remains blocked."
+msgstr "Speicher konnte nicht sicher gelesen werden. Keine Importfreigabe."
+
+msgctxt "#38913"
+msgid "Import authorization is being checked independently …"
+msgstr "Importfreigabe wird unabhängig geprüft …"
+
+msgctxt "#38914"
+msgid "EPG work is not confirmed. Existing data is preserved."
+msgstr "EPG-Arbeit nicht bestätigt. Bisherige Daten bleiben erhalten."
+
+msgctxt "#38915"
+msgid "Profile is busy. Please wait briefly and try again."
+msgstr "Profil beschäftigt. Bitte kurz warten und erneut versuchen."
+
+msgctxt "#38916"
+msgid "Check import authorization – do not create another backup"
+msgstr "Importfreigabe prüfen – keine neue Sicherung"
+
+msgctxt "#38917"
+msgid "Explicitly request a new backup"
+msgstr "Neue Sicherung ausdrücklich anfordern"
+
+msgctxt "#38918"
+msgid "Back"
+msgstr "Zurück"
+
+msgctxt "#38919"
+msgid "Last independent import check: {status}"
+msgstr "Letzte unabhängige Importprüfung: {status}"
+
+msgctxt "#38920"
+msgid "A backup notification alone does not authorize an import."
+msgstr "Eine Sicherungsmeldung allein erteilt keine Importfreigabe."

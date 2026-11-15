@@ -5853,3 +5853,89 @@ msgstr "No new progress; cancellation remains available"
 msgctxt "#38831"
 msgid "Cancel import"
 msgstr "Cancel import"
+
+# .95 independent EPG authorization and profile busy handling
+
+msgctxt "#38900"
+msgid "Import authorization independently confirmed."
+msgstr "Import authorization independently confirmed."
+
+msgctxt "#38901"
+msgid "EPG database is busy. Wait for current work, then check again. No new backup is needed."
+msgstr "EPG database is busy. Wait for current work, then check again. No new backup is needed."
+
+msgctxt "#38902"
+msgid "Backup verification reached its time budget. Check again explicitly; do not create another backup."
+msgstr "Backup verification reached its time budget. Check again explicitly; do not create another backup."
+
+msgctxt "#38903"
+msgid "Backup file or receipt is missing at the expected location. Check the backup; delete nothing."
+msgstr "Backup file or receipt is missing at the expected location. Check the backup; delete nothing."
+
+msgctxt "#38904"
+msgid "Backup file and receipt do not match. Import remains blocked; check the backup."
+msgstr "Backup file and receipt do not match. Import remains blocked; check the backup."
+
+msgctxt "#38905"
+msgid "Backup directory is unavailable. Check storage and permissions."
+msgstr "Backup directory is unavailable. Check storage and permissions."
+
+msgctxt "#38906"
+msgid "EPG database schema could not be read completely. Preserve existing data and check diagnostics."
+msgstr "EPG database schema could not be read completely. Preserve existing data and check diagnostics."
+
+msgctxt "#38907"
+msgid "Durable backup authorization is missing. Check existing backups first."
+msgstr "Durable backup authorization is missing. Check existing backups first."
+
+msgctxt "#38908"
+msgid "EPG authorization changed during verification. Wait for current work."
+msgstr "EPG authorization changed during verification. Wait for current work."
+
+msgctxt "#38909"
+msgid "Database verification was interrupted. Check again without resetting data."
+msgstr "Database verification was interrupted. Check again without resetting data."
+
+msgctxt "#38910"
+msgid "Storage is insufficient for the requested work. Do not delete files automatically."
+msgstr "Storage is insufficient for the requested work. Do not delete files automatically."
+
+msgctxt "#38911"
+msgid "Storage access denied. Check permissions and destination."
+msgstr "Storage access denied. Check permissions and destination."
+
+msgctxt "#38912"
+msgid "Storage could not be read safely. Import remains blocked."
+msgstr "Storage could not be read safely. Import remains blocked."
+
+msgctxt "#38913"
+msgid "Import authorization is being checked independently …"
+msgstr "Import authorization is being checked independently …"
+
+msgctxt "#38914"
+msgid "EPG work is not confirmed. Existing data is preserved."
+msgstr "EPG work is not confirmed. Existing data is preserved."
+
+msgctxt "#38915"
+msgid "Profile is busy. Please wait briefly and try again."
+msgstr "Profile is busy. Please wait briefly and try again."
+
+msgctxt "#38916"
+msgid "Check import authorization – do not create another backup"
+msgstr "Check import authorization – do not create another backup"
+
+msgctxt "#38917"
+msgid "Explicitly request a new backup"
+msgstr "Explicitly request a new backup"
+
+msgctxt "#38918"
+msgid "Back"
+msgstr "Back"
+
+msgctxt "#38919"
+msgid "Last independent import check: {status}"
+msgstr "Last independent import check: {status}"
+
+msgctxt "#38920"
+msgid "A backup notification alone does not authorize an import."
+msgstr "A backup notification alone does not authorize an import."

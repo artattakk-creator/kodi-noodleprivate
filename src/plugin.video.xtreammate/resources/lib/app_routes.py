@@ -48,7 +48,7 @@ def dispatch(router):
         if action!='media_play':
             if getattr(exc,'reason','') not in ('PROFILE_BUSY','PROFILE_RACE'):raise
             _end(router)
-            xbmcgui.Dialog().notification('XCMate','Profil beschäftigt. Bitte kurz warten und erneut versuchen.')
+            xbmcgui.Dialog().notification('XCMate',__import__('localization').tr(38915))
             return
         from media_intent import failed
         failed(str(router._params.get('intent') or ''),str(router._params.get('pid') or ''))
