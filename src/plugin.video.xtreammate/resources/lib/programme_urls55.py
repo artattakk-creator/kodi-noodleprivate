@@ -67,6 +67,7 @@ def display(event,value):
     """A persisted URL is not proof that Android displayed the right picture."""
     if not isinstance(value,dict) or value.get('url_version55')!=1:return None
     from programme_art46 import fingerprint
+    if value.get('source')=='xmltv_event' and (not __import__('event_art81').allowed(value) or not __import__('xmltv_art96').display_allowed(value)):return None
     if value.get('fingerprint')!=fingerprint(event):return None
     if value.get('hosts55')!=sorted(hosts()) or value.get('profile55')!=profile():return None
     if value.get('binding55')!=binding(event) or value.get('key')!=event.get('key'):return None
@@ -110,24 +111,32 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     mapping86=__import__('programme_mapping85').current(event)
     if mapping86 and mapping86.get('hidden'):
         return dict(key=event['key'],fingerprint=fingerprint(event),code='NO_IMAGE',source='placeholder',match='NONE',image=event['placeholder'],until=time.time()+3600,negative_scope68=__import__('programme_policy68').negative_scope(event),negative_scope77=__import__('programme_policy68').negative_scope(event),mapping_epoch85=__import__('programme_mapping85').epoch(event))
-    held89=__import__('programme_lock89').current(event,worker=True)
+    invalid_manual96=False;fresh_xml96=[]
+    if mapping86 and mapping86.get('source')=='xmltv_event' and __import__('artwork_sources96').enabled('xmltv'):
+        try:
+            invalid_manual96=__import__('xmltv_art96').checked_mapping(event,mapping86,cancel) is None
+            if invalid_manual96:fresh_xml96=__import__('xmltv_art96').search(event,cancel)['rows']
+        except SourceError as exc96:
+            if exc96.code not in ('SQLITE_BUSY','EPG_READ_BUDGET'):raise
+            # Short DB contention does not revoke the last confirmed image.
+    held89=None if invalid_manual96 else __import__('programme_lock89').current(event,worker=True)
     if held89:return held89
-    external89=__import__('external_art89').recover_programme(event)
+    external89=None if invalid_manual96 else __import__('external_art89').recover_programme(event)
     if external89:return external89
     local86=__import__('work_requests86').local_result(event)
     if local86:return local86
-    temp85=__import__('artwork_temp85').lookup(event)
+    temp85=None if invalid_manual96 else __import__('artwork_temp85').lookup(event)
     retain86(temp85)
     if temp85 and usable86(temp85):
         upgrade81=upgrade86(temp85)
         if not upgrade81:return temp85
-    durable81=__import__('event_art81').prior(event)
+    durable81=None if invalid_manual96 else __import__('event_art81').prior(event)
     retain86(durable81)
     if durable81 and not usable86(durable81):durable81=None
     upgrade81=upgrade81 or allow_lookup and __import__('event_art81').upgrade(event,durable81)
     if durable81 and not upgrade81:return durable81
     pressure84=__import__('artwork_display84').observe() or __import__('home_schedule75').applicable()
-    if url_mode69 and pressure84:
+    if url_mode69 and pressure84 and not invalid_manual96:
         renewed84=__import__('sticky_art88').read(event) or __import__('event_cache88').recover(event) or __import__('programme_display84').recover(event) or __import__('programme_display84').renew(event)
         retain86(renewed84)
         if renewed84 and usable86(renewed84) and not upgrade81:
@@ -138,11 +147,11 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             return renewed84
     if url_mode69:
         from programme_session69 import get as session69
-        prior69=session69(event)
+        prior69=None if invalid_manual96 else session69(event)
         retain86(prior69)
         if prior69 and usable86(prior69) and not upgrade81 and not (allow_lookup and __import__('programme_status70').retry(event,prior69)):return prior69
-    old=art(event)
-    if old and old.get('source','').startswith(('tmdb_','tvmaze')) and not __import__('event_art81').allowed(old):old=None
+    old=None if invalid_manual96 else art(event)
+    if old and (old.get('source')=='xmltv_event' or old.get('source','').startswith(('tmdb_','tvmaze'))) and not __import__('event_art81').allowed(old):old=None
     if not upgrade81 and old and not old.get('url_version55') and (local_image63 or old.get('source') in ('tmdb_movie','tmdb_episode','tmdb_series','tvmaze_series','tvmaze_episode')) and old.get('source')!='placeholder' and old.get('fingerprint')==fingerprint(event) and old.get('until',0)>time.time():
         from programme_art46 import indexed
         local60=indexed(event,verify=True)
@@ -183,7 +192,8 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     value.update(matching_policy57=1,source_policy57=policy(),sources70=[],lookup70=__import__('programme_outcomes70').settings(),origin_policy75=1)
     candidates=[dict(url=event[field],source=source,match='EXACT_EVENT',attribution=credit)
                 for field,source,credit in (('xmltv_image','xmltv_event','XMLTV – konfigurierte Eventquelle'),
-                    ('provider_image','provider_event','Anbieter – konfigurierte Eventquelle')) if event.get(field)]
+                    ('provider_image','provider_event','Anbieter – konfigurierte Eventquelle')) if event.get(field) and (source!='xmltv_event' or __import__('artwork_sources96').enabled('xmltv'))]
+    if invalid_manual96:candidates=fresh_xml96+[c for c in candidates if c.get('source')=='provider_event']
     if old and old.get('source_url') and old.get('source') in ('xmltv_event','provider_event','tmdb_movie','tmdb_episode','tmdb_series','tmdb_helper','xcmate_catalog','kodi_library'):
         source=old.get('source')
         enabled=source!='tmdb_helper' or policy()[0]
@@ -198,19 +208,18 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         mapping85=__import__('programme_mapping85').current(event)
         if mapping85 and mapping85.get('hidden'):return
         if mapping85 and mapping85.get('id'):
-            if mapping85.get('source') in ('tmdb','tvmaze') and not __import__('programme_candidates85').enabled(mapping85['source']):return
-            # Existing proofs were checked above. New remote work must obey
-            # the same visible-event admission as automatic lookups.
-            if allow_lookup:
+            if mapping85.get('source')=='xmltv_event':
+                chosen96=__import__('xmltv_art96').mapped(event,mapping85,cancel)
+                if chosen96:yield chosen96
+            elif mapping85.get('source') in ('tmdb','tvmaze') and __import__('programme_candidates85').enabled(mapping85['source']) and allow_lookup:
                 try:manual85=__import__('programme_candidates85').candidate(event,cancel)
                 except (SourceError,HelperError) as error85:
                     failed(error85.code);manual85=None
-                if manual85:yield manual85
-            # A confirmed work mapping does not invalidate source-supplied
-            # artwork for this exact broadcast. Keep it while the chosen work
-            # image is unavailable; never substitute another automatic work.
+                if manual85:yield from __import__('cinematic_images96').alternatives(manual85)
+            # Optional remote permission and local exact-event XMLTV fallback
+            # are separate. A disabled/failed TMDB mapping cannot erase it.
             yield from (c for c in candidates if c.get('source') in ('xmltv_event','provider_event') and c.get('match')=='EXACT_EVENT')
-            return  # A deliberate user mapping is never silently replaced.
+            return
         home86=__import__('home_schedule75').applicable() and not event.get('_detail93')
         if not home86:yield from candidates  # EPG detail legacy event ordering.
         reference84=__import__('programme_reference84').get(event)
@@ -229,7 +238,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
                     return own_candidate81(event,cancel)
                 found81=own_trace81(event,run_own81)
                 if attempted81:__import__('programme_outcomes70').add(value,'tmdb','FOUND' if found81 else 'NO_CONFIRMED_IMAGE',event)
-                if found81:own81.append(found81)
+                if found81:own81.extend(__import__('cinematic_images96').alternatives(found81))
             except (SourceError,HelperError) as exc:
                 __import__('programme_outcomes70').add(value,'tmdb',exc.code,event);failed(exc.code)
         if not own81:
@@ -313,6 +322,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             if not __import__('hero_art86').classify(quality86):
                 failed('HERO_QUALITY_REJECTED');continue
             trace77(event,'IMAGE_SOURCE_SELECTION','HERO_QUALITY_VERIFIED')
+        if candidate.get('xmltv96'):value['xmltv96']=candidate['xmltv96']
         value['mapping_epoch85']=__import__('programme_mapping85').epoch(event)
         value.update(code='READY',source=candidate['source'],match=candidate['match'],
             source_url=url,image=url+OPTIONS,thumbnail=url+OPTIONS,

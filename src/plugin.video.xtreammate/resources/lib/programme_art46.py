@@ -6,14 +6,14 @@ Existing cover jobs/files, Kodi textures, artwork mode and guide DB are untouche
 from collections import OrderedDict
 import hashlib,json,os,threading,time,tempfile
 _lock=threading.Lock();_queue=OrderedDict();_memory=OrderedDict();_pending=set();_workers=[];_stop=threading.Event();_wake=threading.Event()
-MAX_DISK=64*1024*1024
+MAX_DISK=32*1024*1024
 _visual_revision47=0
 
 class CacheBudget(OSError):pass
 
 def limit():
  from utils import setting_int
- return (32,64,128,256)[max(0,min(3,setting_int('programme_art_budget46',1)))]*1024*1024
+ return (32,64,128,256)[max(0,min(3,setting_int('programme_art_budget46',0)))]*1024*1024
 
 def root():
  from utils import addon_data_dir
@@ -113,7 +113,8 @@ def persisted(event,verify=True):
  except Exception:return None
 
 def space(upcoming):
- __import__('android_artwork87').check_active(upcoming)
+ dynamic96=not __import__('artwork_config').persistent()
+ __import__('android_artwork87').check_active(upcoming,write=not dynamic96)
  folder=image_root87();os.makedirs(folder,mode=0o700,exist_ok=True)
  if os.path.islink(folder):raise OSError('CACHE_UNSAFE')
  total=0;count=0
@@ -122,6 +123,9 @@ def space(upcoming):
   if count>1024:raise CacheBudget('PROGRAMME_CACHE_BUDGET')
   if row.is_file(follow_symlinks=False):total+=row.stat().st_size
  if total+upcoming>limit():raise CacheBudget('PROGRAMME_CACHE_BUDGET')
+ if dynamic96:
+  __import__('storage_artwork96').check_dynamic(folder,upcoming)
+  return
  from art_storage import check,budget
  from artwork_health82 import guard
  guard()

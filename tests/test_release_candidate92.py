@@ -16,6 +16,8 @@ class Release92(unittest.TestCase):
   paths=subprocess.check_output(['git','ls-tree','-r','--name-only',base,prefix],cwd=ROOT).decode().splitlines()
   from stabilization_contract93 import delta93,without93
   current={p.relative_to(ROOT).as_posix():p.read_bytes() for p in (ROOT/'src/plugin.video.xtreammate').rglob('*') if p.is_file() and '__pycache__' not in p.parts}
+  from stabilization_contract96 import runtime_without96
+  current=runtime_without96(current)
   from stabilization_contract94 import without94,delta94
   from stabilization_contract95 import without95,delta95
   current={name:without95(raw,name) for name,raw in current.items() if name not in delta95()['added']}

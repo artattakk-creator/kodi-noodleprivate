@@ -231,6 +231,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
         names = {str(c.get('category_id')): c.get('category_name', '')
                  for c in groups}
         channels = []
+        logo_rows96=[dict(v,sid=str(v.get('stream_id',''))) for v in streams if isinstance(v,dict)]
+        logos96=__import__('logo_manifest86').read(self.portal,logo_rows96)
         for stream in streams:
             if not isinstance(stream, dict) or not stream.get('stream_id'):
                 continue
@@ -238,7 +240,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
             channels.append(Channel(
                 name=stream.get('name', ''),
                 url=self.xc.live_stream_url(stream['stream_id'], 'ts'),
-                logo=stream.get('stream_icon', ''),
+                logo=logos96.get(str(stream['stream_id']),stream.get('stream_icon','')),
                 group=str(names.get(cid, cid)),
                 tvg_id=str(stream.get('epg_channel_id') or ''),
                 extra={'category_id': cid,
@@ -559,8 +561,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
         if empty93:return [__import__('localization').tr(38805)]
         if not labels:
             state94=__import__('live_group93').state(self)
-            if state94 in ('LOADING_GROUP','GROUP_UNAVAILABLE'):
-                return [__import__('localization').tr(38804 if state94=='LOADING_GROUP' else 38806)]
+            if state94 in ('LOADING_GROUP','GROUP_UNAVAILABLE','GROUP_PENDING','GROUP_SQL_BUSY','GROUP_RETRY_EXHAUSTED'):
+                return [__import__('localization').tr(38804 if state94 in ('LOADING_GROUP','GROUP_PENDING','GROUP_SQL_BUSY') else 38806)]
         return labels or ['Senderkatalog wird vorbereitet' if not self._catalog_ready or getattr(self,'_catalog_partial46',False) else 'Keine aktivierten Sender']
 
     def _row_value44(self,control,method,*values):
@@ -718,6 +720,13 @@ class LiveNavigator(xbmcgui.WindowDialog):
 
     def tick(self):
         if self._closed or not self._drawn: return
+        if getattr(self,'_mini_context96',False):
+            self._mini_context96=False
+            from menu_icons45 import select
+            choice=select(xbmcgui.Dialog(),'XCMate',[__import__('localization').tr(39027),__import__('localization').tr(39028)])
+            if choice==0:__import__('guide_mapping48').request_mini(self)
+            elif choice==1:self._switch('extras')
+        if getattr(self,'_mapping_request96',None):__import__('guide_mapping48').open_pending(self)
         if getattr(self,'_programme_request46',None):
             from programme_window46 import open_pending
             open_pending(self)
@@ -740,8 +749,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
             self._switch('hidden')
             return
         if self.mode=='channels':
-            task93=getattr(self,'_group_task93',None)
-            if task93 and task93[1].done():self._render(focus=False)
+            if __import__('live_group93').refresh_due(self):self._render(focus=False)
         if now-self._last_tick<1: return
         self._last_tick=now
         if self.mode=='info': self._render_info()
@@ -994,6 +1002,10 @@ class LiveNavigator(xbmcgui.WindowDialog):
     def _handle_command(self, command):
         """XCMate-local TV commands; never open Kodi's own player OSD."""
         self._intro_deadline = None
+        if command=='long_ok' and self.mode=='channels':
+            if __import__('guide_mapping48').request_mini(self):return
+        if command=='menu' and self.mode=='channels' and not self._mini.focused:
+            self._mini_context96=True;return
         if self.mode in ('nav_icons','nav_expanded'):
             rail_mode86=self.mode
             if self._nav_rail.command(command):

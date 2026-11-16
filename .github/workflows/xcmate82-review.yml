@@ -1,4 +1,4 @@
-name: XCMate .95 complete host and Pilot preparation (no publication)
+name: XCMate .96 complete host and Pilot preparation (no publication)
 on:
   pull_request:
     branches: [main]
@@ -35,9 +35,9 @@ jobs:
       - name: Reproduce ZIP, verify every frozen publication channel
         run: |
           python tools/package_xcmate71.py "$RUNNER_TEMP/xcmate94" > "$RUNNER_TEMP/xcmate94/package.json"
-          cmp "$RUNNER_TEMP/xcmate94/plugin.video.xtreammate-0.1.29.95.zip" docs/XCMate/test-builds/02995/plugin.video.xtreammate-0.1.29.95.zip
+          cmp "$RUNNER_TEMP/xcmate94/plugin.video.xtreammate-0.1.29.96.zip" docs/XCMate/test-builds/02996/plugin.video.xtreammate-0.1.29.96.zip
           python tools/release_channel75.py
-          python tools/release_candidate95.py --output docs/XCMate/test-builds/02995
+          python tools/release_candidate96.py --output docs/XCMate/test-builds/02996
           git diff --exit-code -- addons.xml addons.xml.md5 index.html online-test plugin.video.xtreammate script.gsmedia.setup src/script.gsmedia.setup
       - uses: actions/upload-artifact@v4
         if: always()

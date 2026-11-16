@@ -24,10 +24,11 @@ class EPG94(Fixture,unittest.TestCase):
   self.assertTrue(self.portal['epg_show'])
   self.assertEqual(len(sources.configuration('p')['sources']),4)
   self.assertEqual(sources.add_presets('p',['de_master']),[])
- def test_adding_source_never_silently_overrides_explicit_optout(self):
+ def test_adding_source_archives_legacy_xtream_optout_under_96_baseline(self):
   self.portal.update(epg_show=False,epg_opt_out94=True)
   sources=self.real_sources();sources.add_presets('p',['de_master'])
-  self.assertFalse(self.portal['epg_show'])
+  self.assertTrue(self.portal['epg_show'])
+  self.assertEqual(self.portal['provider_baseline_history96'][0]['values']['epg_opt_out94'],True)
  def test_full_index_missing_selected_group_also_requests_targeted_rows(self):
   tree=ast.parse((LIB/'live_overlay.py').read_text())
   cls=next(n for n in tree.body if isinstance(n,ast.ClassDef) and n.name=='LiveNavigator')
@@ -56,7 +57,7 @@ class EPG94(Fixture,unittest.TestCase):
   from concurrent.futures import Future
   m=importlib.import_module('live_group93');nav=SimpleNamespace(portal=self.portal,xc=self.client,category_id='b',enabled={'a','b'},index=None,_group_rows93={'b':['OLD']})
   m.selected(nav)
-  with mock.patch.object(m._slots,'acquire',return_value=False):self.assertIsNone(m.rows(nav))
+  with mock.patch.object(m._slots,'acquire',return_value=False):self.assertEqual(m.rows(nav),['OLD'])
   self.assertIn('b',nav._group_verify94)
  def test_manager_status_poll_does_not_reset_items_or_remote_selection(self):
   from xcmate027_fixture import ADDON,QueuedPool
@@ -71,16 +72,21 @@ class EPG94(Fixture,unittest.TestCase):
   self.assertEqual(control.items,before);self.assertEqual(control.getSelectedPosition(),0)
   self.assertEqual(control.getListItem(0).getProperty('Busy94'),'true')
   self.assertEqual(w.rows[0]['last_attempt66'],12345)
- def test_xtream_explicit_provider_or_global_optout_survives_default(self):
+ def test_xtream_legacy_optout_survives_as_history_with_96_baseline(self):
   self.client.get_xmltv_epg_url=lambda:'https://provider.invalid/xmltv.php'
   for values in (dict(epg_show=False),dict(provider_epg_enabled=False),dict(epg_opt_out94=True)):
    draft=importlib.import_module('setup_draft').Draft(dict(self.portal,**values))
-   try:self.assertFalse(draft.provider_epg)
+   try:
+    self.assertTrue(draft.provider_epg)
+    previous=draft.data['provider_baseline_history96'][0]['values']
+    for key,value in values.items():self.assertEqual(previous[key],value)
    finally:draft.dispose()
- def test_unknown_legacy_false_is_not_silent_consent(self):
+ def test_unknown_legacy_false_is_archived_without_claiming_artwork_consent(self):
   self.portal['epg_show']=False;self.portal.pop('epg_opt_out94',None)
   self.real_sources().add_presets('p',['de_master'])
-  self.assertFalse(self.portal['epg_show']);self.assertNotIn('epg_opt_out94',self.portal)
+  self.assertTrue(self.portal['epg_show'])
+  previous=self.portal['provider_baseline_history96'][0]['values']
+  self.assertFalse(previous['epg_show']);self.assertNotIn('epg_opt_out94',previous)
 
  def test_job_control_storage_failure_is_readable_not_an_uncaught_gui_callback(self):
   self.real_sources()  # Load the production status module, not the minimal GUI fixture.

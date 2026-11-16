@@ -44,20 +44,23 @@ def error(msg):  log(msg, xbmc.LOGERROR)
 
 def setting(key, default=''):
     try:
-        return ADDON.getSetting(key) or default
+        from settings_guard96 import value
+        return value(key, ADDON, default)
     except Exception:
         return default
 
 def setting_bool(key, default=False):
     try:
-        v = ADDON.getSetting(key)
+        from settings_guard96 import value
+        v = value(key, ADDON)
         return v.lower() == 'true' if v else default
     except Exception:
         return default
 
 def setting_int(key, default=0):
     try:
-        return int(ADDON.getSetting(key) or default)
+        from settings_guard96 import value
+        return int(value(key, ADDON) or default)
     except Exception:
         return default
 

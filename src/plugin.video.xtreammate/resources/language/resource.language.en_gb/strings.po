@@ -5939,3 +5939,135 @@ msgstr "Last independent import check: {status}"
 msgctxt "#38920"
 msgid "A backup notification alone does not authorize an import."
 msgstr "A backup notification alone does not authorize an import."
+
+msgctxt "#39000"
+msgid "Artwork – sources and images"
+msgstr "Artwork – sources and images"
+
+msgctxt "#39001"
+msgid "EPG & programme images"
+msgstr "EPG & programme images"
+
+msgctxt "#39002"
+msgid "ON"
+msgstr "ON"
+
+msgctxt "#39003"
+msgid "OFF"
+msgstr "OFF"
+
+msgctxt "#39004"
+msgid "Read error"
+msgstr "Read error"
+
+msgctxt "#39005"
+msgid "Status and saved permissions"
+msgstr "Status and saved permissions"
+
+msgctxt "#39006"
+msgid "Test connections and image pipeline"
+msgstr "Test connections and image pipeline"
+
+msgctxt "#39007"
+msgid "Private TMDB access"
+msgstr "Private TMDB access"
+
+msgctxt "#39008"
+msgid "Manage channel logos"
+msgstr "Manage channel logos"
+
+msgctxt "#39009"
+msgid "Storage → Artwork & Cache"
+msgstr "Storage → Artwork & Cache"
+
+msgctxt "#39010"
+msgid "Restore damaged settings"
+msgstr "Restore damaged settings"
+
+msgctxt "#39011"
+msgid "Apply test configuration"
+msgstr "Apply test configuration"
+
+msgctxt "#39012"
+msgid "Send programme titles to {} for artwork lookup?"
+msgstr "Send programme titles to {} for artwork lookup?"
+
+msgctxt "#39013"
+msgid "Source selection saved and independently read back. Android image rendering has not been tested."
+msgstr "Source selection saved and independently read back. Android image rendering has not been tested."
+
+msgctxt "#39014"
+msgid "Settings: {}"
+msgstr "Settings: {}"
+
+msgctxt "#39015"
+msgid "Valid existing token: {}"
+msgstr "Valid existing token: {}"
+
+msgctxt "#39016"
+msgid "Image EPG is disabled in storage settings. Enabling a source records the same explicit permission there."
+msgstr "Image EPG is disabled in storage settings. Enabling a source records the same explicit permission there."
+
+msgctxt "#39017"
+msgid "Restore the last verified backup? The damaged file is also preserved unchanged. Restart Kodi afterwards."
+msgstr "Restore the last verified backup? The damaged file is also preserved unchanged. Restart Kodi afterwards."
+
+msgctxt "#39018"
+msgid "Settings restored and read back. Please restart Kodi."
+msgstr "Settings restored and read back. Please restart Kodi."
+
+msgctxt "#39019"
+msgid "Enable XMLTV, TMDB and TVMaze for this profile only and authorize image EPG? The existing token remains unchanged."
+msgstr "Enable XMLTV, TMDB and TVMaze for this profile only and authorize image EPG? The existing token remains unchanged."
+
+msgctxt "#39020"
+msgid "The settings file is damaged. No source was treated as deliberately disabled. Check recovery."
+msgstr "The settings file is damaged. No source was treated as deliberately disabled. Check recovery."
+
+msgctxt "#39021"
+msgid "Settings cannot be read safely. Check permissions and storage."
+msgstr "Settings cannot be read safely. Check permissions and storage."
+
+msgctxt "#39022"
+msgid "Saving could not be independently verified. No successful activation has been reported."
+msgstr "Saving could not be independently verified. No successful activation has been reported."
+
+msgctxt "#39023"
+msgid "No verified recovery file is available. Existing settings were not deleted."
+msgstr "No verified recovery file is available. Existing settings were not deleted."
+
+msgctxt "#39024"
+msgid "No valid TMDB token is available. Existing values are preserved."
+msgstr "No valid TMDB token is available. Existing values are preserved."
+
+msgctxt "#39025"
+msgid "Action incomplete. Check settings and storage diagnostics. Private error details are not displayed."
+msgstr "Action incomplete. Check settings and storage diagnostics. Private error details are not displayed."
+
+msgctxt "#39026"
+msgid "Search XMLTV images again"
+msgstr "Search XMLTV images again"
+
+msgctxt "#39027"
+msgid "Assign EPG"
+msgstr "Assign EPG"
+
+msgctxt "#39028"
+msgid "More player controls"
+msgstr "More player controls"
+
+msgctxt "#39029"
+msgid "Assign programme image manually"
+msgstr "Assign programme image manually"
+
+msgctxt "#39030"
+msgid "Select channel group"
+msgstr "Select channel group"
+
+msgctxt "#39031"
+msgid "Next channels"
+msgstr "Next channels"
+
+msgctxt "#39032"
+msgid "Previous channels"
+msgstr "Previous channels"

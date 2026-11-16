@@ -7,9 +7,8 @@ _cache={}
 
 def note(event,code):__import__('art_trace81').note(event,'SKIPPED_REASON' if code in ('PROVISIONAL_SUGGESTION','MULTIPAGE_SEARCH','SEARCH_INCOMPLETE') else 'MATCH_REJECTED',code)
 def enabled(source='tmdb'):
- from utils import setting_bool
- if source=='tmdb':return setting_bool('programme_tmdb46',False) and setting_bool('tmdb_research43',False) and not setting_bool('programme_tmdb_optout77',False)
- return setting_bool('programme_tvmaze67',False) and not setting_bool('programme_tvmaze_optout77',False)
+ from artwork_sources96 import enabled as source_enabled
+ return source_enabled(source)
 def key(event):
  from programme_mapping85 import namespace
  from programme_policy68 import negative_scope
@@ -136,7 +135,7 @@ def candidate(event,cancel=lambda:False):
    if receipt87.get('role') in ('poster','backdrop') and safe(receipt87.get('url','')):
     chosen=dict(receipt87,id=mapping['id'],source=mapping['source'],year=mapping.get('year'),country=mapping.get('country') or [],media_type86=mapping.get('media_type86','tv'),verified85=True,work_match85=True)
   if chosen is None:chosen=fetch85(event,mapping['id'],cancel,manual=True)
-  if chosen and (mapping.get('year') is None or mapping['year']==chosen['year']):return artifact(chosen,'MANUAL_CONFIRMED')
+  if chosen and (mapping.get('year') is None or mapping['year']==chosen['year']):return __import__('cinematic_images96').enrich(artifact(chosen,'MANUAL_CONFIRMED'),event,cancel)
   note(event,'EXTERNAL_ID_CONFLICT');return None
  cached=read(event)
  if cached.get('tv_only85'):
@@ -159,7 +158,7 @@ def candidate(event,cancel=lambda:False):
  remember(event,rows,complete,tv_only=True)
  if not complete or len(matching)!=1:note(event,'TV_MULTIPLE_MATCHES');raise SourceError('NO_MATCH_AMBIGUOUS')
  __import__('programme_flow48').trace('MATCH',event,'READY')
- return artifact(chosen,'EXACT_TV_TITLE_YEAR66' if event.get('year') else 'EXACT_UNIQUE_TV_TITLE66')
+ return __import__('cinematic_images96').enrich(artifact(chosen,'EXACT_TV_TITLE_YEAR66' if event.get('year') else 'EXACT_UNIQUE_TV_TITLE66'),event,cancel)
 
 def artifact(row,match):
  from tmdb_connection60 import ATTRIBUTION

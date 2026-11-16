@@ -37,10 +37,10 @@ def open_pending(parent):
  if not permitted(parent):xbmcgui.Dialog().notification('XCMate',tr(36105));return
  return show(parent.portal,wanted[0],wanted[1],parent)
 
-def show(portal,channel,event=None,parent=None):
+def show(portal,channel,event=None,parent=None,*,manual96=False):
  if not permitted(parent):xbmcgui.Dialog().notification('XCMate',tr(36105));return
  dialog=ProgrammeWindow46('XCMateProgramme46.xml',xbmcaddon.Addon().getAddonInfo('path'),'Default','720p')
- dialog.configure(portal,channel,event,parent);dialog.run()
+ dialog.configure(portal,channel,event,parent);dialog._manual96=bool(manual96);dialog.run()
  if dialog._tune88 and parent is not None:
   if not __import__('programme_actions88').tune(parent,portal,channel):xbmcgui.Dialog().notification('XCMate','Sender kann aus dieser Ansicht momentan nicht umgeschaltet werden.')
  return dialog
@@ -124,6 +124,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
    try:self.event=future.result()
    except Exception:self.getControl(103).setText(tr(36107))
    else:
+    if getattr(self,'_manual96',False):self._series_menu85=True;self._manual96=False
     self._art68=self.event.pop('_art68',{})
     from programme_events46 import summary
     self.getControl(101).setLabel(self.event.get('title') or tr(36102));self.getControl(103).setText(summary(self.event))

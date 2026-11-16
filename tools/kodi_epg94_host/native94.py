@@ -32,13 +32,28 @@ try:
     for i in range(0,len(compressed),4096):self.wfile.write(compressed[i:i+4096]);self.wfile.flush();time.sleep(.05)
    except (BrokenPipeError,ConnectionResetError):pass
  server=ThreadingHTTPServer(('127.0.0.1',0),Handler);threading.Thread(target=server.serve_forever,daemon=True).start()
- portal=dict(id='epg94',name='Native source',type='xtream',enabled=True,xc_host='http://127.0.0.1:'+str(server.server_port),xc_user='synthetic',xc_pass='synthetic',provider_epg_enabled=True,epg_show=True,start_group_id='a',start_stream_id='1')
+ portal=dict(id='epg94',name='Native source',type='xtream',enabled=True,xc_host='http://127.0.0.1:'+str(server.server_port),xc_user='synthetic',xc_pass='synthetic',provider_epg_enabled=False,epg_show=False,epg_opt_out94=True,provider_epg_opt_out94=True,start_group_id='a',start_stream_id='1')
  portals.save_all([portal]);group_selection.save('epg94',['a'],'live')
  library_index.import_group('epg94','live','a',[dict(stream_id='1',category_id='a',name='Native station',epg_channel_id='xml')])
  from epg_manager53 import Manager53
  manager=Manager53('XCMateEPGManager53.xml',xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('path'),'Default','720p');manager.configure(portal);manager.show()
  wait(lambda:manager.rows and manager._pending_future is None,'MANAGER_NOT_READY')
  assert not manager._init_error,repr(manager._init_error)
+ saved=portals.get_by_id('epg94')
+ assert saved['epg_show'] and saved['provider_epg_enabled'] and saved['provider_baseline96'],saved
+ prior=saved['provider_baseline_history96'][0]['values']
+ assert prior==dict(epg_show=False,provider_epg_enabled=False,epg_opt_out94=True,provider_epg_opt_out94=True),prior
+ assert not xbmc.getCondVisibility('Control.IsEnabled(410)')
+ assert manager.rows[0]['enabled'] and manager.rows[0]['id']=='provider'
+ report['provider_baseline96']=dict(verified=True,legacy_flags_archived=True)
+ # Optional sources retain their own switch and are never enabled by baseline.
+ optional=epg_sources.add_source('epg94','Disabled optional source',portal['xc_host']+'/optional.xml')
+ epg_sources.edit_source('epg94',optional['id'],'toggle')
+ optional_before=epg_sources.configuration('epg94')['sources']
+ assert len(optional_before)==1 and optional_before[0]['enabled'] is False
+ manager._load();wait(lambda:manager._pending_future is None,'OPTIONAL_SOURCE_LIST_NOT_READY')
+ assert len(manager.rows)==2 and manager.rows[1]['enabled'] is False
+ portal=saved
  original=utils.http_stream
  def worker_only(*a,**kw):
   assert threading.get_ident()!=owner,'GUI_NETWORK_IO'
@@ -101,6 +116,45 @@ try:
  report['cancel_preserved_lastgood']=True
  phase94('close_manager');xbmc.executebuiltin('Action(Back)',wait=False);wait(lambda:manager._closed,'NATIVE_BACK_NOT_CLOSED')
  report['back_closed_only_manager']=True
+ assert epg_sources.configuration('epg94')['sources']==optional_before
+ report['provider_baseline96']['optional_source_preserved']=True
+ # Actual native mapping dialog + shared MiniAdapter, with a synthetic parent.
+ # This is a cancel-preview smoke, not a receiver/Android longpress acceptance.
+ phase94('mini_mapping96_cancel_preview')
+ from types import SimpleNamespace
+ from tv_data import GuideSnapshot
+ from mapping_context96 import MiniAdapter
+ from guide_mapping48 import MappingWindow48
+ from source_adapters import for_portal
+ snapshot=GuideSnapshot(portal,for_portal(portal))
+ snapshot._values['1']=dict(now='Original native snapshot',start=now-60,stop=now+3600,events=[])
+ channel=SimpleNamespace(name='Native station',tvg_id='xml',extra=dict(stream_id='1',category_id='a'))
+ restored_focus=[]
+ parent=SimpleNamespace(portal=portal,_guide=snapshot,_closed=False,mode='channels',category_id='a',
+     _page_start=0,_row_offset=0,_highlight={'channels':0},_mini=SimpleNamespace(focused=False,signature='original'),
+     control=SimpleNamespace(getId=lambda:501,getSelectedPosition=lambda:0),visible_channels=[channel],
+     getFocusId=lambda:501,setFocusId=restored_focus.append,_render=lambda **kw:None)
+ adapter=MiniAdapter(parent,channel)
+ child=MappingWindow48('XCMateMapping48.xml',xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('path'),'Default','720p')
+ child.configure(parent,adapter)
+ before=(Path(path()).read_bytes(),Path(epg_sources._file_path()).read_bytes())
+ try:
+  child._shown=True;child.show();wait(lambda:child._ready,'MINI_MAPPING96_NOT_READY')
+  child.source=dict(id='provider',name='Anbieter-EPG');child.candidate=dict(id='xml',name='Native station')
+  child._preview()
+  def preview_ready96():
+   child.pump();return child.previewed
+  wait(preview_ready96,'MINI_MAPPING96_PREVIEW_FAILED')
+  assert snapshot.get('1',time.time())['mapping']=='PREVIEW_RAM96'
+  assert before==(Path(path()).read_bytes(),Path(epg_sources._file_path()).read_bytes())
+  child.onClick(406)
+ finally:
+  child.close();adapter.finish(False);snapshot.close()
+ assert not child.saved and not snapshot._preview96
+ assert snapshot.get('1',time.time())['now']=='Original native snapshot'
+ assert restored_focus==[501],restored_focus
+ assert before==(Path(path()).read_bytes(),Path(epg_sources._file_path()).read_bytes())
+ report['mini_mapping96']=dict(native_dialog=True,parent='SYNTHETIC_MINI_ADAPTER_OWNER',preview_bytes_unchanged=True,cancel_restored=True,android='ANDROID_NOT_TESTED')
  Path('/root/epg94-finished.json').write_text(json.dumps(report,indent=2));print(json.dumps(report),flush=True)
 except BaseException:
  Path('/root/epg94-error.tmp').write_text(traceback.format_exc());Path('/root/epg94-error.tmp').replace('/root/epg94-error.txt');raise

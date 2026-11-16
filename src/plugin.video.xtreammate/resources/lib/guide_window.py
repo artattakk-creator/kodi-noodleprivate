@@ -88,10 +88,13 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
     def _channels_ready(self,value):
         self.channels,self.channel_total=value
         from media_art import local_art,request
+        logos96=__import__('logo_manifest86').read(self.portal,self.channels,with_fallback=False)
         self.getControl(210).reset()
         items=[]
         for row in self.channels:
-            item=xbmcgui.ListItem(row['name']);item.setArt(local_art(row));items.append(item)
+            item=xbmcgui.ListItem(row['name']);art96=local_art(row)
+            if logos96.get(str(row['sid'])):art96.update(icon=logos96[str(row['sid'])],thumb=logos96[str(row['sid'])])
+            item.setArt(art96);items.append(item)
         self.getControl(210).addItems(items)
         self.getControl(210).selectItem(0)
         self.setFocusId(210 if self.channels else 310)

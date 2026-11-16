@@ -85,11 +85,12 @@ class ProgrammeArt46(Fixture,unittest.TestCase):
   for extra in [dict(genre='News'),dict(genre='Talkshow'),dict(genre='Film')]:
    with mock.patch('media_sources43.tmdb',side_effect=AssertionError('unverified identity')):self.assertIsNone(self.m.candidate(dict(self.event,**extra)))
  def test_event_cache_budget_is_configurable_without_disabling_global_reserve(self):
-  self.assertEqual(self.a.limit(),64*1024*1024);self.options['programme_art_budget46']='2';self.assertEqual(self.a.limit(),128*1024*1024)
+  # .96 starts demand caching at 32 MiB; deliberate larger budgets survive.
+  self.assertEqual(self.a.limit(),32*1024*1024);self.options['programme_art_budget46']='2';self.assertEqual(self.a.limit(),128*1024*1024)
   self.assertNotIn('media_art_reserve_mb',self.options)
  def test_internal_programme_budget_is_distinguished_from_real_disk_full(self):
   with mock.patch.object(self.a,'space',side_effect=self.a.CacheBudget('PROGRAMME_CACHE_BUDGET')):value=self.prepare()
-  self.assertEqual(value['code'],'PROGRAMME_CACHE_BUDGET');self.assertNotEqual(value['code'],'DISK_FULL');self.assertEqual(value['budget46'],64*1024*1024)
+  self.assertEqual(value['code'],'PROGRAMME_CACHE_BUDGET');self.assertNotEqual(value['code'],'DISK_FULL');self.assertEqual(value['budget46'],32*1024*1024)
 
  def test_large_source_becomes_bounded_display_derivative_without_crop_or_logo(self):
   from PIL import Image

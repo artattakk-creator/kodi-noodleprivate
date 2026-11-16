@@ -86,6 +86,7 @@ class IPTVMasterService(xbmc.Monitor):
         def refresh():
             try:
                 import portals as P
+                __import__('provider_baseline96').ensure()
                 from epg_schedule53 import plan
                 from epg import ensure_epg_loaded_for_portal
                 for portal in P.get_active():

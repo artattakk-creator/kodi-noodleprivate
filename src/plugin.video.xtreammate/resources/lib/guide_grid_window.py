@@ -132,13 +132,14 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
     def _render(self):
         if self._closed or self._leaving or self.mode=='groups':return
         self._cells={};target=None
+        logos96=__import__('logo_manifest86').read(self.portal,[row['channel'] for row in self.rows[:ROWS]],with_fallback=False)
         for r in range(ROWS):
             row=self.rows[r] if r<len(self.rows) else None
             self.getControl(730+r).setVisible(row is not None)
             self.getControl(750+r).setVisible(row is not None and r==self.row)
             self.getControl(700+r).setText(__import__('presentation80').clipped(row['channel']['name'],236) if row else '')
             from media_art import local_art
-            self.getControl(720+r).setImage(local_art(row['channel'],self._theme)['thumb'] if row else '')
+            self.getControl(720+r).setImage((logos96.get(str(row['channel']['sid'])) or local_art(row['channel'],self._theme)['thumb']) if row else '')
             candidates=[e for e in row['events'] if rectangle(e['start'],e['stop'],self.origin)] if row else []
             selected=self._selected() if r==self.row else None
             # If an unusually dense schedule exceeds the native pool, pan to
@@ -168,7 +169,8 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
 
     def _refresh_logos(self):
         from media_art import local_art
-        for r,row in enumerate(self.rows):self.getControl(720+r).setImage(local_art(row['channel'],self._theme)['thumb'])
+        logos96=__import__('logo_manifest86').read(self.portal,[row['channel'] for row in self.rows[:ROWS]],with_fallback=False)
+        for r,row in enumerate(self.rows[:ROWS]):self.getControl(720+r).setImage(logos96.get(str(row['channel']['sid'])) or local_art(row['channel'],self._theme)['thumb'])
 
     def _focus_cell(self,cid=None):
         if cid is None:

@@ -1,4 +1,4 @@
-"""Owned mapping dialog with reversible, memory-only preview in the real grid."""
+"""Shared mapping controller with reversible grid and Mini-EPG view adapters."""
 from concurrent.futures import Future
 import threading
 import time
@@ -13,26 +13,45 @@ def request(parent):
     parent._mapping_request48=True
 
 
+def request_mini(parent):
+    from mapping_context96 import mini_channel
+    channel=mini_channel(parent)
+    if channel is None:return False
+    from programme_window46 import channel_row
+    parent._mapping_request96=channel_row(channel)
+    return True
+
+
 def open_pending(parent):
-    if not getattr(parent,'_mapping_request48',False):return
-    parent._mapping_request48=False
+    mini=getattr(parent,'_mapping_request96',None)
+    if not mini and not getattr(parent,'_mapping_request48',False):return
+    parent._mapping_request48=False;parent._mapping_request96=None
     from programme_window46 import permitted
-    if parent._closed or parent._leaving or not permitted(parent):return
-    parent._generation+=1
-    if parent._pending_future is not None:parent._pending_future.cancel()
-    parent._pending_future=parent._pending_apply=None
+    if parent._closed or getattr(parent,'_leaving',False) or not permitted(parent):return
+    from mapping_context96 import GridAdapter,MiniAdapter,mini_channel
+    if mini:
+        channel=mini_channel(parent)
+        if channel is None or str(channel.extra.get('stream_id'))!=mini['sid']:return
+        adapter=MiniAdapter(parent,channel)
+    else:
+        parent._generation+=1
+        if parent._pending_future is not None:parent._pending_future.cancel()
+        parent._pending_future=parent._pending_apply=None
+        adapter=GridAdapter(parent)
     dialog=MappingWindow48('XCMateMapping48.xml',xbmcaddon.Addon().getAddonInfo('path'),'Default','720p')
-    dialog.configure(parent);dialog.run()
+    dialog.configure(parent,adapter);dialog.run()
 
 
 class MappingWindow48(xbmcgui.WindowXMLDialog):
-    def configure(self,parent):
-        self.parent=parent;self.portal=parent.portal;self.channel=dict(parent.rows[parent.row]['channel'])
+    def configure(self,parent,adapter=None):
+        from mapping_context96 import GridAdapter
+        self.adapter96=adapter or GridAdapter(parent)
+        self.parent=parent;self.portal=self.adapter96.portal;self.channel=self.adapter96.channel
         self.owner=threading.get_ident();self._closed=False;self._ready=False;self._shown=False
         self.cancel=threading.Event();self.future=None;self.apply=None
         self.source=None;self.candidate=None;self.query='';self.offset=0;self.rows=[];self.previewed=False;self.saved=False
-        self.original={k:getattr(parent,k) for k in ('rows','total','groups','row','offset','cursor','origin','category','_focus_zone','_header')}
-        self._parent_focus48=parent.getFocusId()
+        self.original=self.adapter96.original
+        self._parent_focus48=self.adapter96.focus
         self._saving53=False;self.scroll53=0;self.detail_offset53=0
         from epg_candidate53 import Candidates
         self.cold53=Candidates()
@@ -53,7 +72,7 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
     def onInit(self):
         self._gui();self._ready=True
         self.getControl(101).setLabel('EPG zuweisen · '+str(self.channel['name']))
-        for cid,label in ((401,'Quelle wählen'),(402,'Kanal suchen'),(403,'Weitere Kanäle'),(404,'Vorschau im Raster'),(405,'Speichern'),(406,'Abbrechen'),(407,'Vorige Kanäle'),(408,'Sendungen hoch'),(409,'Sendungen runter'),(410,'Nächster Zeitraum')):
+        for cid,label in ((401,'Quelle wählen'),(402,'Kanal suchen'),(403,'Weitere Kanäle'),(404,self.adapter96.preview_label),(405,'Speichern'),(406,'Abbrechen'),(407,'Vorige Kanäle'),(408,'Sendungen hoch'),(409,'Sendungen runter'),(410,'Nächster Zeitraum')):
             self.getControl(cid).setLabel(label)
         self.getControl(405).setEnabled(False);self.getControl(404).setEnabled(False)
         self.setFocusId(401)
@@ -68,6 +87,10 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
         self._submit(lambda:sources(self.portal),ready)
     def _channels(self):
         if not self.source:return
+        # A failed source/search reload must never leave Save authorized by
+        # a preview belonging to the previously selected source/channel.
+        self.candidate=None;self.previewed=False
+        self.getControl(405).setEnabled(False);self.getControl(404).setEnabled(False)
         from epg_binding48 import channels
         def ready(rows):
             self.getControl(900).setVisible(True)
@@ -91,37 +114,13 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
         self.getControl(103).setText('Kanäle werden gelesen; fehlender Katalog wird begrenzt in den Arbeitsspeicher geladen. Abbrechen bleibt möglich.')
     def _preview(self):
         if not self.candidate or not self.source:return
-        candidate=dict(self.candidate);source=self.source['id'];parent=self.parent
-        original_rows=list(self.original['rows']);offset=self.detail_offset53
+        candidate=dict(self.candidate);source=dict(self.source);offset=self.detail_offset53
         def load():
-            from epg_sources import configuration
-            from epg_binding48 import preview
-            from guide_grid_data import page
-            mappings=preview(configuration(self.portal['id'])['mappings'],self.channel['sid'],candidate['id'],source)
-            value=page(self.portal,self.original['offset'],self.original['origin'],self.original['category'],None,mappings48=mappings)
-            from local_epg import window
-            start=self.original['origin']+offset*3*3600
-            detail=window(self.portal['id'],[self.channel],mappings,start,start+2*86400,limit=96)
-            value['details53']=list((detail or {}).get(candidate['id'],[]))
-            selected=next((r for r in value['rows'] if str(r['channel']['sid'])==str(self.channel['sid'])),None)
-            if selected is not None and not selected['events'] and not value['details53']:
-                events=self.cold53.programmes(self.portal,source,candidate['id'],self.cancel.is_set)
-                from epg_events import deduplicate
-                from programme_snapshot47 import identify
-                selected['events']=identify(self.portal['id'],self.channel['sid'],candidate['id'],deduplicate([e for e in events if e['start_timestamp']<self.original['origin']+10800 and e['stop_timestamp']>self.original['origin']],channel=candidate['id']))
-                selected['epg_id']=candidate['id'];selected['mapping']='PREVIEW_RAM53'
-                value['details53']=[e for e in events if e['start_timestamp']<start+2*86400 and e['stop_timestamp']>start][:96]
-            return value
+            return self.adapter96.load_preview(candidate,source['id'],offset,self.cold53,self.cancel.is_set)
         def ready(value):
-            if self.parent._closed:return
-            selected=next((row for row in value['rows'] if str(row['channel']['sid'])==str(self.channel['sid'])),None)
-            if selected is None:return
-            parent.rows=[selected if str(row['channel']['sid'])==str(self.channel['sid']) else row for row in original_rows]
-            zone=parent._focus_zone;parent._focus_zone='preview48'
-            parent._preview53=True
-            try:parent._render()
-            finally:parent._focus_zone=zone;parent._preview53=False
-            parent.getControl(102).setLabel('VORSCHAU · '+self.source['name']+' · '+candidate['id']+' · noch nicht gespeichert')
+            if self._closed:return
+            count=self.adapter96.apply_preview(value,source,candidate)
+            if count is None:return
             self.getControl(900).setVisible(True)
             lines=[]
             for event in value.get('details53',[])[:96]:
@@ -131,7 +130,6 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
             self.getControl(301).setText('\n'.join(lines) or 'Keine Sendungen in diesem Zeitraum; Quelle und Kanal prüfen.')
             self.scroll53=0;self.getControl(301).scroll(0)
             self.previewed=True;self.getControl(405).setEnabled(True)
-            count=sum(len(row['events']) for row in parent.rows if str(row['channel']['sid'])==str(self.channel['sid']))
             self.getControl(103).setText('Vorschau: '+str(count)+' Sendungen. Erst Speichern übernimmt die Zuordnung.' if count else 'Keine Sendungen in diesem Zeitfenster. Andere Quelle oder Zeitraum prüfen.')
             self.setFocusId(200 if self.rows else 401)
         self._submit(load,ready)
@@ -167,7 +165,7 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
                 self.getControl(404).setEnabled(True);self._preview()
         elif cid==404:self._preview()
         elif cid==405 and self.previewed:
-            from epg_binding48 import save
+            from mapping_context96 import save_verified as save
             identity=self.source['id'];cid=self.candidate['id'];name=self.candidate.get('name',cid)
             events=list(self.cold53.selected(identity,cid));portal=dict(self.portal);sid=self.channel['sid']
             if events:
@@ -177,6 +175,7 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
                     return save(portal,sid,cid,identity)
                 def committed(ok):
                     if ok:self.saved=True;self.close()
+                    else:self.getControl(103).setText('Zuordnung nicht gespeichert. Quelle und Schreibrechte prüfen.')
                 self._saving53=True;self._submit(commit,committed)
                 self.getControl(103).setText('Explizites Speichern: ausgewählte Sendungen prüfen und Zuordnung übernehmen …')
                 return
@@ -186,6 +185,7 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
             except (OSError,ValueError):
                 self.getControl(103).setText('Zuordnung nicht gespeichert. Quelle und Schreibrechte prüfen.');return
             if ok:self.saved=True;self.close()
+            else:self.getControl(103).setText('Zuordnung nicht gespeichert. Quelle und Schreibrechte prüfen.')
     def onAction(self,action):
         if action.getId() in (9,10,92):self.close()
     def run(self):
@@ -198,11 +198,7 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
                 if monitor.waitForAbort(.05):break
         finally:
             self.close()
-            if not self.parent._closed:
-                if not self.saved:
-                    for key,value in self.original.items():setattr(self.parent,key,value)
-                    self.parent._render();self.parent.setFocusId(self._parent_focus48)
-                else:self.parent._load(background=True)
+            self.adapter96.finish(self.saved)
     def close(self):
         self._gui()
         if self._closed:return

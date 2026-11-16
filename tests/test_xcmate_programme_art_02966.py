@@ -12,10 +12,11 @@ class Artwork66(Fixture,unittest.TestCase):
  def replies(self,year='2016',backdrop='/fixture.png'):
   return [dict(total_pages=1,total_results=1,results=[dict(id=66,name='MacGyver',original_name='MacGyver',first_air_date=year+'-01-01')]),dict(id=66,name='MacGyver',original_name='MacGyver',first_air_date=year+'-01-01',backdrop_path=backdrop)]
  def test_series_without_episode_numbers_gets_verified_series_art_with_label(self):
-  with mock.patch('tmdb_connection60.request',side_effect=self.replies()) as request:
+  with mock.patch('tmdb_connection60.request',side_effect=self.replies()+[dict(id=66,backdrops=[])]) as request:
    result=self.tv.candidate(self.event)
   self.assertEqual(result['source'],'tmdb_series');self.assertEqual(result['image_scope57'],'series_fallback')
-  self.assertIn('kein Episodenbild',result['attribution']);self.assertEqual(request.call_count,2)
+  self.assertIn('kein Episodenbild',result['attribution']);self.assertEqual(request.call_count,3)
+  self.assertIn('/tv/66/images?',request.call_args_list[-1].args[0])
  def test_remakes_without_year_are_ambiguous_not_a_random_first_hit(self):
   data=self.replies()[0];data['results'].append(dict(id=85,name='MacGyver',first_air_date='1985-01-01'));data['total_results']=2
   with mock.patch('tmdb_connection60.request',return_value=data):

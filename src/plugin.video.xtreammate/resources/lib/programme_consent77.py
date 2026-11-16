@@ -14,18 +14,9 @@ def explicit_off():
     Inspect only the three boolean decisions; never return settings contents.
     Older explicit false values remain an opt-out, not a missing default.
     """
-    import xbmcvfs,xml.etree.ElementTree as E
-    result=set()
-    try:
-        path=xbmcvfs.translatePath('special://profile/addon_data/plugin.video.xtreammate/settings.xml')
-        with open(path,encoding='utf-8') as stream:raw=stream.read(262145)
-        if len(raw)>262144:return set(FLAGS)  # unknown profile: fail closed
-        tree=E.fromstring(raw)
-        for node in tree.iter('setting'):
-            if node.get('id') in FLAGS and node.get('default')!='true' and (node.text or node.get('value','')).strip().lower()=='false':result.add(node.get('id'))
-    except FileNotFoundError:pass
-    except (OSError,ValueError,E.ParseError):return set(FLAGS)
-    return result
+    from settings_guard96 import snapshot
+    state=snapshot()
+    return set(FLAGS)&state['explicit_off'] if state['code']=='READY' else set()
 
 def decision(source,enabled,addon=None):
     import xbmcaddon
@@ -39,6 +30,9 @@ def ensure(force=False):
     from epg_handoff63 import profile_scope
     from utils import setting,setting_bool
     import xbmcaddon
+    from settings_guard96 import snapshot
+    health=snapshot()['code']
+    if health not in ('READY','NOT_CREATED'):return health
     profile=profile_scope();now=time.monotonic()
     with _lock:
         if not force and now<_next.get(profile,0):return 'DEFERRED'
@@ -52,7 +46,9 @@ def ensure(force=False):
         if not value.get('initialized'):
             if any(key in off for key in FLAGS[:2]):addon.setSetting('programme_tmdb_optout77','true')
             if FLAGS[2] in off:addon.setSetting('programme_tvmaze_optout77','true')
-            if not setting_bool('programme_tvmaze_optout77',False):decision('tvmaze',True,addon)
+            # .96: token presence/defaults alone are not consent on another
+            # installation. Existing flags remain; hub/import is explicit.
+            # No external supplier is enabled by this migration.
             value.update(initialized=True,notice=True)
         from tmdb_token61 import effective_tmdb_read_token,validate,TokenError
         try:
@@ -62,7 +58,6 @@ def ensure(force=False):
         except (TokenError,OSError,UnicodeError):code='TOKEN_INVALID'
         # No token value or fingerprint is persisted/logged here.
         if code=='TOKEN_FORMAT_VALID':
-            if not setting_bool('programme_tmdb_optout77',False):decision('tmdb',True,addon)
             value['done']=True
         value['token']=code;addon.setSetting(STATE,json.dumps(value,separators=(',',':')))
         if value.pop('notice',False):

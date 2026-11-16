@@ -1,4 +1,4 @@
-name: XCMate .95 backup gate, profile locks and native UI
+name: XCMate .96 groups, artwork and native UI
 on:
   pull_request:
     branches: [main]
@@ -27,7 +27,7 @@ jobs:
           python tools/run_host94_contract.py -- python -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/host94.txt"
           python tools/run_host94_contract.py -- python -m pytest tests -q 2>&1 | tee "$RUNNER_TEMP/pytest94.txt"
           python tools/validate_kodi_po.py
-          python tools/release_candidate95.py --output docs/XCMate/test-builds/02995
+          python tools/release_candidate96.py --output docs/XCMate/test-builds/02996
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -35,8 +35,8 @@ jobs:
           path: |
             ${{ runner.temp }}/host94.txt
             ${{ runner.temp }}/pytest94.txt
-            docs/XCMate/test-builds/02995/*.zip
-            docs/XCMate/test-builds/02995/*.sha256
+            docs/XCMate/test-builds/02996/*.zip
+            docs/XCMate/test-builds/02996/*.sha256
   native-epg94:
     runs-on: ubuntu-latest
     timeout-minutes: 12
@@ -51,8 +51,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Exact .95 ZIP, real Kodi worker ACK, source counters, focus and cancel
-        run: python tools/run_kodi_epg95_contract.py --report-dir "$RUNNER_TEMP/epg94" --addon-zip docs/XCMate/test-builds/02995/plugin.video.xtreammate-0.1.29.95.zip --resolution '${{ matrix.resolution }}'
+      - name: Exact .96 ZIP, real Kodi worker ACK, source counters, focus and cancel
+        run: python tools/run_kodi_epg96_contract.py --report-dir "$RUNNER_TEMP/epg94" --addon-zip docs/XCMate/test-builds/02996/plugin.video.xtreammate-0.1.29.96.zip --resolution '${{ matrix.resolution }}'
       - uses: actions/upload-artifact@v4
         if: always()
         with:

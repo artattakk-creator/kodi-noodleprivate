@@ -65,6 +65,8 @@ def read(portal,rows,with_fallback=True):
  from widget_refs74 import revoked
  missing=[r for r in rows if str(r['sid']) not in result and not revoked(source(r))]
  if missing:result.update(_legacy_read90(portal,missing,with_fallback))
+ # A station choice survives provider URL, EPG and group revisions.
+ result.update(__import__('logo_overrides96').read(portal,rows))
  __import__('startup_diag90').note('LOCAL_HIT',count=len(result),total=len(rows))
  return result
 

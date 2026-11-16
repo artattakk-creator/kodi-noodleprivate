@@ -256,13 +256,15 @@ class SetupWindow(GroupRows,WorkWindow):
     def choose_epg(self):
         from epg_sources import PRESET_FEEDS
         import uuid
-        choices=[(tr(32717),'provider')]
+        baseline=self.draft.data.get('type')=='xtream'
+        choices=[] if baseline else [(tr(32717),'provider')]
         if self.draft.data.get('epg_url'): choices.append((tr(32718),'configured'))
         choices.extend((title,uri) for key,title,uri in PRESET_FEEDS)
         choices.append((tr(32719),'custom'))
-        selected=xbmcgui.Dialog().multiselect(tr(32706),[c[0] for c in choices],preselect=[i for i,(_,uri) in enumerate(choices) if (uri=='provider' and self.draft.provider_epg) or any(s['uri']==uri for s in self.draft.epg_sources)])
+        heading='Zusätzliche EPG-Quellen · Anbieter-Grundversorgung aktiv' if baseline else tr(32706)
+        selected=xbmcgui.Dialog().multiselect(heading,[c[0] for c in choices],preselect=[i for i,(_,uri) in enumerate(choices) if (uri=='provider' and self.draft.provider_epg) or any(s['uri']==uri for s in self.draft.epg_sources)])
         if selected is None: return
-        sources=[];self.draft.provider_epg=False
+        sources=[];self.draft.provider_epg=baseline
         for i in selected:
             title,uri=choices[i]
             if uri=='provider': self.draft.provider_epg=True;continue
@@ -274,7 +276,7 @@ class SetupWindow(GroupRows,WorkWindow):
             sources.append(dict(id=uuid.uuid4().hex,name=title,uri=uri,local=False,enabled=True))
         self.draft.epg_sources=sources;self.draft.scanned=False
         __import__('epg_config94').selected(self.draft)
-        self.status(0,str(len(sources)+int(self.draft.provider_epg))+' · '+tr(32706))
+        self.status(0,('Anbieter-Grundversorgung + '+str(len(sources))+' zusätzliche Quellen') if baseline else str(len(sources)+int(self.draft.provider_epg))+' · '+tr(32706))
     def onClick(self,controlId):
         if controlId==18: self.close();return
         if self.busy: return

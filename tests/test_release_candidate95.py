@@ -7,14 +7,36 @@ import sys
 import tempfile
 import unittest
 import zipfile
+from contextlib import contextmanager
+import shutil
+from unittest import mock
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'tools'))
 from stabilization_contract95 import delta95,without95
+@contextmanager
+def historical95():
+ """Recheck the immutable .95 review against its original publication base."""
+ import release_candidate95 as candidate,package_xcmate71
+ original=ROOT/'docs/XCMate/test-builds/02995'
+ package=original/candidate.NAME
+ if hashlib.sha256(package.read_bytes()).hexdigest()!='1eed4d84c1317190f1936883eee2d9393368117f5a1e84516605c8ba141beb3b':
+  raise ValueError('FROZEN95_PACKAGE_CHANGED')
+ with tempfile.TemporaryDirectory() as folder:
+  root=Path(folder);source=root/'src';source.mkdir()
+  with zipfile.ZipFile(package) as archive:archive.extractall(source)
+  for name in candidate.FROZEN:
+   path=root/name;path.parent.mkdir(parents=True,exist_ok=True)
+   path.write_bytes(subprocess.check_output(['git','show',candidate.BASE+':'+name],cwd=ROOT))
+  target=root/'docs/XCMate/test-builds/02995';target.parent.mkdir(parents=True,exist_ok=True);shutil.copytree(original,target)
+  with mock.patch.object(candidate,'ROOT',root),mock.patch.object(package_xcmate71,'ROOT',root):yield root
+
 class Release95(unittest.TestCase):
  def test_entire_runtime_matches_reviewed_delta_and_no_unknown_module_is_admitted(self):
   delta=delta95();base=delta['base'];prefix='src/plugin.video.xtreammate/'
   paths=subprocess.check_output(['git','ls-tree','-r','--name-only',base,prefix],cwd=ROOT).decode().splitlines()
   source={p.relative_to(ROOT).as_posix():p.read_bytes() for p in (ROOT/'src/plugin.video.xtreammate').rglob('*') if p.is_file() and '__pycache__' not in p.parts}
+  from stabilization_contract96 import runtime_without96
+  source=runtime_without96(source)
   self.assertEqual(set(source),set(paths)|set(delta['added']))
   for name,change in delta['modules'].items():
    self.assertEqual(hashlib.sha256(source[name]).hexdigest(),change['new_sha256']);self.assertEqual(without95(source[name],name),change['old'].encode())
@@ -29,10 +51,10 @@ class Release95(unittest.TestCase):
   import release_candidate95 as candidate
   from package_xcmate71 import build
   original=ROOT/'docs/XCMate/test-builds/02995'/candidate.NAME
-  with tempfile.TemporaryDirectory() as folder:
+  with historical95(),tempfile.TemporaryDirectory() as folder:
    proof=build(folder);self.assertEqual(proof,candidate.inspect_package(original));self.assertEqual((Path(folder)/candidate.NAME).read_bytes(),original.read_bytes())
  def test_offline_proposal_does_not_publish_or_authorize_merge(self):
   import release_candidate95 as candidate
-  result=candidate.verify(ROOT/'docs/XCMate/test-builds/02995')
+  with historical95() as root95:result=candidate.verify(root95/'docs/XCMate/test-builds/02995')
   self.assertFalse(result['repository_released']);self.assertEqual(result['android'],'ANDROID_NOT_TESTED')
   plan=json.loads((ROOT/'docs/XCMate/test-builds/02995/pilot-plan.json').read_text());self.assertFalse(plan['source_merged']);self.assertFalse(plan['merge_or_publish_authorized'])

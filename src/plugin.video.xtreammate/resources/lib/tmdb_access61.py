@@ -12,7 +12,7 @@ def activate(addon,automatic=False):
     from programme_refresh63 import request
     request()
 
-def imported(choice,dialog,addon,gui,tokens):
+def imported(choice,dialog,addon,gui,tokens,*,activate_import=True):
     from token_write64 import note,read_destination
     note('SOURCE_SELECTION')
     if choice==7:
@@ -44,7 +44,7 @@ def imported(choice,dialog,addon,gui,tokens):
         if old is None:
             addon.setSetting('tmdb_read_token43',value)
             tokens.effective_tmdb_read_token(force=True)
-            activate(addon,automatic=True)
+            if activate_import:activate(addon,automatic=True)
             dialog.ok(tr(36620),tr(36628));return
         dialog.ok(tr(36620),tr(36662))
     expected=hashlib.sha256(old).hexdigest() if old is not None else None
@@ -52,7 +52,7 @@ def imported(choice,dialog,addon,gui,tokens):
     if choice==6 and not dialog.yesno(tr(36620),tr(36664),defaultbutton=getattr(gui,'DLG_YESNO_NO_BTN',10)):return
     result=tokens.import_bytes(raw,expected,target=target)
     if tokens.location()!=target:raise tokens.TokenError('TOKEN_CHANGED')
-    activate(addon,automatic=True)
+    if activate_import:activate(addon,automatic=True)
     dialog.ok(tr(36620),tr(36628)+'\n'+tr(36665 if choice==6 else 36666)+('\n'+tr(36672) if result=='IMPORTED_SYNC_WARNING' else ''))
 
 def show():

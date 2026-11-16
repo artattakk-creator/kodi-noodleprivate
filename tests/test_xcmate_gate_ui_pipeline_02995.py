@@ -97,7 +97,7 @@ class GatePipeline95(unittest.TestCase):
   result=importlib.import_module('guide_backup44').authorize(path());self.assertEqual(result['code'],'BACKUP_VERIFIED')
   self.assertEqual(importlib.import_module('epg_gate46').access(path()),'READY')
   self.assertTrue(real_epg().request_refresh(self.portal['id'],self.portal))
-  state=self.mod.run(self.portal);self.assertEqual(state['phase'],'READY');self.assertEqual(len(state['sources']),2)
+  state=self.mod.run(self.portal);self.assertEqual(state['phase'],'READY');self.assertEqual(len(state['sources']),3) # .96 mandatory provider + two optional feeds
   for source in state['sources']:self.assertEqual(self.mod.stored(self.portal,source)['rows'],1)
  def test_cancel_and_offline_after_proof_keep_existing_programmes(self):
   self.mod.run(self.portal);self.backup();from guide_store import path

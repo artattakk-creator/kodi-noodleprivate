@@ -33,7 +33,7 @@ def _render(uri):
     if not uri:return False
     class Probe(xbmcgui.WindowDialog):
         def __init__(self):
-            super().__init__();self.addControls([xbmcgui.ControlImage(70,100,240,240,uri),xbmcgui.ControlLabel(70,350,1050,60,tr(35221))])
+            super().__init__();self.addControls([xbmcgui.ControlImage(70,100,240,240,uri,aspectRatio=2),xbmcgui.ControlLabel(70,350,1050,60,tr(35221))])
     window=Probe()
     try:
         window.show()
@@ -203,8 +203,7 @@ def _manage():
                 if dialog.yesno(tr(35200),tr(35232)):
                     xbmcaddon.Addon().setSetting('media_art_paused','false' if old else 'true')
             elif choice==14:
-                from artwork_status import cleanup
-                cleanup()
+                __import__('storage_artwork96').cleanup_dialog()
             elif choice==15:
                 from artwork_status import collect
                 data=job(collect)
@@ -223,7 +222,12 @@ def _manage():
             show(error,dialog,choice)
 
 
-def manage():
+def manage_archive():
     from window_navigation import ownership
     with ownership() as acquired:
         if acquired:_manage()
+
+
+def manage():
+    """All existing links open the same Storage-owned cache dialog."""
+    return __import__('storage_artwork96').manage()

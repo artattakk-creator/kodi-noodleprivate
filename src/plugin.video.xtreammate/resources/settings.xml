@@ -33,11 +33,12 @@
   </category>
   <category label="36002">
     <setting id="programme_art_local69" type="bool" label="Sendungsbilder zusätzlich lokal speichern (optional)" default="false"/>
+    <setting id="programme_xmltv96" type="bool" label="XMLTV" default="true" visible="false"/>
     <setting id="programme_settings68" type="action" label="EPG / Sendungsbilder: Einstellungen und Status" action="RunPlugin(plugin://plugin.video.xtreammate/?action=native_options45&amp;group=tmdb_access61)"/>
     <setting id="programme_suggestions85" type="bool" label="32850" default="true" />
     <setting id="programme_temp85_mb" type="number" label="32851" default="16" />
     <setting id="programme_temp85_objects" type="number" label="32852" default="64" />
-    <setting id="programme_art_budget46" type="enum" label="36120" values="32|64|128|256" default="1"/>
+    <setting id="programme_art_budget46" type="enum" label="36120" values="32|64|128|256" default="0" visible="false"/>
     <setting id="programme_helper57" type="bool" label="36540" default="true"/>
     <setting id="programme_catalog57" type="bool" label="36541" default="true"/>
     <setting id="tmdb_gateway_revision87" type="text" default="" visible="false"/>
@@ -48,7 +49,7 @@
     <setting id="programme_sources_state77" type="text" default="" visible="false"/>
     <setting id="programme_tmdb_optout77" type="bool" default="false" visible="false"/>
     <setting id="programme_tvmaze_optout77" type="bool" default="false" visible="false"/>
-    <setting id="programme_tvmaze67" type="bool" label="36721" default="false"/>
+    <setting id="programme_tvmaze67" type="bool" label="36721" default="false" visible="false"/>
     <setting id="programme_tmdb46" type="bool" label="36110" default="false" visible="false"/>
     <setting id="programme_image_hosts55" type="text" label="36530" default=""/>
     <setting id="epg_sources_manager" type="action" label="XCMate: EPG-Quellen und Senderzuordnung" action="RunPlugin(plugin://plugin.video.xtreammate/?action=epg_sources)" />

@@ -16,6 +16,8 @@ class Release94(unittest.TestCase):
   paths=subprocess.check_output(['git','ls-tree','-r','--name-only',base,prefix],cwd=ROOT).decode().splitlines()
   source={p.relative_to(ROOT).as_posix():p.read_bytes() for p in (ROOT/'src/plugin.video.xtreammate').rglob('*') if p.is_file() and '__pycache__' not in p.parts}
   from stabilization_contract95 import delta95,without95
+  from stabilization_contract96 import runtime_without96
+  source=runtime_without96(source)
   extra95=delta95()['added']
   for name,digest in extra95.items():self.assertEqual(hashlib.sha256(source[name]).hexdigest(),digest)
   source={name:without95(raw,name) for name,raw in source.items() if name not in extra95}

@@ -1,3 +1,13 @@
+0.1.29.96 (2026-11-16) – Gruppen, EPG und Artwork, unveröffentlichter Testkandidat
+- Aktivierte Sendergruppen gezielt aus dem lokalen Katalog laden; verspätete Gruppenantworten verwerfen, vorhandene Sender bei Beschäftigung behalten und begrenzt erneut prüfen.
+- Anbieter-EPG als Xtream-Grundversorgung; frühere Abschaltungen als Historie bewahren. Gesicherte Guide-Daten und Importfreigabe bleiben geschützt.
+- Zentrales Artwork-Menü mit XMLTV, TMDB und TVMaze. Einstellungsfehler getrennt von Abwahl erkennen; vorhandener Token und Zugangsdaten bleiben erhalten.
+- XMLTV-Bilder lokal und quellgenau erneut suchen, ausdrücklich auswählen und atomar mit unabhängigem Readback speichern. TMDB-Ausfall löscht kein korrektes XMLTV-Fallback.
+- Mini-EPG: Lang-OK auf Senderzeile öffnet EPG-Zuweisung mit Vorschau, Speichern und Abbrechen. Kurzes OK und die Sendungsdetails bleiben erhalten; keine automatische Keymap-Änderung.
+- Speicher → Artwork & Cache: dynamisch ab 32 MiB, manuell erweiterbar. Senderlogos pro Sender ersetzen und wiederherstellen; keine automatische Archiv- oder Datenbanklöschung.
+- Für eindeutig erkannte Werke mehrere hochwertige TMDB-Backdrops bewerten; vorhandene Bilder bei Netzfehlern erhalten.
+- Android-Abnahme offen. Kein Merge, kein Repository-Release und keine Änderung an Box A.
+
 0.1.29.95 (2026-11-15) – EPG-Sicherungsfreigabe, Testkandidat
 - Historische Sicherungsmeldung und tatsächliche Importfreigabe unabhängig prüfen. Gesperrte Datenbanken, Zeitbudgets, fehlende Belege und Speicherfehler eindeutig unterscheiden.
 - Sicherungsprüfung im Hintergrund: mehr als 128 Archive und langsame Datenträger unterstützt; keine automatische neue Sicherung und keine Löschung vorhandener Daten.

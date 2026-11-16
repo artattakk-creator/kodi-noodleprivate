@@ -90,7 +90,7 @@ class Release91(unittest.TestCase):
         for name in ('tools/run_kodi_home82_contract.py', 'tools/kodi_home80_host/gui80.py', 'tools/kodi_home82_host/post82.py'):
             text = (ROOT/name).read_text()
             self.assertNotIn("'0.1.29.90')", text, name)
-            self.assertIn("'0.1.29.90','0.1.29.91','0.1.29.92','0.1.29.93','0.1.29.94','0.1.29.95')", text, name)
+            self.assertIn("'0.1.29.90','0.1.29.91','0.1.29.92','0.1.29.93','0.1.29.94','0.1.29.95','0.1.29.96')", text, name)
 
     def test_rc_zip_is_complete_and_byte_reproducible_with_the_repository_builder(self):
         from package_xcmate71 import build
@@ -168,7 +168,7 @@ class Release91(unittest.TestCase):
     def test_existing_channels_old_packages_and_installer_have_no_delta_from_main(self):
         paths = ['addons.xml', 'addons.xml.md5', 'index.html', 'online-test',
                  'plugin.video.xtreammate', 'script.gsmedia.setup', 'src/script.gsmedia.setup']
-        result = subprocess.check_output(['git', 'diff', '--name-only', '459817b43fe59664acbcccc68a757ecd946a5839', '--']+paths, cwd=ROOT)
+        result = subprocess.check_output(['git', 'diff', '--name-only', 'dfea6a72226b8c5fcccfce7d14e186e5e4007673', '--']+paths, cwd=ROOT)
         self.assertEqual(result, b'')
 
     def test_release_notes_supply_five_offline_popup_entries_with_preservation_notice(self):

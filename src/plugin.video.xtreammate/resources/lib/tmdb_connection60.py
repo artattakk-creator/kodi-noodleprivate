@@ -99,3 +99,4 @@ def launch():
             _test_lock.release()
         cancelled.set()
     xbmcgui.Dialog().ok('TMDB · ' + code, messages[code] + '\n\n' + ATTRIBUTION)
+    return code

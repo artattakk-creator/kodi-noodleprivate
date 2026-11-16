@@ -5,6 +5,7 @@ from functools import lru_cache
 @lru_cache(maxsize=1)
 def delta95():return json.loads((Path(__file__).parent/'fixtures/stabilization_02995_delta.json').read_text())
 def without95(source,module):
+    source=__import__('stabilization_contract96').without96(source,module)
     binary=isinstance(source,bytes);raw=source if binary else source.encode();name=str(module)
     for path,change in delta95()['modules'].items():
         if name not in (path,Path(path).name,Path(path).stem):continue

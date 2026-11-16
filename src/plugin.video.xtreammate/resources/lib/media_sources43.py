@@ -127,6 +127,8 @@ def provider(item):
 
 
 def tmdb_token():
+    from artwork_sources96 import require
+    require()
     from utils import setting_bool,setting
     if not setting_bool('tmdb_research43',False):raise SourceError('TMDB_DISABLED')
     from tmdb_token61 import effective_tmdb_read_token,TokenError

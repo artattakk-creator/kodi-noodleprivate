@@ -5939,3 +5939,135 @@ msgstr "Letzte unabhängige Importprüfung: {status}"
 msgctxt "#38920"
 msgid "A backup notification alone does not authorize an import."
 msgstr "Eine Sicherungsmeldung allein erteilt keine Importfreigabe."
+
+msgctxt "#39000"
+msgid "Artwork – sources and images"
+msgstr "Artwork – Quellen und Bilder"
+
+msgctxt "#39001"
+msgid "EPG & programme images"
+msgstr "EPG & Sendungsbilder"
+
+msgctxt "#39002"
+msgid "ON"
+msgstr "AN"
+
+msgctxt "#39003"
+msgid "OFF"
+msgstr "AUS"
+
+msgctxt "#39004"
+msgid "Read error"
+msgstr "Lesefehler"
+
+msgctxt "#39005"
+msgid "Status and saved permissions"
+msgstr "Status und gespeicherte Freigaben"
+
+msgctxt "#39006"
+msgid "Test connections and image pipeline"
+msgstr "Verbindungen und Bildkette prüfen"
+
+msgctxt "#39007"
+msgid "Private TMDB access"
+msgstr "Privater TMDB-Zugang"
+
+msgctxt "#39008"
+msgid "Manage channel logos"
+msgstr "Senderlogos verwalten"
+
+msgctxt "#39009"
+msgid "Storage → Artwork & Cache"
+msgstr "Speicher → Artwork & Cache"
+
+msgctxt "#39010"
+msgid "Restore damaged settings"
+msgstr "Beschädigte Einstellungen wiederherstellen"
+
+msgctxt "#39011"
+msgid "Apply test configuration"
+msgstr "Testkonfiguration anwenden"
+
+msgctxt "#39012"
+msgid "Send programme titles to {} for artwork lookup?"
+msgstr "Sendungstitel für die Bildsuche an {} senden?"
+
+msgctxt "#39013"
+msgid "Source selection saved and independently read back. Android image rendering has not been tested."
+msgstr "Quellenauswahl gespeichert und unabhängig zurückgelesen. Die Android-Bildanzeige ist noch nicht geprüft."
+
+msgctxt "#39014"
+msgid "Settings: {}"
+msgstr "Einstellungen: {}"
+
+msgctxt "#39015"
+msgid "Valid existing token: {}"
+msgstr "Gültiger vorhandener Token: {}"
+
+msgctxt "#39016"
+msgid "Image EPG is disabled in storage settings. Enabling a source records the same explicit permission there."
+msgstr "Bild-EPG ist in der Speicherverwaltung ausgeschaltet. Das Aktivieren einer Quelle übernimmt dort dieselbe ausdrückliche Freigabe."
+
+msgctxt "#39017"
+msgid "Restore the last verified backup? The damaged file is also preserved unchanged. Restart Kodi afterwards."
+msgstr "Aus der letzten geprüften Sicherung wiederherstellen? Die beschädigte Datei wird zusätzlich unverändert gesichert. Danach Kodi neu starten."
+
+msgctxt "#39018"
+msgid "Settings restored and read back. Please restart Kodi."
+msgstr "Einstellungen wiederhergestellt und zurückgelesen. Kodi bitte neu starten."
+
+msgctxt "#39019"
+msgid "Enable XMLTV, TMDB and TVMaze for this profile only and authorize image EPG? The existing token remains unchanged."
+msgstr "Nur für dieses Profil XMLTV, TMDB und TVMaze aktivieren und die bestehende Bild-EPG-Freigabe übernehmen? Der vorhandene Token bleibt unverändert."
+
+msgctxt "#39020"
+msgid "The settings file is damaged. No source was treated as deliberately disabled. Check recovery."
+msgstr "Die Einstellungsdatei ist beschädigt. Keine Quelle wurde als deaktiviert gewertet. Wiederherstellung prüfen."
+
+msgctxt "#39021"
+msgid "Settings cannot be read safely. Check permissions and storage."
+msgstr "Die Einstellungen sind nicht sicher lesbar. Berechtigung und Speicher prüfen."
+
+msgctxt "#39022"
+msgid "Saving could not be independently verified. No successful activation has been reported."
+msgstr "Speicherung konnte nicht unabhängig bestätigt werden. Keine erfolgreiche Freigabe gemeldet."
+
+msgctxt "#39023"
+msgid "No verified recovery file is available. Existing settings were not deleted."
+msgstr "Keine geprüfte Wiederherstellungsdatei verfügbar. Vorhandene Einstellungen wurden nicht gelöscht."
+
+msgctxt "#39024"
+msgid "No valid TMDB token is available. Existing values are preserved."
+msgstr "Kein gültiger TMDB-Token verfügbar. Vorhandene Werte bleiben erhalten."
+
+msgctxt "#39025"
+msgid "Action incomplete. Check settings and storage diagnostics. Private error details are not displayed."
+msgstr "Aktion nicht abgeschlossen. Einstellungen und Speicherdiagnose prüfen. Private Fehlerdetails werden nicht angezeigt."
+
+msgctxt "#39026"
+msgid "Search XMLTV images again"
+msgstr "XMLTV-Bilder erneut suchen"
+
+msgctxt "#39027"
+msgid "Assign EPG"
+msgstr "EPG zuweisen"
+
+msgctxt "#39028"
+msgid "More player controls"
+msgstr "Weitere Playerfunktionen"
+
+msgctxt "#39029"
+msgid "Assign programme image manually"
+msgstr "Sendungsbild manuell zuweisen"
+
+msgctxt "#39030"
+msgid "Select channel group"
+msgstr "Sendergruppe auswählen"
+
+msgctxt "#39031"
+msgid "Next channels"
+msgstr "Nächste Sender"
+
+msgctxt "#39032"
+msgid "Previous channels"
+msgstr "Vorherige Sender"
