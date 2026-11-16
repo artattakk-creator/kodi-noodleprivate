@@ -1,0 +1,201 @@
+{
+  "source_commit": "36df57c82d4036a7820a46f36ce141247201091f",
+  "epg": {
+    "run": 43847584480,
+    "1280x720": {
+      "android": "ANDROID_NOT_TESTED",
+      "native": true,
+      "transport": "SYNTHETIC_LOOPBACK_XMLTV",
+      "events": [],
+      "provider_baseline96": {
+        "verified": true,
+        "legacy_flags_archived": true,
+        "optional_source_preserved": true
+      },
+      "job_id": "05d3f42d0e784e928f9e72eb4e8d5bcf",
+      "ack_seconds": 0.22296452522277832,
+      "download_screenshot": "epg94-downloading.png",
+      "list_identity_before": 2,
+      "completed_screenshot": "epg94-completed.png",
+      "source": {
+        "source_index": 1,
+        "sources": 1,
+        "phase": "DONE",
+        "progress": 1794824391.1980383,
+        "phase_started": 1794824391.1980383,
+        "phases": {
+          "DOWNLOAD": {
+            "at": 1794824386.4482276
+          },
+          "MATCHING": {
+            "at": 1794824390.9745145
+          },
+          "COMMIT": {
+            "at": 1794824390.9926755
+          },
+          "READBACK": {
+            "at": 1794824391.0796263
+          },
+          "CLEANUP": {
+            "at": 1794824391.1206985
+          },
+          "DONE": {
+            "at": 1794824391.1980383
+          }
+        },
+        "bytes": 362544,
+        "total_bytes": 362544,
+        "channels": 1,
+        "programmes": 600,
+        "staged": 600,
+        "matched": 1,
+        "committed": 600,
+        "verified": 600,
+        "raw_deleted_bytes": 0,
+        "free_before": 94807560192,
+        "free_after": 94807560192,
+        "first": 1794822585,
+        "last": 1795902585
+      },
+      "status": "PASS",
+      "wire_bytes_verified": true,
+      "cold_readback_rows": 600,
+      "native_focus_usable": true,
+      "spinner_stopped": true,
+      "source_rows_preserved": true,
+      "gate95": {
+        "code": "IMPORT_AUTHORIZED",
+        "checked_at": 1794824391.7211244,
+        "files_checked": 136,
+        "backup_bytes": 2686976,
+        "sha_prefix": "72a26f0d575fd3e5",
+        "elapsed_ms": 90.93
+      },
+      "cancel_preserved_lastgood": true,
+      "back_closed_only_manager": true,
+      "mini_mapping96": {
+        "native_dialog": true,
+        "parent": "SYNTHETIC_MINI_ADAPTER_OWNER",
+        "preview_bytes_unchanged": true,
+        "cancel_restored": true,
+        "android": "ANDROID_NOT_TESTED"
+      },
+      "kodi": {
+        "major": 21,
+        "minor": 2,
+        "revision": "20250330-nogitfound",
+        "tag": "stable"
+      },
+      "rpc_input_max_seconds": 0.004036552999991727
+    },
+    "1920x1080": {
+      "android": "ANDROID_NOT_TESTED",
+      "native": true,
+      "transport": "SYNTHETIC_LOOPBACK_XMLTV",
+      "events": [],
+      "provider_baseline96": {
+        "verified": true,
+        "legacy_flags_archived": true,
+        "optional_source_preserved": true
+      },
+      "job_id": "9d38b2e871e04cf2ba6c8b3b4d8c5634",
+      "ack_seconds": 0.27112436294555664,
+      "download_screenshot": "epg94-downloading.png",
+      "list_identity_before": 2,
+      "completed_screenshot": "epg94-completed.png",
+      "source": {
+        "source_index": 1,
+        "sources": 1,
+        "phase": "DONE",
+        "progress": 1794824395.063523,
+        "phase_started": 1794824395.063523,
+        "phases": {
+          "DOWNLOAD": {
+            "at": 1794824391.4225183
+          },
+          "PARSE": {
+            "at": 1794824391.0309217
+          },
+          "MATCHING": {
+            "at": 1794824394.4463725
+          },
+          "COMMIT": {
+            "at": 1794824394.602679
+          },
+          "READBACK": {
+            "at": 1794824394.8166015
+          },
+          "CLEANUP": {
+            "at": 1794824394.8865728
+          },
+          "DONE": {
+            "at": 1794824395.063523
+          }
+        },
+        "bytes": 362543,
+        "total_bytes": 362543,
+        "channels": 1,
+        "programmes": 600,
+        "staged": 600,
+        "matched": 1,
+        "committed": 600,
+        "verified": 600,
+        "raw_deleted_bytes": 0,
+        "free_before": 91160875008,
+        "free_after": 91160875008,
+        "first": 1794822588,
+        "last": 1795902588
+      },
+      "status": "PASS",
+      "wire_bytes_verified": true,
+      "cold_readback_rows": 600,
+      "native_focus_usable": true,
+      "spinner_stopped": true,
+      "source_rows_preserved": true,
+      "gate95": {
+        "code": "IMPORT_AUTHORIZED",
+        "checked_at": 1794824395.6939106,
+        "files_checked": 9,
+        "backup_bytes": 2686976,
+        "sha_prefix": "b58a024bf8657cd8",
+        "elapsed_ms": 91.47
+      },
+      "cancel_preserved_lastgood": true,
+      "back_closed_only_manager": true,
+      "mini_mapping96": {
+        "native_dialog": true,
+        "parent": "SYNTHETIC_MINI_ADAPTER_OWNER",
+        "preview_bytes_unchanged": true,
+        "cancel_restored": true,
+        "android": "ANDROID_NOT_TESTED"
+      },
+      "kodi": {
+        "major": 21,
+        "minor": 2,
+        "revision": "20250330-nogitfound",
+        "tag": "stable"
+      },
+      "rpc_input_max_seconds": 0.0030702330000025313
+    }
+  },
+  "media": {
+    "run": 43847584260,
+    "job": 133231672477,
+    "status": "PASS",
+    "scope": "actual Linux video decode + XCMate owned native Stop/ACK + progress; Android fullscreen/origin return NOT_TESTED",
+    "count": 60,
+    "types": {
+      "vod": 20,
+      "episode": 20,
+      "live": 20
+    },
+    "all_native_ack": true,
+    "all_single_stop": true
+  },
+  "exact_zip_clock": {
+    "run": 43847584262,
+    "1280x720": "PASS",
+    "1920x1080": "PASS"
+  },
+  "android": "ANDROID_NOT_TESTED"
+}

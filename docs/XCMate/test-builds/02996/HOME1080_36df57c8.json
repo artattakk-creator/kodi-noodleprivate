@@ -1,0 +1,104 @@
+{
+  "source_commit": "36df57c82d4036a7820a46f36ce141247201091f",
+  "run": 43847584260,
+  "job": 133231672047,
+  "resolution": "1920x1080",
+  "status": "PASS",
+  "kodi": "21.2 Debian package version: 2:21.2+dfsg-4",
+  "layout": "PRESERVED",
+  "cases": 31,
+  "elapsed_seconds": 180.27661829099998,
+  "images": [
+    {
+      "sid": "5",
+      "event_hash": "d5dd23ec4bfd",
+      "source": "xmltv_event",
+      "full_decode": true,
+      "hero_pixels": true,
+      "detail_pixels": true,
+      "same_event": true,
+      "texture": {
+        "code": "TEXTURE_PENDING"
+      },
+      "android": "ANDROID_NOT_TESTED"
+    },
+    {
+      "sid": "6",
+      "event_hash": "a2a2139a1fe0",
+      "source": "xmltv_event",
+      "full_decode": true,
+      "hero_pixels": true,
+      "detail_pixels": true,
+      "same_event": true,
+      "texture": {
+        "code": "TEXTURE_PENDING"
+      },
+      "android": "ANDROID_NOT_TESTED"
+    }
+  ],
+  "vod": {
+    "status": "PASS",
+    "native_button": true,
+    "actual_video": true,
+    "audio_streams": 1,
+    "video_streams": 1,
+    "native_stop_ack": true,
+    "detail_return": true,
+    "elapsed_ms": 5768.93,
+    "android": "ANDROID_NOT_TESTED"
+  },
+  "guide": {
+    "status": "PASS",
+    "selected_sid": "5",
+    "start_sid": "1",
+    "local_epg": true,
+    "long_title_bounded": true,
+    "focus_rgb": [
+      58,
+      75,
+      91
+    ],
+    "android": "ANDROID_NOT_TESTED"
+  },
+  "stability": {
+    "status": "PASS",
+    "scope": "real Linux Kodi + injected artwork DB pause",
+    "seconds": 2.66,
+    "duplicate_polls": 443,
+    "worker_threads": 1,
+    "recovered_same_worker": true,
+    "unhandled": [],
+    "checkpoints": [
+      {
+        "elapsed": 0.21,
+        "art": {
+          "live": "REFERENCE_PARTIAL",
+          "vod": "REFERENCE_READY",
+          "series": "REFERENCE_READY"
+        }
+      }
+    ],
+    "android": "ANDROID_NOT_TESTED"
+  },
+  "cache": [
+    {
+      "kind": "vod",
+      "file_sha256": "029c54d49f64d529f7eeb0a48e33169311b0148034c8c78a1bcdc559859e767c",
+      "source": "synthetic provider HTTPS",
+      "decode": "PIL_FULL_DECODE",
+      "native_pixels": "PASS",
+      "cache": "DURABLE_RENDER81",
+      "android": "ANDROID_NOT_TESTED"
+    },
+    {
+      "kind": "series",
+      "file_sha256": "434de07f2174459478502b96ee8b93a028cc913464c0c12d2dbdcac0a271991f",
+      "source": "synthetic provider HTTPS",
+      "decode": "PIL_FULL_DECODE",
+      "native_pixels": "PASS",
+      "cache": "DURABLE_RENDER81",
+      "android": "ANDROID_NOT_TESTED"
+    }
+  ],
+  "android": "ANDROID_NOT_TESTED"
+}
