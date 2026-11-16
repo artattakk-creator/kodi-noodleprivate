@@ -13,6 +13,7 @@ Diese Dateien liegen ausschließlich auf `chore/xcmate-model-b-agent-prep-202611
 - Tests: `tests/test_agent_framework_preflight.py`
 - Beispiel, ausdrücklich **kein Release**: `docs/agents/examples/review-only.json`
 - GitHub-Action: `.github/workflows/xcmate-agent-preflight.yml`, `contents: read`, nur PR auf diese Dateien und manuelle Auslösung, **kein Publish**.
+- Deaktivierte API-Konfigurationsvorlage: `docs/agents/runner-config.disabled.json` (beide Kostenlimits 0, OpenAI-/Work-/Drive-/Android-Ausführung AUS).
 
 ## Nutzungsweg — wenn eine konkrete Entwicklungsaufgabe angenommen wird
 1. Nutzer gibt Issue und Entwicklungsumfang frei. Work kann Priorität/Anforderungen/Abnahme zusammenfassen, führt aber keine impliziten Freigaben aus.
@@ -42,6 +43,8 @@ Diese Dateien liegen ausschließlich auf `chore/xcmate-model-b-agent-prep-202611
 6. Danach Work PR-Monitoring und optional privater Drive-Log-Worker; später LAN-ADB-Tests. Freigaben für echte Geräteschreiboperationen und Releases getrennt behandeln.
 
 ## Fortschrittsstand dieser Vorbereitung
+
+**Verifikation:** 8/8 lokal reproduzierte gezielte Python-Unittests bestanden und der lokale Beispiel-Preflight meldet `REVIEW_ONLY`. Der lokale Code wurde inhaltsgleich mit dem GitHub-Skript (4096 Zeichen, FNV32 `4bec1366`) geprüft; ein GitHub-Actions-CI-Run **wurde noch nicht ausgeführt**. Das Beispiel verwendet rein synthetische Hashwerte und beweist keine .96-Build-Qualität.
 - [x] Separate main-basierte Branchanlage
 - [x] Sicherheits-/Projektregeln und PR-Berichtsformat geschrieben
 - [x] Architektur- und Implementierungsplan in derselben Branch
