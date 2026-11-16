@@ -482,10 +482,10 @@
   },
   "merge_or_publish_authorized": false,
   "package": {
-    "bytes": 4764138,
+    "bytes": 4764280,
     "crc": "PASS",
     "files": 899,
-    "sha256": "ed0589dc4d30972c9c81c35e365c402900eb2a187464330a683be5b4b4ebd18d",
+    "sha256": "249d7908d83cf7808d950e938e572fc046c2b0fc767aeebd3195b18b87b9d740",
     "source_bytes": "PASS",
     "version": "0.1.29.96"
   },

@@ -209,9 +209,13 @@ def drain(cancel=lambda:False):
    own=setting_bool('programme_tmdb46',False) and setting_bool('tmdb_research43',False)
    allow=own or setting_bool('programme_tvmaze67',False) or setting_bool('programme_helper57',True) or setting_bool('programme_catalog57',True)
    if not allow and not current.get('xmltv_image') and not current.get('provider_image'):
-    status(current,'TMDB_LOOKUP_DISABLED')
-    mark_seen(tag,policy,now)
-    continue
+    # An explicit local XMLTV choice can refer to another active feed.
+    # Admit it without granting remote search; resolve revalidates its facts.
+    local96=__import__('programme_mapping85').current(current)
+    if not (setting_bool('programme_xmltv96',True) and local96 and local96.get('source')=='xmltv_event' and not local96.get('hidden')):
+     status(current,'TMDB_LOOKUP_DISABLED')
+     mark_seen(tag,policy,now)
+     continue
    if value.get('detail93'):current['_detail93']=True
    accepted=enqueue(current,allow_lookup=allow,local_image63=setting_bool('programme_art_local69',False),priority68=2 if value.get('priority') else False)
    mark_seen(tag,policy,now if accepted else now-8)

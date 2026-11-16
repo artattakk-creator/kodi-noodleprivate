@@ -1,10 +1,42 @@
 """Local XMLTV source/event identity, explicit manual commit and fallback."""
 import importlib,json,unittest
+from types import SimpleNamespace
 from contextlib import closing
 from unittest import mock
 from xcmate027_fixture import Fixture
 
 class XMLTV96(Fixture,unittest.TestCase):
+ def xmltv_only_selection(self):
+  self.options.update(programme_xmltv96=True,programme_tmdb46=False,tmdb_research43=False,programme_tvmaze67=False,programme_helper57=False,programme_catalog57=False)
+  event=dict(self.event,source_key46='provider',epg_source46='provider',code='LOCAL_EVENT',_detail93=True)
+  candidate=self.module.search(event)['rows'][0]
+  __import__('programme_mapping85').set_mapping(event,candidate)
+  return event,candidate
+ def test_manual_xmltv_alternative_is_ready_with_all_remote_lookups_disabled(self):
+  event,candidate=self.xmltv_only_selection()
+  with mock.patch('utils.http_get',side_effect=AssertionError('no metadata request')):
+   value=__import__('programme_urls55').resolve(event,allow_lookup=False,check=mock.Mock())
+  self.assertEqual(value['source'],'xmltv_event')
+  self.assertEqual(value['xmltv96'],candidate['xmltv96'])
+  self.assertEqual(value['code'],'READY')
+ def test_service_admits_manual_xmltv_alternative_without_enabling_remote_lookup(self):
+  event,candidate=self.xmltv_only_selection()
+  requests=__import__('programme_requests68');self.assertTrue(requests.request(event,priority=True))
+  reader=SimpleNamespace(get=lambda *a:dict(sid='1'),close=lambda:None)
+  with mock.patch('series_requests85.drain'),mock.patch('programme_reference84.tick'),mock.patch('programme_events46.load',return_value=event),mock.patch('library_index.Reader',return_value=reader),mock.patch('programme_urls55.enqueue',return_value=True) as enqueue:
+   self.assertEqual(requests.drain(),1)
+  enqueue.assert_called_once()
+  self.assertFalse(enqueue.call_args.kwargs['allow_lookup'])
+  self.assertEqual(enqueue.call_args.args[0]['sid'],'1')
+  self.assertEqual(__import__('programme_mapping85').current(event)['xmltv96'],candidate['xmltv96'])
+ def test_service_respects_xmltv_optout_even_with_saved_alternative(self):
+  event,candidate=self.xmltv_only_selection();self.options['programme_xmltv96']=False
+  requests=__import__('programme_requests68');self.assertTrue(requests.request(event,priority=True))
+  reader=SimpleNamespace(get=lambda *a:dict(sid='1'),close=lambda:None)
+  with mock.patch('series_requests85.drain'),mock.patch('programme_reference84.tick'),mock.patch('programme_events46.load',return_value=event),mock.patch('library_index.Reader',return_value=reader),mock.patch('programme_urls55.enqueue') as enqueue:
+   self.assertEqual(requests.drain(),0)
+  enqueue.assert_not_called()
+  self.assertEqual(__import__('programme_mapping85').current(event)['xmltv96'],candidate['xmltv96'])
  def resolved_manual(self,local=False):
   import io
   from PIL import Image

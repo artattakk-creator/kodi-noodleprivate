@@ -345,7 +345,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             value=__import__('event_art81').commit(event,value,verified77.get('_body81'))
             value=__import__('sticky_art88').remember(event,value,verified77.get('_body81'))
         break
-    if not candidates and not allow_lookup:value['code']='AWAITING_BACKGROUND_REFRESH'
+    if not candidates and not allow_lookup and value['code']=='NO_IMAGE':value['code']='AWAITING_BACKGROUND_REFRESH'
     if cancel():return None
     if best86 and (value.get('source')=='placeholder' or not usable86(value) or __import__('hero_art86').classify(best86)[1]<__import__('hero_art86').classify(value)[1]):
         return dict(best86,code='READY_STALE' if value.get('source')=='placeholder' else best86.get('code','READY'))
