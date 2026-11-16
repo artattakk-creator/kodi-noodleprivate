@@ -74,3 +74,11 @@ class Settings96(Fixture,unittest.TestCase):
   with mock.patch('tmdb_token61.effective_tmdb_read_token',return_value='TEST_ONLY'),mock.patch('tmdb_token61.validate',return_value='TEST_ONLY'):
    m.ensure(force=True)
   self.assertNotEqual(self.options.get('programme_tvmaze67'),'true');self.assertNotEqual(self.options.get('programme_tmdb46'),'true')
+ def test_worker_does_not_log_disabled_when_native_settings_are_invalid(self):
+  self.xml('<settings>');event=dict(pid='p',sid='1',title='Show',key='e')
+  from media_sources43 import SourceError
+  run=mock.Mock()
+  with self.assertRaisesRegex(SourceError,'SETTINGS_XML_INVALID'):__import__('art_trace81').own(event,run)
+  run.assert_not_called()
+  self.assertEqual(__import__('programme_match46').diagnose(event),'SETTINGS_XML_INVALID')
+  with self.assertRaisesRegex(SourceError,'SETTINGS_XML_INVALID'):__import__('tmdb_epg60').candidate(event)

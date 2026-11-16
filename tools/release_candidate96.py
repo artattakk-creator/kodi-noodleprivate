@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import fnmatch
 import io
+import os
 import json
 from pathlib import Path
 import subprocess
@@ -52,6 +53,16 @@ def inspect_package(path):
     return dict(version=VERSION, sha256=sha(raw), bytes=len(raw), files=len(names), crc='PASS', source_bytes='PASS')
 
 
+def historical_input(name, raw):
+    # The complete-suite runner materializes removed pre-.90 test inputs in
+    # a disposable clone. Ignore only their immutable verified bytes there;
+    # changed/unapproved files still fail the full publication comparison.
+    if not os.environ.get('XCMATE94_REVIEW_ROOT'):return False
+    from run_host94_contract import manifest, read_archived
+    if name not in manifest(ROOT):return False
+    return read_archived(ROOT, name) == raw
+
+
 def frozen():
     result = {}
     for name in PUBLICATION_PATHS:
@@ -61,7 +72,8 @@ def frozen():
         elif root.is_dir():
             for path in root.rglob('*'):
                 if path.is_file():
-                    result[path.relative_to(ROOT).as_posix()] = sha(path.read_bytes())
+                    name=path.relative_to(ROOT).as_posix();raw=path.read_bytes()
+                    if not historical_input(name,raw):result[name]=sha(raw)
     for pattern in PUBLICATION_ROOT_GLOBS:
         for path in ROOT.glob(pattern):
             if path.is_file():result[path.relative_to(ROOT).as_posix()] = sha(path.read_bytes())

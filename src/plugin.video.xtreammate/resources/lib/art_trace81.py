@@ -18,6 +18,11 @@ def note(event,stage,code='OK',**facts):
  except (AttributeError,RuntimeError):pass
 
 def own(event,call):
+ from artwork_sources96 import require
+ from media_sources43 import SourceError
+ try:require()
+ except SourceError as exc:
+  note(event,'SKIPPED_REASON',exc.code);raise
  from utils import setting_bool
  from tmdb_token61 import effective_tmdb_read_token,TokenError
  try:present=bool(effective_tmdb_read_token())

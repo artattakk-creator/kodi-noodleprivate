@@ -111,5 +111,16 @@ class Release96(unittest.TestCase):
                     candidate.inspect_package(path)
 
 
+    def test_only_byte_verified_materialized_history_is_excluded_in_disposable_host_context(self):
+        import release_candidate96 as candidate
+        from run_host94_contract import manifest,read_archived
+        name=next(iter(manifest(ROOT)));raw=read_archived(ROOT,name)
+        with mock.patch.dict('os.environ',{'XCMATE94_REVIEW_ROOT':str(ROOT)}):
+            self.assertTrue(candidate.historical_input(name,raw))
+            self.assertFalse(candidate.historical_input(name,raw+b'UNREVIEWED'))
+            self.assertFalse(candidate.historical_input('online-test/unapproved.zip',raw))
+        with mock.patch.dict('os.environ',{},clear=True):self.assertFalse(candidate.historical_input(name,raw))
+
 if __name__ == '__main__':
     unittest.main()
+

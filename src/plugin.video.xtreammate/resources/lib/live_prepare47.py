@@ -32,7 +32,7 @@ def model(portal,client,categories,streams):
         channels.append(Channel(name=stream.get('name',''),
             url=client.live_stream_url(stream['stream_id'],__import__('live_format67').extension()),logo=logos96.get(str(stream['stream_id']),stream.get('stream_icon','')),
             group=str(names.get(cid,cid)),tvg_id=str(stream.get('epg_channel_id') or ''),
-            extra={'category_id':cid,'stream_id':str(stream['stream_id'])}))
+            extra={'category_id':cid,'stream_id':str(stream['stream_id']),**({'logo_local96':True} if logos96.get(str(stream['stream_id'])) else {})}))
     enabled=enabled_ids(portal['id'],'live',groups)
     index=CatalogIndex(channels)
     index.selection('*',enabled)

@@ -9,6 +9,8 @@ def reject84(event,code):
 
 
 def candidate(event, cancel=lambda: False):
+    from artwork_sources96 import require
+    require()
     from utils import setting_bool
     if not setting_bool('programme_tmdb46', False) or not setting_bool('tmdb_research43', False):
         return reject84(event,'DISABLED')

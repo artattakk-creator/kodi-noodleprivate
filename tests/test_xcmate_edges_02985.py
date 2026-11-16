@@ -143,8 +143,14 @@ class Edge85(Fixture,unittest.TestCase):
    result=urls.resolve(event,allow_lookup=False,url_mode69=True)
   self.assertNotEqual((result or {}).get('source'),'tmdb_series')
  def test_manual_disabled_source_is_not_silently_replaced_by_xmltv_supplier(self):
+  # Historical test identity retained. .96 explicitly separates disabled TMDB
+  # work lookup from independently consented exact-event XMLTV fallback.
   import programme_urls55 as urls
-  event=dict(self.event,placeholder='/fallback.png',xmltv_image='https://image.tmdb.org/t/p/w500/synthetic85.png');self.maps.set_mapping(event,dict(id=85,source='tmdb',verified85=True));self.options.update(programme_tmdb46=False,tmdb_research43=False)
-  with mock.patch('programme_urls55.probe',side_effect=AssertionError('silent fallback after deliberate mapping')),mock.patch('programme_index46.art',return_value=None),mock.patch('event_art81.prior',return_value=None):
+  event=dict(self.event,placeholder='/fallback.png',xmltv_image='https://image.tmdb.org/t/p/w500/synthetic85.png',_detail93=True);self.maps.set_mapping(event,dict(id=85,source='tmdb',verified85=True));self.options.update(programme_tmdb46=False,tmdb_research43=False)
+  with mock.patch('programme_urls55.probe',return_value=dict(decoded77=True,width=80,height=60)),mock.patch('programme_index46.art',return_value=None),mock.patch('event_art81.prior',return_value=None):
+   result=urls.resolve(event,allow_lookup=True,url_mode69=True)
+  self.assertEqual(result['source'],'xmltv_event')
+  self.options['programme_xmltv96']=False
+  with mock.patch('programme_urls55.probe',side_effect=AssertionError('XMLTV explicitly disabled')),mock.patch('programme_index46.art',return_value=None),mock.patch('event_art81.prior',return_value=None):
    result=urls.resolve(event,allow_lookup=True,url_mode69=True)
   self.assertNotEqual((result or {}).get('source'),'xmltv_event')

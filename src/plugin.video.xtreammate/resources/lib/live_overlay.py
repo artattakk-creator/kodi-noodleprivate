@@ -232,7 +232,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
                  for c in groups}
         channels = []
         logo_rows96=[dict(v,sid=str(v.get('stream_id',''))) for v in streams if isinstance(v,dict)]
-        logos96=__import__('logo_manifest86').read(self.portal,logo_rows96)
+        logos96=__import__('logo_overrides96').read(self.portal,logo_rows96)
         for stream in streams:
             if not isinstance(stream, dict) or not stream.get('stream_id'):
                 continue
@@ -244,7 +244,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 group=str(names.get(cid, cid)),
                 tvg_id=str(stream.get('epg_channel_id') or ''),
                 extra={'category_id': cid,
-                       'stream_id': str(stream['stream_id'])}))
+                       'stream_id': str(stream['stream_id']),
+                       **({'logo_local96':True} if logos96.get(str(stream['stream_id'])) else {})}))
         self.groups, self.channels = groups, channels
         from group_selection import enabled_ids
         self.enabled=enabled_ids(self.portal['id'],'live',groups)
@@ -510,6 +511,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self._button_icons[0][1].setImage(__import__('player_controls').texture('play' if paused else 'pause'))
 
     def _local_logo(self, channel):
+        if channel is not None and getattr(channel,'extra',{}).get('logo_local96'):return channel.logo
         from logo_cache import local_logo
         return local_logo(getattr(channel,'logo','')) or __import__('theme_render').texture(self,os.path.join(self._media,'tv.png'),'icon.settings.groups' if self.mode=='groups' else 'icon.epg.clock' if self.mode=='guide' else 'icon.live')
 
