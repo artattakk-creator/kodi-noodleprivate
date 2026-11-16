@@ -8,7 +8,7 @@
 
 **Tech Stack:** GitHub Issues/Actions, Python 3.12 standard library, Codex, Superpowers skills, ChatGPT Work as optional coordination layer.
 
-**Spec:** `docs/superpowers/specs/2026-11-16-xcmate-model-b-agent-automation-design.md` (approved scope: non-production *preparation* only; architecture's future paid/automated execution remains gated).
+**Spec:** `docs/superpowers/specs/2026-11-16-xcmate-model-b-agent-automation-design.md` (authorized scope: non-production *preparation* only; architecture's future paid/automated execution remains gated).
 
 ## Global Constraints
 
@@ -61,8 +61,8 @@
 - [ ] **Step 1: Write failing unit tests** for well-formed review-only, missing hash, release/merge flags true, spoofed Android PASS, failed tests and path traversal.
 - [ ] **Step 2: Execute `python -m unittest tests/test_agent_framework_preflight.py -v` to witness RED.**
 - [ ] **Step 3: Implement minimum standard-library schema gate** with strict bool/int/string validation, hexadecimal exact lengths and explicit release-denial.
-- [ ] **Step 4: Execute same command for GREEN; then full repo tests if feasible; report both exact results.
-- [ ] **Step 5: Commit on prep branch.
+- [ ] **Step 4: Execute same command for GREEN; then full repo tests if feasible; report both exact results.**
+- [ ] **Step 5: Commit on prep branch.**
 
 ### Task 3: Read-only, opt-in GitHub Actions review workflow
 
