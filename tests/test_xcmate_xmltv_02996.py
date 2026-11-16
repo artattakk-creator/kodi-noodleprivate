@@ -5,6 +5,50 @@ from unittest import mock
 from xcmate027_fixture import Fixture
 
 class XMLTV96(Fixture,unittest.TestCase):
+ def resolved_manual(self,local=False):
+  import io
+  from PIL import Image
+  body=io.BytesIO();Image.new('RGB',(1280,720)).save(body,'PNG')
+  candidate=self.module.search(self.event)['rows'][0]
+  __import__('programme_mapping85').set_mapping(self.event,candidate)
+  with mock.patch('media_sources43.get',return_value=body.getvalue()):
+   value=__import__('programme_urls55').resolve(dict(self.event,_detail93=True),allow_lookup=True,local_image63=local,url_mode69=not local,check=lambda *a,**k:dict(decoded77=True,width=1280,height=720))
+  self.assertEqual(value['code'],'READY')
+  return value,candidate
+ def test_manual_xmltv_proof_survives_worker_status_and_revokes_display(self):
+  value,candidate=self.resolved_manual()
+  requests=__import__('programme_requests68');requests.completed(self.event,value)
+  delivered=requests.result(self.event)
+  self.assertEqual(delivered.get('xmltv96'),candidate['xmltv96'])
+  self.module.invalidate(candidate['xmltv96'])
+  self.assertFalse(__import__('programme_image69').eligible(delivered,self.event))
+  self.assertNotEqual(requests.result(self.event).get('source'),'xmltv_event')
+ def test_local_manual_xmltv_keeps_proof_and_is_not_a_disposable_asset(self):
+  value,candidate=self.resolved_manual(local=True)
+  self.assertEqual(value.get('xmltv96'),candidate['xmltv96'])
+  self.assertTrue(value.get('manual85'))
+  self.assertTrue(__import__('artwork_temp85').durable(value))
+  self.module.invalidate(candidate['xmltv96'])
+  self.assertFalse(__import__('programme_image69').eligible(value,self.event))
+ def test_xmltv_proof_for_different_event_cannot_be_displayed(self):
+  value,candidate=self.resolved_manual()
+  other=dict(value,xmltv96=dict(candidate['xmltv96'],event=self.module.identity(dict(self.event,sid='other'))))
+  self.assertFalse(__import__('programme_image69').eligible(other,self.event))
+  self.assertIsNone(__import__('programme_urls55').display(self.event,other))
+ def test_rolling_cache_context_keeps_xmltv_revocation_proof(self):
+  import io
+  from PIL import Image
+  body=io.BytesIO();Image.new('RGB',(1280,720)).save(body,'PNG')
+  value,candidate=self.resolved_manual()
+  value.pop('manual85',None) # Exercise the automatic rolling lane with proof.
+  cache=__import__('artwork_temp85');cache._due=0
+  with mock.patch('home_schedule75.applicable',return_value=True):
+   promoted=cache.promote(self.event,value,body.getvalue())
+  self.assertTrue(promoted.get('temp85'))
+  restored=cache.lookup(self.event)
+  self.assertEqual(restored.get('xmltv96'),candidate['xmltv96'])
+  self.module.invalidate(candidate['xmltv96'])
+  self.assertIsNone(cache.lookup(self.event))
  def setUp(self):
   super().setUp();self.options['programme_image_hosts55']='images.example.test'
   self.event=dict(pid='p',sid='1',canonical='xml',start=self.now-30,stop=self.now+3600,title='Verified show',source_key46='source-a',epg_source46='source-a',key='exact-event',placeholder='')

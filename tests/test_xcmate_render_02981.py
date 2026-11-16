@@ -84,3 +84,13 @@ class Render81(Fixture,unittest.TestCase):
   value=dict(key='legacy',source='tmdb_series',code='READY',until=time.time()+300)
   with mock.patch('programme_art46.space'):event.commit(e,value,self.png())
   self.assertIsNotNone(event.prior(e));self.assertIsNone(event.prior(dict(e,epg_source46='xml-source-b')));self.assertIsNone(event.prior(dict(e,subtitle='Episode B')))
+ def test_xmltv_rank_is_numeric_and_independent_of_source_authorization(self):
+  import event_art81 as event
+  with mock.patch('home_schedule75.applicable',return_value=False):
+   self.options['programme_xmltv96']=True
+   self.assertIs(type(event.rank({'source':'xmltv_event'})),int)
+   self.assertEqual(event.rank({'source':'xmltv_event'}),1)
+   self.assertLess(event.rank({'source':'tmdb_movie'}),event.rank({'source':'xmltv_event'}))
+   self.options['programme_xmltv96']=False
+   self.assertEqual(event.rank({'source':'xmltv_event'}),1)
+   self.assertFalse(event.allowed({'source':'xmltv_event'}))

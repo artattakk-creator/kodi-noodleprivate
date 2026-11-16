@@ -15,7 +15,6 @@ def rank(value):
   kind86=__import__('hero_art86').classify(value)
   if kind86:return kind86[1]
  source=value.get('source','')
- if source=='xmltv_event':return setting_bool('programme_xmltv96',True)
  if source.startswith('tmdb_'):return 0 if value.get('role81')!='poster' else 3
  return {'xmltv_event':1,'provider_event':2,'tvmaze_episode':2,'tvmaze_series':3}.get(source,4)
 

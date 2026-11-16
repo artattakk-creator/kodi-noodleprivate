@@ -14,6 +14,7 @@ def classify(value):
  if source in ('tmdb_episode','tvmaze_episode','xmltv_event','provider_event','user_local86') and role!='poster':return ('hero_backdrop',1)
  return None
 def poster(candidate):
+ if candidate.get('manual85') or candidate.get('match')=='MANUAL_CONFIRMED':return None
  url=candidate.get('official_poster86')
  if not url or candidate.get('source') not in ('tmdb_movie','tmdb_series'):return None
  return dict(candidate,url=url,role81='poster')
@@ -26,9 +27,15 @@ def ordered(primary,feeds):
 
 
 def expand(primary,event,cancel=lambda:False):
- """A proved episode ID does not make its small still the preferred work Hero."""
+ """Explicit Home chooser: enrich proved works after visible-worker admission.
+
+ Generic identity searches never start optional cinematic lookups. A proved
+ episode ID still needs an independently verified parent work for the Hero.
+ """
  result=[]
  for value in primary:
+  if value.get('manual85') or value.get('match')=='MANUAL_CONFIRMED':
+   result.append(value);continue
   if value.get('source')=='tmdb_episode' and type(value.get('remote_id')) is int:
    try:
     row=__import__('programme_candidates85').details(event,value['remote_id'],cancel,manual=False)
@@ -37,5 +44,7 @@ def expand(primary,event,cancel=lambda:False):
      work['image_scope57']='series_fallback'
      result.append(__import__('cinematic_images96').enrich(work,event,cancel))
    except __import__('media_sources43').SourceError:pass
+  if value.get('source') in ('tmdb_movie','tmdb_series'):
+   value=__import__('cinematic_images96').enrich(value,event,cancel)
   result.append(value)
  return result

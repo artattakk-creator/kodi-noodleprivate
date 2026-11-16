@@ -67,7 +67,7 @@ def display(event,value):
     """A persisted URL is not proof that Android displayed the right picture."""
     if not isinstance(value,dict) or value.get('url_version55')!=1:return None
     from programme_art46 import fingerprint
-    if value.get('source')=='xmltv_event' and (not __import__('event_art81').allowed(value) or not __import__('xmltv_art96').display_allowed(value)):return None
+    if value.get('source')=='xmltv_event' and (not __import__('event_art81').allowed(value) or not __import__('xmltv_art96').display_allowed(value,event)):return None
     if value.get('fingerprint')!=fingerprint(event):return None
     if value.get('hosts55')!=sorted(hosts()) or value.get('profile55')!=profile():return None
     if value.get('binding55')!=binding(event) or value.get('key')!=event.get('key'):return None
@@ -215,7 +215,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
                 try:manual85=__import__('programme_candidates85').candidate(event,cancel)
                 except (SourceError,HelperError) as error85:
                     failed(error85.code);manual85=None
-                if manual85:yield from __import__('cinematic_images96').alternatives(manual85)
+                if manual85:yield manual85
             # Optional remote permission and local exact-event XMLTV fallback
             # are separate. A disabled/failed TMDB mapping cannot erase it.
             yield from (c for c in candidates if c.get('source') in ('xmltv_event','provider_event') and c.get('match')=='EXACT_EVENT')

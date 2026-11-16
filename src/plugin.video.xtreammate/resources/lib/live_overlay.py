@@ -232,7 +232,12 @@ class LiveNavigator(xbmcgui.WindowDialog):
                  for c in groups}
         channels = []
         logo_rows96=[dict(v,sid=str(v.get('stream_id',''))) for v in streams if isinstance(v,dict)]
-        logos96=__import__('logo_overrides96').read(self.portal,logo_rows96)
+        overrides96=__import__('logo_overrides96')
+        scope96=overrides96.scope(self.portal);persistent96=__import__('artwork_config').persistent()
+        # Legacy/M3U construction keeps the existing provider-cache lane;
+        # the prepared worker model supplies verified manifest fallbacks.
+        base96={}
+        logos96=dict(base96,**overrides96.read(self.portal,logo_rows96))
         for stream in streams:
             if not isinstance(stream, dict) or not stream.get('stream_id'):
                 continue
@@ -245,6 +250,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 tvg_id=str(stream.get('epg_channel_id') or ''),
                 extra={'category_id': cid,
                        'stream_id': str(stream['stream_id']),
+                       **overrides96.binding(self.portal,dict(stream,sid=str(stream['stream_id'])),base96.get(str(stream['stream_id']),''),scope96=scope96,persistent96=persistent96),
                        **({'logo_local96':True} if logos96.get(str(stream['stream_id'])) else {})}))
         self.groups, self.channels = groups, channels
         from group_selection import enabled_ids
@@ -511,6 +517,18 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self._button_icons[0][1].setImage(__import__('player_controls').texture('play' if paused else 'pause'))
 
     def _local_logo(self, channel):
+        extra96=getattr(channel,'extra',{})
+        if extra96.get('logo_key96'):
+            overrides96=__import__('logo_overrides96')
+            scope96=extra96.get('logo_scope96')
+            if scope96 is not None and scope96.matches(self.portal) and extra96.get('logo_sid96')==str(extra96.get('stream_id','')):
+                current96=overrides96.reference(extra96['logo_key96'])
+                if current96:return current96
+                if extra96.get('logo_base96'):return extra96['logo_base96']
+                from logo_cache import local_logo
+                current96=local_logo(extra96.get('logo_provider96',''),persistent96=extra96.get('logo_persistent96',True))
+                if current96:return current96
+            return os.path.join(self._media,'tv.png')
         if channel is not None and getattr(channel,'extra',{}).get('logo_local96'):return channel.logo
         from logo_cache import local_logo
         return local_logo(getattr(channel,'logo','')) or __import__('theme_render').texture(self,os.path.join(self._media,'tv.png'),'icon.settings.groups' if self.mode=='groups' else 'icon.epg.clock' if self.mode=='guide' else 'icon.live')

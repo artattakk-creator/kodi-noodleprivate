@@ -55,16 +55,17 @@ def details(event,selected,cancel=lambda:False):
 def mapped(event,record,cancel=lambda:False):
  """Independently revalidate the source fact; caller URLs are never trusted."""
  if not record or record.get('source')!='xmltv_event':return None
- try:return details(event,record,cancel)
+ try:return dict(details(event,record,cancel),manual85=True)
  except SourceError:return None
 
 _checked={}
 def proof_key(proof):return hashlib.sha256(json.dumps(proof,sort_keys=True).encode()).hexdigest()
 def invalidate(proof):
  if valid_proof(proof):__import__('xbmcgui').Window(10000).setProperty('XCMate.XMLTV96.Invalid.'+proof_key(proof),'true')
-def display_allowed(art):
+def display_allowed(art,event=None):
+ if 'xmltv96' not in art:return True # Legacy automatic XMLTV references.
  proof=art.get('xmltv96')
- return not proof or valid_proof(proof) and __import__('xbmcgui').Window(10000).getProperty('XCMate.XMLTV96.Invalid.'+proof_key(proof))!='true'
+ return valid_proof(proof) and (event is None or proof['event']==identity(event)) and __import__('xbmcgui').Window(10000).getProperty('XCMate.XMLTV96.Invalid.'+proof_key(proof))!='true'
 def checked_mapping(event,record,cancel=lambda:False):
  """Worker-only, fact-file-generation cached revalidation, no GUI SQL."""
  from programme_index46 import path
@@ -76,7 +77,7 @@ def checked_mapping(event,record,cancel=lambda:False):
   except FileNotFoundError:stamps.append(None)
  tag=(key(event),proof_key(record.get('xmltv96')),tuple(stamps))
  if tag in _checked:return _checked[tag]
- try:value=details(event,record,cancel)
+ try:value=dict(details(event,record,cancel),manual85=True)
  except SourceError as exc:
   if exc.code in ('SQLITE_BUSY','EPG_READ_BUDGET','CANCELLED'):raise
   invalidate(record.get('xmltv96'));value=None

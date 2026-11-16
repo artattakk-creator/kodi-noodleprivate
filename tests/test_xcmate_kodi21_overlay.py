@@ -139,6 +139,9 @@ class OverlayLifecycleTests(unittest.TestCase):
             _get_json=mock.Mock(return_value={}), get_short_epg=mock.Mock())
         gui = types.ModuleType('xbmcgui')
         gui.WindowDialog = OmegaDialog
+        # Kodi also supplies the XML child-dialog base used by Mini mapping.
+        from xcmate027_fixture import WindowXMLDialog
+        gui.WindowXMLDialog = WindowXMLDialog
         gui.ControlList = ControlList
         gui.ControlButton = ControlButton
         gui.ControlImage = ControlImage
@@ -612,6 +615,14 @@ class OverlayLifecycleTests(unittest.TestCase):
         o.native(1)
         self.assertEqual(o.mode,'channels')
         o.native(117)
+        self.assertEqual(o.mode,'channels')
+        self.assertIs(o.focus,o.control);self.assertTrue(o._mini_context96)
+        # The Android fallback now offers Mapping and the existing Extras.
+        # Exercise that second action through the real owner-thread pump.
+        with mock.patch('menu_icons45.select',return_value=1) as context:
+            o.tick()
+        self.assertEqual(len(context.call_args.args[2]),2)
+        self.assertFalse(o._mini_context96)
         self.assertEqual(o.mode,'extras')
         self.assertIn(o.focus,o.extra_buttons)
         o.native(92)
@@ -633,6 +644,26 @@ class OverlayLifecycleTests(unittest.TestCase):
         self.assertEqual(sum(row[0].visible for row in o._row_controls),1)
         self.assertNotEqual(o.main_buttons[0].options['focusTexture'],
                             o.main_buttons[0].options['noFocusTexture'])
+
+    def test_sender_context_mapping_and_cancel_preserve_playback_and_native_focus(self):
+        o=self.overlay
+        for choice in (-1,0):
+            with self.subTest(choice=choice):
+                o._switch('channels');o._mapping_request96=None
+                before=(o.sid,self.player.getPlayingFile(),o.control.getSelectedPosition())
+                o.native(117)
+                self.assertTrue(o._mini_context96);self.assertEqual(o.mode,'channels')
+                with mock.patch('menu_icons45.select',return_value=choice),mock.patch('guide_mapping48.open_pending') as pending:
+                    o.tick()
+                self.assertEqual(o.mode,'channels');self.assertIs(o.focus,o.control)
+                self.assertEqual((o.sid,self.player.getPlayingFile(),o.control.getSelectedPosition()),before)
+                self.assertFalse(o._mini_context96)
+                if choice==0:
+                    self.assertEqual(o._mapping_request96['sid'],str(o.visible_channels[o._highlight['channels']].extra['stream_id']))
+                    pending.assert_called_once_with(o)
+                else:
+                    pending.assert_not_called();self.assertIsNone(o._mapping_request96)
+                self.player.play.assert_not_called();self.player.pause.assert_not_called();self.player.stop.assert_not_called()
 
     def test_learned_ok_has_no_native_click_but_still_executes(self):
         self.overlay._switch('hidden')

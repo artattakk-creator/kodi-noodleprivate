@@ -11,7 +11,7 @@ def eligible(art,event=None):
  if not isinstance(art,dict) or art.get('code') not in ('READY','READY_STALE') or art.get('source') in (None,'','placeholder'):return False
  from utils import setting_bool
  source=art.get('source','')
- if source=='xmltv_event' and (not setting_bool('programme_xmltv96',True) or not __import__('xmltv_art96').display_allowed(art)):return False
+ if source=='xmltv_event' and (not setting_bool('programme_xmltv96',True) or not __import__('xmltv_art96').display_allowed(art,event)):return False
  if source.startswith('tmdb') and setting_bool('programme_tmdb_optout77',False) or source.startswith('tvmaze') and setting_bool('programme_tvmaze_optout77',False):return False
  if event is not None and art.get('fingerprint') and art['fingerprint']!=__import__('programme_art46').fingerprint(event):return False
  image=art.get('image')

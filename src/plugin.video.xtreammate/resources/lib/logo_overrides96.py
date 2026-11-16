@@ -13,6 +13,52 @@ from urllib.parse import unquote, urlsplit
 MAX_IMAGE = 3 * 1024 * 1024
 MAX_MANIFEST = 512 * 1024
 _verified = {}
+PREFIX = 'XCMate.LogoChoice96.'
+
+
+def _publish(tag, uri):
+    """Publish only after worker verification or an atomic explicit commit."""
+    import xbmcgui
+    window=xbmcgui.Window(10000);key=PREFIX+tag;old=window.getProperty(key)
+    raw=json.dumps(dict(key=tag, uri=uri), separators=(',', ':'))
+    if raw==old or not uri and not old:return
+    window.setProperty(key,raw)
+
+
+def reference(tag):
+    """GUI-only shared RAM receipt; no hashing, paths, files or SQL reads."""
+    if not isinstance(tag, str) or len(tag) != 64:return ''
+    try:
+        import xbmcgui
+        raw = xbmcgui.Window(10000).getProperty(PREFIX+tag)
+        value = json.loads(raw) if raw and len(raw) <= 16384 else {}
+        return value['uri'] if isinstance(value, dict) and value.get('key') == tag and isinstance(value.get('uri'), str) else ''
+    except (ValueError, TypeError, AttributeError, RuntimeError):return ''
+
+
+def binding(portal, row, fallback='', *, scope96=None, persistent96=None):
+    """Worker-prepared identity and provider fallback, independent of EPG."""
+    return dict(logo_key96=identity(portal, row), logo_portal96=str(portal['id']),
+                logo_sid96=str(row.get('sid') or row.get('stream_id') or ''),
+                logo_provider96=row.get('stream_icon', ''), logo_base96=fallback,
+                logo_scope96=scope96 if scope96 is not None else scope(portal),
+                logo_persistent96=__import__('artwork_config').persistent() if persistent96 is None else persistent96)
+
+
+class _Scope:
+    """Opaque private RAM comparison; Channel repr never discloses secrets."""
+    __slots__ = ('__profile', '__account')
+    def __init__(self, portal):
+        import xbmcvfs
+        self.__profile = xbmcvfs.translatePath('special://profile/')
+        self.__account = tuple(portal.get(k) for k in ('id', 'type', 'xc_host', 'xc_user', 'xc_pass'))
+    def __repr__(self):return '<LogoScope96>'
+    def matches(self, portal):
+        import xbmcvfs
+        return self.__profile == xbmcvfs.translatePath('special://profile/') and self.__account == tuple(portal.get(k) for k in ('id', 'type', 'xc_host', 'xc_user', 'xc_pass'))
+
+
+def scope(portal):return _Scope(portal)
 
 
 def root():
@@ -110,6 +156,7 @@ def save(portal, row, body, *, confirmed=False):
         if hashlib.sha256((folder / name).read_bytes()).hexdigest() != digest:raise OSError('LOGO_OVERRIDE_READBACK')
         records[tag] = dict(file=name, sha256=digest, width=width, height=height)
         _commit(records)
+        _publish(tag, str(folder / name))
     return str(folder / name)
 
 
@@ -117,18 +164,29 @@ def reset(portal, row, *, confirmed=False):
     if confirmed is not True:raise ValueError('LOGO_CONFIRMATION_REQUIRED')
     from profile_transaction import writing
     with writing(timeout=.2):
-        records = _load();records.pop(identity(portal, row), None);_commit(records)
+        tag = identity(portal, row)
+        records = _load();records.pop(tag, None);_commit(records)
+        _publish(tag, '')
     # Shared bytes are preserved. Only this exact mapping is reset.
     return True
 
 
 def read(portal, rows):
+    from profile_transaction import reading
+    try:
+        # Prevent an old worker snapshot publishing over a concurrent Save/Reset.
+        with reading(timeout=.15):return _read(portal, rows)
+    except (OSError, TimeoutError):return {}
+
+
+def _read(portal, rows):
     try:records = _load();folder = _safe_root()
     except (OSError, ValueError, TypeError):return {}
     result = {}
     for row in rows:
         try:
-            value = records.get(identity(portal, row), {})
+            tag = identity(portal, row)
+            value = records.get(tag, {})
             if not isinstance(value, dict):continue
             digest = value.get('sha256', '')
             name = value.get('file', '')
@@ -144,4 +202,7 @@ def read(portal, rows):
                 while len(_verified) > 512:_verified.pop(next(iter(_verified)))
             result[str(row.get('sid') or row.get('stream_id'))] = str(filename)
         except (OSError, ValueError, TypeError):continue
+    for row in rows:
+        try:_publish(identity(portal, row), result.get(str(row.get('sid') or row.get('stream_id')), ''))
+        except (ValueError, TypeError):continue
     return result

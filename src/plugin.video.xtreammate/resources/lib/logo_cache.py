@@ -11,9 +11,11 @@ _LOCK = threading.Lock()
 _WORKER = None
 
 
-def local_logo(uri):
-    from artwork_config import persistent
-    if not persistent():
+def local_logo(uri,persistent96=None):
+    if persistent96 is None:
+        from artwork_config import persistent
+        persistent96=persistent()
+    if not persistent96:
         from artwork_visible import dynamic
         return dynamic(str(uri or ''))
     return _READY.get(str(uri or ''),'')

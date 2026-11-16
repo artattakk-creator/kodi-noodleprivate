@@ -262,7 +262,14 @@ class SetupWindow(GroupRows,WorkWindow):
         choices.extend((title,uri) for key,title,uri in PRESET_FEEDS)
         choices.append((tr(32719),'custom'))
         heading='Zusätzliche EPG-Quellen · Anbieter-Grundversorgung aktiv' if baseline else tr(32706)
-        selected=xbmcgui.Dialog().multiselect(heading,[c[0] for c in choices],preselect=[i for i,(_,uri) in enumerate(choices) if (uri=='provider' and self.draft.provider_epg) or any(s['uri']==uri for s in self.draft.epg_sources)])
+        labels=[c[0] for c in choices]
+        preselect=[i for i,(_,uri) in enumerate(choices) if (uri=='provider' and self.draft.provider_epg) or any(s['uri']==uri for s in self.draft.epg_sources)]
+        if baseline:
+            from menu_icons45 import multiselect
+            selected=multiselect(xbmcgui.Dialog(),heading,labels,preselect=preselect,default='database')
+        else:
+            # Preserve the explicitly neutral legacy wizard picker (#255).
+            selected=xbmcgui.Dialog().multiselect(tr(32706),labels,preselect=preselect)
         if selected is None: return
         sources=[];self.draft.provider_epg=baseline
         for i in selected:

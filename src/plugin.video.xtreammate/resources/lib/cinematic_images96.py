@@ -12,7 +12,7 @@ from urllib.parse import urlencode
 MAX_BACKDROPS=5
 MAX_ROWS=500
 _cache={}
-_PROOFS=('EXACT_TITLE_YEAR','EXACT_UNIQUE_FILM_TITLE','EXACT_TV_TITLE_YEAR66','EXACT_UNIQUE_TV_TITLE66','MANUAL_CONFIRMED')
+_PROOFS=('EXACT_TITLE_YEAR','EXACT_UNIQUE_FILM_TITLE','EXACT_TV_TITLE_YEAR66','EXACT_UNIQUE_TV_TITLE66')
 
 
 def rank(data,ident):
@@ -43,10 +43,15 @@ def rank(data,ident):
 def enrich(value,event,cancel=lambda:False):
  """Keep the verified existing candidate on every optional images failure.
 
- The caller must already have independently proved a unique work or obtained
- an explicit manual confirmation; search/detail suggestions never call here.
+ Only the Home Hero chooser calls this after its existing visible-five
+ worker admission. Generic matching/reference/cold materialization stay free
+ of optional image-list requests even when the Home skin is installed.
+ The caller must already have independently proved a unique automatic work.
+ Explicit manual image choices remain pinned; suggestions never call here.
  No event/title/year/ID proof is inferred from an images response.
  """
+ if isinstance(value,dict) and (value.get('manual85') or value.get('match')=='MANUAL_CONFIRMED'):return value
+ if not isinstance(event,dict) or event.get('_detail93') or not __import__('home_schedule75').applicable():return value
  if not isinstance(value,dict) or value.get('source') not in ('tmdb_movie','tmdb_series') or value.get('match') not in _PROOFS or value.get('provisional85') or type(value.get('remote_id')) is not int or value['remote_id']<=0 or value.get('cinematic_backdrops96') or cancel():return value
  from programme_candidates85 import enabled
  if not enabled():return value
@@ -80,6 +85,7 @@ def enrich(value,event,cancel=lambda:False):
 
 def alternatives(value):
  """Each ranked URL retains its work proof, source and typed backdrop role."""
+ if value.get('manual85') or value.get('match')=='MANUAL_CONFIRMED':return [value]
  rows=value.get('cinematic_backdrops96')
  if not isinstance(rows,list) or not rows:return [value]
  return [dict(value,url=row['url'],role81='backdrop',vote_average88=row['vote_average88'],vote_count88=row['vote_count88']) for row in rows[:MAX_BACKDROPS]]

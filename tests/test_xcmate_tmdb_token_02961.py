@@ -76,7 +76,11 @@ class Token61(Fixture,unittest.TestCase):
   self.dialog.browseSingle=mock.Mock(return_value=str(self.source));self.dialog.select.side_effect=[0,-1];self.dialog.yesno.return_value=False
   ui.show();self.assertEqual(self.path.read_bytes(),before);self.assertFalse(set(self.options)-{'tmdb_token_revision61'})
  def test_exact_epg_submenu_and_import_does_not_enable_artwork(self):
-  sections=importlib.import_module('settings_sections45');self.assertIn((36620,'native_options45',{'group':'tmdb_access61'}),sections.ROWS['epg'])
+  sections=importlib.import_module('settings_sections45')
+  self.assertEqual(sections.ROWS['epg'][0],(39000,'native_options45',{'group':'tmdb_access61'}))
+  self.router._params.update(action='native_options45',group='tmdb_access61')
+  with mock.patch('artwork_hub96.show') as hub:self.routes.dispatch(self.router)
+  hub.assert_called_once_with()
   ui=importlib.import_module('tmdb_access61');self.dialog.browseSingle=mock.Mock(return_value=str(self.source));self.dialog.select.side_effect=[0,-1]
   ui.show();self.assertEqual(self.path.read_bytes(),FIXTURE+b'\n');self.assertEqual(self.options['programme_tmdb46'],'true');self.assertEqual(self.options['tmdb_research43'],'true')  # .77 authorized automatic activation; token bytes unchanged
   self.assertNotIn(FIXTURE.decode(),str(self.dialog.ok.call_args_list))
