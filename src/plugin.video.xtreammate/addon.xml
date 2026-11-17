@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon id="plugin.video.xtreammate"
        name="XCMate"
-       version="0.1.29.96"
+       version="0.1.29.97"
        provider-name="GS Media">
 
   <requires>
@@ -38,7 +38,7 @@
     <forum>https://forum.kodi.tv</forum>
     <website>https://kodi.tv</website>
     <source>https://github.com/artattakk-creator/kodi-noodleprivate</source>
-    <news>0.1.29.91 Release Candidate: Sechs beschriftete BINGIE-Reihen: Filme, Serien, Im Kino, Disney, Diese Woche im Trend und MP3s. Gültige clock50-Widgetpfade wieder verwenden. Eigene Ladekreisel mit begrenzter Laufzeit und erhaltenem Fokus. Vorhandene TVMaze-/TMDB-Bildsuche, Bilddownloads und manuelle Zuordnungen unverändert erhalten. Einstellungen, Provider, Token, EPG, Favoriten und persönliche Widgets bleiben erhalten. Android-Abnahme offen; noch keine Repository-Veröffentlichung.</news>
+    <news>0.1.29.97 Pilot-Kandidat: Quellensichere, dauerhaft gespeicherte manuelle EPG-Zuordnungen mit Readback und sichtbarer Bestaetigung; Grid und Mini-EPG verwenden nach Save dieselbe Sender-/Quellbindung. Basierend auf PR #478. Pilot-only; Android-Validierung offen. Keine Aenderung an gespeicherten Portalen, TMDB-Tokens oder Benutzerprofilen.</news>
     <assets>
       <icon>icon-81da1003a2753ec6.png</icon>
       <fanart>resources/media/lightweight_splash.jpg</fanart>
