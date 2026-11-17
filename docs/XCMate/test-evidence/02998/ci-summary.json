@@ -1,0 +1,57 @@
+{
+  "source_commit": "c5ecd2ea69bb84e648cae9433d250613dceff46e",
+  "ci_virtual_commit": "a7f718bc498f8dc6f86bdd802a24cdb2c8e36e48",
+  "workflow": 44117233113,
+  "jobs": [
+    {
+      "id": 134158530592,
+      "name": "native (mapping, 1920x1080)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 134158531110,
+      "name": "host (pytest)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 134158531190,
+      "name": "native (artwork, 1280x720)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 134158531458,
+      "name": "host (unittest)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 134158531492,
+      "name": "native (mapping, 1280x720)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 134158531510,
+      "name": "native (artwork, 1920x1080)",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "auxiliary_workflows": [
+    {
+      "id": 44117233138,
+      "name": "XCMate72",
+      "conclusion": "success"
+    },
+    {
+      "id": 44117233120,
+      "name": "XCMate73",
+      "conclusion": "success"
+    }
+  ],
+  "published": false,
+  "android": "ANDROID_NOT_TESTED"
+}

@@ -34,10 +34,10 @@
 **Interfaces:** native main(package_inspector=None) retains old defaults; .98 wrapper supplies strict .98 inspector.
 - [x] RED exact-version/metadata-only/upgrade and no-global-contamination checks.
 - [x] Version/news .98, deterministic ZIP/SHA; no live staging.
-- [ ] Full pytest/unittest and 17 PO catalogs; native artwork+mapping at720p/1080p against exact .98 ZIP.
-- [ ] Commit/push new Draft stacked on484; inspect real CI, fix failures without masking.
+- [x] Full pytest/unittest and 17 PO catalogs; native artwork+mapping at720p/1080p against exact .98 ZIP.
+- [x] Commit/push new Draft stacked on484; inspect real CI, fix failures without masking.
 
 ### Task3: Independent gates and handoff
-- [ ] Both QA agents independently review the same final source and actual new native evidence; preserve profile/token/mapping/widget guards.
-- [ ] German test report, historical package proofs, exact build SHA and checksum, Android plan, PILOT_READY only with green gates else RELEASE_BLOCKED.
-- [ ] Document in new Draft and related GitHub issue/PR484. No merge or publication.
+- [x] Both QA agents independently review the same final source and actual new native evidence; preserve profile/token/mapping/widget guards.
+- [x] German test report, historical package proofs, exact build SHA and checksum, Android plan, PILOT_READY only with green gates else RELEASE_BLOCKED.
+- [x] Document in new Draft and related GitHub issue/PR484. No merge or publication.

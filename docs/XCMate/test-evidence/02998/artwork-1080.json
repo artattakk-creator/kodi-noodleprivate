@@ -1,0 +1,206 @@
+{
+  "source_commit": "c5ecd2ea69bb84e648cae9433d250613dceff46e",
+  "ci_virtual_commit": "a7f718bc498f8dc6f86bdd802a24cdb2c8e36e48",
+  "workflow": 44117233113,
+  "job_id": 134158531510,
+  "package_sha256": "d37d34fbb5be5e46154b912d3ce960f6e248431fcf7d0a9651fa9785b20a12c3",
+  "resolution": "1080",
+  "sticky88": {
+    "status": "PASS",
+    "wall_seconds": 306.06,
+    "checkpoints": [
+      {
+        "seconds": 2.06,
+        "pixels": 253572,
+        "screenshot": "visible84-sticky88-2.png"
+      },
+      {
+        "seconds": 46.09,
+        "pixels": 253572,
+        "screenshot": "visible84-sticky88-46.png"
+      },
+      {
+        "seconds": 121.08,
+        "pixels": 253572,
+        "screenshot": "visible84-sticky88-121.png"
+      },
+      {
+        "seconds": 305.22,
+        "pixels": 253572,
+        "screenshot": "visible84-sticky88-305.png"
+      }
+    ],
+    "negative_status_after": 45,
+    "android": "ANDROID_NOT_TESTED"
+  },
+  "status482": {
+    "status": "PASS",
+    "mode": "INJECTED_PRODUCER_STATE_NATIVE_HERO_PROJECTION",
+    "cases": [
+      {
+        "code": "REQUESTED",
+        "screenshot": "visible84-status482-requested.png",
+        "bank": "B",
+        "description_binding": true
+      },
+      {
+        "code": "RUNNING",
+        "screenshot": "visible84-status482-running.png",
+        "bank": "A",
+        "description_binding": true
+      },
+      {
+        "code": "SETTINGS_XML_INVALID",
+        "screenshot": "visible84-status482-settings_xml_invalid.png",
+        "bank": "B",
+        "description_binding": true
+      },
+      {
+        "code": "IMAGE_EPG_DISABLED",
+        "screenshot": "visible84-status482-image_epg_disabled.png",
+        "bank": "A",
+        "description_binding": true
+      }
+    ],
+    "settings_mutated": false,
+    "android": "ANDROID_NOT_TESTED"
+  },
+  "foreign87": {
+    "status": "PASS",
+    "saved_definitions": 13,
+    "independent_sources": 7,
+    "cases": [
+      {
+        "menu": 0,
+        "row": 0,
+        "addon": "plugin.audio.m3sr2019",
+        "items": 8,
+        "native_focus": 2540,
+        "rail_pixels": 360136,
+        "screenshot": "visible84-foreign87-warm-0-0.png"
+      },
+      {
+        "menu": 0,
+        "row": 1,
+        "addon": "plugin.audio.shoutcast",
+        "items": 8,
+        "native_focus": 2550,
+        "rail_pixels": 360136,
+        "screenshot": "visible84-foreign87-warm-0-1.png"
+      },
+      {
+        "menu": 0,
+        "row": 2,
+        "addon": "plugin.video.fixture87.cinema",
+        "items": 8,
+        "native_focus": 2560,
+        "rail_pixels": 360136,
+        "screenshot": "visible84-foreign87-warm-0-2.png"
+      },
+      {
+        "menu": 0,
+        "row": 3,
+        "addon": "plugin.video.fixture87.series",
+        "items": 8,
+        "native_focus": 2570,
+        "rail_pixels": 360136,
+        "screenshot": "visible84-foreign87-warm-0-3.png"
+      },
+      {
+        "menu": 0,
+        "row": 4,
+        "addon": "plugin.video.fixture87.weather",
+        "items": 8,
+        "native_focus": 2580,
+        "rail_pixels": 360136,
+        "screenshot": "visible84-foreign87-warm-0-4.png"
+      },
+      {
+        "menu": 1,
+        "row": 0,
+        "addon": "plugin.audio.m3sr2019",
+        "items": 8,
+        "native_focus": 3510,
+        "rail_pixels": 360136,
+        "screenshot": "visible84-foreign87-warm-1-0.png"
+      },
+      {
+        "menu": 1,
+        "row": 1,
+        "addon": "plugin.audio.shoutcast",
+        "items": 8,
+        "native_focus": 3520,
+        "rail_pixels": 378226,
+        "screenshot": "visible84-foreign87-warm-1-1.png"
+      },
+      {
+        "menu": 1,
+        "row": 2,
+        "addon": "plugin.video.fixture87.cinema",
+        "items": 8,
+        "native_focus": 3530,
+        "rail_pixels": 360136,
+        "screenshot": "visible84-foreign87-warm-1-2.png"
+      },
+      {
+        "menu": 1,
+        "row": 3,
+        "addon": "plugin.video.fixture87.series",
+        "items": 8,
+        "native_focus": 3540,
+        "rail_pixels": 360136,
+        "screenshot": "visible84-foreign87-warm-1-3.png"
+      },
+      {
+        "menu": 1,
+        "row": 4,
+        "addon": "plugin.video.fixture87.weather",
+        "items": 8,
+        "native_focus": 3550,
+        "rail_pixels": 360136,
+        "screenshot": "visible84-foreign87-warm-1-4.png"
+      },
+      {
+        "menu": 1,
+        "row": 5,
+        "addon": "plugin.video.fixture87.news",
+        "items": 8,
+        "native_focus": 3560,
+        "rail_pixels": 360136,
+        "screenshot": "visible84-foreign87-warm-1-5.png"
+      },
+      {
+        "menu": 1,
+        "row": 6,
+        "addon": "plugin.video.fixture87.cinema",
+        "items": 8,
+        "native_focus": 3570,
+        "rail_pixels": 360136,
+        "screenshot": "visible84-foreign87-warm-1-6.png"
+      },
+      {
+        "menu": 1,
+        "row": 7,
+        "addon": "plugin.video.fixture87.trends",
+        "items": 8,
+        "native_focus": 3580,
+        "rail_pixels": 360136,
+        "screenshot": "visible84-foreign87-warm-1-7.png"
+      }
+    ],
+    "cycles": 10,
+    "native_ok_audio": 2,
+    "inventory_sha256": "011ea5b6d627e69e69bbe2030585396fb67c0cc74171ed07063df700094d0bf6",
+    "unchanged": "PASS",
+    "source_kind": "Synthetic independent plugins with actual non-XCMate URLs",
+    "android": "ANDROID_NOT_TESTED"
+  },
+  "logo": {
+    "elapsed_ms": 3782,
+    "actual_pixels": 182240,
+    "width": 560,
+    "height": 280,
+    "screenshot": "visible84-cold-logo-0.png"
+  },
+  "android": "ANDROID_NOT_TESTED"
+}
