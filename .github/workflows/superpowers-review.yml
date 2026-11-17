@@ -1,7 +1,6 @@
 name: Superpowers task and policy review
 on:
-  pull_request:
-    paths: ['AGENTS.md', 'tools/agent_workflow.py', 'tests/test_agent_workflow.py', '.github/workflows/superpowers-*.yml', '.github/ISSUE_TEMPLATE/codex_task.yml', '.github/PULL_REQUEST_TEMPLATE/agent_change.md', 'docs/agents/**', 'docs/superpowers/**']
+  pull_request: {}
   workflow_dispatch:
 permissions:
   contents: read
@@ -20,6 +19,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install workflow parser
+        run: python -m pip install PyYAML==6.0.2
       - name: Execute approval, injection and protected-path regressions
         run: python -m unittest discover -s tests -p test_agent_workflow.py -v
       - name: Report exact PR scope (additional guard, not human approval)

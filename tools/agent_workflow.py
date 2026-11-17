@@ -59,7 +59,7 @@ def inspect_paths(paths):
         if any(p in ('','.','..') for p in parts):return blocked('UNSAFE_PATH')
         lower=path.lower();name=parts[-1].lower()
         if any(lower==p or lower.startswith(p+'/') for p in PROTECTED):return blocked('PROTECTED_PATH')
-        if lower in ('addons.xml','addons.xml.md5','index.html') or lower.startswith(('tools/release_','tools/publish')):return blocked('PUBLICATION_PATH')
+        if lower in ('addons.xml','addons.xml.md5','index.html') or lower.startswith(('tools/release_','tools/publish','repository.gsmedia-')):return blocked('PUBLICATION_PATH')
         if name in SECRET_NAMES or name.startswith('.env') or name.endswith(('.pem','.key','.log','.db','.sqlite','.sqlite-wal','.db-wal','.sqlite-shm','.db-shm','.sqlite-journal','.db-journal')) or 'backup' in name or 'backup' in [p.lower() for p in parts]:return blocked('PRIVATE_OR_BACKUP_PATH')
         if lower.startswith('.github/workflows/'):review=True
     return dict(status='REVIEW_REQUIRED' if review else 'SCOPE_OK',release_authorized=False)
@@ -81,7 +81,7 @@ def main(argv=None):
             Path(args.output).write_text(json.dumps(result,indent=2)+'\n')
         else:
             if not SHA.fullmatch(args.base) or not SHA.fullmatch(args.head):raise ValueError('INVALID_COMMIT')
-            raw=subprocess.check_output(['git','diff','--name-only','-z',args.base,args.head,'--'])
+            raw=subprocess.check_output(['git','diff','--no-renames','--name-only','-z',args.base,args.head,'--'])
             result=inspect_paths(raw.decode().rstrip('\0').split('\0') if raw else [])
     except (OSError,ValueError,TypeError,AttributeError,subprocess.CalledProcessError):result=blocked('INVALID_INPUT_OR_READ_FAILED')
     print(json.dumps(result,sort_keys=True))

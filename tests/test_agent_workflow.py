@@ -5,6 +5,8 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import fnmatch
+import yaml
 import unittest
 from tools import agent_workflow as workflow
 
@@ -65,7 +67,7 @@ class Scope(unittest.TestCase):
   result=workflow.inspect_paths(['src/plugin.video.xtreammate/resources/lib/epg_binding48.py','docs/XCMate/test-builds/issue474/review.zip'])
   self.assertEqual(result['status'],'SCOPE_OK');self.assertFalse(result['release_authorized'])
  def test_release_backups_profiles_and_secret_files_are_blocked(self):
-  paths=['addons.xml','addons.xml.md5','index.html','online-test/manifest.json','plugin.video.xtreammate/new.zip','testversionen/x.zip','src/script.gsmedia.setup/addon.xml','userdata/profiles/settings.xml','tmp/kodi_backup.zip','sample/tmdb_read_access_token.txt','.env','sample/id_rsa','sample/private.pem','private.log','cache/guide_v1.sqlite','snapshot/file.db','snapshot/file.db-shm','snapshot/file.sqlite-shm','tools/release_candidate96.py']
+  paths=['addons.xml','addons.xml.md5','index.html','online-test/manifest.json','plugin.video.xtreammate/new.zip','testversionen/x.zip','src/script.gsmedia.setup/addon.xml','userdata/profiles/settings.xml','tmp/kodi_backup.zip','sample/tmdb_read_access_token.txt','.env','sample/id_rsa','sample/private.pem','private.log','cache/guide_v1.sqlite','repository.gsmedia-1.8.1.zip','snapshot/file.db','snapshot/file.db-shm','snapshot/file.sqlite-shm','tools/release_candidate96.py']
   for path in paths:
    with self.subTest(path=path):self.assertEqual(workflow.inspect_paths([path])['status'],'BLOCKED')
  def test_traversal_absolute_backslash_controls_and_duplicate_separators_block(self):
@@ -74,3 +76,24 @@ class Scope(unittest.TestCase):
  def test_ci_changes_request_independent_review_instead_of_automatic_authorization(self):
   result=workflow.inspect_paths(['.github/workflows/superpowers-review.yml'])
   self.assertEqual(result['status'],'REVIEW_REQUIRED');self.assertFalse(result['release_authorized'])
+
+
+class DeliveryBoundaries(unittest.TestCase):
+ def test_policy_workflow_runs_for_product_and_protected_only_changes(self):
+  data=yaml.load(Path('.github/workflows/superpowers-review.yml').read_text(),Loader=yaml.BaseLoader)
+  event=data['on']['pull_request']
+  patterns=(event or {}).get('paths',['**'])
+  for path in ('src/plugin.video.xtreammate/resources/lib/epg_binding48.py','addons.xml','online-test/index.html'):
+   with self.subTest(path=path):self.assertTrue(any(fnmatch.fnmatch(path,p) for p in patterns))
+ def test_cli_blocks_renaming_a_protected_source_into_a_harmless_destination(self):
+  script=str(Path('tools/agent_workflow.py').resolve())
+  with tempfile.TemporaryDirectory() as directory:
+   root=Path(directory)
+   def git(*args):return subprocess.check_output(['git',*args],cwd=root,stderr=subprocess.DEVNULL,text=True).strip()
+   git('init');git('config','user.email','synthetic@example.invalid');git('config','user.name','Synthetic')
+   (root/'userdata').mkdir();(root/'userdata/profile.xml').write_text('<synthetic/>')
+   git('add','.');git('commit','-m','base');base=git('rev-parse','HEAD')
+   (root/'docs').mkdir();git('mv','userdata/profile.xml','docs/synthetic-profile.xml');git('commit','-m','move');head=git('rev-parse','HEAD')
+   result=subprocess.run([sys.executable,script,'scope','--base',base,'--head',head],cwd=root,capture_output=True,text=True)
+   self.assertEqual(result.returncode,2,result.stdout)
+   self.assertEqual(json.loads(result.stdout)['status'],'BLOCKED')
