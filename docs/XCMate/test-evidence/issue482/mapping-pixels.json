@@ -1,0 +1,122 @@
+[
+  {
+    "file": "720/epg482-busy-grid.png",
+    "bytes": 96696,
+    "sha256": "1440813171de6789b43f78cf8228ab3948022beb275d6eaf3e93c5d980753f3f",
+    "job_id": 134085602729,
+    "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+    "kodi": "21.2 Linux",
+    "android": "ANDROID_NOT_TESTED",
+    "content": "synthetic; original native screenshot"
+  },
+  {
+    "file": "720/epg482-busy-mini.png",
+    "bytes": 384540,
+    "sha256": "cf0e2a393bbb285b72f4087a373e89804c6081b128aa6f2c6f1c39c8ad32d0ae",
+    "job_id": 134085602729,
+    "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+    "kodi": "21.2 Linux",
+    "android": "ANDROID_NOT_TESTED",
+    "content": "synthetic; original native screenshot"
+  },
+  {
+    "file": "720/epg482-preview-grid.png",
+    "bytes": 97879,
+    "sha256": "9575397e89a6e3acc7aee8c8d07769afed84550b677080a42324dae3b8888897",
+    "job_id": 134085602729,
+    "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+    "kodi": "21.2 Linux",
+    "android": "ANDROID_NOT_TESTED",
+    "content": "synthetic; original native screenshot"
+  },
+  {
+    "file": "720/epg482-preview-mini.png",
+    "bytes": 386373,
+    "sha256": "676656c4827d9c69d438eb8b832f89346e8fc6875ccbb819f956b2deca597c67",
+    "job_id": 134085602729,
+    "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+    "kodi": "21.2 Linux",
+    "android": "ANDROID_NOT_TESTED",
+    "content": "synthetic; original native screenshot"
+  },
+  {
+    "file": "720/epg482-source-grid.png",
+    "bytes": 67411,
+    "sha256": "aacddb4d79f7734ec950810ce84f56307ff41267abc3cb7ac43f3a21cd086957",
+    "job_id": 134085602729,
+    "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+    "kodi": "21.2 Linux",
+    "android": "ANDROID_NOT_TESTED",
+    "content": "synthetic; original native screenshot"
+  },
+  {
+    "file": "720/epg482-source-mini.png",
+    "bytes": 147751,
+    "sha256": "16c0afe84f0845cf32fdea37f8ecb8355d55c8b535657b049ed326e4c225197f",
+    "job_id": 134085602729,
+    "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+    "kodi": "21.2 Linux",
+    "android": "ANDROID_NOT_TESTED",
+    "content": "synthetic; original native screenshot"
+  },
+  {
+    "file": "1080/epg482-busy-grid.png",
+    "bytes": 162363,
+    "sha256": "8fd5f0666f799451021f71db3f01b8874ce5ed1a60030b7e8ec4c44a97fe6a74",
+    "job_id": 134085602630,
+    "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+    "kodi": "21.2 Linux",
+    "android": "ANDROID_NOT_TESTED",
+    "content": "synthetic; original native screenshot"
+  },
+  {
+    "file": "1080/epg482-busy-mini.png",
+    "bytes": 847448,
+    "sha256": "100ffb314af8452332ad8b3b27edf4bdc917b0f5b8ddf856621a1ca02eb09f09",
+    "job_id": 134085602630,
+    "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+    "kodi": "21.2 Linux",
+    "android": "ANDROID_NOT_TESTED",
+    "content": "synthetic; original native screenshot"
+  },
+  {
+    "file": "1080/epg482-preview-grid.png",
+    "bytes": 164135,
+    "sha256": "2678c80599d47632ef683a2f32de2bc109567bf6ac9534cb4a6d20dbc9e251ea",
+    "job_id": 134085602630,
+    "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+    "kodi": "21.2 Linux",
+    "android": "ANDROID_NOT_TESTED",
+    "content": "synthetic; original native screenshot"
+  },
+  {
+    "file": "1080/epg482-preview-mini.png",
+    "bytes": 850288,
+    "sha256": "7e1fd4b57c4026e2c26b44daeea5fe2d079543e161b53028b982bf698de07dc9",
+    "job_id": 134085602630,
+    "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+    "kodi": "21.2 Linux",
+    "android": "ANDROID_NOT_TESTED",
+    "content": "synthetic; original native screenshot"
+  },
+  {
+    "file": "1080/epg482-source-grid.png",
+    "bytes": 113758,
+    "sha256": "c47f0fc2ea0249966c1aa8e4871485db7251b56ae8da88c2f245be33a1140ca7",
+    "job_id": 134085602630,
+    "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+    "kodi": "21.2 Linux",
+    "android": "ANDROID_NOT_TESTED",
+    "content": "synthetic; original native screenshot"
+  },
+  {
+    "file": "1080/epg482-source-mini.png",
+    "bytes": 310323,
+    "sha256": "9692808255ee12fde0236e16536fc7aeb08cd85b2004c9ec5eadd1438bc5c8c5",
+    "job_id": 134085602630,
+    "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+    "kodi": "21.2 Linux",
+    "android": "ANDROID_NOT_TESTED",
+    "content": "synthetic; original native screenshot"
+  }
+]

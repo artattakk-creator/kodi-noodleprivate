@@ -1,6 +1,6 @@
 # Bildabruf .90/.97 und EPG-Zuweisung #482 – Reviewbericht
 
-Stand: 17.11.2026. Draft-PR [#484](https://github.com/artattakk-creator/kodi-noodleprivate/pull/484). **Kein Merge und keine Veröffentlichung freigegeben.** Dieser Bericht wird nach den laufenden Gesamt-/Pixelprüfungen ergänzt; ausstehende Nachweise sind keine PASS-Ergebnisse.
+Stand: 17.11.2026. Draft-PR [#484](https://github.com/artattakk-creator/kodi-noodleprivate/pull/484). **Kein Merge und keine Veröffentlichung freigegeben.** Host-Gesamtsuiten und native Produktprüfungen sind abgeschlossen. Auch die ergänzende native Testharness-Prüfung ist abgeschlossen und wird getrennt ausgewiesen. Ausstehende Gerätefunktionen sind keine PASS-Ergebnisse.
 
 ## Quellenbasis und Bestandsschutz
 
@@ -9,7 +9,8 @@ Stand: 17.11.2026. Draft-PR [#484](https://github.com/artattakk-creator/kodi-noo
 | Veröffentlichte .90 | `9bbf75040378dcaead9128880a909fe7978143a4` |
 | Veröffentlichte .97 | `f0f6649edf075338bb6a806eff231eb718948368` |
 | QA-/Anforderungsbasis #483 | `1cea11d75c6f61accc39142aeb1c0004a88da4cb` |
-| Produktprüfung vor letzter Layoutkorrektur | `929167cbbc56ce8badbbcc534ebca2a3dcc62b8e` |
+| Vollständig geprüfter Produktstand | `38dbe103416c0040be0285be55f657c0dbe8dbd7` |
+| Ergänzter nativer Fokusobserver, identischer Produkt-/Testbaum und ZIP | `835bea9901602284e38ac37ecb68bb51d5fe9e1f` |
 
 `main/src` enthält einen älteren Produktstand. Deshalb ist #484 auf den QA-Branch von #483 gestapelt, der die veröffentlichte .97 enthält. Weder #483 noch ein Produkt-PR wurde für diese Arbeit gemergt. Keine zusätzliche Versionsnummer; das ZIP ist ein ausdrücklich unveröffentlichter .97-Reviewbuild in einem eigenen Dokumentationspfad. Bereits veröffentlichte Archive und die geschützte .90 bleiben unverändert.
 
@@ -38,7 +39,7 @@ Der bereits funktionierende dynamische Fallback unter einer 1-GiB-Archivreserve 
 5. Die SQL-Vorfilterung verlor Satzzeichen-/Akzentvarianten und konnte 400 ausgeschlossene +1-Kanäle vor dem ersten echten Treffer abschneiden. Lokaler und RAM-Katalog verwenden denselben Matcher **vor** Pagination. Für 20.000 Kanäle wurde die Normalisierung optimiert: rund 38–44 ms für einen späten Treffer statt Budgetabbruch bei 151 ms; das 150-ms-Lesebudget blieb unverändert. Das ist ein Hostmesswert, keine ARM32-Messung.
 6. Eine vollständig leere Vorschau darf nicht speichern. Gültige zukünftige Programme außerhalb des aktuellen Rasterfensters bleiben zulässig. Quelle und Kanal werden gemeinsam als Vorschauproof gebunden; der vorhandene atomare Commit mit Cold-Readback, Elternaktualisierung und Rollbackschutz bleibt bestehen.
 7. Ein nativer Grid-Tick konnte vor dem asynchronen `onInit` auf noch nicht initialisierte Daten zugreifen. Er wartet jetzt auf die bestehende Ready-Barriere. Kein Routing-/Player-Rewrite.
-8. Echte 720p-Screenshots zeigten eine abgeschnittene dritte Statuszeile. Das Panel bietet nun drei vollständige Statuszeilen und zwei vollständige Kanalzeilen. Neue Pixelprüfung ist erforderlich; reine Geometrieassertions ersetzen sie nicht.
+8. Echte 720p-Screenshots zeigten eine abgeschnittene dritte Statuszeile. Das Panel bietet nun drei vollständige Statuszeilen und zwei vollständige Kanalzeilen. Die anschließende unabhängige Pixelprüfung bestätigt beide Auflösungen ohne Clipping. Reine Geometrieassertions hätten diesen Nachweis nicht erbracht.
 
 ## Reproduzierbare Tests und unabhängige Reviews
 
@@ -50,21 +51,24 @@ Jeder bestätigte Reviewbefund wurde zuerst als roter Regressionstest reproduzie
 |---|---|
 | Neue Artwork-/Mappingfälle einschließlich später Reviewbefunde | RED vor jeweiliger Korrektur nachgewiesen |
 | Betroffene Host-Suite am letzten Layoutstand | **159 PASS** in 11,57 s (erweiterte Suite einschließlich bestehender Status-/Quellentests); überlappende Teilmengen werden nicht addiert |
-| Unabhängiger Artwork-Review auf 929167cb | 8 PASS; eigener gesunder Matcher/Decoder/Detailpfad, Settingsschutz ohne Netzwerk, Reservefallback PASS |
-| Unabhängiger Mapping-Review auf 929167cb | 69 PASS; eigene echte Async-Save-/Cancel-/Readback-Repros PASS |
+| Unabhängiger Artwork-Review38dbe103 /835bea99 | 66 PASS; eigener Matcher/Decoder/Detailpfad, Settingsschutz und Reservefallback; alle14PNG unabhängig geprüft; scoped ARTWORK_QA_PASS |
+| Unabhängiger Mapping-Review38dbe103 /835bea99 | 69 PASS; eigene Async-Save-/Cancel-/Readback-Repros und alle 12 PNG geprüft; ausgewiesene native Grenzen bleiben offen |
 | Alle 17 PO-Kataloge | PASS |
 | Review-ZIP CRC und jeder Member gegen aktuelle Quelle | PASS, 901 Dateien |
 | Erste vollständige GHA-Pytestsuite b5dd5f9 | **4197 PASS / 7 FAIL**, keine grüne Gesamt-CI |
 | Lokale vollständige Suite im eingeschränkten Sandboxlauf b5dd5f9 | **4076 PASS / 128 FAIL**; überwiegend gesperrte Socketerstellung, außerdem Versions-/Paketverträge und altes Pagination-Setup |
 | Unveränderte QA-/97-Baseline, vollständige GHA-Pytestsuite | **4119 PASS / 62 FAIL** in 911,21 s; darunter veraltete Versions-/Quellhash-/Paketverträge |
-| Vollständige finale Hosttests | Laufen; Ergebnisse folgen |
+| Vollständige finale GHA-Pytestsuite38dbe103 | **4206 PASS / 6 FAIL** in 1046,09 s; nur sechs unten benannte historische Versions-/Paketverträge |
+| Vollständige finale GHA-Unittests38dbe103 | 4201 Tests: **4195 PASS /4 FAIL /2 ERROR** in 1431,676 s; dieselben sechs historischen Verträge |
 | Native Linux-Kodi-Grid/Mini-Dialogstrecke c5f02ea6 | 720p/1080p funktional PASS; synthetischer Mini-Elternowner ausdrücklich separat |
-| Native929-Pixelprüfung | 720p zeigte Statusclipping; Quellenpicker- und Aufnahme-Synchronisierung korrigiert, Nachprüfung läuft |
+| Native finale Mapping-Pixelprüfung38dbe103 | 720p/1080p PASS; alle 12 PNG unabhängig geprüft, Status vollständig und Quellenpicker tatsächlich offen |
 | Nativer Bildpfad c5f02ea6, 720p | Erwartete echte synthetische Bildpixel in Hero und Detail nach 305 s vorhanden; neuer Statusabschnitt scheitert an absichtlich geschützter, falsch vorbereiteter Testrevision |
-| Native finale Statusbindung und Lesbarkeit | Noch ausstehend; Fixture nutzt nun die vorhandene verifizierte Snapshotrevision, ohne Produktguard zu ändern |
+| Nativer vollständiger Artwork-Lauf38dbe103,720p | PASS einschließlich sichtbarer vier Statusfälle,305-s-Bildstabilität,13Fremdwidgets und zwei Offline-Neustarts |
+| Nativer vollständiger Artwork-Lauf38dbe103,1080p | PASS; Bildstabilität 306,11 s, vier Statusfälle, 13 Fremdwidgets und zwei Offline-Neustarts |
+| Zusätzlicher nativer Fokusobserver835bea99 | **4/4 native Jobs PASS**, Run44099402205 SUCCESS; source/tests/ZIP identisch, Host/Baseline gezielt nicht wiederholt |
 | Physische Android-RK3528-/Kodi21.3-Abnahme | **ANDROID_NOT_TESTED** |
 
-Die erste GHA-Suite scheitert an sechs historischen .96-Versions-/Paketverträgen sowie einem durch Suchvorbelegung veralteten Preview53-Paginationssetup. Das Setup wurde korrigiert. Der spätere vollständige c5-Unittestlauf deckte außerdem acht durch die neue allgemeine Statusprojektion verdrängte ältere Detailerklärungen auf (4199 Tests, 12 FAIL / 2 ERROR). Diese echten Regressionen wurden mit den unveränderten älteren Tests rot reproduziert und korrigiert: Neue Detailtexte gelten nur für neue Policy-/Settingsfehler; vorhandene differenzierte Quellenhinweise bleiben maßgeblich. Die erweiterte betroffene Suite besteht159Tests. Die historischen Vertragsprüfungen werden nicht übersprungen oder abgeschwächt; die unveränderte .97-Basis wird separat geprüft. Die Hashfixture beschreibt exakt die überprüften aktuellen Quellbytes; sie erlaubt keine beliebigen Änderungen. Das historische .96-ZIP wird nicht ersetzt.
+Die erste GHA-Suite scheitert an sechs historischen .96-Versions-/Paketverträgen sowie einem durch Suchvorbelegung veralteten Preview53-Paginationssetup. Das Setup wurde korrigiert. Der spätere vollständige c5-Unittestlauf deckte außerdem acht durch die neue allgemeine Statusprojektion verdrängte ältere Detailerklärungen auf (4199 Tests, 12 FAIL / 2 ERROR). Diese echten Regressionen wurden mit den unveränderten älteren Tests rot reproduziert und korrigiert: Neue Detailtexte gelten nur für neue Policy-/Settingsfehler; vorhandene differenzierte Quellenhinweise bleiben maßgeblich. Die erweiterte betroffene Suite besteht 159 Tests. Die historischen Vertragsprüfungen werden nicht übersprungen oder abgeschwächt; der vollständige unveränderte .97-Basislauf ist separat dokumentiert. Die sechs verbleibenden Vertragsfehler sind unten einzeln aufgeführt. Die Hashfixture beschreibt exakt die überprüften aktuellen Quellbytes; sie erlaubt keine beliebigen Änderungen. Das historische .96-ZIP wird nicht ersetzt.
 
 Relevante Kommandos mit installierten Testabhängigkeiten:
 
@@ -79,11 +83,35 @@ python tools/run_issue482_native.py --kind artwork --resolution 1920x1080 --repo
 
 Die vollständigen Hostsuiten materialisieren ausschließlich unveränderliche, bytegeprüfte historische Testinputs in einem temporären Clone. Keine Wiederherstellung in einem Installationskanal. Native Dockerläufe nur auf ausreichend großen CI-Runnern. Workflow hat ausschließlich Leserechte, keine Tokens für Provider und keinen Merge-/Veröffentlichungsschritt.
 
+## Sechs verbliebene historische Vertragsfehler
+
+Diese Tests scheitern auch in der unveränderten .97-Baseline. Sie werden nicht ignoriert oder als PASS gemeldet. Vier erwarten weiterhin Manifestversion .96; zwei verlangen das unveränderte historische .96-Reviewpaket beziehungsweise dessen Manifest. Das neue .97-Review-ZIP wird separat vollständig und reproduzierbar geprüft. Die Gesamt-CI ist deshalb weiterhin rot.
+
+| Test | Fehler |
+|---|---|
+| `test_gsmedia_repo_180.GsMediaRepo180Tests.test_xcmate_release_unchanged` | .97 statt fest erwarteter .96 |
+| `test_repository_layout.RepositoryLayoutTests.test_xtreammate_manifest_and_remote_service` | .97 statt fest erwarteter .96 |
+| `test_xcmate_branding.XCMateBrandingTests.test_display_name_and_version` | .97 statt fest erwarteter .96 |
+| `test_xcmate_cumulative_02922.IconContractTests.test_original_icon_bytes_dimensions_and_kodi_asset_reference` | Versionsanteil erwartet .96; Originalicon unverändert |
+| `test_release_candidate96.Release96.test_current_zip_is_reproducible_crc_clean_and_matches_all_source_bytes` | Historisches .96-ZIP hat anderen Dateisatz als aktuelle .97-Quelle |
+| `test_release_candidate96.Release96.test_review_package_never_stages_or_authorizes_any_channel` | Festes .96-Manifesterfordernis beim .97-Build |
+
+Eine zukünftige Pflege dieser historischen Releaseverträge gehört in einen eigenen transparenten Wartungsschritt. Es wurde kein geschütztes Paket überschrieben, um sie grün zu machen.
+
 ## Grenzen der nativen Belege
 
-Der vorhandene native Harness verwendet tatsächliches Linux-Kodi21 mit BINGIE2.2.3, echte sichere Bildübertragung, Decoder, Texturen und Screenshots; die Inhalte und APIantworten sind synthetisch. Der neue Statusabschnitt injiziert ausschließlich Producerzustände, um deren reale Hero-Textbindung isoliert zu prüfen; er belegt nicht, dass ein echter Provider denselben Fehler geliefert hat.
+Der vorhandene native Harness verwendet tatsächliches Linux-Kodi21 mit BINGIE2.2.3, echte sichere Bildübertragung, Decoder, Texturen und Screenshots; die Inhalte und APIantworten sind synthetisch. Der native Bildmatcher wird durch einen synthetischen Kandidaten ersetzt; der tatsächliche eigene Matcher wird separat im Host gegen synthetische API-Antworten geprüft. Native Bildbelege bestätigen Transport, Decoder und sichtbare Texturen, keinen echten Anbieter-/TMDB-Account. Der neue Statusabschnitt injiziert ausschließlich Producerzustände, um deren reale Hero-Textbindung isoliert zu prüfen; er belegt nicht, dass ein echter Provider denselben Fehler geliefert hat.
 
 Ein gesundes Hostbild ist kein nativer Pixelnachweis. Ein nativer Linuxnachweis ist kein Androidnachweis. Der Mini-Persistenzadapter wird tatsächlich verwendet, sein bisheriger nativer Elternowner ist jedoch synthetisch; die Mini-Elternspalte muss auf der Box geprüft werden. Eine 27-MiB-Kapazitätsinjektion in Python ist kein echter voller Android-Datenträger. Nicht überprüfte Grenzen bleiben offen.
+
+## CI und unabhängige Belege
+
+- [Vollständige Produktprüfung, Run44096702746](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/44096702746): alle vier nativen Jobs PASS, beide Hostsuiten FAIL ausschließlich an den benannten sechs Altverträgen.
+- [Unveränderte .97-Baseline, Run44092120323](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/44092120323/job/134069650244): 4119 PASS /62 FAIL.
+- [Ergänzende native Receipts, Run44099402205](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/44099402205): **SUCCESS**, vier native Jobs bestanden, keine erneute Host-/Baselineausführung, keine Veröffentlichung. [Receiptdatei](test-evidence/issue482/native-focus-receipts.json) belegt Home-Fokus3580/Home50=false vor dem gezielten Wechsel und2510/Home50=true mit passendem Sender und32-stelligem Token danach. Die Guards bleiben aktiv.
+- [Konsolidierte unabhängige Agentenberichte](QA_NACHREVIEW_ARTWORK_EPG482_2026-11-17_DE.md).
+- [Originalscreenshots und Einzelprüfsummen](test-evidence/issue482/README.md).
+- [Identischer Produkt-/Hosttestbaum zwischen den Prüfcommits](test-evidence/issue482/source-identity.json).
 
 ## Reviewpaket
 
@@ -106,6 +134,7 @@ Das Paket enthält keine tatsächlichen Konten, privaten Logs, Token oder Benutz
 | MAP482-C | Vorschau mehrerer Quellen, dann Abbrechen/Zurück | Programme in Raster/Dialog vergleichbar; ursprüngliche Zuordnung, Zeit, Gruppe und Fokus wiederhergestellt |
 | MAP482-D | Quelle laden → Fehler/Timeout → erneut laden | Konkreter Fehler, bedienbarer Retry, kein endloser falscher Spinner |
 | MAP482-E | Gültige Auswahl speichern und neu öffnen/Kodi neu starten | Speichern bestätigt; source+channel und richtige Programme persistent |
+| MAP482-G | Große Quellkataloge bis 20.000 Kanäle | Treffer, Nichttreffer und tatsächliche ARM32-Latenz messen; Hostmesswerte nicht als Gerätetest übernehmen |
 | MAP482-F | Nullprogramme, voller Worker, schneller Quellenwechsel/Abbruch | Save erklärt gesperrt; keine alten Treffer/Callbacks, keine Daten-/Playeränderung |
 | REG482-A | Live-TV, Film, Serie/Autoplay, sechs Widgets und Favoriten | Bisherige Funktionen und Benutzerkonfiguration erhalten |
 
