@@ -15,18 +15,22 @@ def read():
         raise OSError('STORAGE_POLICY_INVALID')
     return value
 
-def publish(enabled):
+def publish(enabled,code=None):
     try:
         import xbmcgui
         from epg_handoff63 import profile_scope
-        xbmcgui.Window(10000).setProperty('XCMate.Storage92.Disabled.'+profile_scope(),'' if enabled else 'true')
+        window=xbmcgui.Window(10000);scope=profile_scope()
+        window.setProperty('XCMate.Storage92.Disabled.'+scope,'' if enabled else 'true')
+        window.setProperty('XCMate.Storage92.Reason.'+scope,code or ('READY' if enabled else 'IMAGE_EPG_DISABLED'))
     except (ImportError,AttributeError,RuntimeError):pass
 
 def images_enabled():
     # Worker/startup IO only. Focus callbacks consume just the scoped property.
-    try:enabled=read()['image_epg'] in ('legacy','yes')
-    except (OSError,ValueError):enabled=False
-    publish(enabled);return enabled
+    try:
+        choice=read()['image_epg'];enabled=choice in ('legacy','yes')
+        code='READY' if enabled else 'IMAGE_EPG_DEFERRED' if choice=='later' else 'IMAGE_EPG_DISABLED'
+    except (OSError,ValueError):enabled=False;code='STORAGE_POLICY_INVALID'
+    publish(enabled,code);return enabled
 
 def prepare_choice(decision):
     """Load write dependencies before any caller holds a config lock."""
@@ -45,5 +49,5 @@ def prepare_choice(decision):
 
 def choose(decision):
     value=prepare_choice(decision)()
-    publish(decision=='yes')
+    publish(decision=='yes','READY' if decision=='yes' else 'IMAGE_EPG_DEFERRED' if decision=='later' else 'IMAGE_EPG_DISABLED')
     return value
