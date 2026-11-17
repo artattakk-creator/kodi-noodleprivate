@@ -4,7 +4,7 @@ import argparse,json,os,subprocess,tempfile,uuid,base64,hashlib
 from pathlib import Path
 
 
-def main():
+def main(package_inspector=None):
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--report-dir',type=Path,required=True)
     parser.add_argument('--resolution',default='1280x720',choices=['1280x720','1920x1080']);parser.add_argument('--addon-zip',type=Path,required=True)
@@ -22,7 +22,10 @@ def main():
     run('info','--format','{{.ServerVersion}}',stdout=subprocess.DEVNULL)
     with (report/'build.log').open('w') as output:
         run('build','--secret','id=system_ca,src='+str(args.ca_bundle.resolve()),'-t',image,str(root/'tools/kodi_helper57_host'),stdout=output,stderr=subprocess.STDOUT)
-    from release_candidate96 import inspect_package
+    if package_inspector is None:
+        from release_candidate96 import inspect_package
+    else:
+        inspect_package=package_inspector
     import zipfile
     proof=inspect_package(args.addon_zip);unpacked=report/'exact-package';unpacked.mkdir()
     with zipfile.ZipFile(args.addon_zip) as archive:archive.extractall(unpacked)
