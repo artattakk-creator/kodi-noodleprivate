@@ -1,0 +1,32 @@
+name: Superpowers task and policy review
+on:
+  pull_request:
+    paths: ['AGENTS.md', 'tools/agent_workflow.py', 'tests/test_agent_workflow.py', '.github/workflows/superpowers-*.yml', '.github/ISSUE_TEMPLATE/codex_task.yml', '.github/PULL_REQUEST_TEMPLATE/agent_change.md', 'docs/agents/**', 'docs/superpowers/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: superpowers-review-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  policy-and-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Execute approval, injection and protected-path regressions
+        run: python -m unittest discover -s tests -p test_agent_workflow.py -v
+      - name: Report exact PR scope (additional guard, not human approval)
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: python tools/agent_workflow.py scope --base "$BASE_SHA" --head "$HEAD_SHA"
+      - name: State execution and hardware boundary
+        run: echo 'NO_API_EXECUTION; NO_MERGE; NO_RELEASE; ANDROID_NOT_TESTED; SEMANTIC_AGENT_REVIEW_SEPARATE'

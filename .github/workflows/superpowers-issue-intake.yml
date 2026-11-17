@@ -1,0 +1,52 @@
+name: Prepare explicitly approved Codex issue
+on:
+  issues:
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: 'Open issue with codex:approved label; preparation only'
+        required: true
+        type: string
+permissions:
+  contents: read
+  issues: read
+concurrency:
+  group: superpowers-intake-${{ github.event.issue.number || inputs.issue_number }}
+  cancel-in-progress: false
+jobs:
+  prepare-only:
+    if: github.actor == github.repository_owner && (github.event_name == 'workflow_dispatch' || github.event.label.name == 'codex:approved')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+      - name: Fetch fresh authoritative issue without shell-interpolating task text
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue_number }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          python - <<'PY'
+          import os,re,subprocess
+          number=os.environ['ISSUE_NUMBER']
+          if not re.fullmatch(r'[1-9][0-9]*',number):raise SystemExit('INVALID_ISSUE_NUMBER')
+          with open('current-issue.json','wb') as output:
+              subprocess.run(['gh','api','repos/'+os.environ['GH_REPO']+'/issues/'+number],stdout=output,check=True)
+          PY
+      - name: Prepare sanitized task envelope (does not start Codex)
+        env:
+          ACTOR: ${{ github.actor }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          BASE_SHA="$(git rev-parse HEAD)"
+          python tools/agent_workflow.py intake --event "$GITHUB_EVENT_PATH" --issue current-issue.json --base "$BASE_SHA" --actor "$ACTOR" --event-name "$EVENT_NAME" --output task.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: approved-task-${{ github.run_id }}
+          path: task.json
+          retention-days: 7
+          if-no-files-found: error
