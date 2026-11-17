@@ -4,7 +4,7 @@
 
 Draft-PR: https://github.com/artattakk-creator/kodi-noodleprivate/pull/478
 
-Produktimplementierung: `c8de1da626f6cb0dc377296cd9cd859a4dfa6785`, Branch `fix/issue474-source-qualified-epg-save`, vollständige .96-Basis `e651a2afbb1edb0d7b3ebe25e3b08860e6e6ee81` aus #471. Der PR ist bewusst auf dessen Sourcebranch gestapelt. Aktuelles `main/src` enthält noch .92; Pilot enthält bereits .96. Kein stiller Downgrade und kein Sammelimport aller .96-Änderungen in diesen fachlichen Fix.
+Produktimplementierung: `c8de1da626f6cb0dc377296cd9cd859a4dfa6785`, CI-Prüfstand `3131dfd07468f825e4a9042bb73aa059646b4ac3`, Branch `fix/issue474-source-qualified-epg-save`, vollständige .96-Basis `e651a2afbb1edb0d7b3ebe25e3b08860e6e6ee81` aus #471. Der PR ist bewusst auf dessen Sourcebranch gestapelt. Aktuelles `main/src` enthält noch .92; Pilot enthält bereits .96. Kein stiller Downgrade und kein Sammelimport aller .96-Änderungen in diesen fachlichen Fix.
 
 Keine neue Versionsnummer und keine Veröffentlichung: Das aktualisierte .96-Paket ist ausschließlich ein unveröffentlichter Review-Build. Die bestehenden Kanalpakete, Installer, Modell-B-Branch #472 und Sourcebranch #471 sind unverändert. Die ältere unveränderte .96-Sicherung bleibt über den Basiscommit erreichbar; ihr ZIP-SHA256 lautet `249d7908d83cf7808d950e938e572fc046c2b0fc767aeebd3195b18b87b9d740`.
 
@@ -37,17 +37,19 @@ Alle Befunde wurden anschließend durch den Autor real RED reproduziert, korrigi
 - Gezielte betroffene Suite: **59 PASS in 4,16 s**. Zusätzliche Cold-Publication-/Issue474-Suite nach Vertragskorrektur: **38 PASS in 5,40 s**.
 - Der alte Cold53-Test erwartete eine Exception aus Kodis onClick. #474 verlangt stattdessen sichtbare, retryfähige Fehlerbehandlung. Die ursprüngliche Byte-Unverändert-Invariante bleibt; zusätzlich werden genau ein Publikationsversuch, offener Dialog, `saved=False` und sichtbarer Fehlercode geprüft. Kein Skip, XFAIL oder Verschlucken eines Test-Exitcodes.
 - Vollständige unittest-/pytest- und CI-Ergebnisse: Abschlussnachtrag unten. Kein Zwischenlauf wird als finaler Erfolg dargestellt.
+- Erster lokaler Vorlauf auf c8de1da6: unittest **4.170 Fälle, 2 FAIL + 1 ERROR / 1.124,907 s**; pytest **4.181 Fälle, 2 FAIL / 1.217,23 s**. Der alte Exception-Vertrag ist danach in 3131dfd0 korrigiert. Beide LargeHTTP-Fehler stammen tatsächlich von erschöpftem Entwicklungsspeicher; derselbe unveränderte 80-MiB-/200.000-Titel-Test bestand nach gezielter Freigabe des eigenen fehlgeschlagenen Docker-Buildcaches in **76,606 s**.
+- Zusätzlicher lokaler Inventory95-Fehler `UNCHANGED_RECOUNT` wurde unabhängig auf unveränderter .96-Basis e651a2af eingegrenzt: 3/3 normale Proben Cache-Hit; 3/3 GC vor Erstlesen erzeugt eine neue leere WAL und erneute Zählung; 3/3 GC nach Erstlesen schließt die letzte bisher nicht explizit geschlossene Writer-Verbindung und ändert die Dateigeneration. Die konservative Invalidierung bei wirklichem Generationswechsel ist korrekt. Kein Cache-/WAL-Schutz abgeschaltet, keine entsprechende Produktänderung in diesem PR. Folgeanalyse in #464; Settings-/Inventurmodule zusammen separat **23 PASS / 3,66 s**. Alte lokale Fehler werden nicht durch spätere grüne CI-Ergebnisse aus dem Bericht entfernt.
 - Sprachdateien: **17 Kataloge PASS**.
 - Paket: 899 Dateien, 4.767.331 Bytes, CRC PASS, bytegenauer Sourcevergleich PASS, reproduzierbarer Build PASS.
 
 ### Native Kodi-Verifikation
 
-https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/44056443448
+https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/44058784846
 
 | Ziel | Ergebnis | Beleg |
 |---|---|---|
-| Kodi 21.2 Linux, 1280×720 | PASS | Job 133946938783 |
-| Kodi 21.2 Linux, 1920×1080 | PASS | Job 133946938633 |
+| Kodi 21.2 Linux, 1280×720 | PASS | Job 133955049255, getesteter Commit 3131dfd0 |
+| Kodi 21.2 Linux, 1920×1080 | PASS | Job 133955048996, getesteter Commit 3131dfd0 |
 | Echte Android-RK3528-Box | ANDROID_NOT_TESTED | Kein physischer Zugriff/keine Geräteabnahme behauptet |
 
 Die nativen Läufe entpacken exakt das Test-ZIP, zeigen den echten Kodi-Mappingdialog und prüfen Vorschau ohne Byteänderung, Abbruch, Save-Cold-Readback, Anwendung im tatsächlichen GuideSnapshot sowie absichtlich fehlgeschlagenes Schreiben bei offenem Dialog und unveränderten Dateibytes. Datenquelle ist ein synthetischer Loopback-XMLTV-Server, Elternbesitzer ein synthetischer Mini-Adapter-Owner. Das ersetzt weder echte Fernbedienungs- noch Provider-/Android-Abnahme.
@@ -86,4 +88,20 @@ Kein reguläres Kodi-Update verfügbar gemacht. Automatischer Versionsvergleich 
 
 ## Abschlussnachtrag
 
-Vollständige Laufresultate werden nach tatsächlichem Abschluss mit geprüftem Commit-SHA ergänzt. Bis dahin ist der Draft ausdrücklich noch kein Merge-/Android-Freigabenachweis.
+Geprüfter CI-Commit: `3131dfd07468f825e4a9042bb73aa059646b4ac3`.
+
+| Prüfung | Endgültiges tatsächliches Ergebnis |
+|---|---|
+| Vollständige unittest-Suite | **4.170 PASS / 998,570 s**, Job 133955048494 |
+| Vollständige pytest-Suite | **4.181 PASS / 1.329,72 s**, 4 Warnungen, Job 133955048748 |
+| Native Kodi 21.2 Linux 720p und 1080p | **Beide PASS**, exaktes Test-ZIP, Jobs siehe oben |
+| PO-Sprachdateien und reproduzierbare Paketprüfung | **PASS** in beiden Hostjobs |
+| Issue474-Prüfmatrix insgesamt | **SUCCESS**, Run 44058784846 |
+| Zusätzlich ausgelöste Archivprüfungen .72 und .73 | **SUCCESS**, Runs 44058784703 und 44058784893 |
+| Physische Android-Box | **ANDROID_NOT_TESTED** |
+
+Die lokale Inventurauffälligkeit wurde nicht durch Änderungen an Cache-Invalidierung, Sollwerten oder Skips verdeckt; im finalen CI-Gesamtlauf besteht auch dieser unveränderte Test. Die dokumentierten Folgefragen zum ersten RO-WAL-Lebenszyklus bleiben in #464.
+
+Dieser abschließende Dokumentationscommit ändert ausschließlich Bericht und Planstatus. Produktquellen, Tests, Tools, CI und Paketbytes sind gegen 3131dfd0 identisch; daher wird keine weitere vollständige Testsuite aufgrund einer reinen Berichtsergänzung ausgelöst. Maßgeblicher grüner Testnachweis bleibt der oben genannte exakte CI-Commit.
+
+**Bereit zur Code-/Geräteprüfung, keine Merge- oder Releasefreigabe.** Zuerst die gestapelte Quellbasis #471 beachten und die tatsächliche Android-Abnahme durchführen. Globale Settings-Recovery, EPG-Timeout-Optimierung und alte main-CI-Baselines sind ausdrücklich nicht pauschal als behoben gemeldet.
