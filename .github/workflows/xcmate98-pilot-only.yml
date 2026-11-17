@@ -1,0 +1,101 @@
+name: XCMate 0.1.29.98 verified Pilot-only publication
+
+on:
+  push:
+    branches: [release/xcmate-02998-pilot-only-20261117]
+    paths:
+      - ".github/workflows/xcmate98-pilot-only.yml"
+
+permissions: {}
+concurrency:
+  group: xcmate98-pilot-publish
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Require unchanged fully verified candidate and exact publication-only additions
+        shell: bash
+        run: |
+          python - <<'PY'
+          import subprocess
+          SHA='81bd2ad0c9c5f2d49de47c693d363a686f886111'
+          TESTED='c5ecd2ea69bb84e648cae9433d250613dceff46e'
+          subprocess.run(['git','merge-base','--is-ancestor',TESTED,'HEAD'],check=True)
+          changed=set(subprocess.check_output(['git','diff','--name-only',SHA,'HEAD'],text=True).splitlines())
+          expected={'tools/pilot98_release.py','.github/workflows/xcmate98-pilot-only.yml'}
+          assert changed==expected,('UNAPPROVED_RELEASE_BRANCH_CHANGE',sorted(changed^expected))
+          unchanged=subprocess.check_output(['git','diff','--name-only',TESTED,'HEAD','--','src/plugin.video.xtreammate','tests'],text=True)
+          assert not unchanged,('TESTED_PRODUCT_OR_TESTS_CHANGED',unchanged)
+          print('VERIFIED_C5_SOURCE_AND_TESTS_BYTE_IDENTICAL')
+          PY
+      - name: Verify complete release98 contract, exact 901 member ZIP, CRC, SHA and source bytes
+        shell: bash
+        run: |
+          python tools/release_candidate98.py --output docs/XCMate/test-builds/02998
+          python tools/pilot98_release.py inspect
+          python tools/validate_kodi_po.py
+
+  publish-pilot:
+    needs: verify
+    if: ${{ needs.verify.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check tested artifact SHA and untouched current Pilot .97; stage only six specific files
+        shell: bash
+        run: |
+          git fetch --no-tags origin main
+          git worktree add -b "pilot98-deploy-$GITHUB_RUN_ID" "$RUNNER_TEMP/pilot98-main" origin/main
+          python tools/pilot98_release.py stage --root "$RUNNER_TEMP/pilot98-main"
+      - name: Commit exact Pilot-only overlay and push to main
+        shell: bash
+        run: |
+          cd "$RUNNER_TEMP/pilot98-main"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- \
+            online-test/addons.xml \
+            online-test/addons.xml.md5 \
+            online-test/manifest.json \
+            online-test/index.html \
+            online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.98.zip \
+            online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.98.zip.sha256
+          python - <<'PY'
+          import subprocess
+          staged=set(subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines())
+          expected={
+            'online-test/addons.xml',
+            'online-test/addons.xml.md5',
+            'online-test/manifest.json',
+            'online-test/index.html',
+            'online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.98.zip',
+            'online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.98.zip.sha256',
+          }
+          assert staged==expected,('UNAPPROVED_STAGED_FILE',sorted(staged^expected))
+          print('EXACT_SIX_PILOT_PATHS_VERIFIED')
+          PY
+          git commit -m "release(XCMate): publish verified 0.1.29.98 to Pilot only"
+          git push origin HEAD:main
+      - name: Explicitly dispatch GitHub Pages on current main for bot commit
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh workflow run gsmedia-pages-pilot.yml --ref main
+          echo "PAGES_DISPATCH_REQUESTED"
