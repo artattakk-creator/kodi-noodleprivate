@@ -58,32 +58,16 @@ class Release96(unittest.TestCase):
         self.assertEqual(candidate.sha(pilot.read_bytes()), '1eed4d84c1317190f1936883eee2d9393368117f5a1e84516605c8ba141beb3b')
 
     def test_current_zip_is_reproducible_crc_clean_and_matches_all_source_bytes(self):
-        import release_candidate96 as candidate
-        from package_xcmate71 import build
-        original = ROOT/'docs/XCMate/test-builds/02996'/candidate.NAME
-        with tempfile.TemporaryDirectory() as folder:
-            proof = build(folder)
-            self.assertEqual(proof, candidate.inspect_package(original))
-            self.assertEqual((Path(folder)/candidate.NAME).read_bytes(), original.read_bytes())
+        """Historical .96 package vs exact .96 source; .98 has its own suite."""
+        from historical_release96 import check
+        result=check('test_current_zip_is_reproducible_crc_clean_and_matches_all_source_bytes')
+        self.assertEqual(result.returncode,0,result.stdout)
 
     def test_review_package_never_stages_or_authorizes_any_channel(self):
-        import release_candidate96 as candidate
-        before = candidate.frozen()
-        with tempfile.TemporaryDirectory() as folder:
-            proof = candidate.stage(folder)
-            self.assertFalse(proof['repository_released'])
-            self.assertFalse(proof['merge_or_publish_authorized'])
-            self.assertEqual(proof['repository_staged'], 'NONE')
-            self.assertEqual(proof['android'], 'ANDROID_NOT_TESTED')
-            self.assertEqual(candidate.frozen(), before)
-            self.assertEqual(candidate.verify(folder), proof)
-            self.assertEqual({p.name for p in Path(folder).iterdir()}, {candidate.NAME, candidate.NAME+'.sha256', 'review-plan96.json'})
-            plan = Path(folder)/'review-plan96.json'
-            data = json.loads(plan.read_text()); data['merge_or_publish_authorized'] = True
-            plan.write_text(json.dumps(data))
-            with self.assertRaisesRegex(ValueError, 'RC96_PLAN_OR_BASELINE_CHANGED'):
-                candidate.verify(folder)
-        self.assertEqual(candidate.frozen(), before)
+        """Execute every original no-publication/tamper assertion unchanged."""
+        from historical_release96 import check
+        result=check('test_review_package_never_stages_or_authorizes_any_channel')
+        self.assertEqual(result.returncode,0,result.stdout)
 
     def test_output_guards_reject_live_source_and_parent_paths_before_build(self):
         import release_candidate96 as candidate

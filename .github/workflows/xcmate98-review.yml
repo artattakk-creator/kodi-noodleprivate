@@ -1,0 +1,82 @@
+name: XCMate98 full release candidate verification
+on:
+  pull_request:
+    branches: [fix/xcmate-02997-artwork-epg482]
+  workflow_dispatch:
+permissions:
+  contents: read
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+concurrency:
+  group: xcmate98-${{ github.head_ref || github.ref }}-${{ github.sha }}
+  cancel-in-progress: true
+jobs:
+  host:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [unittest, pytest]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'Pillow>=11,<13' 'simpleeval==0.9.13' 'impacket==0.13.0' 'pytest>=8,<9'
+      - name: Focused regressions, exact ZIP and language validation
+        run: |
+          python -m pytest -q tests/test_xcmate_artwork482.py tests/test_xcmate_mapping482.py tests/test_xcmate_issue474_save.py tests/test_xcmate_issue474_views.py tests/test_xcmate_mini_mapping_02996.py tests/test_xcmate_storage_logo_02996.py tests/test_xcmate_integration_02996.py tests/test_xcmate_art_status_02970.py tests/test_xcmate_p0_02959.py tests/test_xcmate_programme_art_02966.py
+          python tools/validate_kodi_po.py
+          python -m pytest -q tests/test_release_candidate98.py tests/test_native_release98.py tests/test_native_fixture98.py
+          python tools/release_candidate98.py --output docs/XCMate/test-builds/02998
+      - name: Full cumulative suite, including inherited historical release contracts
+        env:
+          HOST_SUITE: ${{ matrix.suite }}
+        shell: bash
+        run: |
+          set -o pipefail
+          if [ "$HOST_SUITE" = unittest ]; then
+            python tools/run_host94_contract.py -- python -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/host.txt"
+          else
+            python tools/run_host94_contract.py -- python -m pytest tests -q 2>&1 | tee "$RUNNER_TEMP/host.txt"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xcmate98-host-${{ matrix.suite }}
+          path: |
+            ${{ runner.temp }}/host.txt
+            docs/XCMate/test-builds/02998/*.zip
+            docs/XCMate/test-builds/02998/*.sha256
+  native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        kind: [mapping, artwork]
+        resolution: [1280x720, 1920x1080]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'Pillow>=11,<13' 'simpleeval==0.9.13'
+      - name: Exact ZIP in real Linux Kodi; synthetic source, never Android
+        run: python tools/run_xcmate98_native.py --kind '${{ matrix.kind }}' --report-dir '${{ runner.temp }}/native98' --addon-zip docs/XCMate/test-builds/02998/plugin.video.xtreammate-0.1.29.98.zip --resolution '${{ matrix.resolution }}'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xcmate98-native-${{ matrix.kind }}-${{ matrix.resolution }}
+          path: |
+            ${{ runner.temp }}/native98/*.json
+            ${{ runner.temp }}/native98/*.png
+            ${{ runner.temp }}/native98/*.txt
+            ${{ runner.temp }}/native98/*.log

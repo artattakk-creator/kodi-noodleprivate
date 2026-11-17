@@ -11,13 +11,11 @@ for _ in range(200):
  except (OSError,ValueError,RuntimeError):time.sleep(.1)
 else:raise RuntimeError('KODI_UNAVAILABLE')
 for aid in ('plugin.video.xtreammate','script.xcmate.epg94'):rpc('Addons.SetAddonEnabled',dict(addonid=aid,enabled=True))
-for _ in range(12):
- cur=rpc('GUI.GetProperties',dict(properties=['currentwindow','currentcontrol']))
- if cur['currentwindow']['id']!=10100:break
- if cur['currentcontrol']['label']=='No':rpc('Input.Select')
- time.sleep(.2)
+from bootstrap98 import settle_fixture_prompt
+fixture_prompts98=0
 rpc('Addons.ExecuteAddon',dict(addonid='script.xcmate.epg94'))
 for _ in range(600):
+ if settle_fixture_prompt(rpc):fixture_prompts98+=1
  if Path('/root/epg94-error.txt').exists() and Path('/root/epg94-error.txt').stat().st_size:raise RuntimeError(Path('/root/epg94-error.txt').read_text())
  if Path('/root/epg94-observe.json').exists():break
  time.sleep(.1)
@@ -27,6 +25,7 @@ for method in ('Input.Down','Input.Up','Input.Right','Input.Left'):
  before=time.monotonic();rpc(method);latencies.append(time.monotonic()-before)
 Path('/root/epg94-input-complete').write_text('NATIVE_INPUT_SENT')
 for _ in range(2400):  # Includes the additional two native mapping journeys.
+ if settle_fixture_prompt(rpc):fixture_prompts98+=1
  for kind482 in ('mini','grid'):
   marker482=Path('/root/epg482-source-'+kind482+'.json');done482=Path('/root/epg482-source-'+kind482+'-input')
   if marker482.exists() and not done482.exists():
@@ -44,5 +43,5 @@ else:
   file=Path('/root')/name
   if file.exists():print('EPG94_DIAG '+name+'\n'+file.read_text(),flush=True)
  raise RuntimeError('EPG94_NOT_COMPLETED')
-result=json.loads(Path('/root/epg94-finished.json').read_text());result.update(kodi=version,rpc_input_max_seconds=max(latencies))
+result=json.loads(Path('/root/epg94-finished.json').read_text());result.update(kodi=version,rpc_input_max_seconds=max(latencies),fixture_prompts98_declined=fixture_prompts98)
 assert result['status']=='PASS';print(json.dumps(result,indent=2))

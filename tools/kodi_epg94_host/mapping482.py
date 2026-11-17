@@ -1,6 +1,8 @@
 """Native mapping journey; runs inside the existing isolated Kodi owner."""
 import menu_icons45
 import guide_mapping48
+sys.path.insert(0,'/work')
+from bootstrap98 import focus_receipt
 from guide_grid_window import GuideGridWindow
 from library_index import replace_catalog
 
@@ -18,10 +20,28 @@ def toast_settled482():
   xbmc.sleep(50)
  raise AssertionError('MAPPING482_PRIOR_NOTIFICATION_NOT_SETTLED')
 
-def select_control482(child,cid):
+def read_mapping_focus98(child,cid):
+ dialog98=xbmcgui.getCurrentWindowDialogId()
+ owner98=xbmcgui.Window(dialog98).getProperty('XCMate98.MappingOwner') if dialog98 else ''
+ return focus_receipt(dialog98,owner98,child.getFocusId(),kind482,cid)
+
+def mapping_focus98(child,cid):
  child.setFocusId(cid)
- wait(lambda:child.getFocusId()==cid,'MAPPING482_NATIVE_FOCUS_NOT_READY')
+ wait(lambda:read_mapping_focus98(child,cid),'MAPPING98_ACTUAL_DIALOG_FOCUS_NOT_READY')
+ return read_mapping_focus98(child,cid)
+
+def mapping_shot98(child,cid,name):
+ before98=mapping_focus98(child,cid)
+ file98=shot(name)
+ after98=read_mapping_focus98(child,cid)
+ assert before98 and after98 and before98==after98,'MAPPING98_FOCUS_CHANGED_DURING_SCREENSHOT'
+ return file98,after98
+
+def select_control482(child,cid):
+ before98=mapping_focus98(child,cid)
  xbmc.sleep(150)  # Wait for the enabled/focus GUI frame before posting IR OK.
+ after98=read_mapping_focus98(child,cid)
+ assert before98 and after98 and before98==after98,'MAPPING98_INPUT_FOCUS_NOT_STABLE'
  xbmc.executebuiltin('Action(Select)',wait=False)
 
 for kind482 in ('mini','grid'):
@@ -40,6 +60,7 @@ for kind482 in ('mini','grid'):
  else:adapter482=MiniAdapter(parent,channel)
  child482=MappingWindow48('XCMateMapping48.xml',xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('path'),'Default','720p')
  child482.configure(adapter482.parent,adapter482)
+ child482.setProperty('XCMate98.MappingOwner',kind482)
  original_select482=menu_icons45.select
  def actual_source_picker482(dialog,heading,labels,*args,**kwargs):
   assert labels and any('lokal' in s for s in labels)
@@ -57,7 +78,7 @@ for kind482 in ('mini','grid'):
   def preview482():child482.pump();return child482.previewed
   wait(preview482,'MAPPING482_PREVIEW_FAILED')
   assert child482.getControl(301).getText().find('Native programme')>=0
-  toast_settled482();xbmc.sleep(200);preview_shot482=shot('epg482-preview-'+kind482)
+  toast_settled482();xbmc.sleep(200);preview_shot482,preview_focus98=mapping_shot98(child482,200,'epg482-preview-'+kind482)
   assert 'PREVIEW_READY' in child482.getControl(103).getText()
   source_before482=Path(epg_sources._file_path()).read_bytes()
   # A global capacity rejection must be visible and never fake a running job.
@@ -67,7 +88,7 @@ for kind482 in ('mini','grid'):
    assert child482.future is None and not child482.previewed
    assert 'MAPPING_BUSY' in child482.getControl(103).getText()
    assert not child482.getControl(104).isVisible()
-   xbmc.sleep(200);busy_shot482=shot('epg482-busy-'+kind482)
+   xbmc.sleep(200);busy_shot482,busy_focus98=mapping_shot98(child482,404,'epg482-busy-'+kind482)
   finally:guide_mapping48._slots.release()
   assert Path(epg_sources._file_path()).read_bytes()==source_before482
   child482._preview();wait(preview482,'MAPPING482_RETRY_FAILED')
@@ -82,7 +103,7 @@ for kind482 in ('mini','grid'):
   else:assert snapshot.get('1',time.time())['mapping']=='MANUAL'
   cases482.append(dict(kind=kind482,parent='NATIVE_GRID' if grid482 else 'SYNTHETIC_MINI_OWNER',
       prefilled_query=True,source_picker='NATIVE_DIALOG_SELECTED_BY_RPC',preview=preview_shot482,
-      busy=busy_shot482,source_qualified_readback=True,actual_adapter_apply=True))
+      busy=busy_shot482,preview_focus=preview_focus98,busy_focus=busy_focus98,source_qualified_readback=True,actual_adapter_apply=True))
  finally:
   menu_icons45.select=original_select482;child482.close();adapter482.finish(child482.saved)
   if grid482:grid482.close()

@@ -5,12 +5,14 @@ from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 from run_kodi_home74_contract import SKIN_SHA,SKIN_URL
 
-def main():
+def main(package_inspector=None):
  p=argparse.ArgumentParser();p.add_argument('--report-dir',type=Path,required=True);p.add_argument('--skin-archive',type=Path);p.add_argument('--resolution',default='1920x1080',choices=('1920x1080','1280x720'));p.add_argument('--addon-zip',type=Path);p.add_argument('--qa482',action='store_true');a=p.parse_args()
  root=Path(__file__).resolve().parents[1];report=a.report_dir.resolve();report.mkdir(parents=True,exist_ok=True)
  addon482=root/'src/plugin.video.xtreammate'
  if a.addon_zip:
-  from release_candidate96 import inspect_package
+  if package_inspector is None:
+   from release_candidate96 import inspect_package
+  else:inspect_package=package_inspector
   proof482=inspect_package(a.addon_zip);unpacked482=report/'exact-package';unpacked482.mkdir()
   with zipfile.ZipFile(a.addon_zip) as candidate482:candidate482.extractall(unpacked482)
   addon482=unpacked482/'plugin.video.xtreammate';(report/'package482.json').write_text(json.dumps(proof482,indent=2))

@@ -1,0 +1,88 @@
+FFFFFF                                                                   [100%]
+=================================== FAILURES ===================================
+_ Release98.test_current_zip_is_reproducible_crc_clean_and_matches_all_source_bytes _
+
+self = <test_release_candidate98.Release98 testMethod=test_current_zip_is_reproducible_crc_clean_and_matches_all_source_bytes>
+
+    def test_current_zip_is_reproducible_crc_clean_and_matches_all_source_bytes(self):
+>       c=self.contract();from package_xcmate71 import build
+          ^^^^^^^^^^^^^^^
+
+tests/test_release_candidate98.py:30: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_release_candidate98.py:11: in contract
+    self.assertIsNotNone(importlib.util.find_spec('release_candidate98'),'Missing explicit .98 release contract')
+E   AssertionError: unexpectedly None : Missing explicit .98 release contract
+_ Release98.test_explicit98_version_and_only_authorized_runtime_metadata_change _
+
+self = <test_release_candidate98.Release98 testMethod=test_explicit98_version_and_only_authorized_runtime_metadata_change>
+
+    def test_explicit98_version_and_only_authorized_runtime_metadata_change(self):
+>       c=self.contract();self.assertEqual(c.VERSION,'0.1.29.98')
+          ^^^^^^^^^^^^^^^
+
+tests/test_release_candidate98.py:14: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_release_candidate98.py:11: in contract
+    self.assertIsNotNone(importlib.util.find_spec('release_candidate98'),'Missing explicit .98 release contract')
+E   AssertionError: unexpectedly None : Missing explicit .98 release contract
+_ Release98.test_inspector_rejects_extra_missing_duplicate_changed_and_wrong_version _
+
+self = <test_release_candidate98.Release98 testMethod=test_inspector_rejects_extra_missing_duplicate_changed_and_wrong_version>
+
+    def test_inspector_rejects_extra_missing_duplicate_changed_and_wrong_version(self):
+>       c=self.contract();original=ROOT/'docs/XCMate/test-builds/02998'/c.NAME
+          ^^^^^^^^^^^^^^^
+
+tests/test_release_candidate98.py:46: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_release_candidate98.py:11: in contract
+    self.assertIsNotNone(importlib.util.find_spec('release_candidate98'),'Missing explicit .98 release contract')
+E   AssertionError: unexpectedly None : Missing explicit .98 release contract
+_ Release98.test_retained96_and97_bytes_and_current_publication_namespaces_are_frozen _
+
+self = <test_release_candidate98.Release98 testMethod=test_retained96_and97_bytes_and_current_publication_namespaces_are_frozen>
+
+    def test_retained96_and97_bytes_and_current_publication_namespaces_are_frozen(self):
+>       c=self.contract();self.assertEqual(c.frozen(),c.baseline_frozen())
+          ^^^^^^^^^^^^^^^
+
+tests/test_release_candidate98.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_release_candidate98.py:11: in contract
+    self.assertIsNotNone(importlib.util.find_spec('release_candidate98'),'Missing explicit .98 release contract')
+E   AssertionError: unexpectedly None : Missing explicit .98 release contract
+_____ Release98.test_review_package_never_stages_or_authorizes_any_channel _____
+
+self = <test_release_candidate98.Release98 testMethod=test_review_package_never_stages_or_authorizes_any_channel>
+
+    def test_review_package_never_stages_or_authorizes_any_channel(self):
+>       c=self.contract();before=c.frozen()
+          ^^^^^^^^^^^^^^^
+
+tests/test_release_candidate98.py:36: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_release_candidate98.py:11: in contract
+    self.assertIsNotNone(importlib.util.find_spec('release_candidate98'),'Missing explicit .98 release contract')
+E   AssertionError: unexpectedly None : Missing explicit .98 release contract
+___________ Release98.test_sha_sidecar_and_output_guards_fail_closed ___________
+
+self = <test_release_candidate98.Release98 testMethod=test_sha_sidecar_and_output_guards_fail_closed>
+
+    def test_sha_sidecar_and_output_guards_fail_closed(self):
+>       c=self.contract()
+          ^^^^^^^^^^^^^^^
+
+tests/test_release_candidate98.py:63: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_release_candidate98.py:11: in contract
+    self.assertIsNotNone(importlib.util.find_spec('release_candidate98'),'Missing explicit .98 release contract')
+E   AssertionError: unexpectedly None : Missing explicit .98 release contract
+=========================== short test summary info ============================
+FAILED tests/test_release_candidate98.py::Release98::test_current_zip_is_reproducible_crc_clean_and_matches_all_source_bytes
+FAILED tests/test_release_candidate98.py::Release98::test_explicit98_version_and_only_authorized_runtime_metadata_change
+FAILED tests/test_release_candidate98.py::Release98::test_inspector_rejects_extra_missing_duplicate_changed_and_wrong_version
+FAILED tests/test_release_candidate98.py::Release98::test_retained96_and97_bytes_and_current_publication_namespaces_are_frozen
+FAILED tests/test_release_candidate98.py::Release98::test_review_package_never_stages_or_authorizes_any_channel
+FAILED tests/test_release_candidate98.py::Release98::test_sha_sidecar_and_output_guards_fail_closed
+6 failed in 0.11s
