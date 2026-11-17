@@ -28,16 +28,16 @@
         <left>14</left>
         <top>54</top>
         <width>438</width>
-        <height>72</height>
+        <height>84</height>
         <font>font13</font>
         <textcolor>FFF5F7FA</textcolor>
         <text />
       </control>
       <control type="list" id="200">
         <left>14</left>
-        <top>154</top>
+        <top>166</top>
         <width>472</width>
-        <height>148</height>
+        <height>124</height>
         <onleft>401</onleft>
         <onright>404</onright>
         <onup>401</onup>
@@ -259,7 +259,7 @@
       </control>
       <control type="label" id="105">
         <left>14</left>
-        <top>126</top>
+        <top>138</top>
         <width>472</width>
         <height>24</height>
         <font>font12</font>

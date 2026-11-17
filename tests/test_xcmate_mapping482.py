@@ -204,7 +204,12 @@ class Mapping482(unittest.TestCase):
         root=ET.parse(ADDON/'resources/skins/Default/720p/XCMateMapping48.xml').getroot()
         controls={n.get('id'):n for n in root.iter('control') if n.get('id')}
         status=controls['103'];listing=controls['200']
-        self.assertGreaterEqual(int(status.findtext('height')),70)
+        # Native720p font13 wraps message+code to three28px lines.
+        self.assertGreaterEqual(int(status.findtext('height')),3*28)
+        source=controls['105']
+        self.assertLessEqual(int(status.findtext('top'))+int(status.findtext('height')),int(source.findtext('top')))
+        self.assertLessEqual(int(source.findtext('top'))+int(source.findtext('height')),int(listing.findtext('top')))
+        self.assertEqual(int(listing.findtext('height'))%int(listing.find('itemlayout').get('height')),0)
         self.assertLessEqual(int(status.findtext('top'))+int(status.findtext('height')),int(listing.findtext('top')))
         spinner=controls['104']
         self.assertEqual(spinner.get('type'),'image')

@@ -10,6 +10,9 @@ replace_catalog(portal['id'],'live',[dict(stream_id='1',name='Native station',ca
                 [dict(category_id='a',category_name='Native group')])
 cases482=[]
 for kind482 in ('mini','grid'):
+ # The preceding case emits our own3s Save notification. Let it expire
+ # naturally so source/status screenshots are not obscured by that toast.
+ xbmc.sleep(3300)
  grid482=None
  if kind482=='grid':
   router482=SimpleNamespace(_xc=lambda p:None,url_for=lambda action,**kw:'plugin://plugin.video.xtreammate/?action='+str(action))
