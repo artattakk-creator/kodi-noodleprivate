@@ -6,8 +6,15 @@ sys.path.insert(0,str(Path(__file__).resolve().parent))
 from run_kodi_home74_contract import SKIN_SHA,SKIN_URL
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--report-dir',type=Path,required=True);p.add_argument('--skin-archive',type=Path);p.add_argument('--resolution',default='1920x1080',choices=('1920x1080','1280x720'));a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--report-dir',type=Path,required=True);p.add_argument('--skin-archive',type=Path);p.add_argument('--resolution',default='1920x1080',choices=('1920x1080','1280x720'));p.add_argument('--addon-zip',type=Path);p.add_argument('--qa482',action='store_true');a=p.parse_args()
  root=Path(__file__).resolve().parents[1];report=a.report_dir.resolve();report.mkdir(parents=True,exist_ok=True)
+ addon482=root/'src/plugin.video.xtreammate'
+ if a.addon_zip:
+  from release_candidate96 import inspect_package
+  proof482=inspect_package(a.addon_zip);unpacked482=report/'exact-package';unpacked482.mkdir()
+  with zipfile.ZipFile(a.addon_zip) as candidate482:candidate482.extractall(unpacked482)
+  addon482=unpacked482/'plugin.video.xtreammate';(report/'package482.json').write_text(json.dumps(proof482,indent=2))
+ if a.qa482 and not a.addon_zip:raise ValueError('EXACT_REVIEW_ZIP_REQUIRED')
  archive=a.skin_archive or report/'skin.zip'
  if not archive.exists():
   import urllib.request
@@ -28,6 +35,14 @@ def main():
  base=root/'tools/kodi_home84_host'
  mounts=[(root/'tools/kodi_home74_host','/work'),(root/'src/plugin.video.xtreammate','/xcmate'),(pristine/'skin.titan.bingie.mod','/skin'),(candidate,'/candidate'),(root/'tools/kodi_home86_host/fixture86.py','/fixture84.py'),(base/'fixture84.py','/base_fixture84.py'),(root/'tools/kodi_home88_host/gui88.py','/work/gui66.py'),(root/'tools/kodi_home86_host/gui86.py','/base_gui86.py'),(root/'tools/kodi_home87_host/spec87.py','/spec87.py'),(root/'tools/kodi_home87_host/setup87.py','/setup87.py'),(root/'tools/kodi_home87_host/foreign87.py','/foreign87.py'),(base/'gui84.py','/base_gui84.py'),(root/'tools/kodi_home87_host/probe87.py','/work/probe.py'),(base/'probe84.py','/base_probe84.py'),(root/'tools/kodi_home86_host/tls86.py','/work/tls69.py'),(base/'skin84.py','/work/skin_fixture66.py'),(root/'tools/kodi_home74_host/skin_fixture66.py','/base_skin78.py'),(root/'tools/kodi_home78_host/skin_fixture78.py','/skin78.py'),(report/'start.sh','/work/start.sh')]
  mounts.extend([(root/'tools/kodi_home86_host/icons86.py','/icons86.py'),(root/'tools/kodi_home86_host/navigation86.py','/navigation86.py')])
+ mounts=[(addon482,target) if target=='/xcmate' else (source,target) for source,target in mounts]
+ if a.qa482:
+  gui482=(root/'tools/kodi_home88_host/gui88.py').read_text();anchor482="Path('/root/foreign87.json').write_text(json.dumps(report['foreign87'],indent=2))"
+  assert gui482.count(anchor482)==1,'QA482_INSERTION_CHANGED'
+  gui482=gui482.replace(anchor482,"if not cold:exec(compile(Path('/status482.py').read_text(),'/status482.py','exec'),globals())\n"+anchor482)
+  (report/'gui482.py').write_text(gui482)
+  mounts=[(report/'gui482.py',target) if target=='/work/gui66.py' else (source,target) for source,target in mounts]
+  mounts.append((root/'tools/kodi_home88_host/status482.py','/status482.py'))
  cmd=['run','-d','--name',name]
  for source,target in mounts:cmd+=['--mount','type=bind,src='+str(source)+',dst='+target+',readonly']
  cmd+=['-e','XCMATE_RES74='+a.resolution,'xcmate-kodi21-helper57-contract','sh','/work/start.sh']
@@ -36,7 +51,9 @@ def main():
   run(*cmd,stdout=subprocess.DEVNULL);print(name,flush=True)
   with (report/'probe.log').open('w') as log:run('exec',name,'python3','/work/probe.py',stdout=log,stderr=subprocess.STDOUT)
   copy('/root/visible84.json','visible84.json');copy('/root/foreign87.json','foreign87.json')
-  run('cp',str(root/'tools/kodi_home88_host/gui88.py'),name+':/root/post75.py');run('cp',str(root/'tools/kodi_home75_host/restart75.py'),name+':/root/restart75.py')
+  if a.qa482:
+   value482=json.loads((report/'visible84.json').read_text());assert value482['status482']['status']=='PASS' and value482['sticky88']['status']=='PASS'
+  run('cp',str(report/'gui482.py' if a.qa482 else root/'tools/kodi_home88_host/gui88.py'),name+':/root/post75.py');run('cp',str(root/'tools/kodi_home75_host/restart75.py'),name+':/root/restart75.py')
   run('exec',name,'touch','/root/tls79-off')
   for i in (1,2):
    run('exec',name,'rm','-f','/root/foreign87.json')

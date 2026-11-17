@@ -27,6 +27,13 @@ for method in ('Input.Down','Input.Up','Input.Right','Input.Left'):
  before=time.monotonic();rpc(method);latencies.append(time.monotonic()-before)
 Path('/root/epg94-input-complete').write_text('NATIVE_INPUT_SENT')
 for _ in range(1200):
+ for kind482 in ('mini','grid'):
+  marker482=Path('/root/epg482-source-'+kind482+'.json');done482=Path('/root/epg482-source-'+kind482+'-input')
+  if marker482.exists() and not done482.exists():
+   from PIL import ImageGrab
+   time.sleep(.2)
+   ImageGrab.grab(xdisplay=':99').save('/root/epg482-source-'+kind482+'.png')
+   rpc('Input.Select');done482.write_text('NATIVE_SOURCE_SELECTION')
  if Path('/root/epg94-error.txt').exists() and Path('/root/epg94-error.txt').stat().st_size:raise RuntimeError(Path('/root/epg94-error.txt').read_text())
  if Path('/root/epg94-finished.json').exists():break
  time.sleep(.1)
