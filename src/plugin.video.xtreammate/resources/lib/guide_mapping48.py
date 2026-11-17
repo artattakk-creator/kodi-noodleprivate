@@ -94,6 +94,8 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
         self.getControl(105).setLabel(str((self.source or {}).get('name',''))[:72])
         if code=='NO_LOCAL_INDEX':
             self.getControl(404).setLabel('Quelle laden');self.getControl(404).setEnabled(True)
+        elif self.source and code in ('DB_BUSY','SOURCE_TIMEOUT','SOURCE_UNAVAILABLE','SOURCE_INVALID','SOURCE_LIMIT','MAPPING_BUSY','MAPPING_CANCELLED'):
+            self.getControl(404).setLabel('Erneut laden');self.getControl(404).setEnabled(True)
     def _launch482(self,phase,call,apply,stop=None):
         if self.future:
             self._status482('MAPPING_BUSY',busy=not self._job_timedout482);return False
@@ -135,6 +137,7 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
         # A failed source/search reload must never leave Save authorized by
         # a preview belonging to the previously selected source/channel.
         self.candidate=None;self.previewed=False;self._proof482=None
+        self.rows=[];self.getControl(200).reset()
         self.getControl(405).setEnabled(False);self.getControl(404).setEnabled(False)
         from epg_binding48 import channels
         def ready(rows):
@@ -231,6 +234,7 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
                 self.getControl(404).setEnabled(True);self._preview()
         elif cid==404:
             if not self.candidate and getattr(self,'_state482','')=='NO_LOCAL_INDEX':self._cold482=True;self._channels()
+            elif not self.candidate and self.source:self._channels()
             else:self._preview()
         elif cid==405 and self.previewed:
             if self._proof482!=(self.source['id'],self.candidate['id']):

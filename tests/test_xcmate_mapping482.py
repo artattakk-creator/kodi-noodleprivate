@@ -50,6 +50,67 @@ class Mapping482(unittest.TestCase):
                          {'eins.de','one.de','onehd.de'})
         self.assertEqual([r['id'] for r in self.d.cold53.channels(self.f.portal,self.f.bid,'Kabel 1 +1',0,lambda:False)],['plus.de'])
 
+    def test_local_and_ram_search_agree_on_punctuation_accents_and_pagination(self):
+        names=[('punct','Kabel_1_HD'),('accent','Däs Erste'),('dash','Das-Erste')]
+        names += [('bulk%03d'%n,'Kabel_1_HD') for n in range(151)]
+        self.f.binding.stage_channels('p','spell482',self.f.bid,names)
+        self.f.binding.finish_channels('p','spell482',True)
+        self.d.cold53.catalogue=(self.f.bid,[dict(id=i,name=n) for i,n in sorted(names)])  # scan() publishes ID order
+        for query,offset in (('Kabel1HD',0),('Kabel1HD',100),('Das Erste',0)):
+            with self.subTest(query=query,offset=offset):
+                local=self.f.binding.channels('p',self.f.bid,query,offset)
+                cold=self.d.cold53.channels(self.f.portal,self.f.bid,query,offset,lambda:False)
+                self.assertEqual({r['id'] for r in local},{r['id'] for r in cold})
+                self.assertTrue(local)
+
+    def test_explicit_cold_load_can_be_retried_after_source_timeout(self):
+        self.d.candidate=None;self.d.query='unindexed482';self.d._channels();self.pump()
+        self.assertIn('NO_LOCAL_INDEX',self.d.getControl(103).text)
+        calls=[]
+        @contextmanager
+        def transport(*args,**kwargs):
+            calls.append(True)
+            if len(calls)==1:raise TimeoutError('SYNTHETIC_PRIVATE_URL')
+            yield io.BytesIO(b'<tv><channel id="retry482"><display-name>unindexed482</display-name></channel></tv>')
+        with mock.patch('stream_epg.source_stream',side_effect=transport):
+            self.d.onClick(404);self.pump()
+            self.assertIn('SOURCE_TIMEOUT',self.d.getControl(103).text)
+            self.assertTrue(self.d.getControl(404).enabled)
+            self.assertFalse(self.d.getControl(104).visible)
+            self.d.onClick(404);self.pump()
+        self.assertEqual(len(calls),2)
+        self.assertEqual([r['id'] for r in self.d.rows],['retry482'])
+
+    def test_failed_source_reload_cannot_select_an_old_sources_list_item(self):
+        self.d.rows=[dict(id='old-cid',name='Old source result')]
+        self.d.getControl(200).addItems([importlib.import_module('xbmcgui').ListItem('Old source result')])
+        self.d.source={'id':self.f.aid,'name':'New source'}
+        from mapping_search482 import MappingReadError
+        with mock.patch('epg_binding48.channels',side_effect=MappingReadError('DB_BUSY')):
+            self.d._channels();self.pump()
+        self.assertEqual(self.d.rows,[])
+        with mock.patch.object(self.d.adapter96,'load_preview',side_effect=AssertionError('STALE_SOURCE')) as load:
+            self.d.onClick(200)
+        load.assert_not_called();self.assertFalse(self.d.previewed)
+        self.assertIsNone(self.d._proof482)
+
+    def test_excluded_timeshifts_do_not_hide_the_first_valid_local_match(self):
+        rows=[('aa%04d'%n,'Kabel1+1') for n in range(400)]+[('zz-valid','Kabel Eins')]
+        self.f.binding.stage_channels('p','shift482',self.f.bid,rows)
+        self.f.binding.finish_channels('p','shift482',True)
+        self.assertEqual([r['id'] for r in self.f.binding.channels('p',self.f.bid,'Kabel Eins')],['zz-valid'])
+
+    def test_native_grid_can_pump_before_asynchronous_oninit_without_io(self):
+        from guide_grid_window import GuideGridWindow
+        from xcmate027_fixture import QueuedPool
+        with mock.patch('guide_grid_window.ThreadPoolExecutor',QueuedPool):
+            window=GuideGridWindow('XCMateGuideGrid.xml',str(ADDON),'Default','720p')
+            window.configure(self.f.router,self.f.portal)
+        self.addCleanup(window.close)
+        with mock.patch.object(window,'_load') as load,mock.patch('media_art.revision',side_effect=AssertionError('PRE_INIT_IO')):
+            window.pump()
+        load.assert_not_called();self.assertFalse(window._ready)
+
     def test_local_no_match_never_opens_cold_transport(self):
         self.names();self.d.query='Not a station'
         calls=[]

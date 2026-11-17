@@ -115,6 +115,18 @@ class HeroStatus482(unittest.TestCase):
                 self.assertIn(word.casefold(),bank.get('Description','').casefold())
                 self.assertIn('Local description',bank['Description'])
 
+    def test_terminal_results_have_visible_sanitized_reason_in_existing_hero_binding(self):
+        for code,word in (('RESERVE_BLOCKED','Reserve'),('NO_IMAGE','kein'),('NO_MATCH','kein'),
+                          ('HTTP_AUTH','Zugriff'),('HTTP_RATE_LIMIT','Anfragen'),('TIMEOUT','Zeitbudget'),
+                          ('BLOCKED_IMAGE_HOST_OR_URL','Sicherheit')):
+            with self.subTest(code=code):
+                bank=self.poll(code)
+                self.assertEqual(bank['ArtStatus'],code)
+                self.assertIn(word.casefold(),bank['ArtStatusText'].casefold())
+                self.assertIn(bank['ArtStatusText'],bank['Description'])
+        state=importlib.import_module('programme_state482')
+        self.assertNotIn('SYNTHETIC_PRIVATE_URL',state.text({'code':'SYNTHETIC_PRIVATE_URL'}))
+
     def test_channel_without_event_never_inherits_previous_event_status(self):
         self.poll('RUNNING');self.labels['XCMate.MediaId']='2';self.labels['XCMate.WidgetToken41']='2'*32
         bank=self.poll('RUNNING')

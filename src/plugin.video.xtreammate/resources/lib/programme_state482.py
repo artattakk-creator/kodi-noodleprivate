@@ -17,6 +17,19 @@ TEXT={
  'LOCAL_IMAGE_READY':'Sendungsbild gefunden.',
  'IMAGE_URL_READY':'Bildadresse geprüft; Kodi lädt das Bild …',
  'IMAGE_URL_READY_RAM':'Bildadresse geprüft; Kodi lädt das Bild …',
+ 'RESERVE_BLOCKED':'Bildspeicherung durch die Sicherheitsreserve begrenzt. Speicherverwaltung prüfen.',
+ 'SAFE_RESERVE_BLOCKED':'Bildspeicherung durch die Sicherheitsreserve begrenzt. Speicherverwaltung prüfen.',
+ 'NO_IMAGE':'Für diese Sendung wurde kein passendes Bild gefunden.',
+ 'NO_MATCH':'Für diese Sendung wurde kein eindeutiger Bildtreffer gefunden.',
+ 'NO_MATCH_AMBIGUOUS':'Mehrere Bildtreffer. In den Sendungsdetails eine Zuordnung prüfen.',
+ 'HTTP_AUTH':'Die Bildquelle verweigert den Zugriff. Freigaben in der Bildverwaltung prüfen.',
+ 'HTTP_RATE_LIMIT':'Die Bildquelle begrenzt Anfragen. Später erneut versuchen.',
+ 'TIMEOUT':'Die Bildquelle hat das Zeitbudget erreicht. Bitte erneut versuchen.',
+ 'BLOCKED_IMAGE_HOST_OR_URL':'Die Bildquelle wurde aus Sicherheitsgründen gesperrt.',
+ 'TMDB_TOKEN_MISSING':'Der vorhandene TMDB-Zugang ist momentan nicht verfügbar. Einstellungen prüfen.',
+ 'PROGRAMME_DB_UNAVAILABLE':'Bilddatenbank momentan nicht verfügbar. Bitte später erneut versuchen.',
+ 'DISK_FULL':'Nicht genügend freier Speicher für das Bild. Speicherverwaltung prüfen.',
+ 'BUDGET_FULL':'Das Bildspeicherbudget ist erreicht. Speicherverwaltung prüfen.',
  'FETCH_FAILED':'Bildsuche fehlgeschlagen. Bitte in den Sendungsdetails erneut versuchen.',
  'IMAGE_LOOKUP_TIMEOUT':'Bildsuche hat das Zeitbudget erreicht. Bitte erneut versuchen.',
  'TMDB_LOOKUP_DISABLED':'Eigene TMDB-Bildsuche ist nicht freigegeben. Vorhandene Einstellungen prüfen.',
@@ -27,7 +40,9 @@ def code(art):
     return str(art.get('retry_status74') or art.get('status68') or art.get('code') or '')
 
 
-def text(art):return TEXT.get(code(art),'')
+def text(art):
+    value=code(art)
+    return TEXT.get(value,'Bildstatus nicht verfügbar. Bitte die Sendungsdetails prüfen.' if value and value not in ('READY','READY_STALE','IMAGE_READY') else '')
 
 
 def error(error):

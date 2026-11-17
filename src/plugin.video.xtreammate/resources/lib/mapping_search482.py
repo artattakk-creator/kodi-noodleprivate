@@ -62,11 +62,14 @@ def search(pid,source,query='',offset=0):
             if db.execute("SELECT 1 FROM sqlite_master WHERE name='source_channels48'").fetchone():
                 count=db.execute('SELECT count(*) FROM source_channels48 WHERE pid=? AND source_id=?',(str(pid),source)).fetchone()[0]
                 if count:
-                    needles=terms(query) if query else []
-                    clause=' AND ('+' OR '.join('(instr(lower(cid),?)>0 OR instr(lower(name),?)>0)' for _ in needles)+')' if needles else ''
-                    args=[str(pid),source]+[v for needle in needles for v in (needle,needle)]+[400,max(0,int(offset))]
-                    rows=[dict(id=r[0],name=r[1],first=None,last=None) for r in db.execute('SELECT cid,name FROM source_channels48 WHERE pid=? AND source_id=?'+clause+' ORDER BY cid LIMIT ? OFFSET ?',args)]
-                    return [row for row in rows if matches(row,query)][:100]
+                    # Apply the same normalizer before pagination. Raw-text SQL
+                    # filtering loses accents/punctuation and can spend its cap
+                    # on excluded +1 channels before the first valid result.
+                    db.create_function('mapping_match482',3,
+                        lambda cid,name,wanted:int(matches(dict(id=cid,name=name),wanted)),deterministic=True)
+                    rows=db.execute('SELECT cid,name FROM source_channels48 WHERE pid=? AND source_id=? AND mapping_match482(cid,name,?) ORDER BY cid LIMIT 100 OFFSET ?',
+                        (str(pid),source,str(query)[:160],max(0,int(offset))))
+                    return [dict(id=r[0],name=r[1],first=None,last=None) for r in rows]
             db.close();db=None
         db=connection()
         if db is None:raise MappingReadError('NO_LOCAL_INDEX')
