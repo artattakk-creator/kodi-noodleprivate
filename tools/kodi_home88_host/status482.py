@@ -8,19 +8,14 @@ import copy
 import epg_handoff63
 import programme_requests68
 from epg_sources import configuration
-from programme_snapshot47 import bind
-from epg_views import guide_for_channel
+from status_fixture482 import build
 
 home.setFocusId(2510);home.getControl(2510).selectItem(0)
 row482=live_rows(portal)[0];sid482=str(row482['sid'])
 original482=epg_handoff63.get(portal['id'],sid482)
 check(original482 is not None,'STATUS482_NO_EXISTING_EPG')
-now482=time.time();cid482=str(row482.get('epg_channel_id') or sid482)
-raw482=dict(name='Native status482',descr='Native status projection; synthetic programme facts.',
-            start_timestamp=now482-60,stop_timestamp=now482+1800,source_key46='provider')
-info482=guide_for_channel({cid482:[raw482]},cid482,now=now482)
-info482.update(epg_id=cid482,canonical46=cid482,snapshot_revision=('native-status482',1))
-info482=bind(portal['id'],row482,info482)
+info482=build(portal['id'],row482,time.time(),original482)
+cid482=info482['canonical46']
 mappings482=configuration(portal['id'])['mappings']
 epg_handoff63.remember(portal['id'],row482,info482,mappings482)
 published482=epg_handoff63.get(portal['id'],sid482,mappings=mappings482)

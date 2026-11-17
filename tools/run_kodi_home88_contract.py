@@ -42,7 +42,7 @@ def main():
   gui482=gui482.replace(anchor482,"if not cold:exec(compile(Path('/status482.py').read_text(),'/status482.py','exec'),globals())\n"+anchor482)
   (report/'gui482.py').write_text(gui482)
   mounts=[(report/'gui482.py',target) if target=='/work/gui66.py' else (source,target) for source,target in mounts]
-  mounts.append((root/'tools/kodi_home88_host/status482.py','/status482.py'))
+  mounts.extend([(root/'tools/kodi_home88_host/status482.py','/status482.py'),(root/'tools/kodi_home88_host/status_fixture482.py','/status_fixture482.py')])
  cmd=['run','-d','--name',name]
  for source,target in mounts:cmd+=['--mount','type=bind,src='+str(source)+',dst='+target+',readonly']
  cmd+=['-e','XCMATE_RES74='+a.resolution,'xcmate-kodi21-helper57-contract','sh','/work/start.sh']

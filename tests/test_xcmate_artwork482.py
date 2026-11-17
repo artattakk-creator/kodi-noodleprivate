@@ -127,6 +127,21 @@ class HeroStatus482(unittest.TestCase):
         state=importlib.import_module('programme_state482')
         self.assertNotIn('SYNTHETIC_PRIVATE_URL',state.text({'code':'SYNTHETIC_PRIVATE_URL'}))
 
+    def test_native_status_fixture_uses_verified_revision_and_publishes_without_database_writes(self):
+        from tools.kodi_home88_host.status_fixture482 import build
+        bridge=self.f.bridge;original=bridge.get('p','1')
+        self.assertIsNotNone(original)
+        info=build('p',self.f.row,importlib.import_module('time').time(),original)
+        self.assertEqual(info['snapshot_revision'],original['snapshot_revision'])
+        with mock.patch('sqlite3.connect',side_effect=AssertionError('RAM_FIXTURE_SQL')):
+            bridge.remember('p',self.f.row,dict(info,snapshot_revision=('native-status482',1)),{})
+            self.assertIsNone(bridge.get('p','1',mappings={}))
+            bridge.remember('p',self.f.row,info,{})
+            published=bridge.get('p','1',mappings={})
+        self.assertIsNotNone(published)
+        self.assertEqual(published['now'],'Native status482')
+        self.assertTrue(published['programme_key47'])
+
     def test_channel_without_event_never_inherits_previous_event_status(self):
         self.poll('RUNNING');self.labels['XCMate.MediaId']='2';self.labels['XCMate.WidgetToken41']='2'*32
         bank=self.poll('RUNNING')
