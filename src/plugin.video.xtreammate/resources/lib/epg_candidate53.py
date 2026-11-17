@@ -73,8 +73,8 @@ class Candidates:
     def channels(self,portal,identity,query,offset,cancel):
         if self.catalogue is None or self.catalogue[0]!=identity:
             self.catalogue=(identity,scan(portal,identity,cancel=cancel))
-        q=query.casefold()
-        rows=[r for r in self.catalogue[1] if q in r['id'].casefold() or q in r['name'].casefold()]
+        from mapping_search482 import matches
+        rows=[r for r in self.catalogue[1] if matches(r,query)]
         return rows[offset:offset+100]
     def programmes(self,portal,identity,cid,cancel):
         if self.events is None or self.events[:2]!=(identity,cid):

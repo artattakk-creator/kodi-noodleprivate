@@ -197,7 +197,9 @@ class MiniMapping96(unittest.TestCase):
         rows=[('id%04d'%n, 'Name %04d'%n) for n in range(1101)]
         self.fixture.binding.stage_channels('p', 'many96', self.fixture.bid, rows)
         self.fixture.binding.finish_channels('p', 'many96', True)
-        self.dialog.offset=1000; self.dialog._channels()
+        # #482 prefills the station name. This pagination case intentionally
+        # browses the complete source catalogue rather than that name filter.
+        self.dialog.query=''; self.dialog.offset=1000; self.dialog._channels()
         self.assertEqual(self.dialog.rows[0]['id'], 'id1000')
         self.dialog.onClick(403)
         self.assertEqual(self.dialog.rows[0]['id'], 'id1100')
