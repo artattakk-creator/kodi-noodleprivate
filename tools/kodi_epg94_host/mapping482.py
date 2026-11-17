@@ -9,10 +9,25 @@ phase94('mapping482_native_journeys')
 replace_catalog(portal['id'],'live',[dict(stream_id='1',name='Native station',category_id='a',epg_channel_id='xml')],
                 [dict(category_id='a',category_name='Native group')])
 cases482=[]
+def toast_settled482():
+ # Do not close even our own toast; wait for Kodi's existing queue to finish.
+ end=time.monotonic()+30;clear=time.monotonic()
+ while time.monotonic()<end:
+  if xbmc.getCondVisibility('Window.IsVisible(10107)'):clear=time.monotonic()
+  elif time.monotonic()-clear>.75:return
+  xbmc.sleep(50)
+ raise AssertionError('MAPPING482_PRIOR_NOTIFICATION_NOT_SETTLED')
+
+def select_control482(child,cid):
+ child.setFocusId(cid)
+ wait(lambda:child.getFocusId()==cid,'MAPPING482_NATIVE_FOCUS_NOT_READY')
+ xbmc.sleep(150)  # Wait for the enabled/focus GUI frame before posting IR OK.
+ xbmc.executebuiltin('Action(Select)',wait=False)
+
 for kind482 in ('mini','grid'):
  # The preceding case emits our own3s Save notification. Let it expire
  # naturally so source/status screenshots are not obscured by that toast.
- xbmc.sleep(3300)
+ toast_settled482();phase94('mapping482_'+kind482)
  grid482=None
  if kind482=='grid':
   router482=SimpleNamespace(_xc=lambda p:None,url_for=lambda action,**kw:'plugin://plugin.video.xtreammate/?action='+str(action))
@@ -38,12 +53,11 @@ for kind482 in ('mini','grid'):
   wait(channels482,'MAPPING482_SOURCE_OR_NAMES_FAILED',45)
   assert child482.rows[0]['id']=='xml'
   assert child482.getControl(103).getText().find('CHANNELS_READY')>=0
-  child482.getControl(200).selectItem(0);child482.setFocusId(200)
-  xbmc.executebuiltin('Action(Select)',wait=False)
+  child482.getControl(200).selectItem(0);select_control482(child482,200)
   def preview482():child482.pump();return child482.previewed
   wait(preview482,'MAPPING482_PREVIEW_FAILED')
   assert child482.getControl(301).getText().find('Native programme')>=0
-  xbmc.sleep(200);preview_shot482=shot('epg482-preview-'+kind482)
+  toast_settled482();xbmc.sleep(200);preview_shot482=shot('epg482-preview-'+kind482)
   assert 'PREVIEW_READY' in child482.getControl(103).getText()
   source_before482=Path(epg_sources._file_path()).read_bytes()
   # A global capacity rejection must be visible and never fake a running job.
@@ -57,7 +71,7 @@ for kind482 in ('mini','grid'):
   finally:guide_mapping48._slots.release()
   assert Path(epg_sources._file_path()).read_bytes()==source_before482
   child482._preview();wait(preview482,'MAPPING482_RETRY_FAILED')
-  child482.setFocusId(405);xbmc.executebuiltin('Action(Select)',wait=False)
+  select_control482(child482,405)
   def saved482():child482.pump();return child482.saved
   wait(saved482,'MAPPING482_SAVE_FAILED')
   binding482=epg_sources.configuration(portal['id'])['source_mappings48']['1']
