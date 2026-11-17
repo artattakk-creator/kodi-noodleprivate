@@ -1,0 +1,124 @@
+name: XCMate 0.1.29.97 Pilot-only gated release
+
+on:
+  push:
+    branches: [release/xcmate-02997-pilot-issue474]
+    paths:
+      - ".github/workflows/xcmate97-pilot-only.yml"
+
+permissions: {}
+concurrency:
+  group: xcmate97-pilot-only
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify exact PR478 ancestry and only version/news metadata changed in source
+        shell: bash
+        run: |
+          python - <<'PY'
+          import subprocess,re,xml.etree.ElementTree as ET
+          from pathlib import Path
+          base='bc06f521d23ee5c1e6c9aaca456c2b3cc062f3fc'
+          subprocess.run(['git','merge-base','--is-ancestor',base,'HEAD'],check=True)
+          changed=set(subprocess.check_output(
+            ['git','diff','--name-only',base,'HEAD','--','src/plugin.video.xtreammate'],text=True).splitlines())
+          assert changed=={'src/plugin.video.xtreammate/addon.xml'},changed
+          old=subprocess.check_output(['git','show',base+':src/plugin.video.xtreammate/addon.xml'],text=True)
+          new=Path('src/plugin.video.xtreammate/addon.xml').read_text()
+          normalize=lambda s:re.sub(r'<news>[^<]*</news>','<news>NEWS</news>',s)
+          assert normalize(new.replace('version="0.1.29.97"','version="0.1.29.96"'))==normalize(old)
+          addon=ET.fromstring(new)
+          assert (addon.get('id'),addon.get('version'))==('plugin.video.xtreammate','0.1.29.97')
+          print('PR478_EXACT_SOURCE_PRESERVED_ONLY_VERSION_AND_NEWS PASS')
+          PY
+      - name: Install focused test dependencies
+        run: python -m pip install 'Pillow>=11,<13' 'simpleeval==0.9.13' 'impacket==0.13.0' 'pytest>=8,<9'
+      - name: Focused save/readback/source-qualified view regressions
+        shell: bash
+        run: |
+          python -m compileall -q src/plugin.video.xtreammate
+          python -m unittest discover -s tests -p 'test_xcmate_issue474_*.py' -v
+          python -m pytest -q tests/test_xcmate_issue474_save.py tests/test_xcmate_issue474_views.py
+          python tools/validate_kodi_po.py
+      - name: Build ZIP and verify all 899 source files against successful PR478 artifact
+        shell: bash
+        run: python tools/pilot97_release.py build --out "$RUNNER_TEMP/pilot97"
+      - name: Real native Kodi Linux contract at 720p and 1080p (not Android)
+        shell: bash
+        env:
+          PILOT97: ${{ runner.temp }}/pilot97
+        run: |
+          for resolution in 1280x720 1920x1080; do
+            RES="$resolution" python - <<'PY'
+          import os,sys
+          sys.path.insert(0,'tools')
+          import release_candidate96
+          release_candidate96.VERSION='0.1.29.97'
+          release_candidate96.NAME='plugin.video.xtreammate-0.1.29.97.zip'
+          import run_kodi_epg96_contract
+          sys.argv=['run_kodi_epg96_contract.py',
+                    '--report-dir',os.environ['PILOT97']+'/native-'+os.environ['RES'],
+                    '--addon-zip',os.environ['PILOT97']+'/plugin.video.xtreammate-0.1.29.97.zip',
+                    '--resolution',os.environ['RES']]
+          run_kodi_epg96_contract.main()
+          PY
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xcmate97-pilot-verified
+          path: |
+            ${{ runner.temp }}/pilot97/plugin.video.xtreammate-0.1.29.97.zip
+            ${{ runner.temp }}/pilot97/plugin.video.xtreammate-0.1.29.97.zip.sha256
+            ${{ runner.temp }}/pilot97/proof.json
+          if-no-files-found: error
+          retention-days: 30
+
+  publish:
+    needs: verify
+    if: ${{ needs.verify.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: xcmate97-pilot-verified
+          path: ${{ runner.temp }}/pilot97
+      - name: Stage exact six Pilot files on fresh main worktree; require unchanged prior release
+        shell: bash
+        run: |
+          git fetch --no-tags origin main
+          git worktree add -b pilot97-deploy "$RUNNER_TEMP/pilot-main" origin/main
+          python tools/pilot97_release.py stage --root "$RUNNER_TEMP/pilot-main" --out "$RUNNER_TEMP/pilot97"
+      - name: Publish Pilot-only update; leave regular, NeoDark3 and installer untouched
+        shell: bash
+        run: |
+          cd "$RUNNER_TEMP/pilot-main"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- \
+            online-test/addons.xml online-test/addons.xml.md5 \
+            online-test/manifest.json online-test/index.html \
+            online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.97.zip \
+            online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.97.zip.sha256
+          git diff --cached --quiet && exit 1
+          git commit -m "release(XCMate): publish verified 0.1.29.97 to Pilot only"
+          git push origin HEAD:main
