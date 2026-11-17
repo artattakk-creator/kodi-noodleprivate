@@ -6,8 +6,10 @@ def explain(art):
  if ready:
   if art.get('storage69')!='RAM_ONLY':return ''
   return 'Bild gefunden und geprüft. Kodi lädt die Bildadresse. Der Metadatencache ist momentan nicht beschreibbar ('+str(art.get('storage_code69','UNCONFIRMED'))+'); die Bildreferenz bleibt für diese Sitzung nutzbar.'
- state482=__import__('programme_state482').text(art)
- if state482:return state482
+ from programme_state482 import ERRORS,code as state_code482,text as state_text482
+ # Existing detailed source outcomes (own API vs Helper/Kodi, RAM-only
+ # failure vs pending download) remain authoritative in the detail dialog.
+ if state_code482(art) in ERRORS:return state_text482(art)
  reasons={'HELPER_TIMEOUT':'TMDB Helper hat nicht rechtzeitig geantwortet. Kein Sendungsbild bestätigt.',
           'HELPER_BACKGROUND_UNAVAILABLE':'TMDB Helper konnte im Hintergrund keine Auskunft liefern. Kein Sendungsbild bestätigt.',
           'HELPER_NOT_AVAILABLE':'TMDB Helper ist nicht verfügbar. Kein Sendungsbild bestätigt.',

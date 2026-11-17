@@ -49,7 +49,7 @@ Jeder bestätigte Reviewbefund wurde zuerst als roter Regressionstest reproduzie
 | Prüfung | Tatsächlicher Stand |
 |---|---|
 | Neue Artwork-/Mappingfälle einschließlich später Reviewbefunde | RED vor jeweiliger Korrektur nachgewiesen |
-| Betroffene Host-Suite am letzten Layoutstand | **101 PASS** in 7,83 s; überlappende Teilmengen werden nicht addiert |
+| Betroffene Host-Suite am letzten Layoutstand | **159 PASS** in 11,57 s (erweiterte Suite einschließlich bestehender Status-/Quellentests); überlappende Teilmengen werden nicht addiert |
 | Unabhängiger Artwork-Review auf 929167cb | 8 PASS; eigener gesunder Matcher/Decoder/Detailpfad, Settingsschutz ohne Netzwerk, Reservefallback PASS |
 | Unabhängiger Mapping-Review auf 929167cb | 69 PASS; eigene echte Async-Save-/Cancel-/Readback-Repros PASS |
 | Alle 17 PO-Kataloge | PASS |
@@ -64,7 +64,7 @@ Jeder bestätigte Reviewbefund wurde zuerst als roter Regressionstest reproduzie
 | Native finale Statusbindung und Lesbarkeit | Noch ausstehend; Fixture nutzt nun die vorhandene verifizierte Snapshotrevision, ohne Produktguard zu ändern |
 | Physische Android-RK3528-/Kodi21.3-Abnahme | **ANDROID_NOT_TESTED** |
 
-Die erste GHA-Suite scheitert an sechs historischen .96-Versions-/Paketverträgen sowie einem durch Suchvorbelegung veralteten Preview53-Paginationssetup. Das Setup wurde korrigiert. Die historischen Vertragsprüfungen werden nicht übersprungen oder abgeschwächt; die unveränderte .97-Basis wird separat geprüft. Die Hashfixture beschreibt exakt die überprüften aktuellen Quellbytes; sie erlaubt keine beliebigen Änderungen. Das historische .96-ZIP wird nicht ersetzt.
+Die erste GHA-Suite scheitert an sechs historischen .96-Versions-/Paketverträgen sowie einem durch Suchvorbelegung veralteten Preview53-Paginationssetup. Das Setup wurde korrigiert. Der spätere vollständige c5-Unittestlauf deckte außerdem acht durch die neue allgemeine Statusprojektion verdrängte ältere Detailerklärungen auf (4199 Tests, 12 FAIL / 2 ERROR). Diese echten Regressionen wurden mit den unveränderten älteren Tests rot reproduziert und korrigiert: Neue Detailtexte gelten nur für neue Policy-/Settingsfehler; vorhandene differenzierte Quellenhinweise bleiben maßgeblich. Die erweiterte betroffene Suite besteht159Tests. Die historischen Vertragsprüfungen werden nicht übersprungen oder abgeschwächt; die unveränderte .97-Basis wird separat geprüft. Die Hashfixture beschreibt exakt die überprüften aktuellen Quellbytes; sie erlaubt keine beliebigen Änderungen. Das historische .96-ZIP wird nicht ersetzt.
 
 Relevante Kommandos mit installierten Testabhängigkeiten:
 
@@ -89,7 +89,7 @@ Ein gesundes Hostbild ist kein nativer Pixelnachweis. Ein nativer Linuxnachweis 
 
 [Installierbares .97-Review-ZIP](test-builds/issue482/plugin.video.xtreammate-0.1.29.97.zip) · [SHA256](test-builds/issue482/plugin.video.xtreammate-0.1.29.97.zip.sha256)
 
-SHA256: `474700daf3c666faf11aa61688882b39af8788c53e81fa7357d3b328b0a97e59`.
+SHA256: `16c81e587cfe1739ae463ec69ba6d142ab75146e47c8273ae6a779ec750a1042`.
 
 Das Paket enthält keine tatsächlichen Konten, privaten Logs, Token oder Benutzer-Datenbanken. Es wird nicht automatisch auf einer Box installiert oder in einen Repository-Katalog aufgenommen. Alle bisherigen Review-Prüfsummen sind damit überholt.
 
