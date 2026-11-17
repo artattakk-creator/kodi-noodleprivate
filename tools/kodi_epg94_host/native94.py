@@ -155,6 +155,46 @@ try:
  assert restored_focus==[501],restored_focus
  assert before==(Path(path()).read_bytes(),Path(epg_sources._file_path()).read_bytes())
  report['mini_mapping96']=dict(native_dialog=True,parent='SYNTHETIC_MINI_ADAPTER_OWNER',preview_bytes_unchanged=True,cancel_restored=True,android='ANDROID_NOT_TESTED')
+ # Issue474: actual native Save/worker/cold-readback/apply and failed-write dialog.
+ phase94('mapping474_save')
+ adapter=MiniAdapter(parent,channel)
+ child=MappingWindow48('XCMateMapping48.xml',xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('path'),'Default','720p')
+ child.configure(parent,adapter)
+ try:
+  child._shown=True;child.show();wait(lambda:child._ready,'MAPPING474_NOT_READY')
+  child.source=dict(id='provider',name='Anbieter-EPG');child.candidate=dict(id='xml',name='Native station')
+  child._preview()
+  def ready474():child.pump();return child.previewed
+  wait(ready474,'MAPPING474_PREVIEW_FAILED');child.onClick(405)
+  def saved474():child.pump();return child.saved
+  wait(saved474,'MAPPING474_SAVE_FAILED')
+  assert child._closed
+  manual474=epg_sources.configuration(portal['id'])['source_mappings48']['1']
+  assert manual474==dict(channel='xml',source='provider'),manual474
+  assert snapshot.get('1',time.time())['mapping']=='MANUAL'
+ finally:
+  child.close();adapter.finish(child.saved)
+ phase94('mapping474_write_failure')
+ before474=Path(epg_sources._file_path()).read_bytes()
+ adapter=MiniAdapter(parent,channel)
+ child=MappingWindow48('XCMateMapping48.xml',xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('path'),'Default','720p')
+ child.configure(parent,adapter);write474=epg_sources._write_all
+ try:
+  child._shown=True;child.show();wait(lambda:child._ready,'MAPPING474_RETRY_NOT_READY')
+  child.source=dict(id='provider',name='Anbieter-EPG');child.candidate=dict(id='xml',name='Native station');child._preview()
+  wait(ready474,'MAPPING474_RETRY_PREVIEW_FAILED')
+  def failed_write474(*a,**k):raise OSError('SYNTHETIC_FAILURE')
+  epg_sources._write_all=failed_write474;child.onClick(405)
+  def failed474():
+   child.pump();return child.future is None and not child._saving53
+  wait(failed474,'MAPPING474_FAILURE_NOT_RETURNED')
+  assert not child.saved and not child._closed
+  assert 'MAPPING_WRITE_FAILED' in child.getControl(103).getText()
+  assert before474==Path(epg_sources._file_path()).read_bytes()
+ finally:
+  epg_sources._write_all=write474;child.close();adapter.finish(False);snapshot.close()
+ report['mapping474']=dict(native_dialog=True,parent='SYNTHETIC_MINI_ADAPTER_OWNER',save_cold_readback=True,
+     actual_snapshot_applied=True,write_failure_kept_open=True,write_failure_preserved_bytes=True,android='ANDROID_NOT_TESTED')
  Path('/root/epg94-finished.json').write_text(json.dumps(report,indent=2));print(json.dumps(report),flush=True)
 except BaseException:
  Path('/root/epg94-error.tmp').write_text(traceback.format_exc());Path('/root/epg94-error.tmp').replace('/root/epg94-error.txt');raise

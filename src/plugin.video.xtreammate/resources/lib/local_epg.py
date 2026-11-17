@@ -21,20 +21,37 @@ def channel_keys(channel, mappings):
 
 class View(dict):
     def __init__(self):
-        super().__init__();self.canonical={};self.revision=None;self.code='NOT_CREATED'
+        super().__init__();self.canonical={};self.revision=None;self.code='NOT_CREATED';self.channels={}
+
+    def channel(self,sid):
+        """A sender's aliases cannot collide with another sender's source."""
+        return self.channels.setdefault(str(sid),View())
+
+    def add(self,sid,ident,cid,rows):
+        channel=self.channel(sid);channel[ident]=rows;channel.canonical[ident]=cid
+        # Keep the original dictionary surface for single-channel/old callers.
+        self.setdefault(ident,rows);self.canonical.setdefault(ident,cid)
 
 
-def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,budget=.4,text_only65=False):
+def for_channel(cache,sid):
+    """Select exact sender rows in a local View; legacy dictionaries pass through."""
+    if isinstance(cache,View) and cache.channels:
+        return cache.channels.get(str(sid),{})
+    return cache
+
+
+def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,budget=.4,text_only65=False,strict48=False):
     # The exact full .64 metadata path stays authoritative for matching/art.
     # Only an explicit display request uses the RAM/text latency projection.
-    if text_only65:
+    if text_only65 and not strict48:
         return _text_window65(pid,channels,mappings,start,stop,limit,focus_sid,history,budget,True)
-    return _full_window65(pid,channels,mappings,start,stop,limit,focus_sid,history,budget)
+    return _full_window65(pid,channels,mappings,start,stop,limit,focus_sid,history,budget,strict48=strict48)
 
-def _full_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,budget=.4):
+def _full_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,budget=.4,strict48=False):
     import guide_store
     filename=getattr(guide_store,'path',lambda:'')()
     if not filename or not os.path.isfile(filename):
+        if strict48:return None
         from programme_snapshot47 import fallback_window
         return fallback_window(pid,channels,mappings,start,stop,limit)
     db=None
@@ -47,6 +64,7 @@ def _full_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
         db.execute('BEGIN')
         meta=db.execute('SELECT * FROM guide_meta WHERE pid=?',(pid,)).fetchone()
         if not meta:
+            if strict48:return None
             from programme_snapshot47 import fallback_window
             return fallback_window(pid,channels,mappings,start,stop,limit)
         view=View();view.code='OK';record=dict(meta)
@@ -55,25 +73,26 @@ def _full_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
         tasks67=[]
         for channel in channels[:16]:
             sid,keys=channel_keys(channel,mappings)
+            sender=view.channel(sid)
             for ident in keys:
-                if ident in view:continue
+                if ident in sender:continue
                 from epg_binding48 import binding,read as read_source48
                 selected48=binding(mappings,sid)
                 if selected48:
-                    cid=selected48['channel'];view.canonical[ident]=cid
-                    values48=read_source48(db,pid,cid,selected48['source'],start,stop,limit)
-                    view[ident]=values48
+                    cid=selected48['channel']
+                    values48=read_source48(db,pid,cid,selected48['source'],start,stop,limit,**({'strict':True} if strict48 else {}))
+                    view.add(sid,ident,cid,values48)
                     tasks67.append((ident,cid,sid,selected48['source'],start,stop,limit))
                     continue
                 alias=alias_rows89.get(ident)
-                cid=alias[0] if alias else ident;view.canonical[ident]=cid
+                cid=alias[0] if alias else ident
                 left=start  # Current/future before SQL LIMIT; no unsolicited history.
                 right=start+21*86400 if history and sid==focus_sid else stop
                 cap=256 if history and sid==focus_sid else min(256,limit)
                 rows=db.execute('SELECT substr(title,1,512) AS title,substr(description,1,8192) AS description,start,stop,source FROM programmes WHERE pid=? AND cid=? AND stop>? AND start<? ORDER BY start,source,stop LIMIT ?',
                                 (pid,cid,left,right,cap)).fetchall()
-                view[ident]=[dict(name=r['title'],descr=r['description'],start_timestamp=r['start'],
-                                  stop_timestamp=r['stop'],source=r['source'],_source_index=r['source']) for r in rows]
+                view.add(sid,ident,cid,[dict(name=r['title'],descr=r['description'],start_timestamp=r['start'],
+                                  stop_timestamp=r['stop'],source=r['source'],_source_index=r['source']) for r in rows])
                 tasks67.append((ident,cid,sid,None,left,right,cap))
         # Commit all bounded core text before optional sidecar/schema work.
         from epg_resilience67 import optional
@@ -81,10 +100,10 @@ def _full_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
         from programme_flow48 import enrich
         for ident,cid,sid,source67,left,right,cap in tasks67:
             if time.monotonic()>deadline:break
-            values67=view[ident]
+            values67=for_channel(view,sid)[ident]
             if source67 is None:
                 values67=optional(pid,sid,values67,lambda:merged_window52(pid,sid,cid,left,right,primary=values67,limit=cap,manual=bool(mappings.get(sid))))
-            view[ident]=optional(pid,sid,values67,lambda:enrich(pid,cid,values67[:4],source67,sid48=sid,revision48=view.revision)+values67[4:])
+            for_channel(view,sid)[ident][:]=optional(pid,sid,values67,lambda:enrich(pid,cid,values67[:4],source67,sid48=sid,revision48=view.revision)+values67[4:])
         return view
     except (OSError,sqlite3.Error) as error63:
         from epg_handoff63 import note
@@ -123,22 +142,23 @@ def _text_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
         # Core text first; an expensive sidecar cannot erase another sender.
         for channel in channels[:16]:
             sid,keys=channel_keys(channel,mappings)
+            sender=view.channel(sid)
             for ident in keys:
-                if ident in view:continue
+                if ident in sender:continue
                 from epg_binding48 import binding,read as read_source48
                 selected48=binding(mappings,sid)
                 alias=None if selected48 else alias_rows89.get(ident)
                 cid=selected48['channel'] if selected48 else alias[0] if alias else ident
-                view.canonical[ident]=cid;source48=selected48['source'] if selected48 else None
+                source48=selected48['source'] if selected48 else None
                 left=start;right=start+21*86400 if history and sid==focus_sid else stop
                 cap=256 if history and sid==focus_sid else min(256,limit)
                 key=(str(sid),cid,source48,bool(mappings.get(sid)),right,cap)
-                if key in prepared:view[ident]=prepared[key];continue
+                if key in prepared:view.add(sid,ident,cid,prepared[key]);continue
                 if selected48:values=read_source48(db,pid,cid,source48,left,right,cap)
                 else:
                     rows=db.execute('SELECT substr(title,1,512) AS title,substr(description,1,8192) AS description,start,stop,source FROM programmes WHERE pid=? AND cid=? AND stop>? AND start<? ORDER BY start,source,stop LIMIT ?',(pid,cid,left,right,cap)).fetchall()
                     values=[dict(name=row['title'],descr=row['description'],start_timestamp=row['start'],stop_timestamp=row['stop'],source=row['source'],_source_index=row['source']) for row in rows]
-                prepared[key]=values;view[ident]=values;tasks.append((key,cid,sid,source48,left,right,cap))
+                prepared[key]=values;view.add(sid,ident,cid,values);tasks.append((key,cid,sid,source48,left,right,cap))
         # Source fusion is text work. Prefer gaps before optional rich fields.
         fusion65=sorted(tasks,key=lambda task:any(value['start_timestamp']<=start<value['stop_timestamp'] for value in prepared[task[0]]))
         for key,cid,sid,source48,left,right,cap in fusion65:
@@ -216,7 +236,7 @@ def _now_next89(pid,channels,mappings,now=None,client=None,display_only65=False)
         compatibility47=cache is None or getattr(cache,'code','')=='SHARED_LASTGOOD47'
         info=resolve_guide(cache if cache is not None else {},provider,sid,ts,client if compatibility47 else None,mappings)
         info['snapshot_revision']=cache.revision if cache is not None else None
-        info['canonical46']=cache.canonical.get(info.get('epg_id',''),'') if cache is not None else ''
+        info['canonical46']=getattr(for_channel(cache,sid),'canonical',{}).get(info.get('epg_id',''),'') if cache is not None else ''
         from programme_snapshot47 import bind
         result[sid]=bind(pid,channel,info)
         if (not result[sid].get('now') and warm.get(sid) and warm[sid].get('now')

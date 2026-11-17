@@ -1,0 +1,72 @@
+name: Issue474 source-qualified mapping and native Save
+on:
+  pull_request:
+    branches: [fix/xcmate-02996-groups-artwork-mapping]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: issue474-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+jobs:
+  host:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [unittest, pytest]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'Pillow>=11,<13' 'simpleeval==0.9.13' 'impacket==0.13.0' 'pytest>=8,<9'
+      - name: Full exact-source cumulative regression
+        env:
+          HOST_SUITE: ${{ matrix.suite }}
+        run: |
+          set -o pipefail
+          if [ "$HOST_SUITE" = unittest ]; then
+            python tools/run_host94_contract.py -- python -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/host.txt"
+          else
+            python tools/run_host94_contract.py -- python -m pytest tests -q 2>&1 | tee "$RUNNER_TEMP/host.txt"
+          fi
+          python tools/validate_kodi_po.py
+          python tools/release_candidate96.py --output docs/XCMate/test-builds/02996
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue474-host-${{ matrix.suite }}
+          path: |
+            ${{ runner.temp }}/host.txt
+            docs/XCMate/test-builds/02996/*.zip
+            docs/XCMate/test-builds/02996/*.sha256
+  native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        resolution: [1280x720, 1920x1080]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Exact testZIP, native import/preview/save/failure and parent view
+        run: python tools/run_kodi_epg96_contract.py --report-dir "$RUNNER_TEMP/mapping474" --addon-zip docs/XCMate/test-builds/02996/plugin.video.xtreammate-0.1.29.96.zip --resolution '${{ matrix.resolution }}'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue474-native-${{ matrix.resolution }}
+          path: |
+            ${{ runner.temp }}/mapping474/*.json
+            ${{ runner.temp }}/mapping474/*.png
+            ${{ runner.temp }}/mapping474/*.txt

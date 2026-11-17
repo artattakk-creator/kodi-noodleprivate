@@ -216,7 +216,9 @@ class GuideSnapshot:
                 except (OSError,RuntimeError,sqlite3.Error): pass
             if sid==selected:
                 from epg_events import deduplicate
-                raw=self._cache.get(info.get('epg_id',''),[])
+                from epg_binding48 import qualified_cache
+                from local_epg import for_channel
+                raw=qualified_cache(for_channel(self._cache,sid),self._mappings,sid).get(info.get('epg_id',''),[])
                 info['programme_events']=[e for e in deduplicate(raw,channel=info.get('epg_id','')) if e['stop']>now][:256] if raw else info.get('events',[])
             if sid==getattr(self,'_infobar_sid45',''):
                 from infobar_epg45 import previous
