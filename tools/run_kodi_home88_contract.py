@@ -66,10 +66,10 @@ def main():
    files=json.loads(run('exec',name,'python3','-c',"import json;from pathlib import Path;print(json.dumps([str(p) for p in Path('/root').glob('visible84-*.png')]))",capture_output=True,text=True).stdout)
    for file in files:copy(file,Path(file).name)
   except (ValueError,subprocess.CalledProcessError):pass
-  for file in ('gui66-error.txt','post75-error.txt','tls69-requests.jsonl','visible84.json','texture84-debug.json','poster86-value.json','poster86-state.json','navigation86.json','icons86.json'):
+  for file in ('gui66-error.txt','post75-error.txt','tls69-requests.jsonl','visible84.json','texture84-debug.json','poster86-value.json','poster86-state.json','navigation86.json','icons86.json','status482-context.json'):
    subprocess.run(docker+['cp',name+':/root/'+file,str(report/file)],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
   subprocess.run(docker+['cp',name+':/root/.kodi/temp/kodi.log',str(report/'synthetic-kodi.log')],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-  for evidence86 in ('poster86-value.json','poster86-state.json','navigation86.json','icons86.json'):
+  for evidence86 in ('poster86-value.json','poster86-state.json','navigation86.json','icons86.json','status482-context.json'):
    target86=report/evidence86
    if target86.is_file():print(evidence86+' '+target86.read_text()[:6000],flush=True)
   synthetic86=report/'synthetic-kodi.log'
@@ -84,7 +84,7 @@ def main():
   # Synthetic screenshots only: make two actual native PNGs recoverable for
   # human review even when signed Actions artifact downloads are unavailable.
   import base64
-  pictures482=('visible84-status482-requested.png','visible84-status482-running.png','visible84-status482-settings_xml_invalid.png','visible84-status482-image_epg_disabled.png') if a.qa482 else ()
+  pictures482=('visible84-status482-requested.png','visible84-status482-running.png','visible84-status482-settings_xml_invalid.png','visible84-status482-image_epg_disabled.png','visible84-status482-failed.png') if a.qa482 else ()
   for picture87 in ('visible84-hero86-final.png','visible84-foreign87-warm-1-7.png','visible84-sticky88-305.png')+pictures482:
    path87=report/picture87
    if path87.is_file() and path87.stat().st_size<=512*1024:
