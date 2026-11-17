@@ -9,7 +9,7 @@ Dieser erste Schritt schreibt **keinen Code**, öffnet **keinen PR** und löst *
 ## Einmalig durch Repository-Administrator
 
 1. Diesen **Draft-Setup-PR** prüfen und nach ausdrücklicher Freigabe in main übernehmen. Vorher ist der neue Workflow nicht aktiv.
-2. In GitHub unter Issues -> Labels -> New label den Namen codex-ready anlegen. Nur für bewusst freigegebene Aufgaben benutzen.
+2. Das Label codex-ready ist bereits auf Issue #474 gesetzt. Es darf nur für bewusst freigegebene Aufgaben eingesetzt werden; bereits gesetzte Labels lösen nach dem Merge keinen rückwirkenden Lauf aus.
 3. Unter Settings -> Secrets and variables -> Actions -> New repository secret den Namen OPENAI_API_KEY eintragen. Den Wert ausschließlich in GitHubs Secret-Dialog eingeben, **nie** in Chat, Issue, Workflow-Datei oder Pull Request. Für API-Nutzung fallen separate OpenAI-API-Kosten an; die ChatGPT-Plus-/Codex-Berechtigung deckt dies nicht automatisch ab. Nutzungsbudget und Key-Berechtigungen begrenzen.
 4. Unter Settings -> Actions -> General die Action-Freigaben kontrollieren. Die neue Analyse benötigt nur contents:read und issues:read. Ein zweiter Job bekommt issues:write ausschließlich zum Schreiben des Diagnosekommentars.
 5. Branch-Schutzregeln für main und erforderliche CI-Checks prüfen bzw. setzen (Review-Pflicht, kein automatischer Merge). Diese Admin-Einstellungen werden durch den Setup-PR nicht verändert.
