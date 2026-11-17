@@ -29,13 +29,8 @@ def mini_channel(parent):
 
 def save_verified(portal, sid, cid, source):
     """Only report success after a fresh configuration read proves the tuple."""
-    from epg_binding48 import save, binding
-    from epg_sources import configuration
-    if not save(portal, sid, cid, source):
-        return False
-    selected = binding(configuration(portal['id'])['mappings'], sid)
-    if selected != dict(channel=str(cid), source=str(source)):
-        raise ValueError('MAPPING_READBACK_FAILED')
+    from epg_binding48 import commit_verified
+    commit_verified(portal,sid,cid,source)
     return True
 
 
@@ -85,7 +80,25 @@ class GridAdapter:
         parent.getControl(102).setLabel('VORSCHAU · ' + source['name'] + ' · ' + candidate['id'] + ' · noch nicht gespeichert')
         return len(selected['events'])
 
+    def prepare_saved(self, candidate, source):
+        from guide_grid_data import page
+        from epg_binding48 import MappingSaveError
+        value=page(self.portal,self.original['offset'],self.original['origin'],self.original['category'],strict48=True)
+        row=next((r for r in value['rows'] if str(r['channel']['sid'])==str(self.channel['sid'])),None)
+        if value.get('code')!='OK' or row is None or row['mapping']!='MANUAL' or row['epg_id']!=candidate['id']:
+            raise MappingSaveError('MAPPING_RELOAD_FAILED')
+        return value
+
+    def apply_saved(self, value):
+        parent=self.parent
+        if parent._closed:raise RuntimeError('MAPPING_PARENT_CLOSED')
+        parent.rows=value['rows'];parent.total=value['total'];parent.groups=value['groups']
+        parent.row=min(self.original['row'],max(0,len(parent.rows)-1))
+        parent._loading=False;parent._render();parent.setFocusId(self.focus)
+        self._applied474=True
+
     def finish(self, saved):
+        if saved and getattr(self,'_applied474',False):return
         if self.parent._closed:
             return
         if saved:
@@ -144,7 +157,45 @@ class MiniAdapter:
         parent._render(focus=False)
         return len(value['info96']['events'])
 
+    def prepare_saved(self, candidate, source):
+        from epg_sources import configuration
+        from local_epg import window
+        from epg_views import resolve_guide
+        from epg_status import revision
+        from epg_binding48 import MappingSaveError
+        from programme_snapshot47 import bind
+        now=time.time();mappings=configuration(self.portal['id'])['mappings']
+        view=window(self.portal['id'],[self.channel],mappings,now,now+2*86400,strict48=True)
+        if view is None:raise MappingSaveError('MAPPING_RELOAD_FAILED')
+        info=resolve_guide(view,candidate['id'],self.channel['sid'],now,mappings=mappings)
+        if info['mapping']!='MANUAL' or info['epg_id']!=candidate['id']:raise MappingSaveError('MAPPING_RELOAD_FAILED')
+        info.update(canonical46=candidate['id'],loading68=False,snapshot_revision=getattr(view,'revision',None))
+        return dict(info=bind(self.portal['id'],self.channel,info),mappings=mappings,revision=revision(self.portal['id']))
+
+    def apply_saved(self,value):
+        parent=self.parent;guide=parent._guide;sid=str(self.channel['sid'])
+        if parent._closed:raise RuntimeError('MAPPING_PARENT_CLOSED')
+        with guide._lock:
+            self._prior474=guide._values.get(sid)
+            guide._preview96.pop(sid,None);guide._seeded63.pop(sid,None)
+            guide._values[sid]=value['info'];guide._mappings=value['mappings'];guide._revision=value['revision']
+            guide._request_generation+=1;guide.generation+=1;guide._wake.set()
+        for key,old in self.original.items():setattr(parent,key,dict(old) if key=='_highlight' else old)
+        parent._mini.signature=None;parent._render(focus=False);parent.setFocusId(self.focus)
+        self._applied474=True
+
+    def restore_saved(self):
+        guide=self.parent._guide;sid=str(self.channel['sid'])
+        with guide._lock:
+            if hasattr(self,'_prior474'):
+                if self._prior474 is None:guide._values.pop(sid,None)
+                else:guide._values[sid]=self._prior474
+            guide._revision=None;guide._request_generation+=1;guide._wake.set()
+        try:self.finish(False)
+        finally:self.epoch=guide.begin_preview96(sid)
+
     def finish(self, saved):
+        if saved and getattr(self,'_applied474',False):return
         parent = self.parent
         parent._guide.clear_preview96(self.channel['sid'], self.epoch, refresh=saved)
         if parent._closed:

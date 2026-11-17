@@ -13,26 +13,29 @@ def rectangle(start,stop,origin,span=SPAN,width=896):
     return x,max(1,end-x)
 
 
-def page(portal,offset,origin,category=None,client=None,mappings48=None):
+def page(portal,offset,origin,category=None,client=None,mappings48=None,strict48=False):
     from library_index import Reader
     from epg_sources import configuration
     from epg_events import deduplicate
     reader=Reader(portal['id']);channels,total=reader.page('live',category=category,offset=offset,limit=ROWS)
     mappings=configuration(portal['id']).get('mappings',{}) if mappings48 is None else mappings48;result=[]
-    from local_epg import window,channel_keys
-    snapshot=window(portal['id'],channels,mappings,origin,origin+SPAN,limit=101)
-    if snapshot is None:
+    from local_epg import window,channel_keys,for_channel
+    snapshot=window(portal['id'],channels,mappings,origin,origin+SPAN,limit=101,**({'strict48':True} if strict48 else {}))
+    if snapshot is None and not strict48:
         from epg_fallback67 import window as fallback67
         snapshot=fallback67(portal['id'],channels,mappings,origin,origin+SPAN,101)
     state='OK' if snapshot is not None else 'NOT_CREATED'
     for channel in channels:
         sid,ids=channel_keys(channel,mappings);manual=mappings.get(sid)
-        events=[];resolved='';mapping='MANUAL' if manual else 'UNMAPPED'
+        events=[];resolved=str(manual or '');mapping='MANUAL' if manual else 'UNMAPPED'
         if snapshot is not None:
+            from epg_binding48 import qualified_cache
+            sender=for_channel(snapshot,sid)
+            selected=qualified_cache(sender,mappings,sid)
             for ident in ids:
-                raw=snapshot.get(ident,[])
+                raw=selected.get(ident,[])
                 if raw:
-                    resolved=snapshot.canonical.get(ident,ident)
+                    resolved=getattr(sender,'canonical',{}).get(ident,ident)
                     events=deduplicate(raw[:100],channel=resolved)
                     if not manual:mapping='STREAM_ALIAS' if ident==sid else 'PROVIDER_ID'
                     break

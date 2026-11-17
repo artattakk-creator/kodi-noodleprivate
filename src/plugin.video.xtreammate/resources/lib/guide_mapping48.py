@@ -58,17 +58,20 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
     def _gui(self):
         if threading.get_ident()!=self.owner:raise RuntimeError('MAPPING_OWNER_THREAD')
     def _submit(self,call,apply):
-        if self.future or not _slots.acquire(blocking=False):return
+        if self.future or not _slots.acquire(blocking=False):return False
         future=Future();self.future=future;self.apply=apply
         def work():
             try:
                 if not future.set_running_or_notify_cancel():return
                 try:future.set_result(call())
-                except Exception:future.set_exception(RuntimeError('LOCAL_READ_UNAVAILABLE'))
+                except Exception as exc:
+                    from epg_binding48 import MappingSaveError
+                    future.set_exception(exc if isinstance(exc,MappingSaveError) else RuntimeError('LOCAL_READ_UNAVAILABLE'))
             finally:_slots.release()
         try:threading.Thread(target=work,name='XCMate-map48',daemon=True).start()
-        except (RuntimeError,MemoryError):_slots.release();self.future=None
+        except (RuntimeError,MemoryError):_slots.release();self.future=None;return False
         self.getControl(103).setText('Lokale EPG-Daten werden gelesen …')
+        return True
     def onInit(self):
         self._gui();self._ready=True
         self.getControl(101).setLabel('EPG zuweisen · '+str(self.channel['name']))
@@ -140,9 +143,11 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
         if self.future and self.future.done():
             future,apply=self.future,self.apply;self.future=self.apply=None
             if future.cancelled():return
-            self._saving53=False
+            saving=self._saving53;self._saving53=False
             try:value=future.result()
-            except Exception:self.getControl(103).setText('EPG-Zugriff nicht verfügbar oder Vorschau-Limit erreicht. Zuordnung unverändert; Quelle und Bericht prüfen.')
+            except Exception as exc:
+                if saving:self._save_error474(getattr(exc,'code','MAPPING_WRITE_FAILED'))
+                else:self.getControl(103).setText('EPG-Zugriff nicht verfügbar oder Vorschau-Limit erreicht. Zuordnung unverändert; Quelle und Bericht prüfen.')
             else:apply(value)
     def onClick(self,cid):
         self._gui()
@@ -165,27 +170,70 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
                 self.getControl(404).setEnabled(True);self._preview()
         elif cid==404:self._preview()
         elif cid==405 and self.previewed:
-            from mapping_context96 import save_verified as save
-            identity=self.source['id'];cid=self.candidate['id'];name=self.candidate.get('name',cid)
-            events=list(self.cold53.selected(identity,cid));portal=dict(self.portal);sid=self.channel['sid']
-            if events:
-                from epg_candidate53 import publish
-                def commit():
-                    publish(portal,identity,cid,name,events)
-                    return save(portal,sid,cid,identity)
-                def committed(ok):
-                    if ok:self.saved=True;self.close()
-                    else:self.getControl(103).setText('Zuordnung nicht gespeichert. Quelle und Schreibrechte prüfen.')
-                self._saving53=True;self._submit(commit,committed)
-                self.getControl(103).setText('Explizites Speichern: ausgewählte Sendungen prüfen und Zuordnung übernehmen …')
-                return
-            # A single explicit atomic configuration write is linearized on
-            # the owner: Back cannot race a queued Save after the panel closed.
-            try:ok=save(self.portal,self.channel['sid'],self.candidate['id'],self.source['id'])
-            except (OSError,ValueError):
-                self.getControl(103).setText('Zuordnung nicht gespeichert. Quelle und Schreibrechte prüfen.');return
-            if ok:self.saved=True;self.close()
-            else:self.getControl(103).setText('Zuordnung nicht gespeichert. Quelle und Schreibrechte prüfen.')
+            from epg_binding48 import commit_verified
+            identity=self.source['id'];candidate=dict(self.candidate);portal=dict(self.portal);sid=self.channel['sid']
+            events=list(self.cold53.selected(identity,candidate['id']))
+            def prepare():
+                from epg_binding48 import MappingSaveError
+                if self.cancel.is_set() or self.parent._closed:raise MappingSaveError('MAPPING_CANCELLED')
+                value=self.adapter96.prepare_saved(candidate,identity)
+                if self.cancel.is_set() or self.parent._closed:raise MappingSaveError('MAPPING_CANCELLED')
+                return value
+            def commit():
+                try:
+                    if self.cancel.is_set() or self.parent._closed:return dict(error='MAPPING_CANCELLED')
+                    if events:
+                        from epg_candidate53 import publish
+                        publish(portal,identity,candidate['id'],candidate.get('name',candidate['id']),events)
+                    return commit_verified(portal,sid,candidate['id'],identity,
+                        prepare=prepare)
+                except (OSError,ValueError,RuntimeError) as exc:
+                    return dict(error=getattr(exc,'code','MAPPING_WRITE_FAILED'))
+            self._saving53=True
+            accepted=self._submit(commit,self._committed474)
+            if accepted is False:
+                self._saving53=False;self._save_error474('MAPPING_BUSY')
+            elif self.future:self.getControl(103).setText('Speichern: Schreiben, Readback und EPG-Ansicht prüfen …')
+    def _save_error474(self,code):
+        safe={'MAPPING_BUSY','MAPPING_CANCELLED','MAPPING_WRITE_FAILED','MAPPING_READBACK_FAILED','MAPPING_RELOAD_FAILED',
+              'MAPPING_UI_REFRESH_FAILED','MAPPING_ROLLBACK_UNCONFIRMED','MAPPING_CONFLICT','MAPPING_PROFILE_CHANGED'}
+        code=code if code in safe else 'MAPPING_WRITE_FAILED'
+        uncertain=code in ('MAPPING_ROLLBACK_UNCONFIRMED','MAPPING_CONFLICT','MAPPING_PROFILE_CHANGED')
+        text='Speicherzustand nicht bestätigt. Bitte Diagnose prüfen.' if uncertain else 'Zuordnung nicht gespeichert; vorherige Zuordnung erhalten.'
+        self.getControl(103).setText(text+' ('+code+')')
+    def _committed474(self,receipt):
+        self._saving53=False
+        if receipt.get('error'):
+            self._save_error474(receipt['error']);return
+        from epg_binding48 import rollback_verified,confirm_verified
+        try:
+            with confirm_verified(receipt):
+                self.adapter96.apply_saved(receipt['prepared'])
+                self.getControl(103).setText('EPG-Zuordnung gespeichert und geprüft.')
+                try:xbmcgui.Dialog().notification('XCMate','EPG-Zuordnung gespeichert und geprüft.',time=3000)
+                except RuntimeError:pass
+                self.saved=True
+        except Exception as exc:
+            self.saved=False
+            code=getattr(exc,'code','MAPPING_UI_REFRESH_FAILED')
+            try:rollback_verified(receipt)
+            except Exception as rollback:code=getattr(rollback,'code','MAPPING_ROLLBACK_UNCONFIRMED')
+            try:
+                restore=getattr(self.adapter96,'restore_saved',None)
+                if restore:restore()
+                else:self.adapter96.finish(False)
+            except Exception:pass
+            self._save_error474(code);return
+        self.close()
+    @staticmethod
+    def _retire474(future):
+        if future.cancelled():return
+        try:receipt=future.result()
+        except Exception:return
+        if not isinstance(receipt,dict) or receipt.get('error'):return
+        try:__import__('epg_binding48').rollback_verified(receipt)
+        except (OSError,ValueError,RuntimeError):
+            xbmc.log('[XCMate][MAPPING474] UNCONFIRMED_ON_EXIT',xbmc.LOGWARNING)
     def onAction(self,action):
         if action.getId() in (9,10,92):self.close()
     def run(self):
@@ -197,6 +245,9 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
                 elif time.monotonic()-started>10:break
                 if monitor.waitForAbort(.05):break
         finally:
+            if self._saving53 and self.future is not None:
+                future=self.future;self.future=self.apply=None;self._saving53=False
+                self.cancel.set();future.add_done_callback(self._retire474);future.cancel()
             self.close()
             self.adapter96.finish(self.saved)
     def close(self):

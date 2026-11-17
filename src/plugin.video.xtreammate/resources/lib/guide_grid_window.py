@@ -164,7 +164,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         group=next((g['title'] for g in self.groups if g['cid']==self.category),'')
         self.getControl(101).setLabel(tr(33100)+' · '+group+' · '+time.strftime('%a %d.%m.%Y',time.localtime(self.origin)))
         available=sum(bool(r['events']) for r in self.rows)
-        self.getControl(102).setLabel(tr(33111,self.offset+1 if self.rows else 0,min(self.total,self.offset+len(self.rows)),self.total,available,len(self.rows))+(' · '+tr(33120) if any(len(r['events'])>CELLS for r in self.rows) else '')+(' · '+tr(35984,len(self._history44)) if getattr(self,'_history44',None) is not None else ''))
+        self.getControl(102).setLabel(tr(33111,self.offset+1 if self.rows else 0,min(self.total,self.offset+len(self.rows)),self.total,available,len(self.rows))+(' · '+tr(33120) if any(len(r['events'])>CELLS for r in self.rows) else '')+(' · '+tr(35984,len(self._history44)) if getattr(self,'_history44',None) is not None else '')+(' · EPG manuell zugeordnet' if self.rows and self.rows[self.row].get('mapping')=='MANUAL' else ''))
         self._focus_cell(target)
 
     def _refresh_logos(self):
