@@ -1,0 +1,26 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_ Native98.test_existing_native_engines_allow_explicit_inspector_without_changing_default _
+
+self = <test_native_release98.Native98 testMethod=test_existing_native_engines_allow_explicit_inspector_without_changing_default>
+
+    def test_existing_native_engines_allow_explicit_inspector_without_changing_default(self):
+        for name in ('run_kodi_epg96_contract','run_kodi_home88_contract'):
+            module=importlib.import_module(name)
+>           self.assertIn('package_inspector',inspect.signature(module.main).parameters)
+E           AssertionError: 'package_inspector' not found in mappingproxy(OrderedDict())
+
+tests/test_native_release98.py:12: AssertionError
+_ Native98.test_wrapper_passes_strict98_inspector_to_each_engine_and_preserves96_globals _
+
+self = <test_native_release98.Native98 testMethod=test_wrapper_passes_strict98_inspector_to_each_engine_and_preserves96_globals>
+
+    def test_wrapper_passes_strict98_inspector_to_each_engine_and_preserves96_globals(self):
+>       self.assertIsNotNone(importlib.util.find_spec('run_xcmate98_native'))
+E       AssertionError: unexpectedly None
+
+tests/test_native_release98.py:15: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_native_release98.py::Native98::test_existing_native_engines_allow_explicit_inspector_without_changing_default
+FAILED tests/test_native_release98.py::Native98::test_wrapper_passes_strict98_inspector_to_each_engine_and_preserves96_globals
+2 failed in 0.09s

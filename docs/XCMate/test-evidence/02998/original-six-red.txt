@@ -1,0 +1,133 @@
+FFFFFF                                                                   [100%]
+=================================== FAILURES ===================================
+______________ GsMediaRepo180Tests.test_xcmate_release_unchanged _______________
+
+self = <test_gsmedia_repo_180.GsMediaRepo180Tests testMethod=test_xcmate_release_unchanged>
+
+    def test_xcmate_release_unchanged(self):
+        addon = ET.parse(ROOT / "src" / "plugin.video.xtreammate" / "addon.xml").getroot()
+>       self.assertEqual(addon.get("version"), "0.1.29.96")
+E       AssertionError: '0.1.29.97' != '0.1.29.96'
+E       - 0.1.29.97
+E       ?         ^
+E       + 0.1.29.96
+E       ?         ^
+
+tests/test_gsmedia_repo_180.py:72: AssertionError
+______ RepositoryLayoutTests.test_xtreammate_manifest_and_remote_service _______
+
+self = <test_repository_layout.RepositoryLayoutTests testMethod=test_xtreammate_manifest_and_remote_service>
+
+    def test_xtreammate_manifest_and_remote_service(self):
+        addon_dir = SRC / "plugin.video.xtreammate"
+        addon = ET.parse(addon_dir / "addon.xml").getroot()
+        self.assertEqual(addon.get("id"), "plugin.video.xtreammate")
+>       self.assertEqual(addon.get("version"), "0.1.29.96")
+E       AssertionError: '0.1.29.97' != '0.1.29.96'
+E       - 0.1.29.97
+E       ?         ^
+E       + 0.1.29.96
+E       ?         ^
+
+tests/test_repository_layout.py:41: AssertionError
+______________ XCMateBrandingTests.test_display_name_and_version _______________
+
+self = <test_xcmate_branding.XCMateBrandingTests testMethod=test_display_name_and_version>
+
+    def test_display_name_and_version(self):
+        addon=ET.parse(ROOT/"addon.xml").getroot()
+        self.assertEqual(addon.get("name"),"XCMate")
+>       self.assertEqual(addon.get("version"),"0.1.29.96")
+E       AssertionError: '0.1.29.97' != '0.1.29.96'
+E       - 0.1.29.97
+E       ?         ^
+E       + 0.1.29.96
+E       ?         ^
+
+tests/test_xcmate_branding.py:13: AssertionError
+_ IconContractTests.test_original_icon_bytes_dimensions_and_kodi_asset_reference _
+
+self = <test_xcmate_cumulative_02922.IconContractTests testMethod=test_original_icon_bytes_dimensions_and_kodi_asset_reference>
+
+    def test_original_icon_bytes_dimensions_and_kodi_asset_reference(self):
+        icon=ADDON/'icon.png';self.assertEqual(hashlib.sha256(icon.read_bytes()).hexdigest(),ICON_SHA)
+        with Image.open(icon) as image:self.assertEqual(image.size,(512,512));image.verify()
+        addon=ET.parse(ADDON/'addon.xml').getroot()
+        self.assertEqual(addon.get('id'),'plugin.video.xtreammate')
+>       self.assertEqual(addon.get('version'),'0.1.29.96')
+E       AssertionError: '0.1.29.97' != '0.1.29.96'
+E       - 0.1.29.97
+E       ?         ^
+E       + 0.1.29.96
+E       ?         ^
+
+tests/test_xcmate_cumulative_02922.py:27: AssertionError
+_ Release96.test_current_zip_is_reproducible_crc_clean_and_matches_all_source_bytes _
+
+self = <test_release_candidate96.Release96 testMethod=test_current_zip_is_reproducible_crc_clean_and_matches_all_source_bytes>
+
+    def test_current_zip_is_reproducible_crc_clean_and_matches_all_source_bytes(self):
+        import release_candidate96 as candidate
+        from package_xcmate71 import build
+        original = ROOT/'docs/XCMate/test-builds/02996'/candidate.NAME
+        with tempfile.TemporaryDirectory() as folder:
+            proof = build(folder)
+>           self.assertEqual(proof, candidate.inspect_package(original))
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_release_candidate96.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/tmp/xcmate-02998-ci-pilot-rc/docs/XCMate/test-builds/02996/plugin.video.xtreammate-0.1.29.96.zip')
+
+    def inspect_package(path):
+        """Every member must equal current source; reject extras and unsafe names."""
+        raw = Path(path).read_bytes()
+        source = ROOT/'src'/ADDON
+        expected = {ADDON+'/'+p.relative_to(source).as_posix(): sha(p.read_bytes())
+                    for p in source.rglob('*')
+                    if p.is_file() and '__pycache__' not in p.parts and p.name != '.DS_Store'}
+        with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+            names = archive.namelist()
+            if len(names) != len(set(names)) or set(names) != set(expected):
+>               raise ValueError('RC96_FILE_SET')
+E               ValueError: RC96_FILE_SET
+
+tools/release_candidate96.py:41: ValueError
+_____ Release96.test_review_package_never_stages_or_authorizes_any_channel _____
+
+self = <test_release_candidate96.Release96 testMethod=test_review_package_never_stages_or_authorizes_any_channel>
+
+    def test_review_package_never_stages_or_authorizes_any_channel(self):
+        import release_candidate96 as candidate
+        before = candidate.frozen()
+        with tempfile.TemporaryDirectory() as folder:
+>           proof = candidate.stage(folder)
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_release_candidate96.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+output = PosixPath('/tmp/tmp536_g235')
+
+    def stage(output):
+        """Write only canonical ZIP, SHA256 sidecar and review plan."""
+        from package_xcmate71 import build
+        output = safe_output(output)
+        before = frozen()
+        if before != baseline_frozen():
+            raise ValueError('RC96_LIVE_CHANNEL_CHANGED')
+        manifest = E.parse(ROOT/'src'/ADDON/'addon.xml').getroot()
+        if (manifest.get('id'), manifest.get('version')) != (ADDON, VERSION):
+>           raise ValueError('RC96_MANIFEST')
+E           ValueError: RC96_MANIFEST
+
+tools/release_candidate96.py:120: ValueError
+=========================== short test summary info ============================
+FAILED tests/test_gsmedia_repo_180.py::GsMediaRepo180Tests::test_xcmate_release_unchanged
+FAILED tests/test_repository_layout.py::RepositoryLayoutTests::test_xtreammate_manifest_and_remote_service
+FAILED tests/test_xcmate_branding.py::XCMateBrandingTests::test_display_name_and_version
+FAILED tests/test_xcmate_cumulative_02922.py::IconContractTests::test_original_icon_bytes_dimensions_and_kodi_asset_reference
+FAILED tests/test_release_candidate96.py::Release96::test_current_zip_is_reproducible_crc_clean_and_matches_all_source_bytes
+FAILED tests/test_release_candidate96.py::Release96::test_review_package_never_stages_or_authorizes_any_channel
+6 failed in 2.95s

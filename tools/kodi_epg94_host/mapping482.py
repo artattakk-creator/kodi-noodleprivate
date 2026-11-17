@@ -34,12 +34,14 @@ def mapping_shot98(child,cid,name):
  before98=mapping_focus98(child,cid)
  file98=shot(name)
  after98=read_mapping_focus98(child,cid)
- assert before98==after98,'MAPPING98_FOCUS_CHANGED_DURING_SCREENSHOT'
+ assert before98 and after98 and before98==after98,'MAPPING98_FOCUS_CHANGED_DURING_SCREENSHOT'
  return file98,after98
 
 def select_control482(child,cid):
- mapping_focus98(child,cid)
+ before98=mapping_focus98(child,cid)
  xbmc.sleep(150)  # Wait for the enabled/focus GUI frame before posting IR OK.
+ after98=read_mapping_focus98(child,cid)
+ assert before98 and after98 and before98==after98,'MAPPING98_INPUT_FOCUS_NOT_STABLE'
  xbmc.executebuiltin('Action(Select)',wait=False)
 
 for kind482 in ('mini','grid'):

@@ -5,6 +5,8 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
 concurrency:
   group: xcmate98-${{ github.head_ref || github.ref }}-${{ github.sha }}
   cancel-in-progress: true

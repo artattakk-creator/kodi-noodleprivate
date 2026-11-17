@@ -34,6 +34,28 @@ class Fixture98(unittest.TestCase):
   with self.assertRaisesRegex(AssertionError,'FOCUS_CHANGED_DURING_SCREENSHOT'):
    namespace['mapping_shot98'](object(),200,'frame')
   focus.assert_called_once();observe.assert_called_once()
+ def test_empty_receipts_cannot_be_counted_as_stable_focus(self):
+  import ast
+  source=ast.parse((HOST/'mapping482.py').read_text())
+  function=next(n for n in source.body if isinstance(n,ast.FunctionDef) and n.name=='mapping_shot98')
+  namespace=dict(mapping_focus98=lambda *a:None,read_mapping_focus98=lambda *a:None,shot=lambda name:name+'.png')
+  exec(compile(ast.Module(body=[function],type_ignores=[]),'native_mapping_observer','exec'),namespace)
+  with self.assertRaisesRegex(AssertionError,'FOCUS_CHANGED_DURING_SCREENSHOT'):
+   namespace['mapping_shot98'](object(),200,'frame')
+ def test_select_requires_valid_unchanged_top_dialog_focus_after_settle(self):
+  import ast,types
+  source=ast.parse((HOST/'mapping482.py').read_text())
+  function=next(n for n in source.body if isinstance(n,ast.FunctionDef) and n.name=='select_control482')
+  receipt=dict(dialog=13001,owner='mini',control=200)
+  for before,after in [(None,None),(receipt,None),(receipt,dict(dialog=13002,owner='grid',control=200)),(receipt,receipt)]:
+   with self.subTest(before=before,after=after):
+    execute=mock.Mock();namespace=dict(mapping_focus98=lambda *a:before,read_mapping_focus98=lambda *a:after,xbmc=types.SimpleNamespace(sleep=lambda ms:None,executebuiltin=execute))
+    exec(compile(ast.Module(body=[function],type_ignores=[]),'native_mapping_input','exec'),namespace)
+    if before and before==after:
+     namespace['select_control482'](object(),200);execute.assert_called_once_with('Action(Select)',wait=False)
+    else:
+     with self.assertRaisesRegex(AssertionError,'INPUT_FOCUS_NOT_STABLE'):namespace['select_control482'](object(),200)
+     execute.assert_not_called()
  def test_focus_receipt_requires_matching_owner_dialog_and_requested_control(self):
   helper=self.helper()
   self.assertEqual(helper.focus_receipt(13001,'mini',200,'mini',200),dict(dialog=13001,owner='mini',control=200))
