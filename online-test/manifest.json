@@ -336,31 +336,79 @@
     "android_status": "ANDROID_NOT_TESTED",
     "authorization_issue": 464,
     "bytes": 4734921,
-    "crc": "PASS",
-    "files": 886,
-    "installer_version_unchanged": "0.5.26",
-    "repository_released": true,
-    "sha256": "1eed4d84c1317190f1936883eee2d9393368117f5a1e84516605c8ba141beb3b",
-    "source_base": "459817b43fe59664acbcccc68a757ecd946a5839",
-    "source_bytes": "PASS",
-    "status": "USER_APPROVED_2026-11-15_PILOT_ONLY_FOR_ANDROID_TESTING",
-    "version": "0.1.29.95",
     "channels": [
       "pilot"
     ],
-    "user_approved_pilot_release": true,
-    "source_pr": 465,
-    "source_merged": false,
-    "source_commit": "1bc86a07affceaa3fe615ffe556b4f451bdd5589",
-    "source_documentation_commit": "c230fed998f4f2db0d9035068460cf26433e7ac4",
-    "pilot_zip": "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.95.zip",
-    "regular_channel_unchanged": true,
-    "neodark3_direct_unchanged": true,
+    "crc": "PASS",
+    "files": 886,
+    "installer_version_unchanged": "0.5.26",
     "known_open_qa": [
       "Physical Android RK3528/Kodi 21.3/EPGShare01 DE+AT still ANDROID_NOT_TESTED",
       "Historic 1080p poster test required one identical rerun; intermittent timing cause not proven",
       "P1 artwork RESERVE_BLOCKED and native MediaCodec issues remain out of .95 scope"
-    ]
+    ],
+    "neodark3_direct_unchanged": true,
+    "pilot_zip": "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.95.zip",
+    "regular_channel_unchanged": true,
+    "repository_released": true,
+    "sha256": "1eed4d84c1317190f1936883eee2d9393368117f5a1e84516605c8ba141beb3b",
+    "source_base": "459817b43fe59664acbcccc68a757ecd946a5839",
+    "source_bytes": "PASS",
+    "source_commit": "1bc86a07affceaa3fe615ffe556b4f451bdd5589",
+    "source_documentation_commit": "c230fed998f4f2db0d9035068460cf26433e7ac4",
+    "source_merged": false,
+    "source_pr": 465,
+    "status": "USER_APPROVED_2026-11-15_PILOT_ONLY_FOR_ANDROID_TESTING",
+    "user_approved_pilot_release": true,
+    "version": "0.1.29.95"
+  },
+  "xcmate96": {
+    "android_status": "ANDROID_NOT_TESTED",
+    "authorization": "USER_REQUEST_2026-11-16_BUILD_REPOSITORY_PILOT_UPDATE_ONLY",
+    "bytes": 4764280,
+    "channels": [
+      "pilot"
+    ],
+    "crc": "PASS",
+    "files": 899,
+    "host_ci": {
+      "pytest_pass": 4153,
+      "source_commit": "36df57c82d4036a7820a46f36ce141247201091f",
+      "unittest_pass": 4142,
+      "workflow_failure": 0,
+      "workflow_success": 17
+    },
+    "installer_version_unchanged": "0.5.26",
+    "neodark3_direct_unchanged": true,
+    "pilot_zip": "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.96.zip",
+    "regular_channel_unchanged": true,
+    "repository_released": true,
+    "sha256": "249d7908d83cf7808d950e938e572fc046c2b0fc767aeebd3195b18b87b9d740",
+    "source_merged": false,
+    "source_pr": 471,
+    "status": "USER_APPROVED_PILOT_ONLY_HOST_NATIVE_PASS_ANDROID_NOT_TESTED",
+    "user_approved_pilot_release": true,
+    "version": "0.1.29.96"
+  },
+  "xcmate97": {
+    "addon_id": "plugin.video.xtreammate",
+    "android_status": "ANDROID_NOT_TESTED",
+    "bytes": 4767236,
+    "channels": [
+      "pilot"
+    ],
+    "files": 899,
+    "installer_version_unchanged": "0.5.26",
+    "neodark3_direct_unchanged": true,
+    "pilot_zip": "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.97.zip",
+    "regular_channel_unchanged": true,
+    "sha256": "f2853e4432b59f3ba81f3aec630401492fe8d1d8f17de3d9612999b5cf13b6ad",
+    "source_commit": "bc06f521d23ee5c1e6c9aaca456c2b3cc062f3fc",
+    "source_pr": 478,
+    "status": "PILOT_ONLY_HOST_NATIVE_PASS_ANDROID_NOT_TESTED",
+    "user_approved_pilot_release": true,
+    "user_approved_regular_release": false,
+    "version": "0.1.29.97"
   },
   "xcmate_02976": {
     "addon": "plugin.video.xtreammate",
@@ -493,33 +541,5 @@
     "script.module.resolveurl": "28fb6b2340eccfb1337ba4421b6429aa1c8f2978834853d1229b42b2a947bc59",
     "script.module.resolveurl.xxx": "d8bceeae5d492cfa111843cdf71f8681f0c9050fbc0fdd2952f77afe49ea30d5",
     "script.skinshortcuts": "865ee5ea5bf0accee27b82539caabce1c8a9fbb8f94b2900fe5ace4f82c80b23"
-  },
-  "xcmate96": {
-    "android_status": "ANDROID_NOT_TESTED",
-    "authorization": "USER_REQUEST_2026-11-16_BUILD_REPOSITORY_PILOT_UPDATE_ONLY",
-    "bytes": 4764280,
-    "channels": [
-      "pilot"
-    ],
-    "crc": "PASS",
-    "files": 899,
-    "installer_version_unchanged": "0.5.26",
-    "host_ci": {
-      "unittest_pass": 4142,
-      "pytest_pass": 4153,
-      "workflow_success": 17,
-      "workflow_failure": 0,
-      "source_commit": "36df57c82d4036a7820a46f36ce141247201091f"
-    },
-    "pilot_zip": "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.96.zip",
-    "regular_channel_unchanged": true,
-    "neodark3_direct_unchanged": true,
-    "repository_released": true,
-    "sha256": "249d7908d83cf7808d950e938e572fc046c2b0fc767aeebd3195b18b87b9d740",
-    "source_merged": false,
-    "source_pr": 471,
-    "status": "USER_APPROVED_PILOT_ONLY_HOST_NATIVE_PASS_ANDROID_NOT_TESTED",
-    "user_approved_pilot_release": true,
-    "version": "0.1.29.96"
   }
 }
