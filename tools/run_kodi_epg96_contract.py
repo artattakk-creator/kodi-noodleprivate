@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Isolated real Kodi 21 EPG96 owner and native directory contract, explicitly not Android."""
-import argparse,json,os,subprocess,tempfile,uuid,base64
+import argparse,json,os,subprocess,tempfile,uuid,base64,hashlib
 from pathlib import Path
 
 
@@ -44,6 +44,9 @@ def main():
                 for state in ('source','preview','busy'):
                     filename='epg482-'+state+'-'+kind+'.png'
                     run('cp',name+':/root/'+filename,str(report/filename))
+                    raw482=(report/filename).read_bytes()
+                    if len(raw482)<=2*1024*1024:
+                        print('PNG482 '+filename+' '+hashlib.sha256(raw482).hexdigest()+' '+base64.b64encode(raw482).decode(),flush=True)
         for name94 in ('epg94-downloading.png','epg94-completed.png'):
             run('cp',name+':/root/'+name94,str(report/name94))
             print('EPG94_SCREENSHOT '+name94+' '+base64.b64encode((report/name94).read_bytes()).decode(),flush=True)

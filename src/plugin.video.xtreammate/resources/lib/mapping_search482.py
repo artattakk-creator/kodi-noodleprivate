@@ -24,20 +24,34 @@ def failure(error):
     return 'SOURCE_UNAVAILABLE'
 
 
+_PREFIX=re.compile(r'^\s*[A-Za-z]{2}\s*[|:]\s*')
+_QUALITY=re.compile(r'(?:uhd|hevc|fhd|hd|sd|4k|8k)\s*$')
+_EINS=re.compile(r'\beins\b')
+_ASCII_OTHER=re.compile(r'[^a-z0-9+]')
+
+
 def normal(value):
-    text=re.sub(r'^\s*[A-Za-z]{2}\s*[|:]\s*','',str(value))
-    text=unicodedata.normalize('NFKD',text).casefold()
-    text=re.sub(r'(?:uhd|hevc|fhd|hd|sd|4k|8k)\s*$','',text)
-    text=re.sub(r'\beins\b','1',text)
-    return ''.join(c for c in text if c.isalnum() or c=='+')
+    text=str(value)
+    if '|' in text or ':' in text:text=_PREFIX.sub('',text)
+    text=text.casefold()
+    if not text.isascii():text=unicodedata.normalize('NFKD',text)
+    text=_QUALITY.sub('',text)
+    if 'eins' in text:text=_EINS.sub('1',text)
+    # C regex handles the common ASCII catalogue path; international letters
+    # retain the previous Unicode alphanumeric semantics.
+    return _ASCII_OTHER.sub('',text) if text.isascii() else ''.join(c for c in text if c.isalnum() or c=='+')
+
+
+def _matches(cid,name,query,wanted):
+    if not query:return True
+    if str(cid).casefold()==query:return True
+    name=normal(name)
+    if '+' in name and '+' not in wanted and name.split('+',1)[0]==wanted:return False
+    return bool(wanted and (wanted in name or wanted in normal(cid)))
 
 
 def matches(row,query):
-    if not query:return True
-    if str(row['id']).casefold()==query.casefold():return True
-    wanted=normal(query);name=normal(row.get('name',''))
-    if '+' in name and '+' not in wanted and name.split('+',1)[0]==wanted:return False
-    return bool(wanted and (wanted in name or wanted in normal(row['id'])))
+    return _matches(row['id'],row.get('name',''),query.casefold(),normal(query))
 
 
 def terms(query):
@@ -65,10 +79,11 @@ def search(pid,source,query='',offset=0):
                     # Apply the same normalizer before pagination. Raw-text SQL
                     # filtering loses accents/punctuation and can spend its cap
                     # on excluded +1 channels before the first valid result.
-                    db.create_function('mapping_match482',3,
-                        lambda cid,name,wanted:int(matches(dict(id=cid,name=name),wanted)),deterministic=True)
-                    rows=db.execute('SELECT cid,name FROM source_channels48 WHERE pid=? AND source_id=? AND mapping_match482(cid,name,?) ORDER BY cid LIMIT 100 OFFSET ?',
-                        (str(pid),source,str(query)[:160],max(0,int(offset))))
+                    query=str(query)[:160];folded=query.casefold();wanted=normal(query)
+                    db.create_function('mapping_match482',2,
+                        lambda cid,name:int(_matches(cid,name,folded,wanted)),deterministic=True)
+                    rows=db.execute('SELECT cid,name FROM source_channels48 WHERE pid=? AND source_id=? AND mapping_match482(cid,name) ORDER BY cid LIMIT 100 OFFSET ?',
+                        (str(pid),source,max(0,int(offset))))
                     return [dict(id=r[0],name=r[1],first=None,last=None) for r in rows]
             db.close();db=None
         db=connection()

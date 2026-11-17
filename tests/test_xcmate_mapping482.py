@@ -94,6 +94,13 @@ class Mapping482(unittest.TestCase):
         load.assert_not_called();self.assertFalse(self.d.previewed)
         self.assertIsNone(self.d._proof482)
 
+    def test_twenty_thousand_local_channels_reach_late_match_and_confirm_no_match(self):
+        rows=[('id%05d'%n,'Unrelated station %05d'%n) for n in range(19999)]+[('zz-valid','Kabel_1_HD')]
+        self.f.binding.stage_channels('p','large482',self.f.bid,rows)
+        self.f.binding.finish_channels('p','large482',True)
+        self.assertEqual([r['id'] for r in self.f.binding.channels('p',self.f.bid,'Kabel1HD',strict482=True)],['zz-valid'])
+        self.assertEqual(self.f.binding.channels('p',self.f.bid,'Nonexistent station',strict482=True),[])
+
     def test_excluded_timeshifts_do_not_hide_the_first_valid_local_match(self):
         rows=[('aa%04d'%n,'Kabel1+1') for n in range(400)]+[('zz-valid','Kabel Eins')]
         self.f.binding.stage_channels('p','shift482',self.f.bid,rows)
