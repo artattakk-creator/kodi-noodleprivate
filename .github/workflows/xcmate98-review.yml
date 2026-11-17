@@ -29,7 +29,7 @@ jobs:
         run: |
           python -m pytest -q tests/test_xcmate_artwork482.py tests/test_xcmate_mapping482.py tests/test_xcmate_issue474_save.py tests/test_xcmate_issue474_views.py tests/test_xcmate_mini_mapping_02996.py tests/test_xcmate_storage_logo_02996.py tests/test_xcmate_integration_02996.py tests/test_xcmate_art_status_02970.py tests/test_xcmate_p0_02959.py tests/test_xcmate_programme_art_02966.py
           python tools/validate_kodi_po.py
-          python -m pytest -q tests/test_release_candidate98.py tests/test_native_release98.py
+          python -m pytest -q tests/test_release_candidate98.py tests/test_native_release98.py tests/test_native_fixture98.py
           python tools/release_candidate98.py --output docs/XCMate/test-builds/02998
       - name: Full cumulative suite, including inherited historical release contracts
         env:
