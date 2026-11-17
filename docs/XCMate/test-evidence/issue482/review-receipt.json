@@ -1,0 +1,8 @@
+{
+  "artwork_agent_report": "artwork-qa-final.md",
+  "sha256": "49e3889ff4193fec00b39890231563cc7cf4e0b1d604cb771b6375cf4949e25b",
+  "verbatim": true,
+  "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+  "observer_commit": "835bea9901602284e38ac37ecb68bb51d5fe9e1f",
+  "android": "ANDROID_NOT_TESTED"
+}

@@ -36,19 +36,12 @@ def connection():
     return db
 
 
-def channels(pid,source,query='',offset=0):
-    named=named_channels(pid,source,query,offset)
-    if named:return named
-    db=connection()
-    if db is None:return []
-    try:
-        # No wildcard escaping ambiguity; instr treats user text literally.
-        values=db.execute('''SELECT DISTINCT cid FROM guide44_inputs
-          WHERE pid=? AND source_id=? AND instr(lower(cid),lower(?))>0
-          ORDER BY cid LIMIT 100 OFFSET ?''',(str(pid),source,str(query)[:160],max(0,int(offset)))).fetchall()
-        return [dict(id=r[0],name=r[0],first=None,last=None) for r in values]
-    except sqlite3.Error:return []
-    finally:db.close()
+def channels(pid,source,query='',offset=0,strict482=False):
+    from mapping_search482 import search,MappingReadError
+    try:return search(pid,source,str(query)[:160],offset)
+    except MappingReadError:
+        if strict482:raise
+        return []
 
 
 def read(db,pid,cid,source,start,stop,limit=48,strict=False):

@@ -1,0 +1,58 @@
+{
+  "720": [
+    {
+      "phase": "before_focus",
+      "window": 10000,
+      "dialog": 9999,
+      "focus": 3580,
+      "home50": false,
+      "pid_match": false,
+      "sid_match": false,
+      "token_length": 0,
+      "rail_visible": true,
+      "sideblade": false,
+      "bank_status": "READY"
+    },
+    {
+      "phase": "focus_ready",
+      "window": 10000,
+      "dialog": 9999,
+      "focus": 2510,
+      "home50": true,
+      "pid_match": true,
+      "sid_match": true,
+      "token_length": 32,
+      "rail_visible": true,
+      "sideblade": false,
+      "bank_status": "READY"
+    }
+  ],
+  "1080": [
+    {
+      "phase": "before_focus",
+      "window": 10000,
+      "dialog": 9999,
+      "focus": 3580,
+      "home50": false,
+      "pid_match": false,
+      "sid_match": false,
+      "token_length": 0,
+      "rail_visible": true,
+      "sideblade": false,
+      "bank_status": "READY"
+    },
+    {
+      "phase": "focus_ready",
+      "window": 10000,
+      "dialog": 9999,
+      "focus": 2510,
+      "home50": true,
+      "pid_match": true,
+      "sid_match": true,
+      "token_length": 32,
+      "rail_visible": true,
+      "sideblade": false,
+      "bank_status": "READY"
+    }
+  ]
+}

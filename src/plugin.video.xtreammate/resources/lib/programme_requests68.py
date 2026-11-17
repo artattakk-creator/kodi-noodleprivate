@@ -40,11 +40,16 @@ def _read(key):
 def request(event,priority=False):
  """A bounded intent only; callers already possess the displayed local event."""
  try:
-  if _window().getProperty('XCMate.Storage92.Disabled.'+__import__('epg_handoff63').profile_scope())=='true':return False
   if event.get('_no_art_request68') or not event.get('pid') or not event.get('sid') or not event.get('title'):return False
   if not 0<int(event['start'])<int(event['stop']):return False
   value={k:event[k] for k in _FIELDS if k in event}
   if any(isinstance(v,str) and len(v)>1024 for v in value.values()):return False
+  from programme_state482 import POLICY
+  profile=__import__('epg_handoff63').profile_scope()
+  if _window().getProperty('XCMate.Storage92.Disabled.'+profile)=='true':
+   reason=_window().getProperty('XCMate.Storage92.Reason.'+profile)
+   status(event,reason if reason in POLICY else 'IMAGE_EPG_DISABLED')
+   return False
   tag=identity(value);slot=str(int(tag[:8],16)%SLOTS)
   from programme_status70 import since
   prior70=_read('request.'+slot)
@@ -54,13 +59,16 @@ def request(event,priority=False):
   if len(raw.encode())>MAX_BYTES:return False
   marker=_window();key=PREFIX+'request.'+slot
   if marker.getProperty(key)!=raw:marker.setProperty(key,raw)
+  previous482=_read('status.'+slot)
+  if previous482.get('tag')==tag and previous482.get('scope')==scope() and previous482.get('code') in POLICY:
+   status(event,'REQUESTED')
   __import__('art_trace81').note(event,'QUEUED')
   return True
  except (ImportError,AttributeError,RuntimeError,ValueError,TypeError,KeyError,OverflowError):return False
 
 def trace(event,code):
  codes=set(__import__('programme_revision85').REASONS)|{'QUEUED','RUNNING','LOCAL_IMAGE_READY','IMAGE_READY','NOT_SCHEDULED','NO_MATCH','NO_ARTWORK','CACHE_MISS','CACHE_MISMATCH','DB_FULL','FETCH_FAILED','CANCELLED','HTTP_AUTH','HTTP_RATE_LIMIT','TIMEOUT','PROGRAMME_DB_UNAVAILABLE','CACHE_ERROR','CACHE_IO_ERROR','PROGRAMME_CACHE_BUDGET','TMDB_DISABLED','TMDB_TOKEN_MISSING','BLOCKED_IMAGE_HOST_OR_URL','NO_MATCH_AMBIGUOUS','HELPER_TIMEOUT','HELPER_BACKGROUND_UNAVAILABLE','NO_UNIQUE_MATCH','NO_IMAGE','NO_YEAR','NOT_CLASSIFIED_MOVIE','AWAITING_BACKGROUND_REFRESH','RESERVE_BLOCKED','DISK_FULL','BUDGET_FULL','IMAGE_URL_READY_RAM','IMAGE_URL_READY','SAFE_RESERVE_BLOCKED','REAL_ENOSPC','SQLITE_FULL_POLICY','SQLITE_FULL_STORAGE','SQLITE_FULL_UNKNOWN','SQLITE_BUSY_LOCKED','SQLITE_IO','EPG_READ_TIMEOUT','IMAGE_LOOKUP_TIMEOUT'}
- fixed=code if code in codes else 'FETCH_FAILED'
+ fixed=code if code in codes or code in __import__('programme_state482').ERRORS or code in ('REQUESTED','WAITING_SERVICE') else 'FETCH_FAILED'
  key=(identity(event),fixed);now=time.monotonic()
  with _lock:
   if now-_traces.get(key,-1e9)<60:return
@@ -138,7 +146,14 @@ def mark_seen(tag,policy,now):
 def drain(cancel=lambda:False):
  try:__import__('series_requests85').drain(cancel)
  except (OSError,ValueError,RuntimeError,AttributeError):pass
- if not __import__('storage_policy92').images_enabled():return 0
+ if not __import__('storage_policy92').images_enabled():
+  from programme_state482 import POLICY
+  reason=_window().getProperty('XCMate.Storage92.Reason.'+__import__('epg_handoff63').profile_scope())
+  for slot in range(SLOTS):
+   pending=_read('request.'+str(slot));event=pending.get('event')
+   if isinstance(event,dict) and pending.get('scope')==scope() and pending.get('tag')==identity(event) and 0<=time.time()-pending.get('at',0)<30:
+    status(event,reason if reason in POLICY else 'IMAGE_EPG_DISABLED')
+  return 0
  try:__import__('programme_reference84').tick(cancel)
  except (OSError,ValueError,RuntimeError,AttributeError):pass
  """Worker-only bounded intake, fair cyclic slots and authoritative re-read."""
@@ -221,9 +236,9 @@ def drain(cancel=lambda:False):
    mark_seen(tag,policy,now if accepted else now-8)
    processed+=1
    if processed>=9:_cursor=(slot+1)%SLOTS;break
-  except Exception:
+  except Exception as error482:
    # Keep private exceptions out of properties and public logs.
-   if isinstance(locals().get('event'),dict):status(event,'FETCH_FAILED')
+   if isinstance(locals().get('event'),dict):status(event,__import__('programme_state482').error(error482))
  else:_cursor=(_cursor+9)%SLOTS
  return processed
 

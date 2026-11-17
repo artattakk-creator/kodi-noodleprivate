@@ -432,6 +432,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         elif cid==313:self._show_groups()
 
     def _owner_tick(self):
+        if not self._ready:return  # Native show/onInit is asynchronous.
         if __import__('programme_lifecycle69').pulse(self):return
         if getattr(self,'_mapping_request48',False):
             from guide_mapping48 import open_pending

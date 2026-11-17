@@ -1,0 +1,142 @@
+[
+  {
+    "file": "artwork/720/visible84-foreign87-warm-1-7.png",
+    "bytes": 34124,
+    "sha256": "882604a2f59fe306a03f1d0daa76a74b2c5465e05984996689aaf546814e3dbb",
+    "job_id": 134085602538,
+    "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+    "android": "ANDROID_NOT_TESTED",
+    "content": "synthetic; unmodified real native screenshot",
+    "status_mode": "healthy native source/transport/texture or independent widget"
+  },
+  {
+    "file": "artwork/720/visible84-hero86-final.png",
+    "bytes": 49445,
+    "sha256": "8d9ed37875a785ce0ee995518b049548777b86dc860a56b2f70e95b64d8e06a4",
+    "job_id": 134085602538,
+    "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+    "android": "ANDROID_NOT_TESTED",
+    "content": "synthetic; unmodified real native screenshot",
+    "status_mode": "healthy native source/transport/texture or independent widget"
+  },
+  {
+    "file": "artwork/720/visible84-status482-image_epg_disabled.png",
+    "bytes": 44596,
+    "sha256": "1fd98d855f46cc87e3dd2f032c7cb473722c431e28347916b816f70dd3030858",
+    "job_id": 134085602538,
+    "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+    "android": "ANDROID_NOT_TESTED",
+    "content": "synthetic; unmodified real native screenshot",
+    "status_mode": "injected producer state; no live account or consent mutation"
+  },
+  {
+    "file": "artwork/720/visible84-status482-requested.png",
+    "bytes": 43386,
+    "sha256": "00f503d5adcb469f5dfef58a342cf349d7e8360d02130b76e93f438b15b02d6e",
+    "job_id": 134085602538,
+    "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+    "android": "ANDROID_NOT_TESTED",
+    "content": "synthetic; unmodified real native screenshot",
+    "status_mode": "injected producer state; no live account or consent mutation"
+  },
+  {
+    "file": "artwork/720/visible84-status482-running.png",
+    "bytes": 42998,
+    "sha256": "1bf06e4ff517508b1ddf75a630654a9384ea9c62288392cdedb5d644bb3e67be",
+    "job_id": 134085602538,
+    "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+    "android": "ANDROID_NOT_TESTED",
+    "content": "synthetic; unmodified real native screenshot",
+    "status_mode": "injected producer state; no live account or consent mutation"
+  },
+  {
+    "file": "artwork/720/visible84-status482-settings_xml_invalid.png",
+    "bytes": 46776,
+    "sha256": "a46087e6f1b9b1f72500df7bc24162a7a484939fd6d6a487590d2b6b27f2614e",
+    "job_id": 134085602538,
+    "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+    "android": "ANDROID_NOT_TESTED",
+    "content": "synthetic; unmodified real native screenshot",
+    "status_mode": "injected producer state; no live account or consent mutation"
+  },
+  {
+    "file": "artwork/720/visible84-sticky88-305.png",
+    "bytes": 57797,
+    "sha256": "6414a39b4b74a7cdd4b9597568d96dd67b85f96c945c3f4533b4651164ce6948",
+    "job_id": 134085602538,
+    "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+    "android": "ANDROID_NOT_TESTED",
+    "content": "synthetic; unmodified real native screenshot",
+    "status_mode": "healthy native source/transport/texture or independent widget"
+  },
+  {
+    "file": "artwork/1080/visible84-foreign87-warm-1-7.png",
+    "bytes": 59786,
+    "sha256": "dcab742d0cded4cfe6db522d3aa31683cc2e88833bf9ddbe889b936782c2ff84",
+    "job_id": 134085602651,
+    "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+    "android": "ANDROID_NOT_TESTED",
+    "content": "synthetic; unmodified real native screenshot",
+    "status_mode": "healthy native source/transport/texture or independent widget"
+  },
+  {
+    "file": "artwork/1080/visible84-hero86-final.png",
+    "bytes": 76041,
+    "sha256": "674f7059392771d879e4ef0452791fc739e0775851b99f0e47126379834d9901",
+    "job_id": 134085602651,
+    "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+    "android": "ANDROID_NOT_TESTED",
+    "content": "synthetic; unmodified real native screenshot",
+    "status_mode": "healthy native source/transport/texture or independent widget"
+  },
+  {
+    "file": "artwork/1080/visible84-status482-image_epg_disabled.png",
+    "bytes": 68641,
+    "sha256": "ee67f4b2d15bb834053aa6cd41f2fc7557cd69ff5e32621b34f15cbae86d3b7a",
+    "job_id": 134085602651,
+    "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+    "android": "ANDROID_NOT_TESTED",
+    "content": "synthetic; unmodified real native screenshot",
+    "status_mode": "injected producer state; no live account or consent mutation"
+  },
+  {
+    "file": "artwork/1080/visible84-status482-requested.png",
+    "bytes": 66672,
+    "sha256": "047ced7fd65cf91095a25a474aea559db29b4c9341a9cd5210de0ebdb41e6ef4",
+    "job_id": 134085602651,
+    "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+    "android": "ANDROID_NOT_TESTED",
+    "content": "synthetic; unmodified real native screenshot",
+    "status_mode": "injected producer state; no live account or consent mutation"
+  },
+  {
+    "file": "artwork/1080/visible84-status482-running.png",
+    "bytes": 66019,
+    "sha256": "c894903f5c4e08568c51b498ea0d39dcd82e0a90f00f1c83713779d4d3f3b84b",
+    "job_id": 134085602651,
+    "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+    "android": "ANDROID_NOT_TESTED",
+    "content": "synthetic; unmodified real native screenshot",
+    "status_mode": "injected producer state; no live account or consent mutation"
+  },
+  {
+    "file": "artwork/1080/visible84-status482-settings_xml_invalid.png",
+    "bytes": 72393,
+    "sha256": "c1ee4f5fda02b188dbbaa583908628a243ac73da4b9c37240637ff25d4cca065",
+    "job_id": 134085602651,
+    "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+    "android": "ANDROID_NOT_TESTED",
+    "content": "synthetic; unmodified real native screenshot",
+    "status_mode": "injected producer state; no live account or consent mutation"
+  },
+  {
+    "file": "artwork/1080/visible84-sticky88-305.png",
+    "bytes": 97801,
+    "sha256": "e623e4fa62591e1015b4e1542136351a211a1865d676045cb91f66995eec606c",
+    "job_id": 134085602651,
+    "source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+    "android": "ANDROID_NOT_TESTED",
+    "content": "synthetic; unmodified real native screenshot",
+    "status_mode": "healthy native source/transport/texture or independent widget"
+  }
+]

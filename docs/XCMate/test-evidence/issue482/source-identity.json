@@ -1,0 +1,13 @@
+{
+  "host_source_commit": "38dbe103416c0040be0285be55f657c0dbe8dbd7",
+  "native_observer_commit": "835bea9901602284e38ac37ecb68bb51d5fe9e1f",
+  "trees": {
+    "src/plugin.video.xtreammate": "1a4f5db64e90e9ad62f66c1ea2688346968eb997",
+    "tests": "33ecdb311b1e6833d03aedbcbeadadee75fb2620"
+  },
+  "runtime_and_host_tests_identical": true,
+  "zip_sha256": "16c81e587cfe1739ae463ec69ba6d142ab75146e47c8273ae6a779ec750a1042",
+  "merge_authorized": false,
+  "publication_authorized": false,
+  "android": "ANDROID_NOT_TESTED"
+}

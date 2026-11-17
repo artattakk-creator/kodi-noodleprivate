@@ -487,10 +487,10 @@ def _run():
                         from programme_session69 import remember as failed69
                         value=failed69(event,dict(key=event['key'],code='IMAGE_LOOKUP_TIMEOUT',source='placeholder',image=event['placeholder'],until=time.time()+60))
                     completed(event,value)
-            except Exception:
+            except Exception as error482:
                 try:
                     from programme_session69 import remember as failed69
-                    value=failed69(event,dict(key=event['key'],code='FETCH_FAILED',source='placeholder',image=event['placeholder'],until=time.time()+60))
+                    value=failed69(event,dict(key=event['key'],code=__import__('programme_state482').error(error482),source='placeholder',image=event['placeholder'],until=time.time()+60))
                     completed(event,value)
                 except (NameError,AttributeError,RuntimeError):pass
         finally:

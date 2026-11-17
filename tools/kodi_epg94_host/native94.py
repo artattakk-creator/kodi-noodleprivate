@@ -195,6 +195,8 @@ try:
   epg_sources._write_all=write474;child.close();adapter.finish(False);snapshot.close()
  report['mapping474']=dict(native_dialog=True,parent='SYNTHETIC_MINI_ADAPTER_OWNER',save_cold_readback=True,
      actual_snapshot_applied=True,write_failure_kept_open=True,write_failure_preserved_bytes=True,android='ANDROID_NOT_TESTED')
+ if __import__('os').environ.get('XCMATE_MAPPING482')=='1':
+  exec(compile(Path('/work/mapping482.py').read_text(),'/work/mapping482.py','exec'),globals())
  Path('/root/epg94-finished.json').write_text(json.dumps(report,indent=2));print(json.dumps(report),flush=True)
 except BaseException:
  Path('/root/epg94-error.tmp').write_text(traceback.format_exc());Path('/root/epg94-error.tmp').replace('/root/epg94-error.txt');raise

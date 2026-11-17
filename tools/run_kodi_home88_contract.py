@@ -6,8 +6,15 @@ sys.path.insert(0,str(Path(__file__).resolve().parent))
 from run_kodi_home74_contract import SKIN_SHA,SKIN_URL
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--report-dir',type=Path,required=True);p.add_argument('--skin-archive',type=Path);p.add_argument('--resolution',default='1920x1080',choices=('1920x1080','1280x720'));a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--report-dir',type=Path,required=True);p.add_argument('--skin-archive',type=Path);p.add_argument('--resolution',default='1920x1080',choices=('1920x1080','1280x720'));p.add_argument('--addon-zip',type=Path);p.add_argument('--qa482',action='store_true');a=p.parse_args()
  root=Path(__file__).resolve().parents[1];report=a.report_dir.resolve();report.mkdir(parents=True,exist_ok=True)
+ addon482=root/'src/plugin.video.xtreammate'
+ if a.addon_zip:
+  from release_candidate96 import inspect_package
+  proof482=inspect_package(a.addon_zip);unpacked482=report/'exact-package';unpacked482.mkdir()
+  with zipfile.ZipFile(a.addon_zip) as candidate482:candidate482.extractall(unpacked482)
+  addon482=unpacked482/'plugin.video.xtreammate';(report/'package482.json').write_text(json.dumps(proof482,indent=2))
+ if a.qa482 and not a.addon_zip:raise ValueError('EXACT_REVIEW_ZIP_REQUIRED')
  archive=a.skin_archive or report/'skin.zip'
  if not archive.exists():
   import urllib.request
@@ -28,6 +35,14 @@ def main():
  base=root/'tools/kodi_home84_host'
  mounts=[(root/'tools/kodi_home74_host','/work'),(root/'src/plugin.video.xtreammate','/xcmate'),(pristine/'skin.titan.bingie.mod','/skin'),(candidate,'/candidate'),(root/'tools/kodi_home86_host/fixture86.py','/fixture84.py'),(base/'fixture84.py','/base_fixture84.py'),(root/'tools/kodi_home88_host/gui88.py','/work/gui66.py'),(root/'tools/kodi_home86_host/gui86.py','/base_gui86.py'),(root/'tools/kodi_home87_host/spec87.py','/spec87.py'),(root/'tools/kodi_home87_host/setup87.py','/setup87.py'),(root/'tools/kodi_home87_host/foreign87.py','/foreign87.py'),(base/'gui84.py','/base_gui84.py'),(root/'tools/kodi_home87_host/probe87.py','/work/probe.py'),(base/'probe84.py','/base_probe84.py'),(root/'tools/kodi_home86_host/tls86.py','/work/tls69.py'),(base/'skin84.py','/work/skin_fixture66.py'),(root/'tools/kodi_home74_host/skin_fixture66.py','/base_skin78.py'),(root/'tools/kodi_home78_host/skin_fixture78.py','/skin78.py'),(report/'start.sh','/work/start.sh')]
  mounts.extend([(root/'tools/kodi_home86_host/icons86.py','/icons86.py'),(root/'tools/kodi_home86_host/navigation86.py','/navigation86.py')])
+ mounts=[(addon482,target) if target=='/xcmate' else (source,target) for source,target in mounts]
+ if a.qa482:
+  gui482=(root/'tools/kodi_home88_host/gui88.py').read_text();anchor482="Path('/root/foreign87.json').write_text(json.dumps(report['foreign87'],indent=2))"
+  assert gui482.count(anchor482)==1,'QA482_INSERTION_CHANGED'
+  gui482=gui482.replace(anchor482,"if not cold:exec(compile(Path('/status482.py').read_text(),'/status482.py','exec'),globals())\n"+anchor482)
+  (report/'gui482.py').write_text(gui482)
+  mounts=[(report/'gui482.py',target) if target=='/work/gui66.py' else (source,target) for source,target in mounts]
+  mounts.extend([(root/'tools/kodi_home88_host/status482.py','/status482.py'),(root/'tools/kodi_home88_host/status_fixture482.py','/status_fixture482.py')])
  cmd=['run','-d','--name',name]
  for source,target in mounts:cmd+=['--mount','type=bind,src='+str(source)+',dst='+target+',readonly']
  cmd+=['-e','XCMATE_RES74='+a.resolution,'xcmate-kodi21-helper57-contract','sh','/work/start.sh']
@@ -36,7 +51,9 @@ def main():
   run(*cmd,stdout=subprocess.DEVNULL);print(name,flush=True)
   with (report/'probe.log').open('w') as log:run('exec',name,'python3','/work/probe.py',stdout=log,stderr=subprocess.STDOUT)
   copy('/root/visible84.json','visible84.json');copy('/root/foreign87.json','foreign87.json')
-  run('cp',str(root/'tools/kodi_home88_host/gui88.py'),name+':/root/post75.py');run('cp',str(root/'tools/kodi_home75_host/restart75.py'),name+':/root/restart75.py')
+  if a.qa482:
+   value482=json.loads((report/'visible84.json').read_text());assert value482['status482']['status']=='PASS' and value482['sticky88']['status']=='PASS'
+  run('cp',str(report/'gui482.py' if a.qa482 else root/'tools/kodi_home88_host/gui88.py'),name+':/root/post75.py');run('cp',str(root/'tools/kodi_home75_host/restart75.py'),name+':/root/restart75.py')
   run('exec',name,'touch','/root/tls79-off')
   for i in (1,2):
    run('exec',name,'rm','-f','/root/foreign87.json')
@@ -49,10 +66,10 @@ def main():
    files=json.loads(run('exec',name,'python3','-c',"import json;from pathlib import Path;print(json.dumps([str(p) for p in Path('/root').glob('visible84-*.png')]))",capture_output=True,text=True).stdout)
    for file in files:copy(file,Path(file).name)
   except (ValueError,subprocess.CalledProcessError):pass
-  for file in ('gui66-error.txt','post75-error.txt','tls69-requests.jsonl','visible84.json','texture84-debug.json','poster86-value.json','poster86-state.json','navigation86.json','icons86.json'):
+  for file in ('gui66-error.txt','post75-error.txt','tls69-requests.jsonl','visible84.json','texture84-debug.json','poster86-value.json','poster86-state.json','navigation86.json','icons86.json','status482-context.json'):
    subprocess.run(docker+['cp',name+':/root/'+file,str(report/file)],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
   subprocess.run(docker+['cp',name+':/root/.kodi/temp/kodi.log',str(report/'synthetic-kodi.log')],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-  for evidence86 in ('poster86-value.json','poster86-state.json','navigation86.json','icons86.json'):
+  for evidence86 in ('poster86-value.json','poster86-state.json','navigation86.json','icons86.json','status482-context.json'):
    target86=report/evidence86
    if target86.is_file():print(evidence86+' '+target86.read_text()[:6000],flush=True)
   synthetic86=report/'synthetic-kodi.log'
@@ -67,7 +84,8 @@ def main():
   # Synthetic screenshots only: make two actual native PNGs recoverable for
   # human review even when signed Actions artifact downloads are unavailable.
   import base64
-  for picture87 in ('visible84-hero86-final.png','visible84-foreign87-warm-1-7.png','visible84-sticky88-305.png'):
+  pictures482=('visible84-status482-requested.png','visible84-status482-running.png','visible84-status482-settings_xml_invalid.png','visible84-status482-image_epg_disabled.png','visible84-status482-failed.png') if a.qa482 else ()
+  for picture87 in ('visible84-hero86-final.png','visible84-foreign87-warm-1-7.png','visible84-sticky88-305.png')+pictures482:
    path87=report/picture87
    if path87.is_file() and path87.stat().st_size<=512*1024:
     raw87=path87.read_bytes();print('PNG87 '+picture87+' '+hashlib.sha256(raw87).hexdigest()+' '+base64.b64encode(raw87).decode(),flush=True)
