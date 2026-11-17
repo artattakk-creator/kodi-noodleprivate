@@ -24,7 +24,7 @@ Vor Aktivierung sind effektiver main-Branchschutz/Required Reviews und Release-E
 
 ## Abnahme dieser Struktur
 
-`python -m pip install PyYAML==6.0.2` installiert den YAML-Prüfer; `python -m unittest discover -s tests -p test_agent_workflow.py -v` prüft die echte Funktion/CLI gegen erlaubte, manipulierte und widerrufene Aufträge. `python tools/agent_workflow.py scope --base <40hex> --head <40hex>` meldet SCOPE_OK, REVIEW_REQUIRED oder BLOCKED; diese Zusatzprüfung ist kein Ersatz für serverseitige Regeln. Fachlicher Review wird gesondert durch einen nur lesenden Subagenten ausgeführt und dokumentiert.
+`python -m unittest discover -s tests -p test_agent_workflow.py -v` prüft die echte Funktion/CLI gegen erlaubte, manipulierte und widerrufene Aufträge. `python tools/agent_workflow.py scope --base <40hex> --head <40hex>` meldet SCOPE_OK, REVIEW_REQUIRED oder BLOCKED; diese Zusatzprüfung ist kein Ersatz für serverseitige Regeln. Fachlicher Review wird gesondert durch einen nur lesenden Subagenten ausgeführt und dokumentiert.
 
 ## Offizielle Referenzen
 
@@ -36,3 +36,5 @@ Vor Aktivierung sind effektiver main-Branchschutz/Required Reviews und Release-E
 ## Unabhängiger Review dieser Implementierung
 
 Read-only Agentenreview von ec5755e2 bis c5dbaa2 fand drei P2-Sicherheitslücken: zu enger PR-Trigger, fehlender Ursprung bei Git-Renames, nicht erfasste veröffentlichte Root-Repository-ZIPs. Jede wurde vor Korrektur real reproduziert (auch echter temporärer Git-Rename), dann korrigiert. Ergebnis der erweiterten Suite: 12 PASS. Review ersetzt weder serverseitige Schutzregeln noch Android-Abnahme.
+
+Der neue Review-Workflow ist JSON-kompatibles YAML und wird mit der Python-Standardbibliothek geprüft, damit bestehende Host-CIs kein zusätzliches YAML-Modul benötigen. Der zuerst ausgelöste alte main-Gesamtlauf zeigte zusätzlich vorhandene Archiv-/Releasebaseline-Abweichungen nach der Pilot96-Veröffentlichung; diese werden gesondert ausgewiesen, nicht durch veränderte Produktprüfungen verborgen.

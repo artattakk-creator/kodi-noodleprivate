@@ -6,7 +6,6 @@ import subprocess
 import sys
 import tempfile
 import fnmatch
-import yaml
 import unittest
 from tools import agent_workflow as workflow
 
@@ -80,7 +79,7 @@ class Scope(unittest.TestCase):
 
 class DeliveryBoundaries(unittest.TestCase):
  def test_policy_workflow_runs_for_product_and_protected_only_changes(self):
-  data=yaml.load(Path('.github/workflows/superpowers-review.yml').read_text(),Loader=yaml.BaseLoader)
+  data=json.loads(Path('.github/workflows/superpowers-review.yml').read_text())
   event=data['on']['pull_request']
   patterns=(event or {}).get('paths',['**'])
   for path in ('src/plugin.video.xtreammate/resources/lib/epg_binding48.py','addons.xml','online-test/index.html'):
