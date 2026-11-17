@@ -20,19 +20,20 @@ def toast_settled482():
   xbmc.sleep(50)
  raise AssertionError('MAPPING482_PRIOR_NOTIFICATION_NOT_SETTLED')
 
+def read_mapping_focus98(child,cid):
+ dialog98=xbmcgui.getCurrentWindowDialogId()
+ owner98=xbmcgui.Window(dialog98).getProperty('XCMate98.MappingOwner') if dialog98 else ''
+ return focus_receipt(dialog98,owner98,child.getFocusId(),kind482,cid)
+
 def mapping_focus98(child,cid):
  child.setFocusId(cid)
- def receipt98():
-  dialog98=xbmcgui.getCurrentWindowDialogId()
-  owner98=xbmcgui.Window(dialog98).getProperty('XCMate98.MappingOwner') if dialog98 else ''
-  return focus_receipt(dialog98,owner98,child.getFocusId(),kind482,cid)
- wait(receipt98,'MAPPING98_ACTUAL_DIALOG_FOCUS_NOT_READY')
- return receipt98()
+ wait(lambda:read_mapping_focus98(child,cid),'MAPPING98_ACTUAL_DIALOG_FOCUS_NOT_READY')
+ return read_mapping_focus98(child,cid)
 
 def mapping_shot98(child,cid,name):
  before98=mapping_focus98(child,cid)
  file98=shot(name)
- after98=mapping_focus98(child,cid)
+ after98=read_mapping_focus98(child,cid)
  assert before98==after98,'MAPPING98_FOCUS_CHANGED_DURING_SCREENSHOT'
  return file98,after98
 

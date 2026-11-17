@@ -5,7 +5,9 @@ def settle_fixture_prompt(rpc):
     if state['currentwindow']['id']!=10100 or state['currentcontrol']['label']!='No':return False
     labels=rpc('XBMC.GetInfoLabels',dict(labels=['Control.GetLabel('+str(i)+')' for i in range(1,31)]))
     if labels.get('Control.GetLabel(1)')!='Disabled add-ons':return False
-    if not any('Catalog73 synthetic GUI contract' in text for text in labels.values()):return False
+    expected='Would you like to enable this add-on? Catalog73 synthetic GUI contract'
+    normalized={' '.join(text.replace('[CR]',' ').split()) for text in labels.values()}
+    if expected not in normalized:return False
     # Decline only this known disposable fixture's delayed enable prompt.
     # Foreign dialogs and user configuration are never touched.
     rpc('Input.Select')

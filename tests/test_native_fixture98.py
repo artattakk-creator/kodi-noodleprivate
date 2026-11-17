@@ -19,10 +19,21 @@ class Fixture98(unittest.TestCase):
     self.fail(method)
    rpc=mock.Mock(side_effect=answer);result=helper.settle_fixture_prompt(rpc)
    return result,[c for c in rpc.call_args_list if c.args[0]=='Input.Select']
-  for body,window,heading,control in [('Another installed add-on',10100,'Disabled add-ons','No'),('Catalog73 synthetic GUI contract',12000,'Select','No'),('Catalog73 synthetic GUI contract',10100,'Delete profile?','No'),('Catalog73 synthetic GUI contract',10100,'Disabled add-ons','Yes')]:
+  for body,window,heading,control in [('Would you like to enable this add-on? Foreign add-on referencing Catalog73 synthetic GUI contract',10100,'Disabled add-ons','No'),('Another installed add-on',10100,'Disabled add-ons','No'),('Catalog73 synthetic GUI contract',12000,'Select','No'),('Catalog73 synthetic GUI contract',10100,'Delete profile?','No'),('Catalog73 synthetic GUI contract',10100,'Disabled add-ons','Yes')]:
    with self.subTest(body=body,window=window,heading=heading):self.assertEqual(invoke(body,window,heading,control),(False,[]))
   result,calls=invoke('Would you like to enable this add-on? Catalog73 synthetic GUI contract')
   self.assertTrue(result);self.assertEqual(len(calls),1)
+ def test_post_screenshot_receipt_observes_focus_loss_without_resetting_it(self):
+  import ast
+  source=ast.parse((HOST/'mapping482.py').read_text())
+  function=next(n for n in source.body if isinstance(n,ast.FunctionDef) and n.name=='mapping_shot98')
+  receipt=dict(dialog=13001,owner='mini',control=200)
+  focus=mock.Mock(return_value=receipt);observe=mock.Mock(return_value=None)
+  namespace=dict(mapping_focus98=focus,read_mapping_focus98=observe,shot=lambda name:name+'.png')
+  exec(compile(ast.Module(body=[function],type_ignores=[]),'native_mapping_observer','exec'),namespace)
+  with self.assertRaisesRegex(AssertionError,'FOCUS_CHANGED_DURING_SCREENSHOT'):
+   namespace['mapping_shot98'](object(),200,'frame')
+  focus.assert_called_once();observe.assert_called_once()
  def test_focus_receipt_requires_matching_owner_dialog_and_requested_control(self):
   helper=self.helper()
   self.assertEqual(helper.focus_receipt(13001,'mini',200,'mini',200),dict(dialog=13001,owner='mini',control=200))
