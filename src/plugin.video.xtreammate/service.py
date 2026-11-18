@@ -151,7 +151,10 @@ class IPTVMasterService(xbmc.Monitor):
         except (OSError,RuntimeError,ValueError):pass
         diagnostic('service','STARTED',running=True,count=loops,build=SERVICE_BUILD)
         note(marker, LAST_ERROR, 'keine gemeldet')
-        while not self.abortRequested():
+        from settings_rebuild99 import pending as rebuild_pending
+        from settings_rebuild99_ui import profile as rebuild_profile
+        settings_profile = rebuild_profile()
+        while not self.abortRequested() and not rebuild_pending(settings_profile):
             loops += 1
             heartbeat(marker, instance, loops, phase='läuft')
             if time.monotonic()>=next_input_flush:
@@ -425,6 +428,9 @@ class IPTVMasterService(xbmc.Monitor):
 
 
 def start():
+    from settings_rebuild99_ui import preflight as rebuild_preflight
+    if rebuild_preflight():
+        return
     from artwork_config import initialize
     try:initialize()
     except OSError:pass

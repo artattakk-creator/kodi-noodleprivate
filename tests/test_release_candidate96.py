@@ -17,10 +17,12 @@ sys.path.insert(0, str(ROOT/'tools'))
 class Release96(unittest.TestCase):
     def test_entire_runtime_matches_reviewed_delta_and_no_unknown_edit_is_admitted(self):
         from stabilization_contract96 import delta96, runtime_without96, without96, baseline_runtime
+        from stabilization_contract99 import runtime_without99
         delta = delta96()
         current = {'src/plugin.video.xtreammate/'+p.relative_to(ROOT/'src/plugin.video.xtreammate').as_posix(): p.read_bytes()
                    for p in (ROOT/'src/plugin.video.xtreammate').rglob('*')
                    if p.is_file() and '__pycache__' not in p.parts and p.name != '.DS_Store'}
+        current = runtime_without99(current)
         baseline = baseline_runtime()
         self.assertEqual(set(current), set(baseline)|set(delta['added']))
         for name, change in delta['modules'].items():

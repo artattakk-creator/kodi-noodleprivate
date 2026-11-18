@@ -1,0 +1,214 @@
+{
+  "added": {
+    "src/plugin.video.xtreammate/resources/lib/settings_rebuild99.py": "1c8b9bf85185f10843947b9e3f1efe9f28acbeaf05a5931ea6c52814bfbdbcda",
+    "src/plugin.video.xtreammate/resources/lib/settings_rebuild99_ui.py": "ba35cde8daeed5add72389c5f4bc044634636806a7468e0d3eb7ce2475e9e660"
+  },
+  "base": "81bd2ad0c9c5f2d49de47c693d363a686f886111",
+  "changed": {
+    "src/plugin.video.xtreammate/addon.xml": {
+      "new_sha256": "c5e03762f536ec4f6f002d3938a920c70e1f0dabcc47fdc3479b5f1f64c9ed0d",
+      "old_sha256": "40d43939b4d38937b7b7fec71f72f7d309dda5927064f42deda959414a7b9ab6",
+      "undo_edits": [
+        [
+          3,
+          4,
+          [
+            "       version=\"0.1.29.98\"\n"
+          ]
+        ],
+        [
+          40,
+          41,
+          [
+            "    <news>0.1.29.98: Bildabruf- und EPG-Zuweisungsfix aus PR #484 erhalten. Aktuelle Releasevertraege und historische Paketpruefungen getrennt; vollstaendige CI und unveroeffentlichter Pilot-Testkandidat. Zugangsdaten, Zuordnungen und Einstellungen bleiben erhalten.</news>\n"
+          ]
+        ]
+      ]
+    },
+    "src/plugin.video.xtreammate/default.py": {
+      "new_sha256": "a0ab76887af0ea28f4b24e9b6b3c037d2390a803e0e205f8fd5bd0f8bb6a7672",
+      "old_sha256": "4ff05d68be7f17fd22416cf55d46d92463ee94fb737a2e727cc2f7bcbbbf3ab3",
+      "undo_edits": [
+        [
+          17,
+          23,
+          []
+        ]
+      ]
+    },
+    "src/plugin.video.xtreammate/resources/language/resource.language.de_de/strings.po": {
+      "new_sha256": "06ba9a4924076fe81180c1ed3e2ad4a6693729d7f7ac8dc3a08a5fe88597c71c",
+      "old_sha256": "d63cd3bdbc08bad9a53aed220d6daf033e19ec6ccfb7225ef7e40130c7c25530",
+      "undo_edits": [
+        [
+          6073,
+          6121,
+          []
+        ]
+      ]
+    },
+    "src/plugin.video.xtreammate/resources/language/resource.language.en_gb/strings.po": {
+      "new_sha256": "7e8c4824d53e36ea95f8dadfd10ca7c1095262e32790d36a747a0d1ebf11495a",
+      "old_sha256": "8e60e24ee6c66609c189be5f97e39cb1fd926f1411b261c0c4a1037a187de45e",
+      "undo_edits": [
+        [
+          6073,
+          6121,
+          []
+        ]
+      ]
+    },
+    "src/plugin.video.xtreammate/resources/lib/artwork_hub96.py": {
+      "new_sha256": "59c5ed7abb0ece609e95a207f4b762d23affe5d31430a4a5f88f9a4df57ad7c3",
+      "old_sha256": "77cd1ede60cca27f5378f65fff30d9ac64e98a10a26c8b2e85dbfdcabbf42a95",
+      "undo_edits": [
+        [
+          20,
+          21,
+          []
+        ],
+        [
+          25,
+          26,
+          [
+            "  labels=['XMLTV: '+state('xmltv'),'TMDB: '+state('tmdb'),'TVMaze: '+state('tvmaze'),tr(39005),tr(39006),tr(39007),tr(39008),tr(39009),tr(39010),tr(39011),tr(39029),tr(36012)]\n"
+          ]
+        ],
+        [
+          27,
+          28,
+          [
+            "  if not isinstance(action,int) or not 0<=action<11:return\n"
+          ]
+        ],
+        [
+          29,
+          32,
+          []
+        ]
+      ]
+    },
+    "src/plugin.video.xtreammate/resources/lib/cinematic_images96.py": {
+      "new_sha256": "3a68f16e11f7b7ed8d89238c3fb9a3d257542aebf3ed8f3b9ef9637903d2b5c5",
+      "old_sha256": "8a3c7af53e78f48be8bcb6fd04825dc10ddb1cbdf7e72594028e98fa8a2a63d1",
+      "undo_edits": [
+        [
+          82,
+          85,
+          [
+            " return dict(value,url=best['url'],role81='backdrop',vote_average88=best['vote_average88'],vote_count88=best['vote_count88'],cinematic_backdrops96=ranked,alternate_urls57=[r['url'] for r in ranked[1:]])\n"
+          ]
+        ],
+        [
+          87,
+          89,
+          [
+            "def alternatives(value):\n",
+            " \"\"\"Each ranked URL retains its work proof, source and typed backdrop role.\"\"\"\n"
+          ]
+        ],
+        [
+          92,
+          100,
+          [
+            " return [dict(value,url=row['url'],role81='backdrop',vote_average88=row['vote_average88'],vote_count88=row['vote_count88']) for row in rows[:MAX_BACKDROPS]]\n"
+          ]
+        ]
+      ]
+    },
+    "src/plugin.video.xtreammate/resources/lib/programme_art46.py": {
+      "new_sha256": "aa2a731b2e413a4734c6bc13f8b3009a2b1396205fa3ecb523646b0282f5f288",
+      "old_sha256": "783d35bb9c8acab3160aa0bd6cf8d775b874158d82a0f596b8b7c602d69c2dde",
+      "undo_edits": [
+        [
+          175,
+          178,
+          [
+            "  if resolved60 is not None:candidates=[resolved60]\n"
+          ]
+        ]
+      ]
+    },
+    "src/plugin.video.xtreammate/resources/lib/programme_consent77.py": {
+      "new_sha256": "3eb9a3efdb692f1c5b87f6ec10afb32d99c2575ae0a7422c81573ed0dcc2feb5",
+      "old_sha256": "d22410dc3b99e33bb002c16e3365115d96f95277df4add9aa2461dbd74868451",
+      "undo_edits": [
+        [
+          32,
+          34,
+          [
+            "    from settings_guard96 import snapshot\n"
+          ]
+        ]
+      ]
+    },
+    "src/plugin.video.xtreammate/resources/lib/settings_guard96.py": {
+      "new_sha256": "10958180ea08400fddf8545ccaf88f9374f52c599da5270bd5f3e86a2cbc075a",
+      "old_sha256": "c45f6f4eb0e3390a8f4276a75c0f1021364fb21e5d9b32de92cab56bb31f0c9f",
+      "undo_edits": [
+        [
+          51,
+          55,
+          []
+        ],
+        [
+          96,
+          97,
+          []
+        ],
+        [
+          128,
+          129,
+          []
+        ]
+      ]
+    },
+    "src/plugin.video.xtreammate/resources/lib/tmdb_token61.py": {
+      "new_sha256": "b3d417164a277121baa81fec7772142e99858c98259b6ef2ae08a2b54e3fc43d",
+      "old_sha256": "6f0811df419bfca476b5dd7e0368da8297a45b92c95ce4f9a90c80728c2f8c9a",
+      "undo_edits": [
+        [
+          111,
+          112,
+          [
+            "    from utils import setting\n"
+          ]
+        ],
+        [
+          113,
+          115,
+          []
+        ]
+      ]
+    },
+    "src/plugin.video.xtreammate/resources/settings.xml": {
+      "new_sha256": "eb3d6e9dd3c1f13a6b8385882b643741bda0de7c15aaeaeb72c6f51f808610e6",
+      "old_sha256": "b52936cd1cf47e4db79b1b38435bf2260ad3ebe2572221bedd3d7b084a8346f1",
+      "undo_edits": [
+        [
+          37,
+          39,
+          []
+        ]
+      ]
+    },
+    "src/plugin.video.xtreammate/service.py": {
+      "new_sha256": "f24a0c8b1bfa6f6e7605587eef568c3eca03bb06457e27b1c8509f4f465ed5f4",
+      "old_sha256": "2938c85e9a3278aff26624cecb5c9bb1505d714134386316bfa1c38b796436e5",
+      "undo_edits": [
+        [
+          153,
+          157,
+          [
+            "        while not self.abortRequested():\n"
+          ]
+        ],
+        [
+          430,
+          433,
+          []
+        ]
+      ]
+    }
+  }
+}

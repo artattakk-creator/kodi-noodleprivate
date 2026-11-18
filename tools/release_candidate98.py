@@ -1,5 +1,6 @@
 """Build/verify the .98 review ZIP and proof; never stage a live-channel overlay."""
 import argparse
+from functools import lru_cache
 import hashlib
 import fnmatch
 import io
@@ -8,14 +9,14 @@ import json
 from pathlib import Path
 import subprocess
 import tarfile
-import zipfile
-import xml.etree.ElementTree as E
+import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 ADDON = 'plugin.video.xtreammate'
 VERSION = '0.1.29.98'
 NAME = ADDON+'-'+VERSION+'.zip'
 BASE = 'eb6c0857e4cb3abf20ffb94a0ed31e48b7daf59a'
+SOURCE_COMMIT = 'c5ecd2ea69bb84e648cae9433d250613dceff46e'
 PUBLICATION_PATHS = ('addons.xml', 'addons.xml.md5', 'index.html',
     'online-test', 'plugin.video.xtreammate', 'plugin.video.noodleprivate',
     'repository-programme', 'repository.gsmedia', 'script.gsmedia.setup',
@@ -29,29 +30,31 @@ def sha(raw):
     return hashlib.sha256(raw).hexdigest()
 
 
+@lru_cache(maxsize=1)
+def source98():
+    """Read the original .98 source from its immutable Git tree."""
+    source = 'src/'+ADDON
+    raw = subprocess.check_output(['git', 'archive', SOURCE_COMMIT, '--', source], cwd=ROOT)
+    with tarfile.open(fileobj=io.BytesIO(raw)) as archive:
+        return {member.name.removeprefix('src/'): archive.extractfile(member).read()
+                for member in archive if member.isfile() and '__pycache__' not in Path(member.name).parts
+                and Path(member.name).name != '.DS_Store'}
+
+
 def inspect_package(path):
-    """Every member must equal current source; reject extras and unsafe names."""
-    raw = Path(path).read_bytes()
-    source = ROOT/'src'/ADDON
-    expected = {ADDON+'/'+p.relative_to(source).as_posix(): sha(p.read_bytes())
-                for p in source.rglob('*')
-                if p.is_file() and '__pycache__' not in p.parts and p.name != '.DS_Store'}
-    with zipfile.ZipFile(io.BytesIO(raw)) as archive:
-        names = archive.namelist()
-        if len(names) != len(set(names)) or set(names) != set(expected):
-            raise ValueError('RC98_FILE_SET')
-        if archive.testzip() is not None:
-            raise ValueError('RC98_CRC')
-        for name in names:
-            if (Path(name).is_absolute() or '..' in Path(name).parts
-                    or name.endswith(('.db', '.sqlite', '.db-wal', '.db-shm', '.sqlite-wal', '.sqlite-shm', '.log', '.pyc', '.pyo'))):
-                raise ValueError('RC98_PRIVATE_OR_UNSAFE_MEMBER')
-            if sha(archive.read(name)) != expected[name]:
-                raise ValueError('RC98_SOURCE_BYTES')
-        node = E.fromstring(archive.read(ADDON+'/addon.xml'))
-        if (node.get('id'), node.get('version')) != (ADDON, VERSION):
-            raise ValueError('RC98_MANIFEST')
-    return dict(version=VERSION, sha256=sha(raw), bytes=len(raw), files=len(names), crc='PASS', source_bytes='PASS')
+    from package_xcmate71 import inspect_package as inspect_zip
+    expected = {name: sha(raw) for name, raw in source98().items()}
+    return inspect_zip(path, expected, VERSION, 'RC98')
+
+
+def build_historical(output):
+    from package_xcmate71 import build
+    with tempfile.TemporaryDirectory(prefix='xcmate98-source-') as folder:
+        for name, raw in source98().items():
+            target = Path(folder)/name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(raw)
+        return build(output, source=Path(folder)/ADDON)
 
 
 def historical_input(name, raw):
@@ -64,9 +67,9 @@ def historical_input(name, raw):
     return read_archived(ROOT, name) == raw
 
 
-def frozen():
+def frozen(paths=PUBLICATION_PATHS):
     result = {}
-    for name in PUBLICATION_PATHS:
+    for name in paths:
         root = ROOT/name
         if root.is_file():
             result[name] = sha(root.read_bytes())
@@ -81,13 +84,13 @@ def frozen():
     return result
 
 
-def baseline_frozen():
+def baseline_frozen(base=BASE, paths=PUBLICATION_PATHS):
     # Some protected namespaces do not exist in this baseline; a later
     # untracked addition there still appears in frozen() and fails equality.
-    selected = subprocess.check_output(['git', 'ls-tree', '--name-only', BASE, '--', *PUBLICATION_PATHS], cwd=ROOT).decode().splitlines()
-    roots = subprocess.check_output(['git', 'ls-tree', '--name-only', BASE], cwd=ROOT).decode().splitlines()
+    selected = subprocess.check_output(['git', 'ls-tree', '--name-only', base, '--', *paths], cwd=ROOT).decode().splitlines()
+    roots = subprocess.check_output(['git', 'ls-tree', '--name-only', base], cwd=ROOT).decode().splitlines()
     selected += [name for name in roots if any(fnmatch.fnmatch(name, pattern) for pattern in PUBLICATION_ROOT_GLOBS)]
-    raw = subprocess.check_output(['git', 'archive', BASE, '--', *selected], cwd=ROOT)
+    raw = subprocess.check_output(['git', 'archive', base, '--', *selected], cwd=ROOT)
     with tarfile.open(fileobj=io.BytesIO(raw)) as archive:
         return {member.name: sha(archive.extractfile(member).read())
                 for member in archive if member.isfile()}
@@ -111,15 +114,11 @@ def safe_output(output):
 
 def stage(output):
     """Write only canonical ZIP, SHA256 sidecar and review plan."""
-    from package_xcmate71 import build
     output = safe_output(output)
     before = frozen()
     if before != baseline_frozen():
         raise ValueError('RC98_LIVE_CHANNEL_CHANGED')
-    manifest = E.parse(ROOT/'src'/ADDON/'addon.xml').getroot()
-    if (manifest.get('id'), manifest.get('version')) != (ADDON, VERSION):
-        raise ValueError('RC98_MANIFEST')
-    proof = build(output)
+    proof = build_historical(output)
     if proof != inspect_package(output/NAME):
         raise ValueError('RC98_BUILD_PROOF')
     plan = dict(version=VERSION, status='REVIEW_PACKAGE_ONLY', source_base=BASE,

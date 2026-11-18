@@ -62,8 +62,8 @@ class ArtworkMenus96(Fixture, unittest.TestCase):
         state = dict(settings='READY', xmltv=True, tmdb=True, tvmaze=True, token_valid=True, images_enabled=True)
         targets = ('artwork_sources96.choose', 'programme_diagnostic74.show', 'tmdb_connection60.launch',
                    'logo_editor96.manage', 'storage_artwork96.manage', 'settings_guard96.repair',
-                   'artwork_sources96.enroll_test_profile', 'manual_image96.manage')
-        for action in range(-1, 12):
+                   'artwork_sources96.enroll_test_profile', 'manual_image96.manage', 'settings_rebuild99_ui.confirm')
+        for action in range(-1, 13):
             with self.subTest(action=action):
                 actors = {}
                 with mock.patch('artwork_sources96.status', return_value=state), mock.patch.object(hub, 'onboarding', return_value=True):
@@ -79,7 +79,8 @@ class ArtworkMenus96(Fixture, unittest.TestCase):
                     actors[targets[0]].assert_called_once_with(('xmltv', 'tmdb', 'tvmaze')[action], False)
                 else:
                     actors[targets[0]].assert_not_called()
-                expected = {4: targets[1], 5: targets[2], 6: targets[3], 7: targets[4], 8: targets[5], 9: targets[6], 10: targets[7]}
+                expected = {4: targets[1], 5: targets[2], 6: targets[3], 7: targets[4], 8: targets[5],
+                            9: targets[6], 10: targets[7], 11: targets[8]}
                 for target in targets[1:]:
                     calls = 1 if target == expected.get(action) or action == 9 and target == targets[2] else 0
                     self.assertEqual(actors[target].call_count, calls, (action, target))
@@ -88,5 +89,5 @@ class ArtworkMenus96(Fixture, unittest.TestCase):
                     self.assertIn('TMDB:', self.dialog.ok.call_args.args[1])
                     self.assertIn('TVMaze:', self.dialog.ok.call_args.args[1])
                 rows = self.dialog.select.call_args_list[-1].args[1]
-                self.assertEqual(len(rows), 12)
+                self.assertEqual(len(rows), 13)
                 self.assertTrue(all(row.art.get('icon') for row in rows))

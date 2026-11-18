@@ -109,8 +109,10 @@ def publish_revision(code,token=''):
     # Persist only non-secret file identity. Kodi keeps this hidden setting in
     # its RAM settings cache and restores it before any Home directory runs.
     # Missing file: the original .60 legacy fingerprint stays byte-identical.
-    from utils import setting
+    from settings_guard96 import rebuild_pending
     import xbmcaddon
+    if rebuild_pending():
+        return
     value='' if code=='FILE_MISSING' else code+':'+hashlib.sha256(token.encode()).hexdigest()
     addon87=xbmcaddon.Addon('plugin.video.xtreammate')
     if addon87.getSetting('tmdb_token_revision61')!=value:

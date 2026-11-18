@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon id="plugin.video.xtreammate"
        name="XCMate"
-       version="0.1.29.98"
+       version="0.1.29.99"
        provider-name="GS Media">
 
   <requires>
@@ -38,7 +38,7 @@
     <forum>https://forum.kodi.tv</forum>
     <website>https://kodi.tv</website>
     <source>https://github.com/artattakk-creator/kodi-noodleprivate</source>
-    <news>0.1.29.98: Bildabruf- und EPG-Zuweisungsfix aus PR #484 erhalten. Aktuelle Releasevertraege und historische Paketpruefungen getrennt; vollstaendige CI und unveroeffentlichter Pilot-Testkandidat. Zugangsdaten, Zuordnungen und Einstellungen bleiben erhalten.</news>
+    <news>0.1.29.99: Einmaliger, bestätigter Wiederaufbau der Kodi-Einstellungen mit Originaldateisicherung und Prüfung nach Neustart. Hero-Bildfallback auf den bereits zugeordneten Backdrop wiederhergestellt. Separater Reparaturkandidat.</news>
     <assets>
       <icon>icon-81da1003a2753ec6.png</icon>
       <fanart>resources/media/lightweight_splash.jpg</fanart>

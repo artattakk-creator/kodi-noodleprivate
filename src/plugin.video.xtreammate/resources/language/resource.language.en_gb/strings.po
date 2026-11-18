@@ -6071,3 +6071,51 @@ msgstr "Next channels"
 msgctxt "#39032"
 msgid "Previous channels"
 msgstr "Previous channels"
+
+msgctxt "#39033"
+msgid "Rebuild XCMate settings (no LastGood needed)"
+msgstr "Rebuild XCMate settings (no LastGood needed)"
+
+msgctxt "#39034"
+msgid "Rebuild settings and turn off optional image sources? XCMate will save any existing settings file exactly as it is. Values stored only there, including credentials, will no longer be active. Separate portals, token file, EPG databases, favourites and logos are kept. After confirming, fully quit and start Kodi twice. Close any Kodi settings window without saving."
+msgstr "Rebuild settings and turn off optional image sources? XCMate will save any existing settings file exactly as it is. Values stored only there, including credentials, will no longer be active. Separate portals, token file, EPG databases, favourites and logos are kept. After confirming, fully quit and start Kodi twice. Close any Kodi settings window without saving."
+
+msgctxt "#39035"
+msgid "Full Kodi restart required. The first restart writes the new file. The next restart checks it in Kodi. Keep Kodi settings closed until verification succeeds."
+msgstr "Full Kodi restart required. The first restart writes the new file. The next restart checks it in Kodi. Keep Kodi settings closed until verification succeeds."
+
+msgctxt "#39036"
+msgid "Settings rebuild verified after a full Kodi restart. Provider EPG is enabled. Optional image sources can be enabled separately."
+msgstr "Settings rebuild verified after a full Kodi restart. Provider EPG is enabled. Optional image sources can be enabled separately."
+
+msgctxt "#39037"
+msgid "BACKUP_FAILED: XCMate could not create or verify a safe copy of the original settings. Check storage and access."
+msgstr "BACKUP_FAILED: XCMate could not create or verify a safe copy of the original settings. Check storage and access."
+
+msgctxt "#39038"
+msgid "NO_SPACE: There is not enough free space to finish safely. Free space and retry the repair or restart as instructed."
+msgstr "NO_SPACE: There is not enough free space to finish safely. Free space and retry the repair or restart as instructed."
+
+msgctxt "#39039"
+msgid "READBACK_FAILED: The new settings could not be verified on disk. The original copy is kept. Fully restart Kodi to check the repair again."
+msgstr "READBACK_FAILED: The new settings could not be verified on disk. The original copy is kept. Fully restart Kodi to check the repair again."
+
+msgctxt "#39040"
+msgid "KODI_CACHE_CONFLICT: Kodi read different settings or the file changed during repair. The original copy is kept. Close Kodi settings before starting a new repair."
+msgstr "KODI_CACHE_CONFLICT: Kodi read different settings or the file changed during repair. The original copy is kept. Close Kodi settings before starting a new repair."
+
+msgctxt "#39041"
+msgid "REPAIR_BUSY: Another XCMate operation is in progress. Wait a moment and reopen XCMate."
+msgstr "REPAIR_BUSY: Another XCMate operation is in progress. Wait a moment and reopen XCMate."
+
+msgctxt "#39042"
+msgid "REPAIR_STATE_INVALID: The repair status could not be verified. No further replacement will be attempted automatically."
+msgstr "REPAIR_STATE_INVALID: The repair status could not be verified. No further replacement will be attempted automatically."
+
+msgctxt "#39043"
+msgid "KODI_PROCESS_UNKNOWN: XCMate could not confirm that Kodi fully stopped. Wait for Kodi to stop and try again."
+msgstr "KODI_PROCESS_UNKNOWN: XCMate could not confirm that Kodi fully stopped. Wait for Kodi to stop and try again."
+
+msgctxt "#39044"
+msgid "Close the Kodi add-on settings window without saving and reopen XCMate to continue the repair."
+msgstr "Close the Kodi add-on settings window without saving and reopen XCMate to continue the repair."

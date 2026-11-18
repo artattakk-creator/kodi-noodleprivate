@@ -49,6 +49,10 @@ def require():
  if result['code'] not in ('READY','NOT_CREATED'):raise SettingsError(result['code'])
  return result
 
+def rebuild_pending():
+ from settings_rebuild99 import pending
+ return pending(os.path.dirname(path()))
+
 def value(key,addon,default=''):
  state=require()
  if key in state['values']:return state['values'][key] or default
@@ -90,6 +94,7 @@ def write(changes,addon=None):
  from profile_transaction import writing
  addon=addon or xbmcaddon.Addon()
  with writing():
+  if rebuild_pending():raise SettingsError('RESTART_REQUIRED')
   before=require();backup()
   try:
    with open(path(),'rb') as f:before_raw=f.read(LIMIT+1)
@@ -121,6 +126,7 @@ def repair():
  """UI-confirmed recovery from our last validated copy; preserve corrupt bytes."""
  from profile_transaction import writing
  with writing():
+  if rebuild_pending():raise SettingsError('RESTART_REQUIRED')
   filename=path();folder=os.path.dirname(filename);saved=os.path.join(folder,'settings96.lastgood.xml')
   try:
    if os.path.islink(saved) or os.path.islink(filename):raise SettingsError('SETTINGS_UNREADABLE')

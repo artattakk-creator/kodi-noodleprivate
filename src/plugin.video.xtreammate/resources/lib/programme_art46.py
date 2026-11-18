@@ -173,7 +173,9 @@ def prepare(event,cancel=lambda:False,fetch=None,match=None,resolved60=None):
  try:
   candidates=[dict(url=event[k],source=source,match='EXACT_EVENT',attribution='XMLTV' if source=='xmltv_event' else 'Provider') for k,source in (('xmltv_image','xmltv_event'),('provider_image','provider_event')) if event.get(k)]
   failure=None
-  if resolved60 is not None:candidates=[resolved60]
+  if resolved60 is not None:
+   from cinematic_images96 import alternatives
+   candidates=alternatives(resolved60,local=True)
   for c in candidates+([None] if resolved60 is None else []):
    if cancel():return dict(value,code='CANCELLED')
    if c is None:

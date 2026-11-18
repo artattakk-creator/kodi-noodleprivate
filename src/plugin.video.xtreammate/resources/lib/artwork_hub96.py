@@ -18,14 +18,18 @@ def show():
  from localization import tr
  from settings_guard96 import SettingsError
  from artwork_sources96 import status,choose,enroll_test_profile
+ from settings_rebuild99_ui import LABEL as rebuild_label,confirm as confirm_rebuild
  dialog=xbmcgui.Dialog()
  while True:
   value=status();healthy=value['settings'] in ('READY','NOT_CREATED')
   state=lambda k:tr(39002 if value.get(k) else 39003) if healthy else tr(39004)
-  labels=['XMLTV: '+state('xmltv'),'TMDB: '+state('tmdb'),'TVMaze: '+state('tvmaze'),tr(39005),tr(39006),tr(39007),tr(39008),tr(39009),tr(39010),tr(39011),tr(39029),tr(36012)]
+  labels=['XMLTV: '+state('xmltv'),'TMDB: '+state('tmdb'),'TVMaze: '+state('tvmaze'),tr(39005),tr(39006),tr(39007),tr(39008),tr(39009),tr(39010),tr(39011),tr(39029),tr(rebuild_label),tr(36012)]
   action=select(dialog,tr(39000),labels,default='settings')
-  if not isinstance(action,int) or not 0<=action<11:return
+  if not isinstance(action,int) or not 0<=action<12:return
   try:
+   if action==11:
+    if confirm_rebuild():return
+    continue
    if action==10:
     __import__('manual_image96').manage();continue
    if action in (0,1,2):

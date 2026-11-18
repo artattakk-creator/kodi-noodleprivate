@@ -35,6 +35,8 @@
     <setting id="programme_art_local69" type="bool" label="Sendungsbilder zusätzlich lokal speichern (optional)" default="false"/>
     <setting id="programme_xmltv96" type="bool" label="XMLTV" default="true" visible="false"/>
     <setting id="programme_settings68" type="action" label="EPG / Sendungsbilder: Einstellungen und Status" action="RunPlugin(plugin://plugin.video.xtreammate/?action=native_options45&amp;group=tmdb_access61)"/>
+    <setting id="settings_rebuild99" type="action" label="39033" action="RunPlugin(plugin://plugin.video.xtreammate/?action=settings_rebuild99)" />
+    <setting id="settings_rebuild_receipt99" type="text" default="" visible="false" />
     <setting id="programme_suggestions85" type="bool" label="32850" default="true" />
     <setting id="programme_temp85_mb" type="number" label="32851" default="16" />
     <setting id="programme_temp85_objects" type="number" label="32852" default="64" />
