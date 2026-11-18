@@ -72,7 +72,8 @@ class Cinematic96(Fixture,unittest.TestCase):
    art=self.m.enrich(self.art,self.e)
   feed=dict(source='xmltv_event',url='https://example.org/event.jpg')
   ordered=__import__('hero_art86').ordered([art],[feed])
-  self.assertEqual([v['source'] for v in ordered],['tmdb_movie','tmdb_movie','xmltv_event','tmdb_movie'])
+  self.assertEqual([v['source'] for v in ordered],['tmdb_movie','tmdb_movie','tmdb_movie','xmltv_event','tmdb_movie'])
+  self.assertEqual(ordered[2],self.art)
   self.assertEqual(ordered[-1]['role81'],'poster');self.assertTrue(ordered[1]['url'].endswith('/second.jpg'))
 
  def test_optional_error_is_negatively_cached_without_retry_in_nested_match(self):

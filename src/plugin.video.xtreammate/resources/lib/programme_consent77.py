@@ -30,7 +30,8 @@ def ensure(force=False):
     from epg_handoff63 import profile_scope
     from utils import setting,setting_bool
     import xbmcaddon
-    from settings_guard96 import snapshot
+    from settings_guard96 import rebuild_pending,snapshot
+    if rebuild_pending():return 'RESTART_REQUIRED'
     health=snapshot()['code']
     if health not in ('READY','NOT_CREATED'):return health
     profile=profile_scope();now=time.monotonic()

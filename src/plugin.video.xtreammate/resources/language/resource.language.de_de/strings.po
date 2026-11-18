@@ -6071,3 +6071,51 @@ msgstr "Nächste Sender"
 msgctxt "#39032"
 msgid "Previous channels"
 msgstr "Vorherige Sender"
+
+msgctxt "#39033"
+msgid "Rebuild XCMate settings (no LastGood needed)"
+msgstr "XCMate-Einstellungen vollständig neu erzeugen (ohne LastGood)"
+
+msgctxt "#39034"
+msgid "Rebuild settings and turn off optional image sources? XCMate will save any existing settings file exactly as it is. Values stored only there, including credentials, will no longer be active. Separate portals, token file, EPG databases, favourites and logos are kept. After confirming, fully quit and start Kodi twice. Close any Kodi settings window without saving."
+msgstr "Einstellungen neu erzeugen und optionale Bildquellen ausschalten? XCMate sichert die vorhandene Einstellungsdatei bytegenau. Nur dort gespeicherte Werte, auch Zugangsdaten, sind danach nicht mehr aktiv. Separate Portale, Token-Datei, EPG-Datenbanken, Favoriten und Logos bleiben erhalten. Kodi nach der Bestätigung zweimal vollständig beenden und neu starten. Ein offenes Einstellungsfenster ohne Speichern schließen."
+
+msgctxt "#39035"
+msgid "Full Kodi restart required. The first restart writes the new file. The next restart checks it in Kodi. Keep Kodi settings closed until verification succeeds."
+msgstr "Kodi vollständig neu starten. Der erste Neustart schreibt die neue Datei. Der nächste Neustart prüft sie in Kodi. Einstellungen bis zur erfolgreichen Prüfung geschlossen lassen."
+
+msgctxt "#39036"
+msgid "Settings rebuild verified after a full Kodi restart. Provider EPG is enabled. Optional image sources can be enabled separately."
+msgstr "Einstellungsreparatur nach vollständigem Kodi-Neustart bestätigt. Anbieter-EPG ist aktiv. Optionale Bildquellen können separat freigegeben werden."
+
+msgctxt "#39037"
+msgid "BACKUP_FAILED: XCMate could not create or verify a safe copy of the original settings. Check storage and access."
+msgstr "BACKUP_FAILED: XCMate konnte keine sichere Kopie der ursprünglichen Einstellungen erstellen oder prüfen. Speicher und Zugriffsrechte prüfen."
+
+msgctxt "#39038"
+msgid "NO_SPACE: There is not enough free space to finish safely. Free space and retry the repair or restart as instructed."
+msgstr "NO_SPACE: Für einen sicheren Abschluss fehlt freier Speicherplatz. Speicher freigeben und die Reparatur erneut starten oder Kodi wie angegeben neu starten."
+
+msgctxt "#39039"
+msgid "READBACK_FAILED: The new settings could not be verified on disk. The original copy is kept. Fully restart Kodi to check the repair again."
+msgstr "READBACK_FAILED: Die neue Datei konnte auf dem Datenträger nicht geprüft werden. Die Originalkopie bleibt erhalten. Kodi für eine erneute Prüfung vollständig neu starten."
+
+msgctxt "#39040"
+msgid "KODI_CACHE_CONFLICT: Kodi read different settings or the file changed during repair. The original copy is kept. Close Kodi settings before starting a new repair."
+msgstr "KODI_CACHE_CONFLICT: Kodi hat andere Einstellungen gelesen oder die Datei wurde während der Reparatur geändert. Die Originalkopie bleibt erhalten. Kodi-Einstellungen vor einem neuen Reparaturversuch schließen."
+
+msgctxt "#39041"
+msgid "REPAIR_BUSY: Another XCMate operation is in progress. Wait a moment and reopen XCMate."
+msgstr "REPAIR_BUSY: Ein anderer XCMate-Vorgang läuft. Kurz warten und XCMate erneut öffnen."
+
+msgctxt "#39042"
+msgid "REPAIR_STATE_INVALID: The repair status could not be verified. No further replacement will be attempted automatically."
+msgstr "REPAIR_STATE_INVALID: Der Reparaturzustand konnte nicht geprüft werden. Es erfolgt kein weiterer automatischer Dateiaustausch."
+
+msgctxt "#39043"
+msgid "KODI_PROCESS_UNKNOWN: XCMate could not confirm that Kodi fully stopped. Wait for Kodi to stop and try again."
+msgstr "KODI_PROCESS_UNKNOWN: XCMate konnte das vollständige Ende des Kodi-Prozesses nicht bestätigen. Kodi vollständig beenden und erneut versuchen."
+
+msgctxt "#39044"
+msgid "Close the Kodi add-on settings window without saving and reopen XCMate to continue the repair."
+msgstr "Kodi-Add-on-Einstellungen ohne Speichern schließen und XCMate erneut öffnen, um die Reparatur fortzusetzen."

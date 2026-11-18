@@ -1,4 +1,4 @@
-"""Explicit current .98 contract, independently frozen .96/.97 evidence."""
+"""Frozen .98 review contract, independently frozen .96/.97 evidence."""
 import hashlib,importlib,importlib.util,json,subprocess,sys,tempfile,unittest,zipfile
 from pathlib import Path
 from unittest import mock
@@ -14,11 +14,11 @@ class Release98(unittest.TestCase):
         c=self.contract();self.assertEqual(c.VERSION,'0.1.29.98')
         base='eb6c0857e4cb3abf20ffb94a0ed31e48b7daf59a'
         paths=subprocess.check_output(['git','ls-tree','-r','--name-only',base,'--','src/plugin.video.xtreammate'],cwd=ROOT,text=True).splitlines()
-        current={p.relative_to(ROOT).as_posix() for p in (ROOT/'src/plugin.video.xtreammate').rglob('*') if p.is_file() and '__pycache__' not in p.parts}
-        self.assertEqual(current,set(paths))
+        current={'src/'+name:raw for name,raw in c.source98().items()}
+        self.assertEqual(set(current),set(paths))
         for name in paths:
             old=subprocess.check_output(['git','show',base+':'+name],cwd=ROOT)
-            actual=(ROOT/name).read_bytes()
+            actual=current[name]
             if name.endswith('/addon.xml'):
                 old=E.fromstring(old);actual=E.fromstring(actual)
                 self.assertEqual(actual.get('version'),'0.1.29.98');self.assertEqual(old.get('version'),'0.1.29.97')
@@ -27,10 +27,11 @@ class Release98(unittest.TestCase):
                 self.assertEqual(E.tostring(actual),E.tostring(old))
             else:self.assertEqual(actual,old,name)
     def test_current_zip_is_reproducible_crc_clean_and_matches_all_source_bytes(self):
-        c=self.contract();from package_xcmate71 import build
+        """Rebuild the .98 candidate from its original source in later checkouts."""
+        c=self.contract()
         original=ROOT/'docs/XCMate/test-builds/02998'/c.NAME
         with tempfile.TemporaryDirectory() as folder:
-            proof=build(folder);self.assertEqual(proof,c.inspect_package(original))
+            proof=c.build_historical(folder);self.assertEqual(proof,c.inspect_package(original))
             self.assertEqual((Path(folder)/c.NAME).read_bytes(),original.read_bytes())
     def test_review_package_never_stages_or_authorizes_any_channel(self):
         c=self.contract();before=c.frozen()

@@ -30,6 +30,8 @@ def delta96():
 
 
 def without96(source, module):
+    from stabilization_contract99 import without99
+    source = without99(source, module)
     binary = isinstance(source, bytes)
     raw = source if binary else source.encode()
     name = str(module)
@@ -46,6 +48,8 @@ def without96(source, module):
 
 def runtime_without96(source):
     """Remove only hash-proven additions, then undo exact reviewed edits."""
+    from stabilization_contract99 import runtime_without99
+    source = runtime_without99(source)
     additions = delta96()['added']
     for name, digest in additions.items():
         if name not in source or sha(source[name]) != digest:
