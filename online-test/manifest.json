@@ -107,6 +107,25 @@
     "version": "0.5.26",
     "zip_sha256": "5aa5d101a57adda5dbb1f5d05319da1ec185676dc784817b25dea267322ae0af"
   },
+  "installer_0527": {
+    "android": "NOT_TESTED",
+    "build_method": "repackaged: validated v0.5.26 deflated entries + source v0.5.27 stored overlays",
+    "bytes": 195859,
+    "channel": "PILOT + NEODARK3_RAW",
+    "installer_0526_preserved": true,
+    "known_blocker": "Kodi 22 Piers skinshortcuts 3.x versus BINGIE 2.x; possible runtime dependency stop",
+    "label": "RAW / TEST – NICHT GERÄTEGEPRÜFT",
+    "lg_webos_kodi22": "NOT_TESTED",
+    "notes": "This published RAW ZIP is independently repackaged, not byte-equal to Codex's local build. Verify using the published SHA256. 0.5.26 is retained both in Pilot and NeoDark3.",
+    "original_codex_local_zip_sha256": "1d74c566edfc20a122bb8767c17bed915d90966fb5e33e47298aa257500e2872",
+    "regular_catalog_unchanged": true,
+    "source_draft_pr": 491,
+    "source_head_sha": "8f8569294f29a50ba99a23e2de58ecae846bcfed",
+    "source_pr_not_merged": true,
+    "version": "0.5.27",
+    "zip_entries": 41,
+    "zip_sha256": "50ecfbf74dbf06075a3ce41723b05e8046216a312b91b044ece4e2560c74fed4"
+  },
   "jurialmunkey": {
     "id": "script.module.jurialmunkey",
     "license": "GPL-3.0-or-later",
