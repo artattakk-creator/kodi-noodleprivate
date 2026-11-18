@@ -430,7 +430,14 @@ class IPTVMasterService(xbmc.Monitor):
 def start():
     from settings_rebuild99_ui import preflight as rebuild_preflight
     if rebuild_preflight():
-        return
+        # Stay dormant until a transient native dialog or lock clears.
+        # Staged and written repairs continue to wait for Kodi to quit.
+        monitor = xbmc.Monitor()
+        while True:
+            if monitor.waitForAbort(.5):
+                return
+            if not rebuild_preflight():
+                break
     from artwork_config import initialize
     try:initialize()
     except OSError:pass

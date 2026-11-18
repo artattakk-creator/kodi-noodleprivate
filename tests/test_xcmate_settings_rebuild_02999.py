@@ -49,7 +49,9 @@ class SettingsRebuild99Tests(unittest.TestCase):
         self.assertEqual(values, {
             'epg_enabled': 'true', 'programme_xmltv96': 'false',
             'programme_tmdb46': 'false', 'tmdb_research43': 'false',
-            'programme_tvmaze67': 'false',
+            'programme_tvmaze67': 'false', 'programme_helper57': 'false',
+            'programme_catalog57': 'false', 'programme_tmdb_optout77': 'true',
+            'programme_tvmaze_optout77': 'true',
         })
         self.assertNotIn(b'new_portal_xc_pass', raw)
         return raw
@@ -200,6 +202,7 @@ class KodiSettingsRebuild99Tests(unittest.TestCase):
         self.dialog = Mock()
         self.gui = SimpleNamespace(Dialog=lambda: self.dialog, DLG_YESNO_NO_BTN=10)
         self.addon = Mock()
+        self.addon.getAddonInfo.return_value = str(LIBRARY.parents[1])
         self.addon.getLocalizedString.return_value = 'XCMate repair'
         self.addon.getSettingString.side_effect = lambda key: {
             node.get('id'): node.text for node in ElementTree.parse(self.settings).getroot()
@@ -246,7 +249,7 @@ class KodiSettingsRebuild99Tests(unittest.TestCase):
         self.addon.getSettingBool.assert_not_called()
         self.active_process = 'third'
         self.assertFalse(self.ui.preflight())
-        self.assertEqual(self.addon.getSettingBool.call_count, 5)
+        self.assertEqual(self.addon.getSettingBool.call_count, 9)
         self.addon.setSetting.assert_not_called()
         with import_rebuild():
             import settings_guard96
@@ -269,6 +272,37 @@ class KodiSettingsRebuild99Tests(unittest.TestCase):
         self.dialog.yesno.assert_called_once()
         self.assertEqual(self.settings.read_bytes(), BROKEN)
         self.assertEqual(list(self.root.iterdir()), [self.settings])
+
+    def test_internal_receipt_and_native_repair_action_are_not_editable_in_the_epg_menu(self):
+        from settings_options45 import definitions
+        rows = {row['id'] for row in definitions('epg')}
+        self.assertIn('epg_enabled', rows)
+        self.assertTrue(rows.isdisjoint({'settings_rebuild99', 'settings_rebuild_receipt99'}))
+
+    def test_service_resumes_after_transient_startup_deferral(self):
+        from contextlib import nullcontext
+        import importlib.util
+        from types import SimpleNamespace
+        wait = Mock(return_value=False)
+
+        class Monitor:
+            def waitForAbort(self, seconds):
+                return wait(seconds)
+
+        self.xbmc.Monitor = Monitor
+        spec = importlib.util.spec_from_file_location('rebuild_test_service', LIBRARY.parents[1] / 'service.py')
+        service_module = importlib.util.module_from_spec(spec)
+        callbacks = {name: Mock() for name in ('setting_bool', 'setting_int', 'info', 'error')}
+        initialize = Mock()
+        modules = {'utils': SimpleNamespace(**callbacks), 'artwork_config': SimpleNamespace(initialize=initialize),
+                   'startup48': SimpleNamespace(singleton=lambda: nullcontext(True), mark=Mock())}
+        with patch.dict(sys.modules, modules), patch.object(self.ui, 'preflight', side_effect=(True, False)):
+            spec.loader.exec_module(service_module)
+            with patch.object(service_module, 'IPTVMasterService') as service:
+                service_module.start()
+        initialize.assert_called_once()
+        wait.assert_called_once()
+        service.return_value.run.assert_called_once()
 
     def test_pending_boot_blocks_repairs_while_native_settings_dialog_is_open(self):
         self.dialog.yesno.return_value = True

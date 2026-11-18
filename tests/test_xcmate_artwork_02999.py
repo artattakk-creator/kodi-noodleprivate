@@ -23,14 +23,21 @@ class Artwork99(Fixture, unittest.TestCase):
         result = self.resolve_with_unavailable_gallery(local=True, same_asset=True)
         self.assertIn('/w500/exact-work.jpg', result['source_url'])
 
-    def resolve_with_unavailable_gallery(self, local=False, same_asset=False):
+    def test_unavailable_gallery_keeps_the_official_poster_in_local_artwork(self):
+        result = self.resolve_with_unavailable_gallery(local=True, poster_only=True)
+        self.assertEqual(result['role81'], 'poster')
+        with Image.open(result['image']) as decoded:
+            self.assertEqual(decoded.getpixel((decoded.width//2, decoded.height//2)), (19, 86, 142))
+
+    def resolve_with_unavailable_gallery(self, local=False, same_asset=False, poster_only=False):
         self.options.update(programme_tmdb46=True, tmdb_research43=True,
                             tmdb_read_token43='SYNTHETIC_ARTWORK99')
         event = dict(pid='p', sid='1', key='exact-work', title='Fixture Film',
                      genre='Film', year=2020, start=self.now-60,
                      stop=self.now+1800, placeholder='')
-        details = dict(id=991, title=event['title'], release_date='2020-01-01',
-                       backdrop_path='/exact-work.jpg')
+        original = 'official-poster.jpg' if poster_only else 'exact-work.jpg'
+        details = dict(id=991, title=event['title'], release_date='2020-01-01')
+        details['poster_path' if poster_only else 'backdrop_path'] = '/' + original
         names = ('gallery-corrupt', 'gallery-not-found', 'exact-work') if same_asset else (
             'gallery-corrupt', 'gallery-not-found')
         gallery = [
@@ -53,7 +60,7 @@ class Artwork99(Fixture, unittest.TestCase):
 
         expected_pixel = (19, 86, 142)
         body = io.BytesIO()
-        Image.new('RGB', (1280, 720), expected_pixel).save(body, 'PNG')
+        Image.new('RGB', (600, 900) if poster_only else (1280, 720), expected_pixel).save(body, 'PNG')
         fetched = []
 
         def connect(url, ips, headers):
@@ -63,7 +70,7 @@ class Artwork99(Fixture, unittest.TestCase):
                 return ImageResponse(b'corrupt picture', 200)
             if name == 'gallery-not-found.jpg':
                 return ImageResponse(b'', 404)
-            self.assertEqual(name, 'exact-work.jpg')
+            self.assertEqual(name, original)
             if same_asset and '/w1280/' in url:
                 return ImageResponse(b'', 404)
             return ImageResponse(body.getvalue(), 200)
@@ -91,8 +98,8 @@ class Artwork99(Fixture, unittest.TestCase):
         self.assertEqual(result['code'], 'READY')
         self.assertEqual(result['source'], 'tmdb_movie')
         self.assertEqual(result['provider_id'], 991)
-        self.assertTrue(result['source_url'].endswith('/exact-work.jpg'))
-        self.assertEqual(fetched[-1], 'exact-work.jpg')
+        self.assertTrue(result['source_url'].endswith('/' + original))
+        self.assertEqual(fetched[-1], original)
         return result
 
 

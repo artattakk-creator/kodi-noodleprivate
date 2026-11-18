@@ -81,19 +81,20 @@ def enrich(value,event,cancel=lambda:False):
  if not ranked:return value
  best=ranked[0]
  return dict(value,url=best['url'],role81='backdrop',vote_average88=best['vote_average88'],vote_count88=best['vote_count88'],
-             cinematic_backdrops96=ranked,work_backdrop96=dict(value) if value.get('role81')=='backdrop' else None,
+             cinematic_backdrops96=ranked,work_image96=dict(value),
              alternate_urls57=[r['url'] for r in ranked[1:]])
 
 
 def alternatives(value, *, local=False):
- """Keep the work-detail backdrop if the optional gallery images fail."""
+ """Keep the work-detail image after the ranked gallery, preserving Hero's poster order."""
  if value.get('manual85') or value.get('match')=='MANUAL_CONFIRMED':return [value]
  rows=value.get('cinematic_backdrops96')
  if not isinstance(rows,list) or not rows:return [value]
  candidates=[dict(value,url=row['url'],role81='backdrop',vote_average88=row['vote_average88'],vote_count88=row['vote_count88'])
              for row in rows[:MAX_BACKDROPS]]
- original=value.get('work_backdrop96')
- if original and original.get('url'):
+ original=value.get('work_image96')
+ fallback_roles=('backdrop','poster') if local else ('backdrop',)
+ if original and original.get('url') and original.get('role81') in fallback_roles:
   url=original['url']
   if not local:url=url.replace('/t/p/w500/','/t/p/w1280/',1)
   if all(row['url']!=url for row in candidates):candidates.append(original)

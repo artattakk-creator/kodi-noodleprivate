@@ -27,6 +27,10 @@ DEFAULTS = {
     'programme_tmdb46': False,
     'tmdb_research43': False,
     'programme_tvmaze67': False,
+    'programme_helper57': False,
+    'programme_catalog57': False,
+    'programme_tmdb_optout77': True,
+    'programme_tvmaze_optout77': True,
 }
 
 
