@@ -430,6 +430,26 @@
     "user_approved_regular_release": false,
     "version": "0.1.29.98"
   },
+  "xcmate99": {
+    "addon_id": "plugin.video.xtreammate",
+    "android_status": "ANDROID_NOT_TESTED",
+    "bytes": 4780819,
+    "channels": [
+      "pilot"
+    ],
+    "files": 903,
+    "installer_version_unchanged": "0.5.26",
+    "neodark3_direct_unchanged": true,
+    "pilot_zip": "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.99.zip",
+    "regular_channel_unchanged": true,
+    "sha256": "879fa22bbb76c27e580460ceb7ddd60a4d79706f2c118cc4ed8690b40b38bb3e",
+    "source_commit": "3394d324ba0ec97e753225ca13814f54c453094f",
+    "source_pr": 489,
+    "status": "PILOT_ONLY_TEST_CANDIDATE_HOST_NATIVE_PASS_ANDROID_NOT_TESTED",
+    "user_approved_pilot_release": true,
+    "user_approved_regular_release": false,
+    "version": "0.1.29.99"
+  },
   "xcmate_02976": {
     "addon": "plugin.video.xtreammate",
     "android_test": "NOT_TESTED",
