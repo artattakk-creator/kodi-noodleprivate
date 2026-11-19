@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="script.gsmedia.setup" name="XCMate Media Center Installer" version="0.5.28" provider-name="XCMate">
+  <requires><import addon="xbmc.python" version="3.0.0"/></requires>
+  <extension point="xbmc.python.script" library="default.py"/>
+  <extension point="xbmc.service" library="service.py" start="startup"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="de_DE">Vollständige Einrichtung für Kodi 21 Android und Kodi 22 LG webOS</summary>
+    <description lang="de_DE">48 Komponenten mit Kodi-nativer Installation und Fortsetzen nach Fehlern. Richtet BINGIE, XCMate-Widgets, Space Blue und die TMDB-Player-Kompatibilität ein.</description>
+    <summary lang="en_GB">Full setup for Kodi 21 Android and Kodi 22 LG webOS</summary>
+    <description lang="en_GB">48 components with Kodi-native installation and recovery. Configures BINGIE, XCMate widgets, Space Blue and TMDB player compatibility.</description>
+    <disclaimer lang="de_DE">Entwicklungskandidat. Die Geräteabnahme steht aus.</disclaimer>
+    <news>Issue #496: Begrenzt wiederholbarer Kodi-Katalogscan und sicheres Fortsetzen der vollständigen 48-Komponenten-Einrichtung.</news>
+    <platform>all</platform>
+    <license>MIT (Wizard), GPL-2.0-only (bundled BINGIE source patch)</license>
+  </extension>
+</addon>
