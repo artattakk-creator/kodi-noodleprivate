@@ -1,0 +1,15 @@
+{
+  "ci_run": 43698021452,
+  "job": 132762828423,
+  "resolution": "1920x1080",
+  "first_attempt": "FAIL",
+  "error": "POSTER89_NOT_FIVE_DISTINCT_ITEMS",
+  "kind": "vod",
+  "observed_distinct_items": 3,
+  "expected_distinct_items": 5,
+  "first_attempt_artifact_id": 14156076263,
+  "first_attempt_artifact_sha256": "2b82b8323e5404eb09df14d4f65be0bd348699d512df8253bda00a63a96298d6",
+  "source_commit": "1bc86a07affceaa3fe615ffe556b4f451bdd5589",
+  "unchanged_retry_requested": true,
+  "android": "ANDROID_NOT_TESTED"
+}

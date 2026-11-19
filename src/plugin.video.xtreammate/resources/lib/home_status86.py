@@ -30,6 +30,7 @@ def rail(portal,count,local,ram=0,external=0):
  if prior.get('context')!=context or not window().getProperty('XCMate.Home86.State'):
   window().setProperty('XCMate.Home86.Text',tr(37103))
   window().setProperty('XCMate.Home86.State','LOADING')
+  window().setProperty('XCMate.Home86.Diagnostic','')
  window().setProperty('XCMate.Home86.IdentityReady','true' if count else '')
  window().setProperty('XCMate.Home86.Profile',profile_scope())
 def observe():
@@ -60,12 +61,25 @@ def observe():
  bank=win.getProperty('XCMate.Hero63.Active');prefix='XCMate.Hero63.'+bank+'.'
  epg=bool(win.getProperty(prefix+'Title'))
  kind=win.getProperty(prefix+'Kind86');image=kind in ('hero_backdrop','official_poster')
- complete=bool(receipt87 and data.get('total') and data.get('local',0)+data.get('ram',0)+data.get('external',0)>=data['total'] and epg and image)
- if complete:
-  win.setProperty('XCMate.Home86.State','REFERENCE_READY');win.setProperty('XCMate.Home86.Text','');return
- expired=time.monotonic()-data.get('first_at',data.get('at',0))>60
- win.setProperty('XCMate.Home86.State','ERROR' if expired else 'READY_PARTIAL')
- # These are reference/control states; only screenshot tests prove pixels.
- available88=data['local']+data.get('ram',0)+data.get('external',0)
- text=tr(37104).format(data['total'],available88) if expired else tr(37099).format(data['total'],available88,tr(37100) if epg else tr(37101),tr(37100) if image else tr(37101))
- win.setProperty('XCMate.Home86.Text',text)
+ available=data.get('local',0)+data.get('ram',0)+data.get('external',0)
+ complete=bool(receipt87 and data.get('total') and available>=data['total'] and epg and image)
+ expired=not complete and time.monotonic()-data.get('first_at',data.get('at',0))>60
+ win.setProperty('XCMate.Home86.State','REFERENCE_READY' if complete else 'ERROR' if expired else 'READY_PARTIAL')
+ # Installed skins bind only Text. The event-specific picture note stays in
+ # the Hero bank; per-station totals belong to the existing diagnostics view.
+ win.setProperty('XCMate.Home86.Text',tr(37103) if not (receipt87 or epg or expired) else '')
+ detail=tr(37104,data['total'],available) if expired else tr(37099,data['total'],available,
+     tr(37100) if epg else tr(37101),tr(37100) if image else tr(37101))
+ win.setProperty('XCMate.Home86.Diagnostic',detail)
+
+def diagnostic(pid):
+    from epg_handoff63 import profile_scope
+    try:
+        win=window()
+        data=json.loads(win.getProperty('XCMate.Home86.Rail') or '{}')
+        if data.get('pid')!=str(pid) or data.get('profile')!=profile_scope():
+            return {}
+        counts={key:data.get(key,0) for key in ('total','local','ram','external')}
+        return dict(counts,state=win.getProperty('XCMate.Home86.State'),text=win.getProperty('XCMate.Home86.Diagnostic'))
+    except (AttributeError,RuntimeError,ValueError,TypeError):
+        return {}

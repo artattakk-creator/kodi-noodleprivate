@@ -1,0 +1,33 @@
+{
+  "android": "ANDROID_NOT_TESTED",
+  "sources": [
+    {
+      "source": "de_master",
+      "scope": "BOUNDED_PUBLIC_ENDPOINT_PROBE_NOT_FULL_IMPORT",
+      "full_import": "NOT_TESTED",
+      "status": "UNVERIFIED",
+      "exception": "URLError"
+    },
+    {
+      "source": "de_epgshare",
+      "scope": "BOUNDED_PUBLIC_ENDPOINT_PROBE_NOT_FULL_IMPORT",
+      "full_import": "NOT_TESTED",
+      "status": "UNVERIFIED",
+      "exception": "URLError"
+    },
+    {
+      "source": "at_epgshare",
+      "scope": "BOUNDED_PUBLIC_ENDPOINT_PROBE_NOT_FULL_IMPORT",
+      "full_import": "NOT_TESTED",
+      "status": "UNVERIFIED",
+      "exception": "URLError"
+    },
+    {
+      "source": "ch_epgshare",
+      "scope": "BOUNDED_PUBLIC_ENDPOINT_PROBE_NOT_FULL_IMPORT",
+      "full_import": "NOT_TESTED",
+      "status": "UNVERIFIED",
+      "exception": "URLError"
+    }
+  ]
+}

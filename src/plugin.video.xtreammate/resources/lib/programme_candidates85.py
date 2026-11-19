@@ -7,9 +7,8 @@ _cache={}
 
 def note(event,code):__import__('art_trace81').note(event,'SKIPPED_REASON' if code in ('PROVISIONAL_SUGGESTION','MULTIPAGE_SEARCH','SEARCH_INCOMPLETE') else 'MATCH_REJECTED',code)
 def enabled(source='tmdb'):
- from utils import setting_bool
- if source=='tmdb':return setting_bool('programme_tmdb46',False) and setting_bool('tmdb_research43',False) and not setting_bool('programme_tmdb_optout77',False)
- return setting_bool('programme_tvmaze67',False) and not setting_bool('programme_tvmaze_optout77',False)
+ from artwork_sources96 import enabled as source_enabled
+ return source_enabled(source)
 def key(event):
  from programme_mapping85 import namespace
  from programme_policy68 import negative_scope
@@ -129,12 +128,15 @@ def candidate(event,cancel=lambda:False):
  if mapping and mapping.get('hidden'):return None
  if mapping and mapping.get('source') in ('tmdb','tvmaze') and enabled(mapping['source']):
   fetch85=(lambda e,i,cancel,manual=True:__import__('work_search86').details(i,'movie',mapping['source'],cancel)) if mapping.get('media_type86')=='movie' else details if mapping['source']=='tmdb' else __import__('programme_tvmaze85').details
-  chosen=next((r for r in read(event).get('rows',[])+read(dict(event,_manager85=True)).get('rows',[]) if r.get('source')==mapping['source'] and r.get('id')==mapping['id'] and r.get('media_type86','tv')==mapping.get('media_type86','tv') and r.get('verified85')),None)
-  if chosen is None and mapping.get('work87'):
+  chosen=None
+  # The explicit persisted image takes precedence over a newer same-work
+  # search result; confirming a work never authorizes changing its picture.
+  if mapping.get('work87'):
    receipt87=mapping['work87']
    from programme_urls55 import safe
    if receipt87.get('role') in ('poster','backdrop') and safe(receipt87.get('url','')):
     chosen=dict(receipt87,id=mapping['id'],source=mapping['source'],year=mapping.get('year'),country=mapping.get('country') or [],media_type86=mapping.get('media_type86','tv'),verified85=True,work_match85=True)
+  if chosen is None:chosen=next((r for r in read(event).get('rows',[])+read(dict(event,_manager85=True)).get('rows',[]) if r.get('source')==mapping['source'] and r.get('id')==mapping['id'] and r.get('media_type86','tv')==mapping.get('media_type86','tv') and r.get('verified85')),None)
   if chosen is None:chosen=fetch85(event,mapping['id'],cancel,manual=True)
   if chosen and (mapping.get('year') is None or mapping['year']==chosen['year']):return artifact(chosen,'MANUAL_CONFIRMED')
   note(event,'EXTERNAL_ID_CONFLICT');return None

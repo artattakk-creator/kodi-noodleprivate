@@ -3,10 +3,13 @@ import json,os,sqlite3,time
 from urllib.parse import quote
 
 
-def read(portal,publish=lambda value:None,categories=None):
+def read(portal,publish=lambda value:None,categories=None,only=None,receipt94=None):
+    if only is not None:
+        from live_target96 import read as selected_group96
+        return selected_group96(portal,str(only),receipt94)
     from widget_data41 import WidgetReader
     from library_index import path,initial_group,IndexReadError
-    reader=WidgetReader(portal['id']);state=reader.state('live')
+    reader=WidgetReader(portal['id'],seconds=20);state=reader.state('live')
     if state is None:return None
     groups=reader.groups('live')
     from group_selection import load,enabled_ids
@@ -16,8 +19,11 @@ def read(portal,publish=lambda value:None,categories=None):
     categories=categories if categories is not None else [dict(category_id=g['cid'],category_name=g['title']) for g in groups]
     start=reader.get('live',str(portal.get('start_stream_id') or ''));cid=initial_group(portal,groups,start)
     ordered=sorted(groups,key=lambda g:g['cid']!=cid)
+    if only is not None:
+        ordered=[g for g in groups if g['cid']==str(only)]
+        if not ordered:raise IndexReadError('GROUP_NOT_AVAILABLE')
     db=sqlite3.connect('file:'+quote(reader.filename or path(),safe='/')+'?mode=ro',uri=True,timeout=.05);db.row_factory=sqlite3.Row
-    streams=[];seen=set()
+    streams=[];seen=set();head=None;end96=time.monotonic()+20
     try:
         db.execute('PRAGMA query_only=ON');db.execute('BEGIN')
         for group in ordered:
@@ -27,7 +33,8 @@ def read(portal,publish=lambda value:None,categories=None):
             if head:where+=' AND generation=?';args.append(head[0])
             last=None
             while True:
-                deadline=time.monotonic()+.25;db.set_progress_handler(lambda:int(time.monotonic()>deadline),1000)
+                if time.monotonic()>=end96:raise IndexReadError('BUDGET')
+                deadline=min(end96,time.monotonic()+1);db.set_progress_handler(lambda:int(time.monotonic()>deadline),1000)
                 suffix=' AND (ordinal>? OR (ordinal=? AND sid>?))' if last else ''
                 rows=db.execute('SELECT ordinal,sid,payload FROM '+table+' WHERE '+where+suffix+' ORDER BY ordinal,sid LIMIT 128',args+(list(last) if last else [])).fetchall()
                 if not rows:break
@@ -36,7 +43,13 @@ def read(portal,publish=lambda value:None,categories=None):
                     seen.add(row['sid']);item=json.loads(row['payload']);streams.append(dict(item,stream_id=item['sid']))
                     if len(streams)>50000:return categories,None
                 last=(rows[-1]['ordinal'],rows[-1]['ordinal'],rows[-1]['sid'])
+            if only is not None and not streams and not head:raise IndexReadError('GROUP_NOT_IMPORTED')
             if group['cid']==cid:publish((categories,list(streams)))
+        after=reader.state('live')
+        if not after or (after.get('revision'),after.get('updated'))!=(state.get('revision'),state.get('updated')):
+            raise IndexReadError('REVISION_CHANGED')
+        if receipt94 is not None:
+            receipt94.update(revision=state.get('revision'),updated=state.get('updated'),generation=head[0] if only is not None and head else None,count=len(streams))
         return categories,streams
     except (sqlite3.Error,ValueError,TypeError) as exc:
         raise IndexReadError('LOCAL_LIVE_UNAVAILABLE') from None

@@ -27,7 +27,7 @@ class EpgSourceTests(unittest.TestCase):
         utils.cache_set = lambda key, value: self.cache.__setitem__(key, value)
         utils.http_get = lambda uri, timeout=20, **kwargs: (b'<tv/>', {})
         utils.error = lambda message: None
-        p = mock.patch.dict(sys.modules, {'utils': utils})
+        p = mock.patch.dict(sys.modules, {'utils': utils, 'portals':types.SimpleNamespace(get_by_id=lambda pid:dict(id=pid,epg_show=True))})
         p.start()
         self.addCleanup(p.stop)
         spec = importlib.util.spec_from_file_location('test_xtream_epg_sources', LIB / 'epg_sources.py')

@@ -1,0 +1,20 @@
+{
+  "status": "PILOT_READY",
+  "source_commit": "c5ecd2ea69bb84e648cae9433d250613dceff46e",
+  "pytest_pass": 4225,
+  "unittest_pass": 4214,
+  "native_pass": 4,
+  "artwork_qa": "PASS_IN_SYNTHETIC_HOST_NATIVE_SCOPE",
+  "mapping_qa": "NO_CONFIRMED_BLOCKER_IN_SCOPED_HOST_NATIVE_DIALOG_GRID",
+  "android": "ANDROID_NOT_TESTED",
+  "merge_authorized": false,
+  "publication_authorized": false,
+  "repository_staged": "NONE",
+  "limitations": [
+    "physical Android",
+    "real provider/API/token/CDN availability",
+    "physical ENOSPC",
+    "real Mini parent pixels",
+    "continuous VOD/series cover supply not proven by late status frames"
+  ]
+}

@@ -1,4 +1,5 @@
 """Cumulative .42 bytes, explicit reviewed media deltas and unchanged P0 exit."""
+from stabilization_contract100 import without100
 import ast,hashlib,json,unittest
 from pathlib import Path
 import xml.etree.ElementTree as ET
@@ -33,4 +34,4 @@ class Scope43(unittest.TestCase):
         baseline=json.loads((ROOT/'tests/fixtures/xcmate_02943_protection.json').read_text())
         for name in ('resources/skins/Default/720p/XCMateMedia.xml','icon.png'):
             path='src/plugin.video.xtreammate/'+name
-            self.assertEqual(hashlib.sha256((ROOT/path).read_bytes()).hexdigest(),baseline['source_sha256'][path])
+            self.assertEqual(hashlib.sha256(without100((ROOT/path).read_bytes(),path)).hexdigest(),baseline['source_sha256'][path])

@@ -1,7 +1,7 @@
 """New routes only. Legacy provider/player entry points remain compatible."""
 from localization import tr
 
-ACTIONS=('home_filter92','storage92','storage_setup92','live_hero48','programme_details46','widget_adapter46','widget_adapter45','native_options45','downloads_manage45','guide_backup44','update_notice','navigation_rail','artwork_manage','device_info', 'live_guide','search_continue','download_target_test','stability_test','download_folder','download_capabilities','theme_manager','branding_status','xcmate_licenses','guide_grid','playlist_editor','source_live','source_play','source_start','art_status','art_retry','art_db_health','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
+ACTIONS=('epg_agent100','home_filter92','storage92','storage_setup92','live_hero48','programme_details46','widget_adapter46','widget_adapter45','native_options45','downloads_manage45','guide_backup44','update_notice','navigation_rail','artwork_manage','device_info', 'live_guide','search_continue','download_target_test','stability_test','download_folder','download_capabilities','theme_manager','branding_status','xcmate_licenses','guide_grid','playlist_editor','source_live','source_play','source_start','art_status','art_retry','art_db_health','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
          'movies_home','series_home','media_detail','media_favourites','global_search','search_section',
          'widget_live_start_group','widget_recent_vod','widget_recent_series','widget_setup','widget_manage49','widget_help49','widget_link50','widget_skin50','widget_restore50','widget_sources49',
          'record_now','recordings_manage','recording_folder','recording_capabilities','about_xcmate','guide_browser','media_play','guide_timers','guide_status')
@@ -44,8 +44,12 @@ def dispatch(router):
         run(router._params.get('token',''));return
     from portal_snapshot import PortalReadError
     try:portal=portal_for(router)
-    except PortalReadError:
-        if action!='media_play':raise
+    except PortalReadError as exc:
+        if action!='media_play':
+            if getattr(exc,'reason','') not in ('PROFILE_BUSY','PROFILE_RACE'):raise
+            _end(router)
+            xbmcgui.Dialog().notification('XCMate',__import__('localization').tr(38915))
+            return
         from media_intent import failed
         failed(str(router._params.get('intent') or ''),str(router._params.get('pid') or ''))
         import xbmcplugin
@@ -178,6 +182,10 @@ def dispatch(router):
         from localization import choose_language
         if choose_language(): xbmc.executebuiltin('Container.Refresh')
         return
+    if action=='epg_agent100':
+        _end(router)
+        from epg_agent100_ui import show
+        show(portal);return
     if action=='theme_manager':
         _end(router)
         from theme_ui import manage
@@ -267,13 +275,18 @@ def dispatch(router):
             play(router,portal,direct=True);return
         sid=str(portal.get('start_stream_id') or '')
         xc=router._xc(portal) if portal.get('type')=='xtream' else None
-        from live_start import channel
+        from live_start import resolve
         from live_timing import emit
         emit(router._live_timing,'PORTAL_REQUEST_BEGIN',network=0)
-        router._start_channel=channel(portal,xc) if xc else None
+        start93=resolve(portal,xc) if xc else dict(code='START_TEMPORARILY_UNAVAILABLE',channel=None)
+        router._start_channel=start93['channel']
         emit(router._live_timing,'PORTAL_REQUEST_END',network=0)
         if not sid or router._start_channel is None:
             _end(router,False)
+            if sid:
+                # Missing/partial/locked catalogue: retain the user's IDs.
+                xbmcgui.Dialog().notification('XCMate',tr(38732))
+                return
             if xbmcgui.Dialog().yesno('XCMate',tr(32467)):
                 xbmc.executebuiltin('Container.Update('+router.url(action='startup_settings',pid=portal['id'])+')')
             return

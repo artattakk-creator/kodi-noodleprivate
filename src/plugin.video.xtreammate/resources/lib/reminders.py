@@ -29,7 +29,7 @@ def load_reminders():
 
 
 def save_reminders(reminders):
-    from profile_transaction import writing
+    from reminder_transaction95 import writing
     from logo_store89 import atomic
     raw=json.dumps(reminders,ensure_ascii=False).encode()
     if len(raw)>1024*1024:raise ValueError('REMINDER_LIMIT')
@@ -118,9 +118,12 @@ class ReminderMonitor(xbmc.Monitor):
         self._thread.start()
 
     def _run(self):
+        next_error95=0
         while not self.abortRequested():
             try:
                 check_due()
             except Exception as e:
-                error(f'ReminderMonitor: {e}')
+                if time.monotonic()>=next_error95:
+                    next_error95=time.monotonic()+30
+                    error('ReminderMonitor: '+('REMINDER_BUSY_RETRY' if isinstance(e,TimeoutError) else 'REMINDER_RETRY'))
             self.waitForAbort(1)

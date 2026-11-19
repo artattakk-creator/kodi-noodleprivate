@@ -76,7 +76,13 @@ def save(event,options,expected,cancel=lambda:False):
   mapping90=__import__('programme_mapping85')
   return mapping_commit90(current,automatic=action=='automatic',hidden=action=='hide',cancel=cancel,alias90=mapping90.namespace(event))
  selected=options.get('candidate') or {};phase('CANDIDATE_SELECTED')
- verified=__import__('work_search86').details(selected.get('id'),selected.get('media_type86'),selected.get('source','tmdb'),cancel)
+ if selected.get('source')=='xmltv_event':
+  if kind!='live':raise SourceError('CANDIDATES_REJECTED')
+  verified=__import__('xmltv_art96').details(current,selected,cancel)
+  # Verify bytes independently before the explicit mapping commit. No archive
+  # is required and the preview URI itself is never considered a render ACK.
+  __import__('programme_urls55').probe(verified['url'],cancel=cancel)
+ else:verified=__import__('work_search86').details(selected.get('id'),selected.get('media_type86'),selected.get('source','tmdb'),cancel)
  # Independently fetch again before Save; caller-supplied URLs are never trusted.
  phase('SOURCE_REVERIFIED')
  if verified['year']!=selected.get('year') or verified['title']!=selected.get('title'):raise SourceError('CANDIDATES_REJECTED')
@@ -112,7 +118,9 @@ def _drain89(cancelled_service=lambda:False):
   def stop():return cancelled_service() or cancelled(nonce) or time.monotonic()>=deadline
   __import__('work_trace87').mark(nonce,'PICKED',data.get('operation',''),options.get('source',''))
   if data.get('operation')=='search':
-   value=__import__('work_search86').search(options.get('query'),options.get('kind','tv'),options.get('source','tmdb'),options.get('page',1),stop);phase('SEARCH_READY')
+   if options.get('source')=='xmltv_event':value=__import__('xmltv_art96').search(event,stop)
+   else:value=__import__('work_search86').search(options.get('query'),options.get('kind','tv'),options.get('source','tmdb'),options.get('page',1),stop)
+   phase('SEARCH_READY')
   elif data.get('operation')=='local':value=dict(code='SAVED' if local_save(event,options.get('path',''),data['binding'],stop) else 'UNCHANGED',rows=[])
   elif data.get('operation')=='save':value=dict(code='SAVED' if save(event,options,data['binding'],stop) else 'UNCHANGED',rows=[])
   else:raise SourceError('CANDIDATES_REJECTED')

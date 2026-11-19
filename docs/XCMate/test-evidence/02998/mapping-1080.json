@@ -1,0 +1,72 @@
+{
+  "source_commit": "c5ecd2ea69bb84e648cae9433d250613dceff46e",
+  "workflow_run": 44117233113,
+  "job_id": 134158530592,
+  "package_sha256": "d37d34fbb5be5e46154b912d3ce960f6e248431fcf7d0a9651fa9785b20a12c3",
+  "kodi": {
+    "major": 21,
+    "minor": 2,
+    "revision": "20250330-nogitfound",
+    "tag": "stable"
+  },
+  "status": "PASS",
+  "transport": "SYNTHETIC_LOOPBACK_XMLTV",
+  "android": "ANDROID_NOT_TESTED",
+  "cold_readback_rows": 600,
+  "cancel_preserved_lastgood": true,
+  "mini_mapping96": {
+    "native_dialog": true,
+    "parent": "SYNTHETIC_MINI_ADAPTER_OWNER",
+    "preview_bytes_unchanged": true,
+    "cancel_restored": true,
+    "android": "ANDROID_NOT_TESTED"
+  },
+  "mapping482": {
+    "status": "PASS",
+    "cases": [
+      {
+        "kind": "mini",
+        "parent": "SYNTHETIC_MINI_OWNER",
+        "prefilled_query": true,
+        "source_picker": "NATIVE_DIALOG_SELECTED_BY_RPC",
+        "preview": "epg482-preview-mini.png",
+        "busy": "epg482-busy-mini.png",
+        "preview_focus": {
+          "dialog": 13002,
+          "owner": "mini",
+          "control": 200
+        },
+        "busy_focus": {
+          "dialog": 13002,
+          "owner": "mini",
+          "control": 404
+        },
+        "source_qualified_readback": true,
+        "actual_adapter_apply": true
+      },
+      {
+        "kind": "grid",
+        "parent": "NATIVE_GRID",
+        "prefilled_query": true,
+        "source_picker": "NATIVE_DIALOG_SELECTED_BY_RPC",
+        "preview": "epg482-preview-grid.png",
+        "busy": "epg482-busy-grid.png",
+        "preview_focus": {
+          "dialog": 13004,
+          "owner": "grid",
+          "control": 200
+        },
+        "busy_focus": {
+          "dialog": 13004,
+          "owner": "grid",
+          "control": 404
+        },
+        "source_qualified_readback": true,
+        "actual_adapter_apply": true
+      }
+    ],
+    "android": "ANDROID_NOT_TESTED",
+    "source_picker_pixel_review": "REQUIRED"
+  },
+  "fixture_prompts98_declined": 0
+}

@@ -78,8 +78,10 @@ def get_active() -> list:
 
 
 def _record(portal: dict, portal_id=None) -> dict:
+    from provider_baseline96 import normalized
+    portal=normalized(portal)
     now = int(time.time())
-    extra={k:portal[k] for k in ('source_schema','m3u_original','m3u_origin','provider_epg_enabled','stb_serial','stb_device_id') if k in portal}
+    extra={k:portal[k] for k in ('source_schema','m3u_original','m3u_origin','provider_epg_enabled','epg_opt_out94','provider_epg_opt_out94','provider_baseline96','provider_baseline_history96','stb_serial','stb_device_id') if k in portal}
     portal = {
         'id'      : str(portal_id or uuid.uuid4()),
         'name'    : portal.get('name', 'New Portal'),

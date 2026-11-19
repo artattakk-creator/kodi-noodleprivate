@@ -71,7 +71,7 @@ def _portal_menu(p: dict):
                    (_L(32088) if new_state else _L(32089)).format(name))
         elif idx == 2:
             new_epg = not epg_show
-            update(p['id'], {'epg_show': new_epg})
+            __import__('epg_config94').set_global(p['id'],new_epg)
             p = portals.get_by_id(p['id']) or p
             notify(_L(32012), f'EPG {"EINGESCHALTET" if new_epg else "AUSGESCHALTET"}: {name}', duration=1500)
         elif idx == 3:
@@ -141,6 +141,7 @@ def _wizard_edit(p: dict) -> bool:
             p['enabled'] = not p.get('enabled', True)
         elif key == 'epg_show':
             p['epg_show'] = not p.get('epg_show', True)
+            p['epg_opt_out94'] = not p['epg_show']
         else:
             current = p.get(key, '')
             new_val = dlg.input(label, defaultt=current,

@@ -1,0 +1,28 @@
+{
+  "platform": "SYNTHETIC_REAL_LINUX_FILES_AND_SQLITE_NOT_ANDROID",
+  "status": "PASS",
+  "before": {
+    "volume_device": 34,
+    "available": 4292644864
+  },
+  "after": {
+    "volume_device": 34,
+    "available": 4301070336
+  },
+  "observed_free_change": 8425472,
+  "retention": {
+    "code": "VERIFIED_BACKUP_RETENTION",
+    "deleted_files": 1,
+    "deleted_bytes": 8425687,
+    "skipped": 0,
+    "raw_deleted_bytes": 0,
+    "raw_status": "RAW_FEEDS_RAM_ONLY; UNKNOWN_FILES_SKIPPED_UNPROVEN",
+    "kept_sha256": "18a8119fdb82cdd990dbe1eca2e3814c991302c338916a18df88adf95e6be298"
+  },
+  "retained_events": 2049,
+  "foreign_source_preserved": true,
+  "journal_intents": 2,
+  "journal_persisted_and_cold_readback": true,
+  "elapsed_ms": 33.082,
+  "android": "ANDROID_NOT_TESTED"
+}

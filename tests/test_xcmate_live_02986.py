@@ -68,8 +68,25 @@ class Live86(Fixture,unittest.TestCase):
    w.setProperty('fixture87.directory',json.dumps(dict(tag='a'*64,count=88)))
    with mock.patch('xbmc.getInfoLabel',side_effect=lambda label:'88' if label.endswith('.NumItems') else 'a'*64),mock.patch('xbmc.getCondVisibility',return_value=True):m.observe()
    self.assertEqual(w.getProperty('XCMate.Home86.State'),'REFERENCE_READY');self.assertEqual(w.getProperty('XCMate.Home86.Text'),'')
+ def test_loaded_hero_keeps_its_picture_status_without_showing_logo_counts(self):
+  m=__import__('home_status86');w=m.window();scope=__import__('epg_handoff63').profile_scope()
+  w.setProperty('XCMate.Home86.Rail',json.dumps(dict(profile=scope,pid='p',total=88,local=54,ram=2,external=1,first_at=time.monotonic())))
+  w.setProperty('XCMate.Hero63.Active','A')
+  w.setProperty('XCMate.Hero63.A.Title','Verified local EPG')
+  w.setProperty('XCMate.Hero63.A.ArtStatusText','Bildsuche angefordert …')
+  with mock.patch('xbmc.getSkinDir',create=True,return_value='skin.titan.bingie.mod'),mock.patch('xbmcgui.getCurrentWindowId',return_value=10000):m.observe()
+  self.assertEqual(w.getProperty('XCMate.Home86.Text'),'')
+  from widget_diagnostics47 import status
+  with mock.patch('programme_snapshot47.status',return_value={}),mock.patch('widget_consumer58.status',return_value={}):
+   self.assertEqual(status('p')['home_live']['total'],88)
+   self.assertIn('57/88',status('p')['home_live']['text'])
+   self.assertEqual(status('other')['home_live'],{})
+  self.assertEqual(w.getProperty('XCMate.Hero63.A.ArtStatusText'),'Bildsuche angefordert …')
+
  def test_missing_artwork_ends_in_static_diagnostic_not_endless_loading(self):
   m=__import__('home_status86');w=m.window();scope=__import__('epg_handoff63').profile_scope()
   w.setProperty('XCMate.Home86.Rail',json.dumps(dict(profile=scope,pid='p',total=88,local=0,first_at=time.monotonic()-61)))
   with mock.patch('xbmc.getSkinDir',create=True,return_value='skin.titan.bingie.mod'),mock.patch('xbmcgui.getCurrentWindowId',return_value=10000):m.observe()
-  self.assertEqual(w.getProperty('XCMate.Home86.State'),'ERROR');self.assertIn('88',w.getProperty('XCMate.Home86.Text'))
+  self.assertEqual(w.getProperty('XCMate.Home86.State'),'ERROR')
+  self.assertEqual(w.getProperty('XCMate.Home86.Text'),'')
+  self.assertIn('0/88',w.getProperty('XCMate.Home86.Diagnostic'))

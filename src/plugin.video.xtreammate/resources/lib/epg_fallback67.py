@@ -9,5 +9,5 @@ def window(pid,channels,mappings,start,stop,limit):
   if not info:continue
   rows=[dict(e) for e in info.get('events',[]) if e.get('stop',0)>start and e.get('start',0)<stop][:min(256,limit)]
   for ident in keys:
-   view[ident]=rows;view.canonical[ident]=info.get('canonical46') or info.get('epg_id','')
- return view if any(view.values()) else None
+   view.add(sid,ident,info.get('canonical46') or info.get('epg_id',''),rows)
+ return view if any(any(sender.values()) for sender in view.channels.values()) else None

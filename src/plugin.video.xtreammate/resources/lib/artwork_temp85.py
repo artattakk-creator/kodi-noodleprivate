@@ -8,9 +8,13 @@ from pathlib import Path
 from media_sources43 import SourceError
 OWNER={'format':1,'owner':'XCMate temporary artwork 85'}
 class Unavailable(OSError):pass
+def durable(record):
+ """Legacy confirmed contexts may remain here; never evict their bytes."""
+ contexts=record.get('contexts',{})
+ return bool(record.get('manual85') or isinstance(contexts,dict) and any(isinstance(v,dict) and v.get('manual85') for v in contexts.values()))
 class Cache:
  def __init__(self,root,max_bytes=16*1024*1024,max_objects=64,clock=time.time):
-  self.root=Path(root);self.max_bytes=max(1,min(int(max_bytes),64*1024*1024));self.max_objects=max(1,min(int(max_objects),256));self.clock=clock
+  self.root=Path(root);self.max_bytes=max(1,min(int(max_bytes),256*1024*1024));self.max_objects=max(1,min(int(max_objects),256));self.clock=clock
  def atomic(self,path,body):
   fd,tmp=tempfile.mkstemp(prefix='.txn-',dir=self.root)
   try:
@@ -80,19 +84,21 @@ class Cache:
     if record.get('file') not in files:
      entries.pop(key);continue
     record['pins']={k:v for k,v in record.get('pins',{}).items() if type(v) in (int,float) and now<v<=now+31*86400}
-    if not record['pins'] and not active(key) and record.get('until',0)<=now:
+    if not durable(record) and not record['pins'] and not active(key) and record.get('until',0)<=now:
      owned=record.get('file','')
      if re.fullmatch(str(key)+r'\.(png|jpg)',owned) and owned in files:
       (self.root/owned).unlink();files.pop(owned);presence(key,False)
      entries.pop(key)
-   needed=0 if name in files else len(body);objects=len(files)+int(name not in files)
+   protected={record.get('file') for record in entries.values() if durable(record)}
+   rolling=lambda:sum(size for filename,size in files.items() if filename not in protected)
+   needed=0 if name in files else len(body);objects=sum(filename not in protected for filename in files)+int(name not in files)
    for key,record in sorted(entries.items(),key=lambda item:item[1].get('at',0)):
-    if sum(files.values())+needed<=self.max_bytes and objects<=self.max_objects:break
-    if key==digest or record.get('pins') or active(key):continue
+    if rolling()+needed<=self.max_bytes and objects<=self.max_objects:break
+    if key==digest or durable(record) or record.get('pins') or active(key):continue
     old=record.get('file','')
     if re.fullmatch(str(key)+r'\.(png|jpg)',old) and old in files:
      (self.root/old).unlink();files.pop(old);objects-=1;presence(key,False);entries.pop(key)
-   if sum(files.values())+needed>self.max_bytes or objects>self.max_objects:raise Unavailable('TEMP_PINNED_OR_ORPHAN_LIMIT')
+   if rolling()+needed>self.max_bytes or objects>self.max_objects:raise Unavailable('TEMP_PINNED_OR_ORPHAN_LIMIT')
    check(len(body)+65536)
    if name in files and hashlib.sha256((self.root/name).read_bytes()).hexdigest()!=digest:raise Unavailable('TEMP_HASH_CONFLICT')
    record=entries.setdefault(digest,dict(file=name,size=len(body),pins={}))
@@ -154,10 +160,12 @@ class Cache:
 
 def cache():
  from utils import addon_data_dir,setting_int
- return Cache(Path(os.path.realpath(addon_data_dir()))/'artwork_temporary85',setting_int('programme_temp85_mb',16)*1024*1024,setting_int('programme_temp85_objects',64))
+ from programme_art46 import limit
+ return Cache(Path(os.path.realpath(addon_data_dir()))/'artwork_temporary85',limit(),setting_int('programme_temp85_objects',64))
 _due=0.
 def promote(event,value,body):
  global _due
+ if value.get('manual85'):return value
  if not __import__('home_schedule75').applicable():return value
  if not body or not value.get('decoded77') or time.monotonic()<_due:return value
  from import_budget import check_space
@@ -166,13 +174,16 @@ def promote(event,value,body):
  from programme_policy68 import negative_scope
  c=cache()
  def capacity(size):
+  if not __import__('artwork_config').persistent():
+   __import__('storage_artwork96').check_dynamic(c.root,size)
+   return
   from art_storage import capacity as measure
   result=measure(str(c.root))
   if result.get('storage_availability')!='AVAILABLE' or result.get('free',0)<result.get('reserve',1024**3)+size:raise Unavailable('TEMP_RESERVE_BLOCKED')
   check_space(str(c.root),size)
  try:
   context85=hashlib.sha256((identity(event)+fingerprint(event)).encode()).hexdigest()
-  minimal85={k:value[k] for k in ('key','fingerprint','scope69','profile69','policy69','code','source','match','attribution','image_scope57','mapping_epoch85','provisional85','manual85','decoded77','role81','image_width77','image_height77') if k in value}
+  minimal85={k:value[k] for k in ('key','fingerprint','scope69','profile69','policy69','code','source','match','attribution','image_scope57','mapping_epoch85','provisional85','manual85','decoded77','role81','image_width77','image_height77','xmltv96') if k in value}
   minimal85.update(key=event['key'],fingerprint=fingerprint(event),scope69=identity(event),profile69=scope(),policy69=negative_scope({}))
   record=c.put(body,context=context85,reference=minimal85,pin=identity(event),pin_until=time.time()+60,expires=event.get('stop',time.time())+600,check=capacity)
   result=dict(value,image=record['file'],thumbnail=record['file'],sha256=record['sha256'],until=min(record['until'],time.time()+30),fingerprint=fingerprint(event),scope69=identity(event),profile69=scope(),policy69=negative_scope({}),temp85=True)

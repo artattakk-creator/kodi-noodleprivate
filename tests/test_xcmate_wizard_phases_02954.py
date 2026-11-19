@@ -46,8 +46,8 @@ class Phases54(unittest.TestCase):
         self.assertTrue(w._closed);self.assertEqual(w.result['id'],self.d.pid);self.assertIsNotNone(self.m.portals.get_by_id(self.d.pid))
     def test_successful_catalog_without_epg_goes_directly_to_usable_portal(self):
         w=self.window();self.groups(w);w.onClick(17);self.finish(w);w.onClick(17);self.finish(w)
-        self.assertEqual(w.stage,'epg_ready');self.assertEqual(w.getControl(17).label,'Zu XCMate')
-        w.onClick(17);self.assertTrue(w._closed);self.assertEqual(w.result['id'],self.d.pid)
+        self.assertEqual(w.stage,'epg_pending');self.assertTrue(w.result['provider_epg_enabled'])
+        w.onClick(18);self.assertTrue(w._closed);self.assertEqual(w.result['id'],self.d.pid)
     def test_active_twenty_minute_job_has_no_total_or_idle_auto_cancel_and_still_accepts_back(self):
         w=self.ui.WorkWindow('XCMateSetup.xml',str(ADDON),'Default','720p');w.configure_work();w._initialized=True;w.stage='discover'
         release=threading.Event();self.addCleanup(w._pool.shutdown,wait=True,cancel_futures=True);self.addCleanup(w.close)

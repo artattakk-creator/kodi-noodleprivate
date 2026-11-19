@@ -1,0 +1,71 @@
+{
+  "job_id": 132769244901,
+  "status": "PASS_ON_ONE_UNCHANGED_RETRY",
+  "source_commit": "1bc86a07affceaa3fe615ffe556b4f451bdd5589",
+  "artifact_id": 14156977207,
+  "artifact_sha256": "72f8def83e8765ac4535882c8bd877e4899c3cd19e27dfc9157d47223793ff87",
+  "first_failure_retained": true,
+  "android": "ANDROID_NOT_TESTED",
+  "observations": [
+    {
+      "origin": "visible84.json",
+      "status": "PASS",
+      "posters89": [
+        {
+          "kind": "vod",
+          "distinct_local_items": 5,
+          "pixels": 54900,
+          "screenshot": "visible84-poster89-vod-warm.png"
+        },
+        {
+          "kind": "series",
+          "distinct_local_items": 5,
+          "pixels": 55260,
+          "screenshot": "visible84-poster89-series-warm.png"
+        }
+      ],
+      "own_references": 88,
+      "after_restart_no_repeated_downloads": null
+    },
+    {
+      "origin": "restart1.json",
+      "status": "PASS",
+      "posters89": [
+        {
+          "kind": "vod",
+          "distinct_local_items": 5,
+          "pixels": 52920,
+          "screenshot": "visible84-poster89-vod-cold.png"
+        },
+        {
+          "kind": "series",
+          "distinct_local_items": 5,
+          "pixels": 53100,
+          "screenshot": "visible84-poster89-series-cold.png"
+        }
+      ],
+      "own_references": 88,
+      "after_restart_no_repeated_downloads": true
+    },
+    {
+      "origin": "restart2.json",
+      "status": "PASS",
+      "posters89": [
+        {
+          "kind": "vod",
+          "distinct_local_items": 5,
+          "pixels": 52920,
+          "screenshot": "visible84-poster89-vod-cold.png"
+        },
+        {
+          "kind": "series",
+          "distinct_local_items": 5,
+          "pixels": 53100,
+          "screenshot": "visible84-poster89-series-cold.png"
+        }
+      ],
+      "own_references": 88,
+      "after_restart_no_repeated_downloads": true
+    }
+  ]
+}

@@ -72,7 +72,9 @@ class Pipeline68(Fixture,unittest.TestCase):
   e=dict(self.event(),key='one')
   self.assertTrue(q.enqueue(e))
   self.assertFalse(q.enqueue(e,allow_lookup=True,local_image63=True,priority68=True))
-  self.assertEqual(len(q._queue),1);self.assertEqual(q._queue['one'][1:3],(True,True));self.assertIn('one',q._urgent68)
+  self.assertEqual(len(q._queue),1)
+  queue_key,job=next(iter(q._queue.items()))
+  self.assertEqual(job[0]['key'],'one');self.assertEqual(job[1:3],(True,True));self.assertIn(queue_key,q._urgent68)
  def test_queue_full_accepts_visible_event_without_exceeding_24(self):
   import programme_urls55 as q
   q._thread=mock.Mock();q._thread.is_alive.return_value=True
@@ -197,9 +199,11 @@ class Pipeline68(Fixture,unittest.TestCase):
   with mock.patch.object(sys.modules['xbmcgui'],'WindowDialog',object,create=True):spec.loader.exec_module(module)
   LiveNavigator=module.LiveNavigator
   owner=types.SimpleNamespace(mode='channels',index=types.SimpleNamespace(selection=lambda *args:([],{})),category_id='a',enabled={'a'},_highlight={'channels':0},_scroll_to_current=False,_catalog_ready=True,_catalog_partial46=True)
-  self.assertEqual(LiveNavigator._list_content(owner),['Senderkatalog wird vorbereitet'])
+  with mock.patch('live_group93.rows',return_value=None):
+   self.assertEqual(LiveNavigator._list_content(owner),['Senderkatalog wird vorbereitet'])
   owner._catalog_partial46=False
-  self.assertEqual(LiveNavigator._list_content(owner),['Keine aktivierten Sender'])
+  with mock.patch('live_group93.rows',return_value=None):
+   self.assertEqual(LiveNavigator._list_content(owner),['Keine aktivierten Sender'])
 
 class Dynamic68(Fixture,unittest.TestCase):
  def setUp(self):

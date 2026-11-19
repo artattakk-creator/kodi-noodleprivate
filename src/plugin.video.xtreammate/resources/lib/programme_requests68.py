@@ -7,9 +7,11 @@ No provider URLs, tokens, SQL, files or HTTP in request()/result().
 import hashlib,json,threading,time
 PREFIX='XCMate.Programme68.'
 SLOTS=64
+ROLE_BANKS={'hero':0,'details':1,'card':2}
+INTENT_SLOTS=SLOTS*len(ROLE_BANKS)
 MAX_BYTES=8192
 _FIELDS=('pid','sid','start','stop','title','canonical','revision','source_key46','fact_revision46','epg_source46')
-_ART=('key','fingerprint','code','source','match','image','thumbnail','sha256','attribution','image_scope57','until','failure_reason68','storage68','source_url','url_version55','url_verified69','scope69','profile69','persisted69','storage69','storage_code69','policy69','resolved_at55','sources70','lookup70','origin_policy75','decoded77','image_width77','image_height77','display84','display_key84','provisional85','manual85','temp85','mapping_epoch85','role81','decoded88','asset88','vote_average88','vote_count88')
+_ART=('key','fingerprint','code','source','match','image','thumbnail','sha256','attribution','image_scope57','until','failure_reason68','storage68','source_url','url_version55','url_verified69','scope69','profile69','persisted69','storage69','storage_code69','policy69','resolved_at55','sources70','lookup70','origin_policy75','decoded77','image_width77','image_height77','display84','display_key84','provisional85','manual85','temp85','mapping_epoch85','role81','decoded88','asset88','vote_average88','vote_count88','xmltv96')
 _lock=threading.Lock()
 _thread=None
 _stop=threading.Event()
@@ -26,6 +28,9 @@ def identity(event):
  values=[scope()]+[event.get(k) for k in _FIELDS]
  return hashlib.sha256(json.dumps(values,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
 
+def slot_for(tag,view='hero'):
+ return ROLE_BANKS[view]*SLOTS+int(tag[:8],16)%SLOTS
+
 def _window():
  import xbmcgui
  return xbmcgui.Window(10000)
@@ -40,27 +45,37 @@ def _read(key):
 def request(event,priority=False):
  """A bounded intent only; callers already possess the displayed local event."""
  try:
-  if _window().getProperty('XCMate.Storage92.Disabled.'+__import__('epg_handoff63').profile_scope())=='true':return False
   if event.get('_no_art_request68') or not event.get('pid') or not event.get('sid') or not event.get('title'):return False
   if not 0<int(event['start'])<int(event['stop']):return False
   value={k:event[k] for k in _FIELDS if k in event}
   if any(isinstance(v,str) and len(v)>1024 for v in value.values()):return False
-  tag=identity(value);slot=str(int(tag[:8],16)%SLOTS)
+  from programme_state482 import POLICY
+  profile=__import__('epg_handoff63').profile_scope()
+  if _window().getProperty('XCMate.Storage92.Disabled.'+profile)=='true':
+   reason=_window().getProperty('XCMate.Storage92.Reason.'+profile)
+   status(event,reason if reason in POLICY else 'IMAGE_EPG_DISABLED')
+   return False
+  view=__import__('agent_programme100').view(event)
+  tag=identity(value);slot=str(slot_for(tag,view))
   from programme_status70 import since
   prior70=_read('request.'+slot)
-  record=dict(event=value,tag=tag,scope=scope(),at=int(time.time()//5)*5,priority=bool(priority),since70=since(prior70,tag))
+  record=dict(event=value,tag=tag,scope=scope(),at=int(time.time()//5)*5,priority=bool(priority),since70=since(prior70,tag),detail93=bool(event.get('_detail93')),
+              view499=view)
   __import__('programme_deadline80').retry_window(record,prior70)
   raw=json.dumps(record,separators=(',',':'),allow_nan=False)
   if len(raw.encode())>MAX_BYTES:return False
   marker=_window();key=PREFIX+'request.'+slot
   if marker.getProperty(key)!=raw:marker.setProperty(key,raw)
+  previous482=_read('status.'+slot)
+  if previous482.get('tag')==tag and previous482.get('scope')==scope() and previous482.get('code') in POLICY:
+   status(event,'REQUESTED')
   __import__('art_trace81').note(event,'QUEUED')
   return True
  except (ImportError,AttributeError,RuntimeError,ValueError,TypeError,KeyError,OverflowError):return False
 
 def trace(event,code):
  codes=set(__import__('programme_revision85').REASONS)|{'QUEUED','RUNNING','LOCAL_IMAGE_READY','IMAGE_READY','NOT_SCHEDULED','NO_MATCH','NO_ARTWORK','CACHE_MISS','CACHE_MISMATCH','DB_FULL','FETCH_FAILED','CANCELLED','HTTP_AUTH','HTTP_RATE_LIMIT','TIMEOUT','PROGRAMME_DB_UNAVAILABLE','CACHE_ERROR','CACHE_IO_ERROR','PROGRAMME_CACHE_BUDGET','TMDB_DISABLED','TMDB_TOKEN_MISSING','BLOCKED_IMAGE_HOST_OR_URL','NO_MATCH_AMBIGUOUS','HELPER_TIMEOUT','HELPER_BACKGROUND_UNAVAILABLE','NO_UNIQUE_MATCH','NO_IMAGE','NO_YEAR','NOT_CLASSIFIED_MOVIE','AWAITING_BACKGROUND_REFRESH','RESERVE_BLOCKED','DISK_FULL','BUDGET_FULL','IMAGE_URL_READY_RAM','IMAGE_URL_READY','SAFE_RESERVE_BLOCKED','REAL_ENOSPC','SQLITE_FULL_POLICY','SQLITE_FULL_STORAGE','SQLITE_FULL_UNKNOWN','SQLITE_BUSY_LOCKED','SQLITE_IO','EPG_READ_TIMEOUT','IMAGE_LOOKUP_TIMEOUT'}
- fixed=code if code in codes else 'FETCH_FAILED'
+ fixed=code if code in codes or code in __import__('programme_state482').ERRORS or code in ('REQUESTED','WAITING_SERVICE') else 'FETCH_FAILED'
  key=(identity(event),fixed);now=time.monotonic()
  with _lock:
   if now-_traces.get(key,-1e9)<60:return
@@ -74,8 +89,10 @@ def status(event,code,art=None):
  """Producer-only publication. Never publish URL credentials or raw errors."""
  try:
   trace(event,code)
+  import agent_programme100 as roles499
+  view=roles499.view(event)
   tags=[identity(event)]
-  with _lock:tags+=list(_aliases.get(tags[0],()))
+  with _lock:tags+=list(_aliases.get((tags[0],view),()))
   payload={k:art[k] for k in _ART if art and k in art}
   if 'sources70' in payload:payload['sources70']=__import__('programme_outcomes70').clean(payload['sources70'])
   if 'lookup70' in payload:payload['lookup70']={k:bool(v) for k,v in payload['lookup70'].items() if k in ('own','helper','catalog','tvmaze')} if isinstance(payload['lookup70'],dict) else {}
@@ -88,22 +105,31 @@ def status(event,code,art=None):
     for field69 in fields69:payload.pop(field69,None)
   for tag in set(tags):
    adjusted=dict(payload,scope69=tag) if payload.get('url_verified69') else dict(payload)
-   value=dict(tag=tag,scope=scope(),at=time.time(),code=code,art=adjusted)
+   value=dict(tag=tag,scope=scope(),at=time.time(),code=code,art=adjusted,detail93=bool(event.get('_detail93')),
+              view499=view,typed499=roles499.typed(event))
    raw=json.dumps(value,separators=(',',':'),allow_nan=False)
-   if len(raw.encode())<=MAX_BYTES:_window().setProperty(PREFIX+'status.'+str(int(tag[:8],16)%SLOTS),raw)
+   if len(raw.encode())<=MAX_BYTES:_window().setProperty(PREFIX+'status.'+str(slot_for(tag,view)),raw)
  except (ImportError,AttributeError,RuntimeError,ValueError,TypeError,KeyError):pass
 
 def result(event,previous=None):
  """UI-safe status/art, bound to exact profile, event and source revision."""
  try:
+  import agent_programme100 as roles499
+  requested=roles499.view(event)
   locked89=__import__('programme_lock89').current(event)
-  if locked89:return locked89
+  if locked89 and roles499.manual(locked89):return locked89
+  from utils import setting_bool
+  role499=roles499.read(event,requested) if setting_bool('epg_agent_enabled',False) else None
+  if role499:return role499
+  if locked89 and locked89.get('role81')!='legacy_icon' and roles499.fits(locked89,requested):return locked89
   pinned88=__import__('sticky_art88').read(event)
-  if pinned88:return pinned88
-  tag=identity(event);value=_read('status.'+str(int(tag[:8],16)%SLOTS))
+  if pinned88 and pinned88.get('role81')!='legacy_icon' and roles499.fits(pinned88,requested):return pinned88
+  if not roles499.fits(previous,requested):previous=None
+  tag=identity(event);value=_read('status.'+str(slot_for(tag,requested)))
   from programme_status70 import valid,waiting
   if value.get('tag')!=tag or value.get('scope')!=scope() or not valid(value):return waiting(event,previous)
   art=value.get('art') or {}
+  if not roles499.fits(art,requested):return waiting(event,previous)
   terminal80=__import__('programme_deadline80').code(event,value.get('code'))
   if terminal80=='IMAGE_LOOKUP_TIMEOUT' and not __import__('programme_lastgood80').positive(event,previous):return dict(code=terminal80,source='placeholder')
   if value.get('code') in ('QUEUED','RUNNING') and __import__('programme_image69').eligible(previous,event):return previous
@@ -138,7 +164,16 @@ def mark_seen(tag,policy,now):
 def drain(cancel=lambda:False):
  try:__import__('series_requests85').drain(cancel)
  except (OSError,ValueError,RuntimeError,AttributeError):pass
- if not __import__('storage_policy92').images_enabled():return 0
+ if not __import__('storage_policy92').images_enabled():
+  from programme_state482 import POLICY
+  reason=_window().getProperty('XCMate.Storage92.Reason.'+__import__('epg_handoff63').profile_scope())
+  for slot in range(INTENT_SLOTS):
+   pending=_read('request.'+str(slot));event=pending.get('event')
+   if isinstance(event,dict) and pending.get('scope')==scope() and pending.get('tag')==identity(event) and 0<=time.time()-pending.get('at',0)<30:
+    view=pending.get('view499','hero')
+    if isinstance(view,str) and view in ROLE_BANKS and slot==slot_for(pending['tag'],view):
+     status(dict(event,_art_view499=view),reason if reason in POLICY else 'IMAGE_EPG_DISABLED')
+  return 0
  try:__import__('programme_reference84').tick(cancel)
  except (OSError,ValueError,RuntimeError,AttributeError):pass
  """Worker-only bounded intake, fair cyclic slots and authoritative re-read."""
@@ -148,14 +183,17 @@ def drain(cancel=lambda:False):
  from portals import get_by_id
  from library_index import Reader
  processed=0
- for offset in range(SLOTS):
-  slot=(_cursor+offset)%SLOTS
+ for offset in range(INTENT_SLOTS):
+  slot=(_cursor+offset)%INTENT_SLOTS
   if cancel():break
   try:
    value=_read('request.'+str(slot));event=value.get('event')
    if not isinstance(event,dict) or value.get('scope')!=scope() or value.get('tag')!=identity(event):continue
    if not 0<=time.time()-float(value.get('at',0))<20:continue
-   previous69=_read('status.'+str(int(value['tag'][:8],16)%SLOTS))
+   requested=value.get('view499','hero')
+   if not isinstance(requested,str) or requested not in ROLE_BANKS or slot!=slot_for(value['tag'],requested):continue
+   event=dict(event,_art_view499=requested)
+   previous69=_read('status.'+str(slot))
    if previous69.get('tag')==value['tag'] and previous69.get('scope')==scope():
     artifact69=previous69.get('art') or {}
     from programme_policy68 import negative_scope
@@ -167,7 +205,7 @@ def drain(cancel=lambda:False):
     if previous69.get('code') in ('QUEUED','RUNNING') and 0<=time.time()-previous69.get('at',0)<60:
      if value.get('priority') and previous69.get('code')=='QUEUED':
       from programme_urls55 import promote_focus75
-      promote_focus75(value['tag'])
+      promote_focus75(value['tag'],requested)
      continue
    portal=get_by_id(str(event.get('pid','')))
    if not portal or not portal.get('enabled',True) or not portal.get('include_live',True):continue
@@ -176,7 +214,7 @@ def drain(cancel=lambda:False):
    from tmdb_token61 import effective_tmdb_read_token,TokenError
    try:effective_tmdb_read_token()
    except TokenError:pass
-   policy=fingerprint(event);tag=value['tag'];now=time.monotonic()
+   policy=fingerprint(event)+'|'+requested;tag=value['tag'];now=time.monotonic()
    with _lock:prior=_seen.get((tag,policy),-1e9)
    if now-prior<10:continue
    reader=Reader(portal['id'])
@@ -189,6 +227,8 @@ def drain(cancel=lambda:False):
     mark_seen(tag,policy,now)
     continue
    current=load(portal,channel,event)
+   current['_art_view499']=requested
+   if value.get('detail93'):current['_detail93']=True
    # No cached-short fallback may override an explicit source/guide binding.
    if current.get('code')!='LOCAL_EVENT' or any(event.get(k) and event.get(k)!=current.get(k) for k in ('canonical','source_key46','fact_revision46')) or event.get('revision') is not None and json.dumps(event['revision'])!=json.dumps(current.get('revision')):
     code69=current.get('read_code69') or ('NO_SOURCE_FACTS' if current.get('code')!='LOCAL_EVENT' else 'SOURCE_CHANGED' if any(event.get(k)!=current.get(k) for k in ('canonical','source_key46','fact_revision46')) else 'EVENT_CHANGED')
@@ -197,28 +237,32 @@ def drain(cancel=lambda:False):
     else:
      revised85=load(portal,channel,dict(start=event['start'],stop=event['stop']))
      if revised85.get('code')=='LOCAL_EVENT':
-      request(revised85,priority=True)
+      request(dict(revised85,_art_view499=requested,_detail93=bool(value.get('detail93'))),priority=True)
     status(event,code69,dict(source='placeholder',code=code69,until=time.time()+__import__('programme_revision85').delay(event,code69)))
     mark_seen(tag,policy,now)
     continue
    with _lock:
-    aliases=_aliases.setdefault(identity(current),set());aliases.add(tag)
+    aliases=_aliases.setdefault((identity(current),requested),set());aliases.add(tag)
     while len(_aliases)>128:_aliases.pop(next(iter(_aliases)))
    from utils import setting_bool
    own=setting_bool('programme_tmdb46',False) and setting_bool('tmdb_research43',False)
    allow=own or setting_bool('programme_tvmaze67',False) or setting_bool('programme_helper57',True) or setting_bool('programme_catalog57',True)
-   if not allow and not current.get('xmltv_image') and not current.get('provider_image'):
-    status(current,'TMDB_LOOKUP_DISABLED')
-    mark_seen(tag,policy,now)
-    continue
+   if not allow and not current.get('xmltv_image') and not current.get('provider_image') and not __import__('agent_programme100').candidates(current):
+    # An explicit local XMLTV choice can refer to another active feed.
+    # Admit it without granting remote search; resolve revalidates its facts.
+    local96=__import__('programme_mapping85').current(current)
+    if not (setting_bool('programme_xmltv96',True) and local96 and local96.get('source')=='xmltv_event' and not local96.get('hidden')):
+     status(current,'TMDB_LOOKUP_DISABLED')
+     mark_seen(tag,policy,now)
+     continue
    accepted=enqueue(current,allow_lookup=allow,local_image63=setting_bool('programme_art_local69',False),priority68=2 if value.get('priority') else False)
    mark_seen(tag,policy,now if accepted else now-8)
    processed+=1
-   if processed>=9:_cursor=(slot+1)%SLOTS;break
-  except Exception:
+   if processed>=9:_cursor=(slot+1)%INTENT_SLOTS;break
+  except Exception as error482:
    # Keep private exceptions out of properties and public logs.
-   if isinstance(locals().get('event'),dict):status(event,'FETCH_FAILED')
- else:_cursor=(_cursor+9)%SLOTS
+   if isinstance(locals().get('event'),dict):status(event,__import__('programme_state482').error(error482))
+ else:_cursor=(_cursor+9)%INTENT_SLOTS
  return processed
 
 def _run():

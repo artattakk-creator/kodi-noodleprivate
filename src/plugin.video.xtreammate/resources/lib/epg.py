@@ -100,10 +100,12 @@ def parse_xmltv(content: bytes):
                         break
                     elif 'onscreen' in sys_:
                         episode = en.text or ''
-                rating = ''
+                rating, rating_system = '', ''
                 for r in element.findall('rating'):
-                    rating = r.findtext('value') or ''
-                    break
+                    rating = (r.findtext('value') or '').strip()[:32]
+                    if rating:
+                        rating_system = r.get('system','')[:32]
+                        break
                 entry = {
                     'channel': cid,
                     'start_timestamp': start,
@@ -114,6 +116,7 @@ def parse_xmltv(content: bytes):
                     'category': cat,
                     'episode': episode,
                     'rating': rating,
+                    'rating_system': rating_system,
                 }
                 programmes.setdefault(cid, []).append(entry)
                 channels.setdefault(cid, cid)
@@ -149,14 +152,22 @@ def request_refresh(portal_id,p,force=False):
     import uuid,xbmcgui
     from guide_store import path
     from epg_gate46 import access
+    if not p.get('epg_show',True):
+        __import__('epg_status').update(portal_id,'refresh','EPG_DISABLED',running=False)
+        return False
     state=access(path())
     if state not in ('READY','NOT_CREATED'):
         from epg_status import update
         update(portal_id,'refresh',state,running=False)
         diagnostic(state,running=False)
         return False
+    try:job=__import__('epg_jobs94').request(portal_id,force)
+    except OSError:
+        __import__('epg_status').update(portal_id,'refresh','CONTROL_STORAGE_UNAVAILABLE',running=False)
+        diagnostic('CONTROL_STORAGE_UNAVAILABLE',running=False)
+        return False
     xbmcgui.Window(10000).setProperty('XtreamMate.EPGRefreshRequest' ,json.dumps({
-        'pid':str(portal_id),'force':bool(force),'at':time.time(),'nonce':uuid.uuid4().hex}))
+        'pid':str(portal_id),'force':bool(force),'at':time.time(),'nonce':job['id']}))
     from epg_status import update
     update(portal_id,'refresh','REQUESTED',running=False,requested=True)
     diagnostic('REQUESTED',running=False,requested=True)
@@ -169,18 +180,24 @@ _LAST_REFRESH_REQUEST=''
 def poll_refresh_request():
     import xbmcgui,portals
     global _LAST_REFRESH_REQUEST
-    raw=xbmcgui.Window(10000).getProperty('XtreamMate.EPGRefreshRequest')
-    if not raw or len(raw)>4096: return
-    try: value=json.loads(raw)
-    except (ValueError,TypeError): return
-    if not isinstance(value,dict) or value.get('nonce')==_LAST_REFRESH_REQUEST: return
+    from epg_jobs94 import snapshot
     try:
-        if not 0<=time.time()-float(value.get('at',0))<120: return
-    except (ValueError,TypeError): return
-    p=portals.get_by_id(value.get('pid'))
-    if not p or not p.get('enabled',True): return
-    if warmup_async(p['id'],p,force=bool(value.get('force'))) is False:return
-    _LAST_REFRESH_REQUEST=value.get('nonce')
+        raw94=xbmcgui.Window(10000).getProperty('XtreamMate.EPGRefreshRequest')
+        hint94=json.loads(raw94) if raw94 and len(raw94)<=4096 else {}
+    except (ValueError,TypeError):hint94={}
+    if not isinstance(hint94,dict):hint94={}
+    # Persistent queue also survives a root interpreter ending or another
+    # portal replacing the legacy Window-property hint.
+    for p in portals.get_active():
+        if str(p['id'])==hint94.get('pid') and hint94.get('nonce')!=_LAST_REFRESH_REQUEST:
+            __import__('epg_jobs94').adopt(p['id'],hint94.get('nonce'),hint94.get('at'),hint94.get('force',False))
+        thread94=_WARMUP_THREADS.get(p['id'])
+        if not _REFRESH_LOCK.locked() and (not thread94 or not thread94.is_alive()):
+            __import__('epg_jobs94').reconcile(p['id'])
+        job=snapshot(p['id'])
+        if job.get('state')!='QUEUED' or job.get('id')==_LAST_REFRESH_REQUEST or not p.get('epg_show',True):continue
+        value=dict(p,_epg_job94=job['id'])
+        if warmup_async(p['id'],value,force=True) is not False:_LAST_REFRESH_REQUEST=job['id']
 
 
 def _mem_get(portal_id):
@@ -491,21 +508,36 @@ def _refresh_portal_epg(portal_id, p, force=False):
         diagnostic('REFRESH_BUSY',running=False)
         return None
     try:
+        import epg_jobs94 as jobs94
+        identity94=p.get('_epg_job94')
+        if not identity94:
+            job94=jobs94.request(portal_id,force,exclusive=bool(p.get('_epg_auto53')))
+            if job94 is None:return None
+            identity94=job94['id'];p=dict(p,_epg_job94=identity94)
+        if not jobs94.acknowledge(portal_id,identity94):return None
         diagnostic('RUNNING',running=True)
         try:
             from epg_report53 import observing
             with observing(portal_id,automatic=p.get('_epg_auto53',False)) as run53:
                 result=_refresh_portal_epg_inner(portal_id,p,force=force)
-                run53['result']=bool(result)
+                run53['result']=bool(result or p.get('_agent_result', {}).get('verified'))
+            state94=__import__('epg_status').read(portal_id).get('refresh',{}).get('code','')
+            jobs94.finish(portal_id,identity94,'DONE' if state94 in ('READY','READY_NO_NOW') else 'PARTIAL' if state94=='PARTIAL_SUCCESS' else 'FAILED')
             if result:
                 diagnostic('READY',running=False,channels=len(result),
                            programmes=sum(len(v) for v in result.values()),last_success=time.time())
+                from epg_views import refresh_visible_page
+                refresh_visible_page(portal_id)
+            elif p.get('_agent_result', {}).get('verified'):
+                from epg_status import changed
+                changed(portal_id)
                 from epg_views import refresh_visible_page
                 refresh_visible_page(portal_id)
             else:
                 diagnostic('NO_NEW_GUIDE',running=False)
             return result
         except Exception:
+            jobs94.finish(portal_id,identity94,'FAILED')
             diagnostic('REFRESH_FAILED',running=False)
             raise
         finally:
@@ -516,8 +548,8 @@ def _refresh_portal_epg(portal_id, p, force=False):
 
 
 def _refresh_portal_epg_inner(portal_id, p, force=False):
-    indexed_xmltv52=False
-    if p.get('type') in ('m3u','stb') and p.get('source_schema')!=1:
+    indexed_xmltv52=bool(p.get('_agent_source'))
+    if not indexed_xmltv52 and p.get('type') in ('m3u','stb') and p.get('source_schema')!=1:
         # Reuse the same source-qualified streaming importer for already
         # indexed legacy playlists/MAG portals with configured XMLTV sources.
         # Unindexed STB bulk/short fallback keeps its existing entry path.
@@ -530,7 +562,13 @@ def _refresh_portal_epg_inner(portal_id, p, force=False):
         from stream_epg import refresh
         import xbmc
         cancel = xbmc.Monitor().abortRequested if hasattr(xbmc,'Monitor') else lambda: False
-        return refresh(p,force=force,cancel=cancel)
+        identity94=p.get('_epg_job94')
+        agent_cancel = p.get('_agent_cancel', lambda: False)
+        job_cancel = __import__('epg_jobs94').cancel_reader(portal_id,identity94) if identity94 else None
+        def cancelled(force=False):
+            return cancel() or agent_cancel() or bool(job_cancel and job_cancel(force=force))
+        cancelled.fresh = lambda: cancelled(force=True)
+        return refresh(p,force=force,cancel=cancelled)
     from guide_store import path
     from epg_gate46 import access
     state=access(path())
@@ -624,6 +662,7 @@ def _refresh_portal_epg_inner(portal_id, p, force=False):
         if not imported92 or not committed(portal_id,revision92):
             diagnostic('IMPORT_READBACK_FAILED',running=False)
             return {}  # Last-good cache and source data remain untouched.
+        __import__('epg_cleanup93').imported(portal_id,revision92)
         snapshot92=short(programmes,now)
         _save_disk(portal_id, snapshot92)
         _mem_set(portal_id, snapshot92)
@@ -702,6 +741,7 @@ def warmup_async(portal_id, p, force=False):
     if not force and _is_fresh(portal_id):
         return True
     with _WARMUP_LOCK:
+        if _REFRESH_LOCK.locked() or any(worker94.is_alive() for worker94 in _WARMUP_THREADS.values()):return False
         t = _WARMUP_THREADS.get(portal_id)
         if t and t.is_alive():
             return False

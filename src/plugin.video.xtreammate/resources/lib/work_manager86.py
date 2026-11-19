@@ -34,12 +34,16 @@ def event_for(parent):
  channel=getattr(parent,'channel',{})
  return dict(selected,pid=str(parent.portal['id']),sid=str(channel.get('sid','')),title=str(selected.get('title') or ''))
 
-def open(parent):
+def open(parent,*,source96=None):
  if getattr(parent,'_closed',False) or not __import__('programme_window46').permitted(parent):return False
  event=event_for(parent);query=str(event.get('title') or '')[:200];kind='movie' if event.get('media_kind86')=='vod' else 'tv';source='tmdb';page=1;changed=False
  dialog=xbmcgui.Dialog()
+ if source96=='xmltv_event':source,kind='xmltv_event','event'
+ rescan96=source96=='xmltv_event'
  while not getattr(parent,'_closed',False) and not xbmc.Monitor().abortRequested():
-  action=icon_select(dialog,tr(37080),[tr(37081)+' · '+query,tr(37082)+' · '+source+' '+kind,tr(37083),tr(37084),tr(37085),tr(37098)])
+  action=2 if rescan96 else icon_select(dialog,tr(37080),[tr(37081)+' · '+query,tr(37082)+' · '+source+' '+kind,tr(37083),tr(37084),tr(37085),tr(37098)]+([tr(39026)] if event.get('media_kind86','live')=='live' else []))
+  rescan96=False
+  if action==6:source,kind='xmltv_event','event';action=2
   if action<0:return changed
   if action==5:
    image=dialog.browse(1,tr(37098),'files','.jpg|.jpeg|.png',False,False,'')
@@ -54,9 +58,9 @@ def open(parent):
    if answer.get('code')=='SAVED':changed=True;return changed
    dialog.ok('XCMate',status(answer.get('code')));continue
   if action==1:
-   selected=icon_select(dialog,tr(37082),['TMDB · TV','TMDB · Movie','TVMaze · TV'])
+   selected=icon_select(dialog,tr(37082),['TMDB · TV','TMDB · Movie','TVMaze · TV']+(['XMLTV'] if event.get('media_kind86','live')=='live' else []))
    if selected<0:continue
-   source,kind=(('tmdb','tv'),('tmdb','movie'),('tvmaze','tv'))[selected];page=1;continue
+   source,kind=(('tmdb','tv'),('tmdb','movie'),('tvmaze','tv'),('xmltv_event','event'))[selected];page=1;continue
   if action==0 or not query:
    edited=dialog.input(tr(37081),defaultt=query)
    if not edited.strip():continue
@@ -67,7 +71,7 @@ def open(parent):
    dialog.ok('XCMate',status(answer.get('code')));continue
   items=[]
   for row in rows:
-   label=row['title']+' · '+str(row['year'])+' · '+','.join(row.get('country',[]))+' · '+row['source']+' '+row['media_type86']
+   label=row['title']+' · '+str(row['year'] or '')+' · '+','.join(row.get('country',[]))+' · '+('XMLTV' if row['source']=='xmltv_event' else row['source']+' '+row['media_type86'])
    item=xbmcgui.ListItem(label,label2=row.get('overview',''));items.append(item)
    if row.get('thumb86'):item.setArt(dict(thumb=row['thumb86']))
    # Candidate URLs remain references, not evidence of visible Kodi pixels.

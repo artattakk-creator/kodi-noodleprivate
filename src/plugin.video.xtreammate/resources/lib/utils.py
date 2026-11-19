@@ -44,20 +44,23 @@ def error(msg):  log(msg, xbmc.LOGERROR)
 
 def setting(key, default=''):
     try:
-        return ADDON.getSetting(key) or default
+        from settings_guard96 import value
+        return value(key, ADDON, default)
     except Exception:
         return default
 
 def setting_bool(key, default=False):
     try:
-        v = ADDON.getSetting(key)
+        from settings_guard96 import value
+        v = value(key, ADDON)
         return v.lower() == 'true' if v else default
     except Exception:
         return default
 
 def setting_int(key, default=0):
     try:
-        return int(ADDON.getSetting(key) or default)
+        from settings_guard96 import value
+        return int(value(key, ADDON) or default)
     except Exception:
         return default
 
@@ -586,7 +589,8 @@ def http_stream(url, params=None, headers=None, timeout=15, max_seconds=None,
         with httpx.Client(**options) as client:
             with client.stream('GET',url,params=params) as response:
                 response.raise_for_status()
-                yield ChunkReader(decoded_chunks(response.iter_raw(chunk_size=65536),response.headers,deadline,cancel))
+                from network_io import wire_reader94
+                yield wire_reader94(response.iter_raw(chunk_size=65536),response.headers,deadline,cancel)
     else:
         import urllib.request, urllib.parse
         if params: url += ('&' if '?' in url else '?')+urllib.parse.urlencode(params)
@@ -597,4 +601,5 @@ def http_stream(url, params=None, headers=None, timeout=15, max_seconds=None,
         request = urllib.request.Request(url, headers=hdrs)
         with urllib.request.urlopen(request,timeout=timeout,context=context) as response:
             chunks = iter(lambda: response.read1(65536), b'')
-            yield ChunkReader(decoded_chunks(chunks,response.headers,deadline,cancel))
+            from network_io import wire_reader94
+            yield wire_reader94(chunks,response.headers,deadline,cancel)

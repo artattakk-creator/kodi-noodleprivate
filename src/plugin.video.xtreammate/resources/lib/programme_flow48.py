@@ -33,7 +33,7 @@ def trace(stage,event=None,code='READY',rows=0,duration_ms=0):
     _seen[signature]=now
     if len(_seen)>1024:_seen.pop(next(iter(_seen)))
     source=event.get('epg_source46',event.get('source_key46',''))
-    source='XMLTV' if str(source).startswith('external:') else 'PROVIDER' if source=='provider' else 'UNKNOWN'
+    source='AGENT' if source=='agent' else 'XMLTV' if str(source).startswith('external:') else 'PROVIDER' if source=='provider' else 'UNKNOWN'
     try:
         import xbmc
         xbmc.log('[XCMate][PROGRAMME48] stage='+stage+' event='+digest+' source='+source+' code='+code+' rows='+str(max(0,int(rows)))+' duration_ms='+str(round(max(0,duration_ms),1)),xbmc.LOGINFO)
@@ -71,6 +71,6 @@ def enrich(pid,cid,rows,source=None,sid48=None,revision48=None):
 def source_metadata(event):
     from programme_store46 import metadata
     result=metadata(event)
-    for key in ('xmltv_image','provider_image','subtitle','genre','episode_label','year','season','episode','cast','director','epg_source46','epg_text46','source_key46','fact_revision46','field_sources52','updated52'):
+    for key in ('xmltv_image','provider_image','agent_art','subtitle','genre','episode_label','year','season','episode','cast','director','epg_source46','epg_text46','source_key46','fact_revision46','field_sources52','updated52'):
         if event.get(key) not in (None,'',[]):result[key]=event[key]
     return result

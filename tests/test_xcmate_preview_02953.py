@@ -43,6 +43,7 @@ class Preview53(unittest.TestCase):
     def test_search_pagination_previous_and_more_than_one_thousand_channels(self):
         rows=[('id'+str(n),'Name '+str(n)) for n in range(1101)]
         self.m.binding.stage_channels('p','many',self.m.bid,rows);self.m.binding.finish_channels('p','many',True)
+        self.d.query=''  # Explicit full-catalogue browsing, not focused-channel search.
         self.d.offset=1000;self.d._channels();self.assertTrue(any(r['id']=='id998' for r in self.d.rows))
         self.d.onClick(403);self.assertEqual(self.d.offset,1100);self.assertTrue(any(r['id']=='id999' for r in self.d.rows))
         self.d.onClick(407);self.assertEqual(self.d.offset,1000)

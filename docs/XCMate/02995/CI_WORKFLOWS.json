@@ -1,0 +1,142 @@
+{
+  "source_commit": "1bc86a07affceaa3fe615ffe556b4f451bdd5589",
+  "runtime_commit": "d47ad2205f87418855fd0df06fac8d9f24d366d9",
+  "all_workflows_success": true,
+  "workflows": [
+    {
+      "id": 43698021725,
+      "name": "XCMate .68 implementation review",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43698021725"
+    },
+    {
+      "id": 43698021615,
+      "name": "XCMate .69 focused review",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43698021615"
+    },
+    {
+      "id": 43698021691,
+      "name": "GS Media Repository Lite release gate",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43698021691"
+    },
+    {
+      "id": 43698021604,
+      "name": "XCMate BINGIE Space Blue packaging and rollback tests",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43698021604"
+    },
+    {
+      "id": 43698021541,
+      "name": "XCMate .71 P0 setup and persistence",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43698021541"
+    },
+    {
+      "id": 43698021617,
+      "name": "XCMate .70 EPG artwork review",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43698021617"
+    },
+    {
+      "id": 43698021512,
+      "name": "XCMate 72 archived rescan baseline",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43698021512"
+    },
+    {
+      "id": 43698021673,
+      "name": "XCMate 73 catalog, widgets and optional EPG review",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43698021673"
+    },
+    {
+      "id": 43698021656,
+      "name": "XCMate .95 exact ZIP native Kodi 720p and 1080p",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43698021656"
+    },
+    {
+      "id": 43698021688,
+      "name": "Archived XCMate 74 Home stability and artwork review",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43698021688"
+    },
+    {
+      "id": 43698021646,
+      "name": "XCMate .95 backup gate, profile locks and native UI",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43698021646"
+    },
+    {
+      "id": 43698021484,
+      "name": "XCMate .95 complete host and Pilot preparation (no publication)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43698021484"
+    },
+    {
+      "id": 43698021687,
+      "name": "Publish GS Media Kodi updates",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43698021687"
+    },
+    {
+      "id": 43698021663,
+      "name": "XCMate .88 native pictures under reserve pressure",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43698021663"
+    },
+    {
+      "id": 43698021611,
+      "name": "XCMate cumulative native Home and review",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43698021611"
+    },
+    {
+      "id": 43698021466,
+      "name": "XCMate .90 startup, native IR and 15-minute retention",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43698021466"
+    },
+    {
+      "id": 43698021452,
+      "name": "XCMate .89 durable logos and native pictures",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43698021452"
+    }
+  ],
+  "legacy89_first_attempt": {
+    "job_id": 132762828423,
+    "conclusion": "failure",
+    "error": "POSTER89_NOT_FIVE_DISTINCT_ITEMS",
+    "resolution": "1920x1080",
+    "distinct_items": 3,
+    "expected": 5
+  },
+  "legacy89_one_unchanged_retry": {
+    "job_id": 132769244901,
+    "conclusion": "success"
+  },
+  "android": "ANDROID_NOT_TESTED",
+  "merged_to_main": false,
+  "repository_published": false,
+  "checked_at_utc": "2026-11-15T10:03:38Z"
+}

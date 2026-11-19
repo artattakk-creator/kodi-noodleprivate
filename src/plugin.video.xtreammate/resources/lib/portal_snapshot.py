@@ -24,6 +24,23 @@ class Snapshot:
         return (path,s.st_dev,s.st_ino,s.st_size,s.st_mtime_ns,s.st_ctime_ns)
 
     def read(self,path,types,select=lambda rows:rows):
+        try:return self._read(path,types,select)
+        except TimeoutError:
+            # A cold root may use only a file generation independently proved
+            # by an earlier locked reader. A replaced file cannot inherit it.
+            from portal_proof95 import read
+            with self.lock:
+                proven=read(path,types,self.version)
+                if proven is not None:
+                    self.key,self.value=proven;self.retry=0;self.failures=0
+                    try:return copy.deepcopy(select(self.value))
+                    except MemoryError:
+                        self.value=None
+                        __import__('service_runtime').note_pressure()
+                        raise PortalReadError('Profil konnte wegen Speicherknappheit nicht gelesen werden.',reason='MEMORY') from None
+            raise PortalReadError('Profil beschäftigt. Bitte kurz warten und erneut versuchen.',reason='PROFILE_BUSY') from None
+
+    def _read(self,path,types,select=lambda rows:rows):
         from boot_diagnostics import phase
         from profile_transaction import reading
         from service_runtime import portal_call,portal_read,portal_failure,note_pressure
@@ -61,7 +78,10 @@ class Snapshot:
                             value=json.loads(raw)
                             if not isinstance(value,list) or any(not isinstance(p,dict) or not isinstance(p.get('id'),str) or not p['id'] or p.get('type') not in types for p in value):raise PortalReadError(reason='INVALID_PROFILE')
                             if self.version(path)!=key:continue
-                            self.key=key;self.value=value;portal_read(len(raw));break
+                            self.key=key;self.value=value;portal_read(len(raw))
+                            try:__import__('portal_proof95').record(path,key,raw)
+                            except OSError:pass
+                            break
                         else:raise PortalReadError('Portale wurden gleichzeitig geändert. Bitte erneut öffnen.',reason='PROFILE_RACE')
                 # Never expose cached credentials/groups to mutable callers.
                 result=copy.deepcopy(select(self.value));self.failures=0;self.retry=0

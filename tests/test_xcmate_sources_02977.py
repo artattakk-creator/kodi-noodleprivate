@@ -13,6 +13,9 @@ class Consent77(Fixture,unittest.TestCase):
   self.boolpatch=mock.patch('utils.setting_bool',side_effect=lambda k,d=False:str(self.options.get(k,str(d))).lower()=='true');self.boolpatch.start();self.addCleanup(self.boolpatch.stop)
   self.off=mock.patch.object(self.c,'explicit_off',return_value=set());self.off.start();self.addCleanup(self.off.stop)
  def test_existing_valid_token_enables_both_gates_without_any_token_write(self):
+  # .96 consent contract: existing explicit source flags survive, while a
+  # token alone must not authorize an ordinary new installation.
+  self.options.update({k:'true' for k in self.c.FLAGS})
   before=(self.tokenfile.read_bytes(),self.tokenfile.stat().st_mode,self.tokenfile.stat().st_mtime_ns)
   with mock.patch.object(self.t,'import_bytes',side_effect=AssertionError('REIMPORT')),mock.patch('os.replace',side_effect=AssertionError('TOKEN_REPLACE')):
    self.assertEqual(self.c.ensure(force=True),'TOKEN_FORMAT_VALID')

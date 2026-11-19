@@ -18,6 +18,9 @@ class EPG54(unittest.TestCase):
         stamp=lambda n:time.strftime('%Y%m%d%H%M%S +0000',time.gmtime(n))
         for i in (1,2):
             f=self.m.folder/('feed'+str(i)+'.xml');f.write_text('<tv><channel id="xml"><display-name>Station</display-name></channel><programme channel="xml" start="'+stamp(self.m.now-60)+'" stop="'+stamp(self.m.now+3600)+'"><title>Source '+str(i)+'</title><desc>Actual source description</desc></programme></tv>');self.files.append(f)
+        # .96 always includes Xtream baseline: supply a local provider feed,
+        # then retain the two independently configured optional-source tests.
+        self.m.client.get_xmltv_epg_url=lambda:str(self.files[0])
         self.d.epg_sources=[dict(id='feed'+str(i),name='Source '+str(i),uri=str(f),local=True,enabled=True) for i,f in enumerate(self.files,1)]
         self.d.scan();self.portal=self.d.save();self.mod=importlib.import_module('wizard_epg54');self.stream=importlib.import_module('stream_epg')
         status=sys.modules['epg_status'];status.source_key=lambda s:s.get('id','provider');status.update=mock.Mock();status.read=lambda pid:{}
@@ -27,7 +30,7 @@ class EPG54(unittest.TestCase):
         self.assertEqual(authorize(path())['code'],'BACKUP_VERIFIED')
     def test_portal_already_usable_before_two_sources_then_each_receipt_verified(self):
         self.assertEqual(self.m.index.Reader(self.portal['id']).page('series',limit=1)[1],9)
-        state=self.mod.run(self.portal);self.assertEqual(state['phase'],'READY');self.assertEqual(len(state['sources']),2)
+        state=self.mod.run(self.portal);self.assertEqual(state['phase'],'READY');self.assertEqual(len(state['sources']),3)
         self.assertTrue(all(s['verified']['rows']==1 for s in state['sources'].values()));self.assertFalse(self.mod.pending(self.portal))
     def test_first_source_survives_second_cancel_and_restart_skips_it_after_backup(self):
         original=self.stream.import_source;calls=[]
@@ -37,7 +40,7 @@ class EPG54(unittest.TestCase):
             return original(pid,source,rank,*a,**k)
         with mock.patch.object(self.stream,'import_source',side_effect=interrupted):
             with self.assertRaises(InterruptedError):self.mod.run(self.portal)
-        self.assertEqual(calls,[1,2]);self.assertIsNotNone(self.m.portals.get_by_id(self.portal['id']))
+        self.assertEqual(calls,[0,1,2]);self.assertIsNotNone(self.m.portals.get_by_id(self.portal['id']))
         state=self.mod.read(self.portal);self.assertEqual(state['phase'],'PARTIAL')
         self.backup();calls.clear()
         def observed(pid,source,rank,*a,**k):calls.append(rank);return original(pid,source,rank,*a,**k)
@@ -45,7 +48,7 @@ class EPG54(unittest.TestCase):
         self.assertEqual(calls,[2])
     def test_failed_second_feed_preserves_first_and_no_catalog_reimport_on_retry(self):
         self.files[1].write_text('<tv><programme>broken')
-        state=self.mod.run(self.portal);self.assertEqual(state['phase'],'PARTIAL');self.assertEqual(sum(s['code']=='READY' for s in state['sources'].values()),1)
+        state=self.mod.run(self.portal);self.assertEqual(state['phase'],'PARTIAL');self.assertEqual(sum(s['code']=='READY' for s in state['sources'].values()),2)
         self.assertEqual(self.m.index.Reader(self.portal['id']).page('live',limit=1)[1],1)
         self.d.adapter.entries=mock.Mock(side_effect=AssertionError('EPG must not restart catalogue'))
         self.backup();before=self.m.portals.get_by_id(self.portal['id']);self.mod.run(self.portal)
@@ -58,7 +61,7 @@ class EPG54(unittest.TestCase):
         db.close()
         def observed(pid,s,rank,*a,**k):calls.append(rank);return original(pid,s,rank,*a,**k)
         with mock.patch.object(self.stream,'import_source',side_effect=observed):self.mod.run(self.portal)
-        self.assertEqual(calls,[1])
+        self.assertEqual(calls,[0])
     def test_same_portal_native_refresh_lease_rejects_duplicate_import(self):
         with self.stream.portal_lease44(self.portal['id']) as held:
             self.assertTrue(held)
@@ -68,7 +71,7 @@ class EPG54(unittest.TestCase):
         self.mod.run(self.portal);state=self.mod.read(self.portal);state['phase']='PARTIAL';state['sources'].clear();self.mod.write(self.portal,state)
         with mock.patch.object(self.stream,'import_source',side_effect=AssertionError('backup gate')):
             result=self.mod.run(self.portal)
-        self.assertEqual(result['code'],'BACKUP_REQUIRED');self.assertIsNotNone(self.m.portals.get_by_id(self.portal['id']))
+        self.assertEqual(result['code'],'DB_AUTHORIZATION_MISSING');self.assertIsNotNone(self.m.portals.get_by_id(self.portal['id']))
     def test_checkpoints_are_private_and_have_no_raw_urls_passwords_or_programme_text(self):
         self.mod.run(self.portal);file=Path(self.mod.path(self.portal));raw=file.read_text()
         for value in ('SECRET','https://',str(self.files[0]),'Actual source description','Source 1'):self.assertNotIn(value,raw)
@@ -181,6 +184,6 @@ class EPG54(unittest.TestCase):
         messages=[]
         with mock.patch.object(self.stream,'source_stream',delayed),mock.patch('time.monotonic',side_effect=lambda:clock[0]):
             state=self.mod.run(self.portal,status=lambda *args:messages.append(args))
-        self.assertEqual(state['phase'],'READY');self.assertEqual(len(elapsed),2);self.assertTrue(all(t>300 for t in elapsed))
+        self.assertEqual(state['phase'],'READY');self.assertEqual(len(elapsed),3);self.assertTrue(all(t>300 for t in elapsed))
         self.assertTrue(all(s['verified']['rows']>5000 for s in state['sources'].values()))
-        self.assertTrue(any('Sendungen gelesen' in text for p,text in messages));self.assertTrue(any('EPG-Quelle 2 von 2' in text for p,text in messages))
+        self.assertTrue(any('Sendungen gelesen' in text for p,text in messages));self.assertTrue(any('EPG-Quelle 3 von 3' in text for p,text in messages))

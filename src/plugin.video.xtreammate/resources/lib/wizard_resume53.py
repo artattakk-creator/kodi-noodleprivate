@@ -8,7 +8,7 @@ import contextlib,hashlib,json,os,shutil,sqlite3,stat,tempfile,threading,time,uu
 from urllib.parse import urlsplit,urlunsplit,parse_qsl,urlencode
 _local=threading.local()
 KINDS=('live','vod','series');MAX_BYTES=2*1024*1024
-NONSECRET=('type','name','xc_host','xc_user','stb_url','stb_mac','stb_serial','stb_device_id','epg_show','enabled','start_group_id','start_stream_id')
+NONSECRET=('type','name','xc_host','xc_user','stb_url','stb_mac','stb_serial','stb_device_id','epg_show','provider_epg_enabled','epg_opt_out94','provider_epg_opt_out94','provider_baseline96','enabled','start_group_id','start_stream_id')
 
 
 def current():return getattr(_local,'session',None)
@@ -64,6 +64,12 @@ def read_file(path):
 
 def safe_data(data):
     value={key:data[key] for key in NONSECRET if isinstance(data.get(key),(str,bool))}
+    # Persist only our flag-only baseline receipts, never arbitrary fields
+    # from a malformed history entry into password-free restart data.
+    history=data.get('provider_baseline_history96')
+    if isinstance(history,list):
+        flags=__import__('provider_baseline96').FIELDS
+        value['provider_baseline_history96']=[dict(contract='0.1.29.96',reason='provider_epg_baseline',values=dict(row['values'])) for row in history if isinstance(row,dict) and row.get('contract')=='0.1.29.96' and isinstance(row.get('values'),dict) and all(k in flags and type(v) is bool for k,v in row['values'].items())]
     # Token-bearing playlist/custom URLs are not password-free restart data.
     # The source is re-entered; an ordinary origin/path without credentials or
     # query can be retained. No secret hash is kept as a substitute password.
@@ -121,7 +127,7 @@ class Session:
             self.data={k:v for k,v in draft.data.items() if k!='id'}
             self.state['name_confirmed']=True
             self.state.update(pid=draft.pid,folder=os.path.basename(draft.folder),stage=stage or self.state.get('stage','groups'),
-                selected={k:sorted(draft.selected[k]) for k in KINDS},provider_epg=bool(draft.provider_epg),
+                selected={k:sorted(draft.selected[k]) for k in KINDS},provider_epg=bool(draft.provider_epg),epg_intent94={k:draft.data[k] for k in ('epg_opt_out94','provider_epg_opt_out94') if k in draft.data},
                 epg_sources=[dict(s) for s in draft.epg_sources],scanned=bool(draft.scanned),signature=draft._scan_signature,
                 report={k:draft.report.get(k,0) for k in ('groups','live','vod','series','epg')})
             if getattr(draft,'phased54',False):self.state.update(phased54=True,published54=bool(draft.saved))
@@ -174,12 +180,15 @@ class Session:
             changed=any(prior.data.get(k)!=data.get(k) for k in ('type','xc_host','xc_user','m3u_url','stb_url','stb_mac'))
             if not changed:
                 if prior.data.get('xc_pass')!=data.get('xc_pass'):self.authenticated53=False
-                prior.data.update(data);prior.adapter=for_portal(prior.data,filename=prior.index,playlist=prior.playlist);return prior
+                prior.data.update(data)
+                if prior.data.get('type')=='xtream':__import__('epg_config94').setup_default(prior)
+                prior.adapter=for_portal(prior.data,filename=prior.index,playlist=prior.playlist);return prior
         if len(self.state.get('staging53',[]))>=4 and prior is not None:raise ValueError('DRAFT_STAGE_BUDGET')
         draft=Draft(data);draft.phased54=bool(self.state.get('phased54'));folder=self.folder()
         if prior is not None:
             draft.selected={k:set(prior.selected[k]) for k in KINDS}
             draft.epg_sources=list(prior.epg_sources);draft.provider_epg=prior.provider_epg
+        if draft.data.get('type')=='xtream':__import__('epg_config94').setup_default(draft)
         if any(self.state.get('data',{}).get(k)!=data.get(k) for k in ('type','xc_host','xc_user','stb_url','stb_mac')):folder=None
         self.live=draft
         if folder is None:return draft
@@ -197,6 +206,12 @@ class Session:
             draft.categories={k:list(categories.get(k,[])) for k in KINDS}
             draft.selected={k:set(map(str,self.state.get('selected',{}).get(k,[]))) for k in KINDS}
             draft.provider_epg=bool(self.state.get('provider_epg'));draft.epg_sources=list(self.state.get('epg_sources',[]))
+            intent=self.state.get('epg_intent94')
+            if isinstance(intent,dict):draft.data.update({k:v for k,v in intent.items() if k in ('epg_opt_out94','provider_epg_opt_out94') and type(v) is bool})
+            elif not draft.provider_epg and not draft.epg_sources:draft.data.pop('epg_opt_out94',None)
+            if draft.data.get('type')=='xtream':
+                draft.data['provider_epg_enabled']=draft.provider_epg
+                __import__('epg_config94').setup_default(draft)
             draft.report.update(self.state.get('report',{}));draft._scan_signature=self.state.get('signature')
             draft.adapter=for_portal(draft.data,filename=draft.index,playlist=draft.playlist)
             # Only a validated owned .53 folder for the same Xtream account

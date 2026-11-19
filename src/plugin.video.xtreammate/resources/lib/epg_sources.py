@@ -9,12 +9,12 @@ import json
 import os
 import re
 import tempfile
-import unicodedata
 import uuid
 from urllib.parse import urlsplit
 
 from utils import addon_data_dir, cache_key, cache_get, cache_set, http_get, error
 
+from epg_variant53 import channel_name_key as _channel_name_key
 from epg_io import MAX_XML_BYTES, MAX_PROGRAMMES, XMLTVLimitError
 from network_io import ResponseLimitError
 INDEX_TTL = 30 * 86400
@@ -55,6 +55,7 @@ def add_presets(portal_id, preset_keys):
         added.append(key)
     if added:
         _save(portal_id, state)
+    if any(s.get('enabled',True) for s in state['sources']):__import__('epg_config94').source_added(portal_id)
     return added
 
 
@@ -129,6 +130,7 @@ def add_source(portal_id, title, uri, local=False):
             'uri': uri, 'local': bool(local), 'enabled': True}
     state['sources'].append(item)
     _save(portal_id, state)
+    __import__('epg_config94').source_added(portal_id)
     return item
 
 
@@ -152,6 +154,7 @@ def edit_source(portal_id, source_id, operation):
     else:
         raise ValueError('Ungültige EPG-Aktion')
     _save(portal_id, state)
+    if operation=='toggle' and state['sources'][index].get('enabled',True):__import__('epg_config94').source_added(portal_id)
     return True
 
 
@@ -199,16 +202,6 @@ def _channels_cache_key(portal_id):
 def available_channels(portal_id):
     result = cache_get(_channels_cache_key(portal_id), max_age=INDEX_TTL)
     return result if isinstance(result, dict) else {}
-
-
-def _channel_name_key(value):
-    """Conservative exact-name comparison; no uncertain title mapping."""
-    value = unicodedata.normalize('NFKD', str(value or '')).casefold()
-    # Strip country only with a separator; keep meaningful variants/regions.
-    value = re.sub(r'^\s*(?:de|ger|germany|deutschland|at|aut|ch|sui|nl)\s*[|:–-]\s*', '', value)
-    suffix=r'(?:uhd|fhd|hd|sd|4k|hevc|avc|h[. ]?26[45]|x26[45])'
-    value = re.sub(r'(?:[\s|:()\[\]-]+'+suffix+r')+[\s)\]]*$', '', value)
-    return re.sub(r'[^a-z0-9]+', '', value)
 
 
 def _link_cached_xtream_channels(portal_id, programmes, channel_index):
@@ -348,6 +341,7 @@ def _choose_preset(portal):
         return False
     keys = ([PRESET_FEEDS[selection][0]] if selection < len(PRESET_FEEDS)
             else ['de_master', 'de_epgshare', 'at_epgshare', 'ch_epgshare'])
+    if not __import__('epg_config94').confirm_enable(portal):return False
     added = add_presets(portal['id'], keys)
     if not added:
         dialog.notification('XCMate EPG', 'EPG-Paket bereits vorhanden')
@@ -370,6 +364,7 @@ def _manage_source(portal, source):
         return False
     if choice == 3 and not d.yesno('XCMate EPG', 'EPG-Quelle wirklich löschen?'):
         return False
+    if choice==0 and not source.get('enabled',True) and not __import__('epg_config94').confirm_enable(portal):return False
     return edit_source(portal['id'], source['id'], operations[choice])
 
 

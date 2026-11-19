@@ -1662,16 +1662,16 @@ msgid "Standard (lightweight core)"
 msgstr "Standard (schlanke Grundinstallation)"
 
 msgctxt "#32637"
-msgid "Small / font12"
-msgstr "Klein / font12"
+msgid "Small"
+msgstr "Klein"
 
 msgctxt "#32638"
-msgid "Normal / font13"
-msgstr "Normal / font13"
+msgid "Normal"
+msgstr "Normal"
 
 msgctxt "#32639"
-msgid "Large / font16"
-msgstr "Groß / font16"
+msgid "Large"
+msgstr "Groß"
 
 msgctxt "#32640"
 msgid "Invalid colour. Use six RGB hex digits."
@@ -5529,3 +5529,773 @@ msgstr "NAS nutzt den bestehenden geprüften VFS-Ablauf. Unbekannte Kapazität g
 msgctxt "#38729"
 msgid "Movie groups on Home (library unchanged)"
 msgstr "Filmgruppen auf Home (Bibliothek unverändert)"
+
+msgctxt "#38730"
+msgid "XCMate – storage analysis (read only)"
+msgstr "XCMate – Speicheranalyse (nur lesend)"
+
+msgctxt "#38731"
+msgid "Technical details (JSON)"
+msgstr "Technische Details (JSON)"
+
+msgctxt "#38732"
+msgid "The saved startup channel is temporarily unavailable in the local catalogue. Settings are preserved. Please retry."
+msgstr "Der gespeicherte Startsender ist momentan nicht im lokalen Katalog verfügbar. Einstellungen bleiben erhalten. Bitte erneut versuchen."
+
+msgctxt "#38733"
+msgid "Unknown"
+msgstr "Unbekannt"
+
+msgctxt "#38734"
+msgid "Measurement cancelled or not available yet."
+msgstr "Messung abgebrochen oder noch nicht verfügbar."
+
+msgctxt "#38735"
+msgid "Observed storage usage. Incomplete values are lower bounds, not empty folders."
+msgstr "Beobachtete Speicherbelegung. Unvollständige Werte sind Untergrenzen, keine leeren Ordner."
+
+msgctxt "#38736"
+msgid "Other data class"
+msgstr "Weitere Datenklasse"
+
+msgctxt "#38737"
+msgid "measured completely"
+msgstr "vollständig gemessen"
+
+msgctxt "#38738"
+msgid "measurement incomplete"
+msgstr "Messung noch unvollständig"
+
+msgctxt "#38739"
+msgid "not fully readable"
+msgstr "nicht vollständig lesbar"
+
+msgctxt "#38740"
+msgid "empty / not created yet"
+msgstr "leer / noch nicht angelegt"
+
+msgctxt "#38741"
+msgid "Observed: {} in {} files"
+msgstr "Erfasst: {} in {} Dateien"
+
+msgctxt "#38742"
+msgid "Volume cannot currently be measured reliably."
+msgstr "Volume momentan nicht eindeutig messbar."
+
+msgctxt "#38743"
+msgid "Available: {} / Total: {} / Reserve: {}"
+msgstr "Verfügbar: {} / Gesamt: {} / Reserve: {}"
+
+msgctxt "#38744"
+msgid "Volume {} · Mount {} · Filesystem {}"
+msgstr "Volume {} · Mount {} · Dateisystem {}"
+
+msgctxt "#38745"
+msgid "SQLite WAL: {} · SHM: {}"
+msgstr "SQLite-WAL: {} · SHM: {}"
+
+msgctxt "#38746"
+msgid "Reusable inside SQLite: {} (not physically free space)"
+msgstr "SQLite intern wiederverwendbar: {} (kein physisch freier Speicher)"
+
+msgctxt "#38747"
+msgid "Android quota unknown. Categories can overlap on the same storage pool and must not simply be added together. Analysis did not modify files."
+msgstr "Android-Quota unbekannt. Kategorien können denselben Speicherbereich überlappen und dürfen nicht pauschal addiert werden. Keine Dateien wurden durch die Analyse verändert."
+
+msgctxt "#38748"
+msgid "Storage operation – result"
+msgstr "Speichervorgang – Ergebnis"
+
+msgctxt "#38749"
+msgid "Status: {}"
+msgstr "Status: {}"
+
+msgctxt "#38750"
+msgid "Free before: {} · Free after: {}"
+msgstr "Frei vorher: {} · Frei nachher: {}"
+
+msgctxt "#38751"
+msgid "Actually observed change: {}"
+msgstr "Tatsächlich beobachtete Änderung: {}"
+
+msgctxt "#38752"
+msgid "EPG: {} expired rows · observed file change: {}"
+msgstr "EPG: {} abgelaufene Zeilen · gemessene Dateiänderung: {}"
+
+msgctxt "#38753"
+msgid "Removed owned temporary data: {}"
+msgstr "Entfernte eigene temporäre Daten: {}"
+
+msgctxt "#38754"
+msgid "Verified removed old EPG backups: {}"
+msgstr "Verifiziert entfernte alte EPG-Sicherungen: {}"
+
+msgctxt "#38755"
+msgid "Saved mappings, active databases and internal original images remain protected. A negative or missing storage delta is not a space gain."
+msgstr "Gespeicherte Zuordnungen, aktive Datenbanken und interne Originalbilder bleiben geschützt. Ein negatives oder fehlendes Speicher-Delta ist kein Platzgewinn."
+
+msgctxt "#38760"
+msgid "Movie/series covers"
+msgstr "Film-/Seriencover"
+
+msgctxt "#38761"
+msgid "External programme image receipts"
+msgstr "Externe Sendungsbild-Quittungen"
+
+msgctxt "#38762"
+msgid "Programme images"
+msgstr "Sendungsbilder"
+
+msgctxt "#38763"
+msgid "Channel logos"
+msgstr "Senderlogos"
+
+msgctxt "#38764"
+msgid "Temporary images"
+msgstr "Temporäre Bilder"
+
+msgctxt "#38765"
+msgid "Normalized EPG/catalogue caches"
+msgstr "Normalisierte EPG-/Katalogcaches"
+
+msgctxt "#38766"
+msgid "EPG recovery copies"
+msgstr "EPG-Wiederherstellungskopien"
+
+msgctxt "#38767"
+msgid "Widget restore plans"
+msgstr "Widget-Wiederherstellungspläne"
+
+msgctxt "#38768"
+msgid "Active EPG database"
+msgstr "Aktive EPG-Datenbank"
+
+msgctxt "#38769"
+msgid "EPG image metadata"
+msgstr "EPG-Bildmetadaten"
+
+msgctxt "#38770"
+msgid "Programme/image index"
+msgstr "Sendungs-/Bildindex"
+
+msgctxt "#38771"
+msgid "Migration journal"
+msgstr "Migrationsjournal"
+
+msgctxt "#38772"
+msgid "Kodi thumbnails (read only)"
+msgstr "Kodi-Vorschaubilder (nur lesend)"
+
+msgctxt "#38773"
+msgid "Kodi databases (read only)"
+msgstr "Kodi-Datenbanken (nur lesend)"
+
+msgctxt "#38774"
+msgid "Kodi installation packages (read only)"
+msgstr "Kodi-Installationspakete (nur lesend)"
+
+msgctxt "#38775"
+msgid "Kodi temporary files (read only)"
+msgstr "Kodi-Temp (nur lesend)"
+
+msgctxt "#38776"
+msgid "Separately selected cache"
+msgstr "Separat gewählter Cache"
+
+msgctxt "#38777"
+msgid "Active cover storage"
+msgstr "Aktive Coverablage"
+
+msgctxt "#38778"
+msgid "Active logo storage"
+msgstr "Aktive Logoablage"
+
+msgctxt "#38779"
+msgid "Active programme image storage"
+msgstr "Aktive Sendungsbildablage"
+
+msgctxt "#38756"
+msgid "This channel group is empty"
+msgstr "Diese Sendergruppe ist leer"
+
+msgctxt "#38757"
+msgid "Completed"
+msgstr "Abgeschlossen"
+
+msgctxt "#38758"
+msgid "Interrupted or not complete yet"
+msgstr "Unterbrochen oder noch nicht vollständig"
+
+msgctxt "#38759"
+msgid "Cancelled"
+msgstr "Abgebrochen"
+
+msgctxt "#38780"
+msgid "Temporarily blocked – existing data is preserved"
+msgstr "Vorübergehend gesperrt – vorhandene Daten bleiben erhalten"
+
+msgctxt "#38781"
+msgid "Operation running"
+msgstr "Vorgang läuft"
+
+msgctxt "#38800"
+msgid "EPG is disabled. Explicitly enable it for this source now?"
+msgstr "EPG ist ausgeschaltet. Für diese Quelle jetzt ausdrücklich einschalten?"
+
+msgctxt "#38804"
+msgid "Loading channel group …"
+msgstr "Sendergruppe wird geladen …"
+
+msgctxt "#38805"
+msgid "Channel group verified: no channels available"
+msgstr "Sendergruppe geprüft: keine Sender vorhanden"
+
+msgctxt "#38806"
+msgid "Channel group unavailable. Select it again to retry."
+msgstr "Sendergruppe derzeit nicht verfügbar. Erneut auswählen zum Wiederholen."
+
+msgctxt "#38807"
+msgid "Waiting for the service"
+msgstr "Wartet auf den Dienst"
+
+msgctxt "#38808"
+msgid "Downloading"
+msgstr "Download läuft"
+
+msgctxt "#38809"
+msgid "Parsing XMLTV"
+msgstr "XMLTV wird gelesen"
+
+msgctxt "#38810"
+msgid "Matching channels"
+msgstr "Sender werden zugeordnet"
+
+msgctxt "#38811"
+msgid "Writing staging data"
+msgstr "Zwischenstand wird gespeichert"
+
+msgctxt "#38812"
+msgid "Committing database"
+msgstr "Datenbank wird übernommen"
+
+msgctxt "#38813"
+msgid "Verifying saved data"
+msgstr "Gespeicherte Daten werden geprüft"
+
+msgctxt "#38814"
+msgid "Checking temporary data"
+msgstr "Temporäre Daten werden geprüft"
+
+msgctxt "#38815"
+msgid "Completed"
+msgstr "Abgeschlossen"
+
+msgctxt "#38816"
+msgid "Failed; previous data preserved"
+msgstr "Fehlgeschlagen; bisherige Daten erhalten"
+
+msgctxt "#38817"
+msgid "Cancelled; previous data preserved"
+msgstr "Abgebrochen; bisherige Daten erhalten"
+
+msgctxt "#38818"
+msgid "Waiting for channel catalogue"
+msgstr "Wartet auf Senderkatalog"
+
+msgctxt "#38819"
+msgid "Service confirmed"
+msgstr "Dienstübernahme bestätigt"
+
+msgctxt "#38820"
+msgid "Cancelling safely"
+msgstr "Wird sicher abgebrochen"
+
+msgctxt "#38821"
+msgid "Partially completed"
+msgstr "Teilweise abgeschlossen"
+
+msgctxt "#38822"
+msgid "Interrupted; retry available"
+msgstr "Unterbrochen; Wiederholung möglich"
+
+msgctxt "#38823"
+msgid "Service did not confirm within 15 seconds"
+msgstr "Keine Dienstbestätigung innerhalb von 15 Sekunden"
+
+msgctxt "#38824"
+msgid "{0} of {1} bytes"
+msgstr "{0} von {1} Bytes"
+
+msgctxt "#38825"
+msgid "{0} bytes; total unknown"
+msgstr "{0} Bytes; Gesamtgröße unbekannt"
+
+msgctxt "#38826"
+msgid "{0} channels · {1} programmes read · {2} matched · {3} staged"
+msgstr "{0} Sender · {1} Sendungen gelesen · {2} zugeordnet · {3} zwischengespeichert"
+
+msgctxt "#38827"
+msgid "{0} committed · {1} verified"
+msgstr "{0} übernommen · {1} geprüft"
+
+msgctxt "#38828"
+msgid "Job {0}"
+msgstr "Auftrag {0}"
+
+msgctxt "#38829"
+msgid "Source {0} of {1}"
+msgstr "Quelle {0} von {1}"
+
+msgctxt "#38830"
+msgid "No new progress; cancellation remains available"
+msgstr "Kein neuer Fortschritt; Abbruch weiterhin möglich"
+
+msgctxt "#38831"
+msgid "Cancel import"
+msgstr "Import abbrechen"
+
+# .95 independent EPG authorization and profile busy handling
+
+msgctxt "#38900"
+msgid "Import authorization independently confirmed."
+msgstr "Importfreigabe unabhängig bestätigt."
+
+msgctxt "#38901"
+msgid "EPG database is busy. Wait for current work, then check again. No new backup is needed."
+msgstr "EPG-Datenbank beschäftigt. Laufende Arbeit abwarten, dann erneut prüfen. Keine neue Sicherung nötig."
+
+msgctxt "#38902"
+msgid "Backup verification reached its time budget. Check again explicitly; do not create another backup."
+msgstr "Sicherungsprüfung hat ihr Zeitbudget erreicht. Gezielt erneut prüfen; keine neue Sicherung erzeugen."
+
+msgctxt "#38903"
+msgid "Backup file or receipt is missing at the expected location. Check the backup; delete nothing."
+msgstr "Sicherungsbeleg oder Datei fehlt am erwarteten Speicherort. Sicherung prüfen, nichts löschen."
+
+msgctxt "#38904"
+msgid "Backup file and receipt do not match. Import remains blocked; check the backup."
+msgstr "Sicherungsdatei und Beleg stimmen nicht überein. Keine Importfreigabe; Sicherung prüfen."
+
+msgctxt "#38905"
+msgid "Backup directory is unavailable. Check storage and permissions."
+msgstr "Sicherungsverzeichnis nicht erreichbar. Speicher und Rechte prüfen."
+
+msgctxt "#38906"
+msgid "EPG database schema could not be read completely. Preserve existing data and check diagnostics."
+msgstr "EPG-Datenbankschema nicht vollständig lesbar. Bestehende Daten schützen und Diagnose prüfen."
+
+msgctxt "#38907"
+msgid "Durable backup authorization is missing. Check existing backups first."
+msgstr "Dauerhafte Sicherungsfreigabe fehlt. Vorhandene Sicherungen zuerst prüfen."
+
+msgctxt "#38908"
+msgid "EPG authorization changed during verification. Wait for current work."
+msgstr "EPG-Freigabe wurde während der Prüfung geändert. Laufende Arbeit abwarten."
+
+msgctxt "#38909"
+msgid "Database verification was interrupted. Check again without resetting data."
+msgstr "Datenbankprüfung wurde unterbrochen. Erneut prüfen, keine Daten zurücksetzen."
+
+msgctxt "#38910"
+msgid "Storage is insufficient for the requested work. Do not delete files automatically."
+msgstr "Speicher reicht für die angeforderte Arbeit nicht aus. Keine Dateien automatisch löschen."
+
+msgctxt "#38911"
+msgid "Storage access denied. Check permissions and destination."
+msgstr "Speicherzugriff verweigert. Rechte und Speicherziel prüfen."
+
+msgctxt "#38912"
+msgid "Storage could not be read safely. Import remains blocked."
+msgstr "Speicher konnte nicht sicher gelesen werden. Keine Importfreigabe."
+
+msgctxt "#38913"
+msgid "Import authorization is being checked independently …"
+msgstr "Importfreigabe wird unabhängig geprüft …"
+
+msgctxt "#38914"
+msgid "EPG work is not confirmed. Existing data is preserved."
+msgstr "EPG-Arbeit nicht bestätigt. Bisherige Daten bleiben erhalten."
+
+msgctxt "#38915"
+msgid "Profile is busy. Please wait briefly and try again."
+msgstr "Profil beschäftigt. Bitte kurz warten und erneut versuchen."
+
+msgctxt "#38916"
+msgid "Check import authorization – do not create another backup"
+msgstr "Importfreigabe prüfen – keine neue Sicherung"
+
+msgctxt "#38917"
+msgid "Explicitly request a new backup"
+msgstr "Neue Sicherung ausdrücklich anfordern"
+
+msgctxt "#38918"
+msgid "Back"
+msgstr "Zurück"
+
+msgctxt "#38919"
+msgid "Last independent import check: {status}"
+msgstr "Letzte unabhängige Importprüfung: {status}"
+
+msgctxt "#38920"
+msgid "A backup notification alone does not authorize an import."
+msgstr "Eine Sicherungsmeldung allein erteilt keine Importfreigabe."
+
+msgctxt "#39000"
+msgid "Artwork – sources and images"
+msgstr "Artwork – Quellen und Bilder"
+
+msgctxt "#39001"
+msgid "EPG & programme images"
+msgstr "EPG & Sendungsbilder"
+
+msgctxt "#39002"
+msgid "ON"
+msgstr "AN"
+
+msgctxt "#39003"
+msgid "OFF"
+msgstr "AUS"
+
+msgctxt "#39004"
+msgid "Read error"
+msgstr "Lesefehler"
+
+msgctxt "#39005"
+msgid "Status and saved permissions"
+msgstr "Status und gespeicherte Freigaben"
+
+msgctxt "#39006"
+msgid "Test connections and image pipeline"
+msgstr "Verbindungen und Bildkette prüfen"
+
+msgctxt "#39007"
+msgid "Private TMDB access"
+msgstr "Privater TMDB-Zugang"
+
+msgctxt "#39008"
+msgid "Manage channel logos"
+msgstr "Senderlogos verwalten"
+
+msgctxt "#39009"
+msgid "Storage → Artwork & Cache"
+msgstr "Speicher → Artwork & Cache"
+
+msgctxt "#39010"
+msgid "Restore damaged settings"
+msgstr "Beschädigte Einstellungen wiederherstellen"
+
+msgctxt "#39011"
+msgid "Apply test configuration"
+msgstr "Testkonfiguration anwenden"
+
+msgctxt "#39012"
+msgid "Send programme titles to {} for artwork lookup?"
+msgstr "Sendungstitel für die Bildsuche an {} senden?"
+
+msgctxt "#39013"
+msgid "Source selection saved and independently read back. Android image rendering has not been tested."
+msgstr "Quellenauswahl gespeichert und unabhängig zurückgelesen. Die Android-Bildanzeige ist noch nicht geprüft."
+
+msgctxt "#39014"
+msgid "Settings: {}"
+msgstr "Einstellungen: {}"
+
+msgctxt "#39015"
+msgid "Valid existing token: {}"
+msgstr "Gültiger vorhandener Token: {}"
+
+msgctxt "#39016"
+msgid "Image EPG is disabled. Change this permission under Storage → Image EPG."
+msgstr "Bild-EPG ist ausgeschaltet. Die Freigabe lässt sich unter Speicher → Bild-EPG ändern."
+
+msgctxt "#39017"
+msgid "Restore the last verified backup? The damaged file is also preserved unchanged. Restart Kodi afterwards."
+msgstr "Aus der letzten geprüften Sicherung wiederherstellen? Die beschädigte Datei wird zusätzlich unverändert gesichert. Danach Kodi neu starten."
+
+msgctxt "#39018"
+msgid "Settings restored and read back. Please restart Kodi."
+msgstr "Einstellungen wiederhergestellt und zurückgelesen. Kodi bitte neu starten."
+
+msgctxt "#39019"
+msgid "Enable XMLTV, TMDB and TVMaze for this profile only and authorize image EPG? The existing token remains unchanged."
+msgstr "Nur für dieses Profil XMLTV, TMDB und TVMaze aktivieren und die bestehende Bild-EPG-Freigabe übernehmen? Der vorhandene Token bleibt unverändert."
+
+msgctxt "#39020"
+msgid "The settings file is damaged. No source was treated as deliberately disabled. Check recovery."
+msgstr "Die Einstellungsdatei ist beschädigt. Keine Quelle wurde als deaktiviert gewertet. Wiederherstellung prüfen."
+
+msgctxt "#39021"
+msgid "Settings cannot be read safely. Check permissions and storage."
+msgstr "Die Einstellungen sind nicht sicher lesbar. Berechtigung und Speicher prüfen."
+
+msgctxt "#39022"
+msgid "Saving could not be independently verified. No successful activation has been reported."
+msgstr "Speicherung konnte nicht unabhängig bestätigt werden. Keine erfolgreiche Freigabe gemeldet."
+
+msgctxt "#39023"
+msgid "No verified recovery file is available. Existing settings were not deleted."
+msgstr "Keine geprüfte Wiederherstellungsdatei verfügbar. Vorhandene Einstellungen wurden nicht gelöscht."
+
+msgctxt "#39024"
+msgid "No valid TMDB token is available. Existing values are preserved."
+msgstr "Kein gültiger TMDB-Token verfügbar. Vorhandene Werte bleiben erhalten."
+
+msgctxt "#39025"
+msgid "Action incomplete. Check settings and storage diagnostics. Private error details are not displayed."
+msgstr "Aktion nicht abgeschlossen. Einstellungen und Speicherdiagnose prüfen. Private Fehlerdetails werden nicht angezeigt."
+
+msgctxt "#39026"
+msgid "Search XMLTV images again"
+msgstr "XMLTV-Bilder erneut suchen"
+
+msgctxt "#39027"
+msgid "Assign EPG"
+msgstr "EPG zuweisen"
+
+msgctxt "#39028"
+msgid "More player controls"
+msgstr "Weitere Playerfunktionen"
+
+msgctxt "#39029"
+msgid "Assign programme image manually"
+msgstr "Sendungsbild manuell zuweisen"
+
+msgctxt "#39030"
+msgid "Select channel group"
+msgstr "Sendergruppe auswählen"
+
+msgctxt "#39031"
+msgid "Next channels"
+msgstr "Nächste Sender"
+
+msgctxt "#39032"
+msgid "Previous channels"
+msgstr "Vorherige Sender"
+
+msgctxt "#39033"
+msgid "Rebuild XCMate settings (no LastGood needed)"
+msgstr "XCMate-Einstellungen vollständig neu erzeugen (ohne LastGood)"
+
+msgctxt "#39034"
+msgid "Rebuild settings and turn off optional image sources? XCMate will save any existing settings file exactly as it is. Values stored only there, including credentials, will no longer be active. Separate portals, token file, EPG databases, favourites and logos are kept. After confirming, fully quit and start Kodi twice. Close any Kodi settings window without saving."
+msgstr "Einstellungen neu erzeugen und optionale Bildquellen ausschalten? XCMate sichert die vorhandene Einstellungsdatei bytegenau. Nur dort gespeicherte Werte, auch Zugangsdaten, sind danach nicht mehr aktiv. Separate Portale, Token-Datei, EPG-Datenbanken, Favoriten und Logos bleiben erhalten. Kodi nach der Bestätigung zweimal vollständig beenden und neu starten. Ein offenes Einstellungsfenster ohne Speichern schließen."
+
+msgctxt "#39035"
+msgid "Full Kodi restart required. The first restart writes the new file. The next restart checks it in Kodi. Keep Kodi settings closed until verification succeeds."
+msgstr "Kodi vollständig neu starten. Der erste Neustart schreibt die neue Datei. Der nächste Neustart prüft sie in Kodi. Einstellungen bis zur erfolgreichen Prüfung geschlossen lassen."
+
+msgctxt "#39036"
+msgid "Settings rebuild verified after a full Kodi restart. Provider EPG is enabled. Optional image sources can be enabled separately."
+msgstr "Einstellungsreparatur nach vollständigem Kodi-Neustart bestätigt. Anbieter-EPG ist aktiv. Optionale Bildquellen können separat freigegeben werden."
+
+msgctxt "#39037"
+msgid "BACKUP_FAILED: XCMate could not create or verify a safe copy of the original settings. Check storage and access."
+msgstr "BACKUP_FAILED: XCMate konnte keine sichere Kopie der ursprünglichen Einstellungen erstellen oder prüfen. Speicher und Zugriffsrechte prüfen."
+
+msgctxt "#39038"
+msgid "NO_SPACE: There is not enough free space to finish safely. Free space and retry the repair or restart as instructed."
+msgstr "NO_SPACE: Für einen sicheren Abschluss fehlt freier Speicherplatz. Speicher freigeben und die Reparatur erneut starten oder Kodi wie angegeben neu starten."
+
+msgctxt "#39039"
+msgid "READBACK_FAILED: The new settings could not be verified on disk. The original copy is kept. Fully restart Kodi to check the repair again."
+msgstr "READBACK_FAILED: Die neue Datei konnte auf dem Datenträger nicht geprüft werden. Die Originalkopie bleibt erhalten. Kodi für eine erneute Prüfung vollständig neu starten."
+
+msgctxt "#39040"
+msgid "KODI_CACHE_CONFLICT: Kodi read different settings or the file changed during repair. The original copy is kept. Close Kodi settings before starting a new repair."
+msgstr "KODI_CACHE_CONFLICT: Kodi hat andere Einstellungen gelesen oder die Datei wurde während der Reparatur geändert. Die Originalkopie bleibt erhalten. Kodi-Einstellungen vor einem neuen Reparaturversuch schließen."
+
+msgctxt "#39041"
+msgid "REPAIR_BUSY: Another XCMate operation is in progress. Wait a moment and reopen XCMate."
+msgstr "REPAIR_BUSY: Ein anderer XCMate-Vorgang läuft. Kurz warten und XCMate erneut öffnen."
+
+msgctxt "#39042"
+msgid "REPAIR_STATE_INVALID: The repair status could not be verified. No further replacement will be attempted automatically."
+msgstr "REPAIR_STATE_INVALID: Der Reparaturzustand konnte nicht geprüft werden. Es erfolgt kein weiterer automatischer Dateiaustausch."
+
+msgctxt "#39043"
+msgid "KODI_PROCESS_UNKNOWN: XCMate could not confirm that Kodi fully stopped. Wait for Kodi to stop and try again."
+msgstr "KODI_PROCESS_UNKNOWN: XCMate konnte das vollständige Ende des Kodi-Prozesses nicht bestätigen. Kodi vollständig beenden und erneut versuchen."
+
+msgctxt "#39044"
+msgid "Close the Kodi add-on settings window without saving and reopen XCMate to continue the repair."
+msgstr "Kodi-Add-on-Einstellungen ohne Speichern schließen und XCMate erneut öffnen, um die Reparatur fortzusetzen."
+
+msgctxt "#39100"
+msgid "XCMate EPG Agent"
+msgstr "XCMate EPG Agent"
+
+msgctxt "#39101"
+msgid "Enable XCMate EPG Agent"
+msgstr "XCMate EPG Agent aktivieren"
+
+msgctxt "#39102"
+msgid "Check for an update now"
+msgstr "Jetzt auf Aktualisierung prüfen"
+
+msgctxt "#39103"
+msgid "Status and diagnostics"
+msgstr "Status und Diagnose"
+
+msgctxt "#39104"
+msgid "Current"
+msgstr "Aktuell"
+
+msgctxt "#39105"
+msgid "Update in progress"
+msgstr "Aktualisierung läuft"
+
+msgctxt "#39106"
+msgid "Offline"
+msgstr "Offline"
+
+msgctxt "#39107"
+msgid "Error"
+msgstr "Fehler"
+
+msgctxt "#39108"
+msgid "Disabled"
+msgstr "Deaktiviert"
+
+msgctxt "#39109"
+msgid "Private feed awaiting approval"
+msgstr "Privater Feed wartet auf Freigabe"
+
+msgctxt "#39110"
+msgid "Private read access has not been set up"
+msgstr "Privater Lesezugang ist noch nicht eingerichtet"
+
+msgctxt "#39111"
+msgid "Guide import pending"
+msgstr "EPG-Import ausstehend"
+
+msgctxt "#39112"
+msgid "Last check"
+msgstr "Letzte Prüfung"
+
+msgctxt "#39113"
+msgid "Next check"
+msgstr "Nächste Prüfung"
+
+msgctxt "#39114"
+msgid "Last verified import"
+msgstr "Letzter verifizierter Import"
+
+msgctxt "#39115"
+msgid "Revision"
+msgstr "Revision"
+
+msgctxt "#39116"
+msgid "Feed channels / programmes / artwork references"
+msgstr "Feed-Kanäle / Sendungen / Bildreferenzen"
+
+msgctxt "#39117"
+msgid "Matched streams / staged channels"
+msgstr "Zugeordnete Streams / vorbereitete Kanäle"
+
+msgctxt "#39118"
+msgid "Read / saved / verified programmes"
+msgstr "Gelesene / gespeicherte / verifizierte Sendungen"
+
+msgctxt "#39119"
+msgid "Check requested"
+msgstr "Prüfung angefordert"
+
+msgctxt "#39120"
+msgid "No check yet"
+msgstr "Prüfung steht aus"
+
+msgctxt "#39121"
+msgid "Provider guide stays available."
+msgstr "Anbieter-EPG bleibt verfügbar."
+
+msgctxt "#39122"
+msgid "Could not save the Agent setting."
+msgstr "Die Agent-Einstellung konnte nicht gespeichert werden."
+
+msgctxt "#39123"
+msgid "Artwork references from the Agent follow the selected image sources."
+msgstr "Für Agent-Bildreferenzen gelten die gewählten Bildquellen."
+
+msgctxt "#38980"
+msgid "Choose movie groups"
+msgstr "Filmgruppen auswählen"
+
+msgctxt "#38981"
+msgid "Restore last saved selection"
+msgstr "Zuletzt gespeicherte Auswahl wiederherstellen"
+
+msgctxt "#38982"
+msgid "Suggest hiding adult groups on Home"
+msgstr "Vorschlag: Erotikgruppen auf Home ausblenden"
+
+msgctxt "#38983"
+msgid "The movie groups or your saved selection are currently unavailable. Try again in a moment."
+msgstr "Die Filmgruppen oder die gespeicherte Auswahl sind gerade nicht verfügbar. Bitte gleich erneut versuchen."
+
+msgctxt "#38984"
+msgid "No local movie groups are available yet."
+msgstr "Es sind noch keine lokalen Filmgruppen verfügbar."
+
+msgctxt "#38985"
+msgid "Movie groups on Home · {0} of {1} selected"
+msgstr "Filmgruppen auf Home · {0} von {1} ausgewählt"
+
+msgctxt "#38986"
+msgid "The Home selection could not be saved and verified."
+msgstr "Die Home-Auswahl konnte nicht gespeichert und überprüft werden."
+
+msgctxt "#38987"
+msgid "Home selection saved"
+msgstr "Home-Auswahl gespeichert"
+
+msgctxt "#39200"
+msgid "Background dimmer"
+msgstr "Hintergrund-Dimmer"
+
+msgctxt "#39201"
+msgid "Panel colour"
+msgstr "Panelfarbe"
+
+msgctxt "#39202"
+msgid "Heading colour"
+msgstr "Überschriftenfarbe"
+
+msgctxt "#39203"
+msgid "Selected text colour"
+msgstr "Farbe für markierten Text"
+
+msgctxt "#39204"
+msgid "Progress colour"
+msgstr "Fortschrittsfarbe"
+
+msgctxt "#39205"
+msgid "Warning colour"
+msgstr "Warnfarbe"
+
+msgctxt "#39206"
+msgid "Error colour"
+msgstr "Fehlerfarbe"
+
+msgctxt "#39207"
+msgid "Very large"
+msgstr "Sehr groß"
+
+msgctxt "#39208"
+msgid "Active design · {0}"
+msgstr "Aktives Design · {0}"
+
+msgctxt "#39209"
+msgid "Token missing or invalid"
+msgstr "Token fehlt oder ist ungültig"
+
+msgctxt "#39210"
+msgid "Saved · image EPG disabled"
+msgstr "Gespeichert · Bild-EPG aus"
+
+msgctxt "#39211"
+msgid "Installed designs"
+msgstr "Installierte Designs"
+
+msgctxt "#39124"
+msgid "Posters / backdrops / episode images / station logos"
+msgstr "Poster / Hintergründe / Episodenbilder / Senderlogos"

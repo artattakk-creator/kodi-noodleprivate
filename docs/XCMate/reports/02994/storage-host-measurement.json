@@ -1,0 +1,189 @@
+{
+  "status": "PASS",
+  "scope": "HOST_REAL_FILESYSTEM_AND_SQLITE_SYNTHETIC_XMLTV",
+  "android": "ANDROID_NOT_TESTED",
+  "sources": 2,
+  "raw_copies_created": 0,
+  "raw_deleted_bytes": 0,
+  "user_selected_xmltv_files_preserved": true,
+  "backup_preserved": true,
+  "snapshots": [
+    {
+      "step": "before_first_import",
+      "volume": {
+        "device": 34,
+        "filesystem": 16882903946816985196,
+        "free": 4436795392
+      },
+      "classes": {
+        "guide_v1.sqlite": {},
+        "programme_meta46.sqlite": {},
+        "programme_artwork.sqlite": {},
+        "raw": {
+          "files": 2,
+          "bytes": 456,
+          "code": "SKIPPED_UNPROVEN",
+          "complete": true
+        }
+      },
+      "backup_files": 0,
+      "backup_bytes": 0
+    },
+    {
+      "step": "after_first_commit_and_cold_readback",
+      "volume": {
+        "device": 34,
+        "filesystem": 16882903946816985196,
+        "free": 4436549632
+      },
+      "classes": {
+        "guide_v1.sqlite": {
+          "database": 86016,
+          "-wal": 0,
+          "-shm": 32768
+        },
+        "programme_meta46.sqlite": {
+          "database": 20480
+        },
+        "programme_artwork.sqlite": {
+          "database": 90112
+        },
+        "raw": {
+          "files": 2,
+          "bytes": 456,
+          "code": "SKIPPED_UNPROVEN",
+          "complete": true
+        }
+      },
+      "backup_files": 0,
+      "backup_bytes": 0
+    },
+    {
+      "step": "after_second_due_import",
+      "volume": {
+        "device": 34,
+        "filesystem": 16882903946816985196,
+        "free": 4436455424
+      },
+      "classes": {
+        "guide_v1.sqlite": {
+          "database": 86016,
+          "-wal": 0,
+          "-shm": 32768
+        },
+        "programme_meta46.sqlite": {
+          "database": 20480
+        },
+        "programme_artwork.sqlite": {
+          "database": 90112
+        },
+        "raw": {
+          "files": 2,
+          "bytes": 456,
+          "code": "SKIPPED_UNPROVEN",
+          "complete": true
+        }
+      },
+      "backup_files": 3,
+      "backup_bytes": 86701
+    },
+    {
+      "step": "after_cancelled_third_import",
+      "volume": {
+        "device": 34,
+        "filesystem": 16882903946816985196,
+        "free": 4436451328
+      },
+      "classes": {
+        "guide_v1.sqlite": {
+          "database": 86016,
+          "-wal": 0,
+          "-shm": 32768
+        },
+        "programme_meta46.sqlite": {
+          "database": 20480
+        },
+        "programme_artwork.sqlite": {
+          "database": 90112
+        },
+        "raw": {
+          "files": 2,
+          "bytes": 456,
+          "code": "SKIPPED_UNPROVEN",
+          "complete": true
+        }
+      },
+      "backup_files": 3,
+      "backup_bytes": 86701
+    }
+  ],
+  "post_readback_receipts": [
+    {
+      "code": "IMPORT_CONFIRMED_RAW_NOT_PERSISTED",
+      "at": 1794685213.4942093,
+      "revision": "stream-34d6c3f3b191487a945c72b9ef3559d1",
+      "volume": 34,
+      "filesystem": 16882903946816985196,
+      "free_before": 4436512768,
+      "free_after": 4436512768,
+      "observed_free_change": 0,
+      "raw_deleted_files": 0,
+      "raw_deleted_bytes": 0,
+      "classes": {
+        "guide_v1.sqlite": {
+          "database": 86016,
+          "-wal": 37112,
+          "-shm": 32768
+        },
+        "programme_meta46.sqlite": {
+          "database": 20480
+        },
+        "programme_artwork.sqlite": {
+          "database": 90112
+        },
+        "raw": {
+          "files": 2,
+          "bytes": 456,
+          "code": "SKIPPED_UNPROVEN",
+          "complete": true
+        }
+      },
+      "backup": "PROTECTED_SEPARATE_RETENTION",
+      "active_staging": "PROTECTED"
+    },
+    {
+      "code": "IMPORT_CONFIRMED_RAW_NOT_PERSISTED",
+      "at": 1794685213.5142987,
+      "revision": "stream-34d6c3f3b191487a945c72b9ef3559d1",
+      "volume": 34,
+      "filesystem": 16882903946816985196,
+      "free_before": 4436426752,
+      "free_after": 4436426752,
+      "observed_free_change": 0,
+      "raw_deleted_files": 0,
+      "raw_deleted_bytes": 0,
+      "classes": {
+        "guide_v1.sqlite": {
+          "database": 86016,
+          "-wal": 24752,
+          "-shm": 32768
+        },
+        "programme_meta46.sqlite": {
+          "database": 20480
+        },
+        "programme_artwork.sqlite": {
+          "database": 90112
+        },
+        "raw": {
+          "files": 2,
+          "bytes": 456,
+          "code": "SKIPPED_UNPROVEN",
+          "complete": true
+        }
+      },
+      "backup": "PROTECTED_SEPARATE_RETENTION",
+      "active_staging": "PROTECTED"
+    }
+  ],
+  "note": "Two sequential due imports; no claim of 24 hours elapsed or Android reclaimed space."
+}

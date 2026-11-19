@@ -6,6 +6,9 @@ def candidate(event,cancel=lambda:False):
 
 def diagnose(event):
  """Fixed reasons, no network, text disclosure or EPG modification."""
+ from artwork_sources96 import health
+ code96=health()
+ if code96 not in ('READY','NOT_CREATED'):return code96
  from utils import setting_bool,setting
  if not setting_bool('programme_tmdb46',False) or not setting_bool('tmdb_research43',False):return 'TMDB_DISABLED'
  from tmdb_token61 import effective_tmdb_read_token,TokenError

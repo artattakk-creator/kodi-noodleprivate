@@ -6,14 +6,14 @@ Existing cover jobs/files, Kodi textures, artwork mode and guide DB are untouche
 from collections import OrderedDict
 import hashlib,json,os,threading,time,tempfile
 _lock=threading.Lock();_queue=OrderedDict();_memory=OrderedDict();_pending=set();_workers=[];_stop=threading.Event();_wake=threading.Event()
-MAX_DISK=64*1024*1024
+MAX_DISK=32*1024*1024
 _visual_revision47=0
 
 class CacheBudget(OSError):pass
 
 def limit():
  from utils import setting_int
- return (32,64,128,256)[max(0,min(3,setting_int('programme_art_budget46',1)))]*1024*1024
+ return (32,64,128,256)[max(0,min(3,setting_int('programme_art_budget46',0)))]*1024*1024
 
 def root():
  from utils import addon_data_dir
@@ -113,7 +113,8 @@ def persisted(event,verify=True):
  except Exception:return None
 
 def space(upcoming):
- __import__('android_artwork87').check_active(upcoming)
+ dynamic96=not __import__('artwork_config').persistent()
+ __import__('android_artwork87').check_active(upcoming,write=not dynamic96)
  folder=image_root87();os.makedirs(folder,mode=0o700,exist_ok=True)
  if os.path.islink(folder):raise OSError('CACHE_UNSAFE')
  total=0;count=0
@@ -122,6 +123,9 @@ def space(upcoming):
   if count>1024:raise CacheBudget('PROGRAMME_CACHE_BUDGET')
   if row.is_file(follow_symlinks=False):total+=row.stat().st_size
  if total+upcoming>limit():raise CacheBudget('PROGRAMME_CACHE_BUDGET')
+ if dynamic96:
+  __import__('storage_artwork96').check_dynamic(folder,upcoming)
+  return
  from art_storage import check,budget
  from artwork_health82 import guard
  guard()
@@ -169,7 +173,9 @@ def prepare(event,cancel=lambda:False,fetch=None,match=None,resolved60=None):
  try:
   candidates=[dict(url=event[k],source=source,match='EXACT_EVENT',attribution='XMLTV' if source=='xmltv_event' else 'Provider') for k,source in (('xmltv_image','xmltv_event'),('provider_image','provider_event')) if event.get(k)]
   failure=None
-  if resolved60 is not None:candidates=[resolved60]
+  if resolved60 is not None:
+   from cinematic_images96 import alternatives
+   candidates=alternatives(resolved60,local=True)
   for c in candidates+([None] if resolved60 is None else []):
    if cancel():return dict(value,code='CANCELLED')
    if c is None:
@@ -198,7 +204,7 @@ def prepare(event,cancel=lambda:False,fetch=None,match=None,resolved60=None):
     if not os.path.isfile(filename):space(len(data));atomic(filename,data)
     reused46=bool(prior46 and prior46.get('sha256')==digest)
     value=dict(key=key,fingerprint=fp,code='READY',image=filename,thumbnail=filename,sha256=digest,original_sha256=original_sha,source=c['source'],source_url=c['url'],provider_id=c.get('remote_id',''),match=c['match'],attribution=c.get('attribution',''),checked46=prior46.get('checked46',time.time()-86400) if reused46 else time.time(),until=min(time.time()+86400,prior46['until']) if reused46 else time.time()+86400)
-    for field60 in ('matched_year56','image_scope57','provisional85','manual85','role81'):
+    for field60 in ('matched_year56','image_scope57','provisional85','manual85','role81','xmltv96'):
      if c.get(field60):value[field60]=c[field60]
     epoch85=__import__('programme_mapping85').epoch(event)
     if epoch85:value['mapping_epoch85']=epoch85

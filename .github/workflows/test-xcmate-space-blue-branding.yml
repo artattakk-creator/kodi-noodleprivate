@@ -18,13 +18,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Install test dependency
         run: python -m pip install pytest
       - name: Verify opt-in patch, colors and rollback
-        run: python -m pytest -q tests/test_xcmate_bingie_branding.py
+        run: python tools/run_host94_contract.py -- python -m pytest -q tests/test_xcmate_bingie_branding.py
       - name: Verify released package and original assets
         run: |
           python - <<'PY'

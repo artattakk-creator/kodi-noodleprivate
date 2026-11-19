@@ -15,12 +15,18 @@ def rank(value):
   kind86=__import__('hero_art86').classify(value)
   if kind86:return kind86[1]
  source=value.get('source','')
+ if value.get('manual85') or value.get('match')=='MANUAL_CONFIRMED':return -1
+ if source=='agent_tmdb':return 0 if value.get('role81')!='poster' else 3
+ if source=='agent_tvmaze':return 1 if value.get('role81')!='poster' else 3
+ if source=='agent_xmltv':return 1
  if source.startswith('tmdb_'):return 0 if value.get('role81')!='poster' else 3
  return {'xmltv_event':1,'provider_event':2,'tvmaze_episode':2,'tvmaze_series':3}.get(source,4)
 
 def allowed(value):
  from utils import setting_bool
  source=value.get('source','')
+ if source.startswith('agent_'):return __import__('agent_programme100').allowed(source)
+ if source=='xmltv_event':return setting_bool('programme_xmltv96',True)
  if source.startswith('tmdb_'):return setting_bool('programme_tmdb46',False) and setting_bool('tmdb_research43',False) and not setting_bool('programme_tmdb_optout77',False)
  if source.startswith('tvmaze'):return setting_bool('programme_tvmaze67',False) and not setting_bool('programme_tvmaze_optout77',False)
  if source in ('xcmate_catalog','kodi_library'):return setting_bool('programme_catalog57',True)
@@ -61,7 +67,7 @@ def commit(event,value,body=None):
  except (OSError,ValueError,TypeError,TimeoutError):return prior(event) or value
 
 def upgrade(event,previous):
- if not previous or rank(previous)==0:return False
+ if not previous or rank(previous)<=0:return False
  from utils import setting_bool
  if not setting_bool('programme_tmdb46',False) or not setting_bool('tmdb_research43',False) or setting_bool('programme_tmdb_optout77',False):return False
  tag=key(event);now=time.monotonic()

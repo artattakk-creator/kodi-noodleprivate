@@ -67,6 +67,8 @@ def display(event,value):
     """A persisted URL is not proof that Android displayed the right picture."""
     if not isinstance(value,dict) or value.get('url_version55')!=1:return None
     from programme_art46 import fingerprint
+    if value.get('source','').startswith('agent_') and not __import__('agent_programme100').allowed(value['source']):return None
+    if value.get('source')=='xmltv_event' and (not __import__('event_art81').allowed(value) or not __import__('xmltv_art96').display_allowed(value,event)):return None
     if value.get('fingerprint')!=fingerprint(event):return None
     if value.get('hosts55')!=sorted(hosts()) or value.get('profile55')!=profile():return None
     if value.get('binding55')!=binding(event) or value.get('key')!=event.get('key'):return None
@@ -81,14 +83,32 @@ def display(event,value):
     return dict(value,image=url+OPTIONS,thumbnail=url+OPTIONS)
 
 
-def probe(url,cancel=lambda:False):
+def probe(url,cancel=lambda:False,*,qualified_origin=False):
     """Bounded credentialless preflight, pinned public DNS/TLS, bounded trusted redirects.
 
     Fully decodes bounded PNG/JPEG bytes without forcing an image archive.
     Kodi performs the actual rendering download later; a later 404 is harmless.
     """
     from programme_transport77 import verified
-    return verified(url,cancel,keep_data81=True)
+    fetch = lambda: verified(url,cancel,keep_data81=True)
+    # An exact Agent event origin or a known public CDN can share decoded
+    # bytes across roles. Other configured XMLTV origins keep their probes.
+    parsed = urlsplit(url)
+    if not qualified_origin and (parsed.hostname not in ('image.tmdb.org','static.tvmaze.com') or not safe(url)):
+        return fetch()
+    from widget_refs74 import revoked
+    if revoked(url):
+        return fetch()
+    from artwork_request100 import images
+    from epg_handoff63 import profile_scope
+    from portals import get_active
+    import hashlib, json
+    from programme_policy68 import negative_scope
+    credentials = [(p.get('xc_user'),p.get('xc_pass')) for p in get_active()[:16]]
+    profile = hashlib.sha256(json.dumps(credentials).encode()).hexdigest()
+    value = images.request((profile_scope(),profile,negative_scope({}),url),fetch,cancel,ttl=120)
+    final = value.get('url',url)
+    return fetch() if final!=url and (not safe(final) or revoked(final)) else value
 
 
 def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,local_image63=False,url_mode69=False):
@@ -98,8 +118,17 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     from media_sources43 import SourceError
     from programme_sources57 import PROOFS,policy,attempts,trace as source_trace
     from helper_rpc57 import Error as HelperError
-    home86=__import__('home_schedule75').applicable()
-    usable86=lambda v:not home86 or bool(__import__('hero_art86').classify(v))
+    import agent_programme100 as roles499
+    view499=roles499.view(event)
+    typed499=roles499.typed(event)
+    home86=__import__('home_schedule75').applicable() and view499=='hero'
+    def usable86(v):
+        if not v or not roles499.fits(v,view499):
+            return False
+        if typed499 and not roles499.manual(v):
+            if not roles499.selected(v,view499):
+                return False
+        return not home86 or bool(__import__('hero_art86').classify(v))
     upgrade81=False;best86=None
     def retain86(v):
         nonlocal best86
@@ -110,24 +139,36 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     mapping86=__import__('programme_mapping85').current(event)
     if mapping86 and mapping86.get('hidden'):
         return dict(key=event['key'],fingerprint=fingerprint(event),code='NO_IMAGE',source='placeholder',match='NONE',image=event['placeholder'],until=time.time()+3600,negative_scope68=__import__('programme_policy68').negative_scope(event),negative_scope77=__import__('programme_policy68').negative_scope(event),mapping_epoch85=__import__('programme_mapping85').epoch(event))
-    held89=__import__('programme_lock89').current(event,worker=True)
-    if held89:return held89
-    external89=__import__('external_art89').recover_programme(event)
-    if external89:return external89
+    invalid_manual96=False;fresh_xml96=[]
+    if mapping86 and mapping86.get('source')=='xmltv_event' and __import__('artwork_sources96').enabled('xmltv'):
+        try:
+            invalid_manual96=__import__('xmltv_art96').checked_mapping(event,mapping86,cancel) is None
+            if invalid_manual96:fresh_xml96=__import__('xmltv_art96').search(event,cancel)['rows']
+        except SourceError as exc96:
+            if exc96.code not in ('SQLITE_BUSY','EPG_READ_BUDGET'):raise
+            # Short DB contention does not revoke the last confirmed image.
+    held89=None if invalid_manual96 else __import__('programme_lock89').current(event,worker=True)
+    if held89 and roles499.manual(held89):return held89
     local86=__import__('work_requests86').local_result(event)
     if local86:return local86
-    temp85=__import__('artwork_temp85').lookup(event)
+    if typed499 and not mapping86:
+        role499=roles499.read(event,view499)
+        if role499:return role499
+    if held89 and (usable86(held89) or not typed499):return held89
+    external89=None if invalid_manual96 else __import__('external_art89').recover_programme(event)
+    if external89 and (usable86(external89) or not typed499):return external89
+    temp85=None if invalid_manual96 else __import__('artwork_temp85').lookup(event)
     retain86(temp85)
     if temp85 and usable86(temp85):
         upgrade81=upgrade86(temp85)
         if not upgrade81:return temp85
-    durable81=__import__('event_art81').prior(event)
+    durable81=None if invalid_manual96 else __import__('event_art81').prior(event)
     retain86(durable81)
     if durable81 and not usable86(durable81):durable81=None
     upgrade81=upgrade81 or allow_lookup and __import__('event_art81').upgrade(event,durable81)
     if durable81 and not upgrade81:return durable81
     pressure84=__import__('artwork_display84').observe() or __import__('home_schedule75').applicable()
-    if url_mode69 and pressure84:
+    if url_mode69 and pressure84 and not invalid_manual96:
         renewed84=__import__('sticky_art88').read(event) or __import__('event_cache88').recover(event) or __import__('programme_display84').recover(event) or __import__('programme_display84').renew(event)
         retain86(renewed84)
         if renewed84 and usable86(renewed84) and not upgrade81:
@@ -138,12 +179,12 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             return renewed84
     if url_mode69:
         from programme_session69 import get as session69
-        prior69=session69(event)
+        prior69=None if invalid_manual96 else session69(event)
         retain86(prior69)
         if prior69 and usable86(prior69) and not upgrade81 and not (allow_lookup and __import__('programme_status70').retry(event,prior69)):return prior69
-    old=art(event)
-    if old and old.get('source','').startswith(('tmdb_','tvmaze')) and not __import__('event_art81').allowed(old):old=None
-    if not upgrade81 and old and not old.get('url_version55') and (local_image63 or old.get('source') in ('tmdb_movie','tmdb_episode','tmdb_series','tvmaze_series','tvmaze_episode')) and old.get('source')!='placeholder' and old.get('fingerprint')==fingerprint(event) and old.get('until',0)>time.time():
+    old=None if invalid_manual96 else art(event)
+    if old and (old.get('source')=='xmltv_event' or old.get('source','').startswith(('tmdb_','tvmaze'))) and not __import__('event_art81').allowed(old):old=None
+    if not upgrade81 and old and (not typed499 or usable86(old)) and not old.get('url_version55') and (local_image63 or old.get('source') in ('tmdb_movie','tmdb_episode','tmdb_series','tvmaze_series','tvmaze_episode')) and old.get('source')!='placeholder' and old.get('fingerprint')==fingerprint(event) and old.get('until',0)>time.time():
         from programme_art46 import indexed
         local60=indexed(event,verify=True)
         if local60:
@@ -161,9 +202,9 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     explicit63=allow_lookup and (__import__('programme_status70').retry(event,prior69 if url_mode69 and prior69 else old) or retry63(event,old) or retry67(event,old))
     from programme_policy68 import negative_scope
     negative68=negative_scope(event)
-    if old and old.get('source')=='placeholder' and old.get('negative_scope68')==negative68 and old.get('until',0)>time.time() and not explicit63 and not legacy70:
+    if not typed499 and old and old.get('source')=='placeholder' and old.get('negative_scope68')==negative68 and old.get('until',0)>time.time() and not explicit63 and not legacy70:
         return dict(old,image=event['placeholder'])
-    if current and not upgrade81 and not (local_image63 and current.get('source')!='placeholder') and not explicit63 and not (allow_lookup and current.get('source')=='placeholder' and
+    if current and not (typed499 and current.get('source')=='placeholder') and not upgrade81 and not (local_image63 and current.get('source')!='placeholder') and not explicit63 and not (allow_lookup and current.get('source')=='placeholder' and
             (current.get('code')=='AWAITING_BACKGROUND_REFRESH' or not current.get('matching_policy57') or current.get('source_policy57')!=policy())):return current
     if cancel():return None
     if best86:
@@ -183,7 +224,12 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     value.update(matching_policy57=1,source_policy57=policy(),sources70=[],lookup70=__import__('programme_outcomes70').settings(),origin_policy75=1)
     candidates=[dict(url=event[field],source=source,match='EXACT_EVENT',attribution=credit)
                 for field,source,credit in (('xmltv_image','xmltv_event','XMLTV – konfigurierte Eventquelle'),
-                    ('provider_image','provider_event','Anbieter – konfigurierte Eventquelle')) if event.get(field)]
+                    ('provider_image','provider_event','Anbieter – konfigurierte Eventquelle')) if event.get(field) and (source!='xmltv_event' or __import__('artwork_sources96').enabled('xmltv'))]
+    if invalid_manual96:candidates=fresh_xml96+[c for c in candidates if c.get('source')=='provider_event']
+    agent100=roles499.candidates(event, requested=view499)
+    if typed499:
+        offered={row['url'] for row in agent100}
+        candidates=[dict(row,role81='legacy_icon') for row in candidates if row['url'] not in offered]
     if old and old.get('source_url') and old.get('source') in ('xmltv_event','provider_event','tmdb_movie','tmdb_episode','tmdb_series','tmdb_helper','xcmate_catalog','kodi_library'):
         source=old.get('source')
         enabled=source!='tmdb_helper' or policy()[0]
@@ -198,13 +244,25 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         mapping85=__import__('programme_mapping85').current(event)
         if mapping85 and mapping85.get('hidden'):return
         if mapping85 and mapping85.get('id'):
-            # Existing proofs were checked above. New remote work must obey
-            # the same visible-event admission as automatic lookups.
-            if not allow_lookup:return
-            manual85=__import__('programme_candidates85').candidate(event,cancel)
-            if manual85:yield manual85
-            return  # A deliberate user mapping is never silently replaced.
-        home86=__import__('home_schedule75').applicable()
+            if mapping85.get('source')=='xmltv_event':
+                chosen96=__import__('xmltv_art96').mapped(event,mapping85,cancel)
+                if chosen96:yield chosen96
+            elif mapping85.get('source') in ('tmdb','tvmaze') and __import__('programme_candidates85').enabled(mapping85['source']) and allow_lookup:
+                try:manual85=__import__('programme_candidates85').candidate(event,cancel)
+                except (SourceError,HelperError) as error85:
+                    failed(error85.code);manual85=None
+                if manual85:yield manual85
+            # Optional remote permission and local exact-event XMLTV fallback
+            # are separate. A disabled/failed TMDB mapping cannot erase it.
+            yield from agent100
+            yield from (c for c in candidates if c.get('source') in ('xmltv_event','provider_event') and c.get('match')=='EXACT_EVENT')
+            return
+        # The same verified event can have different images for different
+        # views. Missing roles descend to the feed icon, then the UI fallback.
+        if typed499:
+            yield from agent100
+            yield from candidates
+            return
         if not home86:yield from candidates  # EPG detail legacy event ordering.
         reference84=__import__('programme_reference84').get(event)
         if reference84 and reference84.get('candidate'):
@@ -222,7 +280,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
                     return own_candidate81(event,cancel)
                 found81=own_trace81(event,run_own81)
                 if attempted81:__import__('programme_outcomes70').add(value,'tmdb','FOUND' if found81 else 'NO_CONFIRMED_IMAGE',event)
-                if found81:own81.append(found81)
+                if found81:own81.extend(__import__('cinematic_images96').alternatives(found81))
             except (SourceError,HelperError) as exc:
                 __import__('programme_outcomes70').add(value,'tmdb',exc.code,event);failed(exc.code)
         if not own81:
@@ -286,26 +344,35 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
                 retain86(local86)
                 return best86 or local86
         verified77=None
+        agent_origin499=candidate.get('source')=='agent_xmltv'
         if new_origin75:
-            try:verified77=probe(url,cancel=cancel)
+            try:
+                verified77=probe(url,cancel=cancel,qualified_origin=True) if agent_origin499 else probe(url,cancel=cancel)
             except SourceError as exc:value['code']=exc.code;continue
             if cancel():return None
             grant75(url)
             if isinstance(verified77,dict) and verified77.get('url'):
                 url=verified77['url'];grant75(url)
-        if local_image63 or not url_mode69 and candidate.get('source') in ('tmdb_movie','tmdb_episode','tmdb_series'):
+        typed_choice499=typed499 and not roles499.manual(candidate)
+        if not typed_choice499 and (local_image63 or not url_mode69 and candidate.get('source') in ('tmdb_movie','tmdb_episode','tmdb_series')):
             from programme_art46 import prepare as materialize60
             return materialize60(event,cancel=cancel,resolved60=dict(candidate,_local_only63=True) if local_image63 else candidate)
         try:
-            if not new_origin75:verified77=(check or probe)(url,cancel=cancel)
+            if not new_origin75:
+                if agent_origin499 and not check:
+                    verified77=probe(url,cancel=cancel,qualified_origin=True)
+                else:verified77=(check or probe)(url,cancel=cancel)
             if isinstance(verified77,dict) and verified77.get('url'):url=verified77['url']
         except SourceError as exc:value['code']=exc.code;continue
         if cancel():return None
-        if __import__('home_schedule75').applicable():
+        if typed_choice499 and not roles499.image_shape(candidate.get('role81'),verified77):
+            failed('HERO_QUALITY_REJECTED');continue
+        if home86:
             quality86=dict(candidate,image_width77=(verified77 or {}).get('width',0),image_height77=(verified77 or {}).get('height',0))
             if not __import__('hero_art86').classify(quality86):
                 failed('HERO_QUALITY_REJECTED');continue
             trace77(event,'IMAGE_SOURCE_SELECTION','HERO_QUALITY_VERIFIED')
+        if candidate.get('xmltv96'):value['xmltv96']=candidate['xmltv96']
         value['mapping_epoch85']=__import__('programme_mapping85').epoch(event)
         value.update(code='READY',source=candidate['source'],match=candidate['match'],
             source_url=url,image=url+OPTIONS,thumbnail=url+OPTIONS,
@@ -314,7 +381,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         if candidate.get('remote_id') or candidate.get('provider_id'):value['provider_id']=candidate.get('remote_id') or candidate['provider_id']
         for field in ('image_scope57','helper_version57','role81','provisional85','manual85','vote_average88','vote_count88'):
             if candidate.get(field):value[field]=candidate[field]
-        if url_mode69:
+        if url_mode69 or typed_choice499:
             from programme_requests68 import identity,scope
             value.update(url_verified69=True,scope69=identity(event),profile69=scope(),policy69=negative_scope({}))
         if isinstance(verified77,dict) and verified77.get('decoded77'):
@@ -323,18 +390,26 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         note(event,'HTTP_RESPONSE','IMAGE_DECODED' if value.get('decoded77') else 'REFERENCE_VERIFIED')
         trace77(event,'IMAGE_LEASE','BOUND')
         source_trace(event,'IMAGE_URL_VERIFIED')
+        if typed_choice499:
+            # Verified roles share the existing bytes server and keep separate,
+            # exact-event receipts. They never overwrite the other role's art.
+            value=__import__('sticky_art88').publish89(event,value,verified77.get('_body81'))
+            roles499.remember(event,view499,value)
+            return value
         if isinstance(verified77,dict):
             value=__import__('artwork_temp85').promote(event,value,verified77.get('_body81'))
             value=__import__('event_art81').commit(event,value,verified77.get('_body81'))
             value=__import__('sticky_art88').remember(event,value,verified77.get('_body81'))
         break
-    if not candidates and not allow_lookup:value['code']='AWAITING_BACKGROUND_REFRESH'
+    if not candidates and not agent100 and not allow_lookup and value['code']=='NO_IMAGE':value['code']='AWAITING_BACKGROUND_REFRESH'
     if cancel():return None
     if best86 and (value.get('source')=='placeholder' or not usable86(value) or __import__('hero_art86').classify(best86)[1]<__import__('hero_art86').classify(value)[1]):
         return dict(best86,code='READY_STALE' if value.get('source')=='placeholder' else best86.get('code','READY'))
     if value.get('source')=='placeholder':
         if durable81:return durable81
         value['negative_scope68']=negative68
+        if typed499:
+            return dict(value,policy69=negative_scope({}))
     if url_mode69:
         if pressure84 and value.get('url_version55') and value.get('source')!='placeholder':
             value=__import__('programme_display84').remember(event,value)
@@ -369,17 +444,18 @@ def refreshed(pid,revision):
     return eligible
 
 
-def promote_focus75(tag):
+def promote_focus75(tag,requested='hero'):
     """Worker-only promotion of an exact queued intent; never another lookup."""
     global _focus75
     from programme_requests68 import identity,_aliases
+    from agent_programme100 import view
     from epg_handoff63 import profile_scope
     current=profile_scope()
     with _lock:
         for key,job in _queue.items():
-            if len(job)<4 or job[3]!=current:continue
+            if len(job)<4 or job[3]!=current or view(job[0])!=requested:continue
             bound=identity(job[0])
-            if tag==bound or tag in _aliases.get(bound,()):
+            if tag==bound or tag in _aliases.get((bound,requested),()):
                 _focus75=key;_urgent68.add(key);_queue.move_to_end(key,last=False)
                 return True
     return False
@@ -388,20 +464,29 @@ def enqueue(event,allow_lookup=False,local_image63=False,priority68=False,refere
     """Worker producer: True prioritizes visible items; 2 is current focus."""
     global _thread,_focus75
     if _stop.is_set() or not event.get('title'):return False
+    import agent_programme100 as roles499
+    from epg_handoff63 import profile_scope
+    view499=roles499.view(event)
+    profile499=profile_scope()
     with _lock:
-        key=('reference84:' if reference_only84 else '')+event['key']
+        key=(profile499,event['key'],'reference84' if reference_only84 else view499)
         if not reference_only84 and __import__('home_schedule75').applicable():local_image63=False
         if priority68==2:_focus75=key
         from utils import setting_bool
         if not reference_only84 and not local_image63 and not setting_bool('programme_art_local69',False):
             from programme_session69 import get as session69
             available69=session69(event)
+            if available69 and (not roles499.fits(available69,view499) or roles499.typed(event)
+                                and not roles499.manual(available69) and not roles499.selected(available69,view499)):
+                available69=None
+            if available69 and __import__('home_schedule75').applicable() and view499=='hero' and not __import__('hero_art86').classify(available69):available69=None
             if available69 and not (allow_lookup and __import__('programme_status70').retry(event,available69)):
                 from programme_requests68 import completed
                 completed(event,available69);return False
         if key in _pending:
             if priority68 and key in _queue:
-                old=_queue[key];_queue[key]=(old[0],old[1] or allow_lookup,old[2] or local_image63,old[3],bool(reference_only84))
+                old=_queue[key]
+                _queue[key]=(old[0],old[1] or allow_lookup,old[2] or local_image63,old[3],old[4])
                 _urgent68.add(key)
                 if priority68==2:_queue.move_to_end(key,last=False)
             return False
@@ -414,8 +499,7 @@ def enqueue(event,allow_lookup=False,local_image63=False,priority68=False,refere
                 from programme_requests68 import status
                 status(deferred75[0],'REQUESTED')
             except (ImportError,AttributeError,RuntimeError):pass
-        from epg_handoff63 import profile_scope
-        _pending.add(key);_queue[key]=(dict(event),allow_lookup,bool(local_image63),profile_scope(),bool(reference_only84))
+        _pending.add(key);_queue[key]=(dict(event),allow_lookup,bool(local_image63),profile499,bool(reference_only84))
         if priority68:_urgent68.add(key)
         if priority68==2:_queue.move_to_end(key,last=False)
         try:
@@ -469,10 +553,10 @@ def _run():
                         from programme_session69 import remember as failed69
                         value=failed69(event,dict(key=event['key'],code='IMAGE_LOOKUP_TIMEOUT',source='placeholder',image=event['placeholder'],until=time.time()+60))
                     completed(event,value)
-            except Exception:
+            except Exception as error482:
                 try:
                     from programme_session69 import remember as failed69
-                    value=failed69(event,dict(key=event['key'],code='FETCH_FAILED',source='placeholder',image=event['placeholder'],until=time.time()+60))
+                    value=failed69(event,dict(key=event['key'],code=__import__('programme_state482').error(error482),source='placeholder',image=event['placeholder'],until=time.time()+60))
                     completed(event,value)
                 except (NameError,AttributeError,RuntimeError):pass
         finally:

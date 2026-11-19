@@ -1,0 +1,15 @@
+{
+  "version": "0.1.29.95",
+  "sha256": "1eed4d84c1317190f1936883eee2d9393368117f5a1e84516605c8ba141beb3b",
+  "bytes": 4734921,
+  "files": 886,
+  "crc": "PASS",
+  "source_bytes": "PASS",
+  "source_commit": "1bc86a07affceaa3fe615ffe556b4f451bdd5589",
+  "installed_version": "0.1.29.95",
+  "unchanged_installed_nonmanifest_files": 885,
+  "fixture_manifest_adapted": true,
+  "fixture_service_disabled": true,
+  "fixture_plugin_entry": true,
+  "android": "ANDROID_NOT_TESTED"
+}

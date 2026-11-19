@@ -1,3 +1,36 @@
+0.1.29.96 (2026-11-16) – Gruppen, EPG und Artwork, unveröffentlichter Testkandidat
+- Aktivierte Sendergruppen gezielt aus dem lokalen Katalog laden; verspätete Gruppenantworten verwerfen, vorhandene Sender bei Beschäftigung behalten und begrenzt erneut prüfen.
+- Anbieter-EPG als Xtream-Grundversorgung; frühere Abschaltungen als Historie bewahren. Gesicherte Guide-Daten und Importfreigabe bleiben geschützt.
+- Zentrales Artwork-Menü mit XMLTV, TMDB und TVMaze. Einstellungsfehler getrennt von Abwahl erkennen; vorhandener Token und Zugangsdaten bleiben erhalten.
+- XMLTV-Bilder lokal und quellgenau erneut suchen, ausdrücklich auswählen und atomar mit unabhängigem Readback speichern. TMDB-Ausfall löscht kein korrektes XMLTV-Fallback.
+- Mini-EPG: Lang-OK auf Senderzeile öffnet EPG-Zuweisung mit Vorschau, Speichern und Abbrechen. Kurzes OK und die Sendungsdetails bleiben erhalten; keine automatische Keymap-Änderung.
+- Speicher → Artwork & Cache: dynamisch ab 32 MiB, manuell erweiterbar. Senderlogos pro Sender ersetzen und wiederherstellen; keine automatische Archiv- oder Datenbanklöschung.
+- Für eindeutig erkannte Werke mehrere hochwertige TMDB-Backdrops bewerten; vorhandene Bilder bei Netzfehlern erhalten.
+- Android-Abnahme offen. Kein Merge, kein Repository-Release und keine Änderung an Box A.
+
+0.1.29.95 (2026-11-15) – EPG-Sicherungsfreigabe, Testkandidat
+- Historische Sicherungsmeldung und tatsächliche Importfreigabe unabhängig prüfen. Gesperrte Datenbanken, Zeitbudgets, fehlende Belege und Speicherfehler eindeutig unterscheiden.
+- Sicherungsprüfung im Hintergrund: mehr als 128 Archive und langsame Datenträger unterstützt; keine automatische neue Sicherung und keine Löschung vorhandener Daten.
+- Profilsperren entlasten: untätiger Erinnerungstimer schreibt nicht mehr sekündlich; unveränderte, zuvor verifizierte Portaldateien bei vorübergehender Sperre weiter lesbar.
+- EPG-Bestand quellweise und begrenzt prüfen. Bestätigte frühere Importzahlen bleiben bei vorübergehend beschäftigter Inventur als historische Nachweise sichtbar.
+- Alle .94-Korrekturen übernommen. Android-Abnahme offen; kein Merge und keine Repository-Veröffentlichung.
+
+0.1.29.94 (2026-11-14) – EPG-Stabilisierung, Testkandidat
+- Neue Xtream-Einrichtung verwendet das tatsächliche Anbieter-EPG, wenn keine Quelle bewusst abgewählt wurde. Zugangsdaten und Passwörter bleiben erhalten.
+- EPGShare01 DE/AT/CH und Kaimandura nachrüstbar; ausgeschaltetes EPG wird nur mit bestätigter Absicht aktiviert.
+- Dauerhafter Importauftrag mit Dienstbestätigung, echten Byte-/Parser-/Mappingzählern und sicherem Abbruch. Quellenliste und Fernbedienungsfokus bleiben beim Statuspoll erhalten.
+- Datenbank-Commit über unabhängiges SQLite-Readback prüfen. Gestreamte XMLTV-Rohdaten werden nicht als Dateien archiviert; unbekannte Dateien und LastGood bleiben geschützt.
+- Mini-EPG lädt fehlende Sendergruppen auch bei vollständigem Hauptindex nach; Live-TV bleibt vom EPG-Import unabhängig.
+- .93-Player-, Bild- und Widget-Korrekturen vollständig übernommen. Android/RK3528-Prüfung offen; keine automatische Veröffentlichung.
+
+0.1.29.93 (2026-11-13)
+- Fehlende native Stop-Quittung: einmalige echte FIFO-Fortschrittsprobe, kein zweiter Stop und kein vorgetäuschter ACK. Native Decoderblockade weiterhin Gerätegate.
+- Gespeicherten Startsender bei temporär unvollständigem Katalog erhalten; Mini-EPG-Gruppen gezielt aus lokalem Index nachladen.
+- Eigenes lesbares Speicherfenster statt Plot/JSON; fortsetzbare Inventuren mit expliziten Messlücken.
+- Alte EPG-Sicherungen nur mit geprüfter aktueller Recovery-Kopie journalisiert begrenzen; unbekannte Rohdateien bleiben geschützt.
+- EPG-Details von der BINGIE-Hero-Mindestgröße trennen; exaktes XMLTV-Bild bei ausstehender manueller Bildquelle behalten.
+- Kein Merge oder Release, Android-Abnahme ausstehend.
+
 0.1.29.92 – Speicher-/EPG-Stabilisierung, unveröffentlichter Testkandidat
 - Verifizierte Senderlogos nach Kodi-Neustart unmittelbar im Widget verwenden; widerrufene Quellen bleiben gesperrt.
 - Eigene Speicherübersicht, sichere begrenzte Wartung mit Journal und gemessenem Platzdelta.

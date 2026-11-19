@@ -1,0 +1,33 @@
+{
+  "source_commit": "c5ecd2ea69bb84e648cae9433d250613dceff46e",
+  "base": "eb6c0857e4cb3abf20ffb94a0ed31e48b7daf59a",
+  "runtime_tree": "5e6739d6acba1b5f7f85586f95fbcd980ac70007",
+  "tests_tree": "bae11b3291676c81439ac09ceea0fe6ae3a896ec",
+  "tools_tree": "41517432a4cb75cffae8931f3acd9fbbe09597d6",
+  "runtime_changed_paths": [
+    "src/plugin.video.xtreammate/addon.xml"
+  ],
+  "historical96": {
+    "source": "bc06f521d23ee5c1e6c9aaca456c2b3cc062f3fc",
+    "sha256": "64d08c78581d074a9c86fee26ba94011119c1ab0f297de6a0bc9afee13cf1ba9"
+  },
+  "review97": {
+    "source": "eb6c0857e4cb3abf20ffb94a0ed31e48b7daf59a",
+    "sha256": "16c81e587cfe1739ae463ec69ba6d142ab75146e47c8273ae6a779ec750a1042"
+  },
+  "review98": {
+    "sha256": "d37d34fbb5be5e46154b912d3ce960f6e248431fcf7d0a9651fa9785b20a12c3"
+  },
+  "repositories_published": false,
+  "android": "ANDROID_NOT_TESTED",
+  "github_virtual_test_merge": {
+    "commit": "a7f718bc498f8dc6f86bdd802a24cdb2c8e36e48",
+    "parents": [
+      "eb6c0857e4cb3abf20ffb94a0ed31e48b7daf59a",
+      "c5ecd2ea69bb84e648cae9433d250613dceff46e"
+    ],
+    "tree": "acfa4a2f6ada768f483bfc80f43c7b1e3d49d08b"
+  },
+  "ci_tree_equals_reviewed_head": true,
+  "repository_branch_merged": false
+}

@@ -119,3 +119,18 @@ class ChunkReader:
             result.extend(self.pending[:count]); self.pending = self.pending[count:]
         self.total += len(result)
         return bytes(result)
+
+
+def wire_reader94(chunks,headers,deadline,cancel):
+    """Count transferred bytes before HTTP content decoding; total only if known."""
+    wire=dict(bytes=0,total=0)
+    raw=headers.get('Content-Length',headers.get('content-length',''))
+    transfer=headers.get('Transfer-Encoding',headers.get('transfer-encoding',''))
+    if not transfer and isinstance(raw,str) and raw.isdecimal() and len(raw)<=18:
+        wire['total']=int(raw)
+    def counted():
+        for chunk in chunks:
+            wire['bytes']+=len(chunk)
+            yield chunk
+    reader=ChunkReader(decoded_chunks(counted(),headers,deadline,cancel));reader.wire94=wire
+    return reader

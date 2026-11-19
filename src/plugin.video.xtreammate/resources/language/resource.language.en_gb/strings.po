@@ -1662,16 +1662,16 @@ msgid "Standard (lightweight core)"
 msgstr "Standard (lightweight core)"
 
 msgctxt "#32637"
-msgid "Small / font12"
-msgstr "Small / font12"
+msgid "Small"
+msgstr "Small"
 
 msgctxt "#32638"
-msgid "Normal / font13"
-msgstr "Normal / font13"
+msgid "Normal"
+msgstr "Normal"
 
 msgctxt "#32639"
-msgid "Large / font16"
-msgstr "Large / font16"
+msgid "Large"
+msgstr "Large"
 
 msgctxt "#32640"
 msgid "Invalid colour. Use six RGB hex digits."
@@ -5529,3 +5529,773 @@ msgstr "NAS uses the existing verified VFS workflow. Unknown capacity is not a c
 msgctxt "#38729"
 msgid "Movie groups on Home (library unchanged)"
 msgstr "Movie groups on Home (library unchanged)"
+
+msgctxt "#38730"
+msgid "XCMate – storage analysis (read only)"
+msgstr "XCMate – storage analysis (read only)"
+
+msgctxt "#38731"
+msgid "Technical details (JSON)"
+msgstr "Technical details (JSON)"
+
+msgctxt "#38732"
+msgid "The saved startup channel is temporarily unavailable in the local catalogue. Settings are preserved. Please retry."
+msgstr "The saved startup channel is temporarily unavailable in the local catalogue. Settings are preserved. Please retry."
+
+msgctxt "#38733"
+msgid "Unknown"
+msgstr "Unknown"
+
+msgctxt "#38734"
+msgid "Measurement cancelled or not available yet."
+msgstr "Measurement cancelled or not available yet."
+
+msgctxt "#38735"
+msgid "Observed storage usage. Incomplete values are lower bounds, not empty folders."
+msgstr "Observed storage usage. Incomplete values are lower bounds, not empty folders."
+
+msgctxt "#38736"
+msgid "Other data class"
+msgstr "Other data class"
+
+msgctxt "#38737"
+msgid "measured completely"
+msgstr "measured completely"
+
+msgctxt "#38738"
+msgid "measurement incomplete"
+msgstr "measurement incomplete"
+
+msgctxt "#38739"
+msgid "not fully readable"
+msgstr "not fully readable"
+
+msgctxt "#38740"
+msgid "empty / not created yet"
+msgstr "empty / not created yet"
+
+msgctxt "#38741"
+msgid "Observed: {} in {} files"
+msgstr "Observed: {} in {} files"
+
+msgctxt "#38742"
+msgid "Volume cannot currently be measured reliably."
+msgstr "Volume cannot currently be measured reliably."
+
+msgctxt "#38743"
+msgid "Available: {} / Total: {} / Reserve: {}"
+msgstr "Available: {} / Total: {} / Reserve: {}"
+
+msgctxt "#38744"
+msgid "Volume {} · Mount {} · Filesystem {}"
+msgstr "Volume {} · Mount {} · Filesystem {}"
+
+msgctxt "#38745"
+msgid "SQLite WAL: {} · SHM: {}"
+msgstr "SQLite WAL: {} · SHM: {}"
+
+msgctxt "#38746"
+msgid "Reusable inside SQLite: {} (not physically free space)"
+msgstr "Reusable inside SQLite: {} (not physically free space)"
+
+msgctxt "#38747"
+msgid "Android quota unknown. Categories can overlap on the same storage pool and must not simply be added together. Analysis did not modify files."
+msgstr "Android quota unknown. Categories can overlap on the same storage pool and must not simply be added together. Analysis did not modify files."
+
+msgctxt "#38748"
+msgid "Storage operation – result"
+msgstr "Storage operation – result"
+
+msgctxt "#38749"
+msgid "Status: {}"
+msgstr "Status: {}"
+
+msgctxt "#38750"
+msgid "Free before: {} · Free after: {}"
+msgstr "Free before: {} · Free after: {}"
+
+msgctxt "#38751"
+msgid "Actually observed change: {}"
+msgstr "Actually observed change: {}"
+
+msgctxt "#38752"
+msgid "EPG: {} expired rows · observed file change: {}"
+msgstr "EPG: {} expired rows · observed file change: {}"
+
+msgctxt "#38753"
+msgid "Removed owned temporary data: {}"
+msgstr "Removed owned temporary data: {}"
+
+msgctxt "#38754"
+msgid "Verified removed old EPG backups: {}"
+msgstr "Verified removed old EPG backups: {}"
+
+msgctxt "#38755"
+msgid "Saved mappings, active databases and internal original images remain protected. A negative or missing storage delta is not a space gain."
+msgstr "Saved mappings, active databases and internal original images remain protected. A negative or missing storage delta is not a space gain."
+
+msgctxt "#38760"
+msgid "Movie/series covers"
+msgstr "Movie/series covers"
+
+msgctxt "#38761"
+msgid "External programme image receipts"
+msgstr "External programme image receipts"
+
+msgctxt "#38762"
+msgid "Programme images"
+msgstr "Programme images"
+
+msgctxt "#38763"
+msgid "Channel logos"
+msgstr "Channel logos"
+
+msgctxt "#38764"
+msgid "Temporary images"
+msgstr "Temporary images"
+
+msgctxt "#38765"
+msgid "Normalized EPG/catalogue caches"
+msgstr "Normalized EPG/catalogue caches"
+
+msgctxt "#38766"
+msgid "EPG recovery copies"
+msgstr "EPG recovery copies"
+
+msgctxt "#38767"
+msgid "Widget restore plans"
+msgstr "Widget restore plans"
+
+msgctxt "#38768"
+msgid "Active EPG database"
+msgstr "Active EPG database"
+
+msgctxt "#38769"
+msgid "EPG image metadata"
+msgstr "EPG image metadata"
+
+msgctxt "#38770"
+msgid "Programme/image index"
+msgstr "Programme/image index"
+
+msgctxt "#38771"
+msgid "Migration journal"
+msgstr "Migration journal"
+
+msgctxt "#38772"
+msgid "Kodi thumbnails (read only)"
+msgstr "Kodi thumbnails (read only)"
+
+msgctxt "#38773"
+msgid "Kodi databases (read only)"
+msgstr "Kodi databases (read only)"
+
+msgctxt "#38774"
+msgid "Kodi installation packages (read only)"
+msgstr "Kodi installation packages (read only)"
+
+msgctxt "#38775"
+msgid "Kodi temporary files (read only)"
+msgstr "Kodi temporary files (read only)"
+
+msgctxt "#38776"
+msgid "Separately selected cache"
+msgstr "Separately selected cache"
+
+msgctxt "#38777"
+msgid "Active cover storage"
+msgstr "Active cover storage"
+
+msgctxt "#38778"
+msgid "Active logo storage"
+msgstr "Active logo storage"
+
+msgctxt "#38779"
+msgid "Active programme image storage"
+msgstr "Active programme image storage"
+
+msgctxt "#38756"
+msgid "This channel group is empty"
+msgstr "This channel group is empty"
+
+msgctxt "#38757"
+msgid "Completed"
+msgstr "Completed"
+
+msgctxt "#38758"
+msgid "Interrupted or not complete yet"
+msgstr "Interrupted or not complete yet"
+
+msgctxt "#38759"
+msgid "Cancelled"
+msgstr "Cancelled"
+
+msgctxt "#38780"
+msgid "Temporarily blocked – existing data is preserved"
+msgstr "Temporarily blocked – existing data is preserved"
+
+msgctxt "#38781"
+msgid "Operation running"
+msgstr "Operation running"
+
+msgctxt "#38800"
+msgid "EPG is disabled. Explicitly enable it for this source now?"
+msgstr "EPG is disabled. Explicitly enable it for this source now?"
+
+msgctxt "#38804"
+msgid "Loading channel group …"
+msgstr "Loading channel group …"
+
+msgctxt "#38805"
+msgid "Channel group verified: no channels available"
+msgstr "Channel group verified: no channels available"
+
+msgctxt "#38806"
+msgid "Channel group unavailable. Select it again to retry."
+msgstr "Channel group unavailable. Select it again to retry."
+
+msgctxt "#38807"
+msgid "Waiting for the service"
+msgstr "Waiting for the service"
+
+msgctxt "#38808"
+msgid "Downloading"
+msgstr "Downloading"
+
+msgctxt "#38809"
+msgid "Parsing XMLTV"
+msgstr "Parsing XMLTV"
+
+msgctxt "#38810"
+msgid "Matching channels"
+msgstr "Matching channels"
+
+msgctxt "#38811"
+msgid "Writing staging data"
+msgstr "Writing staging data"
+
+msgctxt "#38812"
+msgid "Committing database"
+msgstr "Committing database"
+
+msgctxt "#38813"
+msgid "Verifying saved data"
+msgstr "Verifying saved data"
+
+msgctxt "#38814"
+msgid "Checking temporary data"
+msgstr "Checking temporary data"
+
+msgctxt "#38815"
+msgid "Completed"
+msgstr "Completed"
+
+msgctxt "#38816"
+msgid "Failed; previous data preserved"
+msgstr "Failed; previous data preserved"
+
+msgctxt "#38817"
+msgid "Cancelled; previous data preserved"
+msgstr "Cancelled; previous data preserved"
+
+msgctxt "#38818"
+msgid "Waiting for channel catalogue"
+msgstr "Waiting for channel catalogue"
+
+msgctxt "#38819"
+msgid "Service confirmed"
+msgstr "Service confirmed"
+
+msgctxt "#38820"
+msgid "Cancelling safely"
+msgstr "Cancelling safely"
+
+msgctxt "#38821"
+msgid "Partially completed"
+msgstr "Partially completed"
+
+msgctxt "#38822"
+msgid "Interrupted; retry available"
+msgstr "Interrupted; retry available"
+
+msgctxt "#38823"
+msgid "Service did not confirm within 15 seconds"
+msgstr "Service did not confirm within 15 seconds"
+
+msgctxt "#38824"
+msgid "{0} of {1} bytes"
+msgstr "{0} of {1} bytes"
+
+msgctxt "#38825"
+msgid "{0} bytes; total unknown"
+msgstr "{0} bytes; total unknown"
+
+msgctxt "#38826"
+msgid "{0} channels · {1} programmes read · {2} matched · {3} staged"
+msgstr "{0} channels · {1} programmes read · {2} matched · {3} staged"
+
+msgctxt "#38827"
+msgid "{0} committed · {1} verified"
+msgstr "{0} committed · {1} verified"
+
+msgctxt "#38828"
+msgid "Job {0}"
+msgstr "Job {0}"
+
+msgctxt "#38829"
+msgid "Source {0} of {1}"
+msgstr "Source {0} of {1}"
+
+msgctxt "#38830"
+msgid "No new progress; cancellation remains available"
+msgstr "No new progress; cancellation remains available"
+
+msgctxt "#38831"
+msgid "Cancel import"
+msgstr "Cancel import"
+
+# .95 independent EPG authorization and profile busy handling
+
+msgctxt "#38900"
+msgid "Import authorization independently confirmed."
+msgstr "Import authorization independently confirmed."
+
+msgctxt "#38901"
+msgid "EPG database is busy. Wait for current work, then check again. No new backup is needed."
+msgstr "EPG database is busy. Wait for current work, then check again. No new backup is needed."
+
+msgctxt "#38902"
+msgid "Backup verification reached its time budget. Check again explicitly; do not create another backup."
+msgstr "Backup verification reached its time budget. Check again explicitly; do not create another backup."
+
+msgctxt "#38903"
+msgid "Backup file or receipt is missing at the expected location. Check the backup; delete nothing."
+msgstr "Backup file or receipt is missing at the expected location. Check the backup; delete nothing."
+
+msgctxt "#38904"
+msgid "Backup file and receipt do not match. Import remains blocked; check the backup."
+msgstr "Backup file and receipt do not match. Import remains blocked; check the backup."
+
+msgctxt "#38905"
+msgid "Backup directory is unavailable. Check storage and permissions."
+msgstr "Backup directory is unavailable. Check storage and permissions."
+
+msgctxt "#38906"
+msgid "EPG database schema could not be read completely. Preserve existing data and check diagnostics."
+msgstr "EPG database schema could not be read completely. Preserve existing data and check diagnostics."
+
+msgctxt "#38907"
+msgid "Durable backup authorization is missing. Check existing backups first."
+msgstr "Durable backup authorization is missing. Check existing backups first."
+
+msgctxt "#38908"
+msgid "EPG authorization changed during verification. Wait for current work."
+msgstr "EPG authorization changed during verification. Wait for current work."
+
+msgctxt "#38909"
+msgid "Database verification was interrupted. Check again without resetting data."
+msgstr "Database verification was interrupted. Check again without resetting data."
+
+msgctxt "#38910"
+msgid "Storage is insufficient for the requested work. Do not delete files automatically."
+msgstr "Storage is insufficient for the requested work. Do not delete files automatically."
+
+msgctxt "#38911"
+msgid "Storage access denied. Check permissions and destination."
+msgstr "Storage access denied. Check permissions and destination."
+
+msgctxt "#38912"
+msgid "Storage could not be read safely. Import remains blocked."
+msgstr "Storage could not be read safely. Import remains blocked."
+
+msgctxt "#38913"
+msgid "Import authorization is being checked independently …"
+msgstr "Import authorization is being checked independently …"
+
+msgctxt "#38914"
+msgid "EPG work is not confirmed. Existing data is preserved."
+msgstr "EPG work is not confirmed. Existing data is preserved."
+
+msgctxt "#38915"
+msgid "Profile is busy. Please wait briefly and try again."
+msgstr "Profile is busy. Please wait briefly and try again."
+
+msgctxt "#38916"
+msgid "Check import authorization – do not create another backup"
+msgstr "Check import authorization – do not create another backup"
+
+msgctxt "#38917"
+msgid "Explicitly request a new backup"
+msgstr "Explicitly request a new backup"
+
+msgctxt "#38918"
+msgid "Back"
+msgstr "Back"
+
+msgctxt "#38919"
+msgid "Last independent import check: {status}"
+msgstr "Last independent import check: {status}"
+
+msgctxt "#38920"
+msgid "A backup notification alone does not authorize an import."
+msgstr "A backup notification alone does not authorize an import."
+
+msgctxt "#39000"
+msgid "Artwork – sources and images"
+msgstr "Artwork – sources and images"
+
+msgctxt "#39001"
+msgid "EPG & programme images"
+msgstr "EPG & programme images"
+
+msgctxt "#39002"
+msgid "ON"
+msgstr "ON"
+
+msgctxt "#39003"
+msgid "OFF"
+msgstr "OFF"
+
+msgctxt "#39004"
+msgid "Read error"
+msgstr "Read error"
+
+msgctxt "#39005"
+msgid "Status and saved permissions"
+msgstr "Status and saved permissions"
+
+msgctxt "#39006"
+msgid "Test connections and image pipeline"
+msgstr "Test connections and image pipeline"
+
+msgctxt "#39007"
+msgid "Private TMDB access"
+msgstr "Private TMDB access"
+
+msgctxt "#39008"
+msgid "Manage channel logos"
+msgstr "Manage channel logos"
+
+msgctxt "#39009"
+msgid "Storage → Artwork & Cache"
+msgstr "Storage → Artwork & Cache"
+
+msgctxt "#39010"
+msgid "Restore damaged settings"
+msgstr "Restore damaged settings"
+
+msgctxt "#39011"
+msgid "Apply test configuration"
+msgstr "Apply test configuration"
+
+msgctxt "#39012"
+msgid "Send programme titles to {} for artwork lookup?"
+msgstr "Send programme titles to {} for artwork lookup?"
+
+msgctxt "#39013"
+msgid "Source selection saved and independently read back. Android image rendering has not been tested."
+msgstr "Source selection saved and independently read back. Android image rendering has not been tested."
+
+msgctxt "#39014"
+msgid "Settings: {}"
+msgstr "Settings: {}"
+
+msgctxt "#39015"
+msgid "Valid existing token: {}"
+msgstr "Valid existing token: {}"
+
+msgctxt "#39016"
+msgid "Image EPG is disabled. Change this permission under Storage → Image EPG."
+msgstr "Image EPG is disabled. Change this permission under Storage → Image EPG."
+
+msgctxt "#39017"
+msgid "Restore the last verified backup? The damaged file is also preserved unchanged. Restart Kodi afterwards."
+msgstr "Restore the last verified backup? The damaged file is also preserved unchanged. Restart Kodi afterwards."
+
+msgctxt "#39018"
+msgid "Settings restored and read back. Please restart Kodi."
+msgstr "Settings restored and read back. Please restart Kodi."
+
+msgctxt "#39019"
+msgid "Enable XMLTV, TMDB and TVMaze for this profile only and authorize image EPG? The existing token remains unchanged."
+msgstr "Enable XMLTV, TMDB and TVMaze for this profile only and authorize image EPG? The existing token remains unchanged."
+
+msgctxt "#39020"
+msgid "The settings file is damaged. No source was treated as deliberately disabled. Check recovery."
+msgstr "The settings file is damaged. No source was treated as deliberately disabled. Check recovery."
+
+msgctxt "#39021"
+msgid "Settings cannot be read safely. Check permissions and storage."
+msgstr "Settings cannot be read safely. Check permissions and storage."
+
+msgctxt "#39022"
+msgid "Saving could not be independently verified. No successful activation has been reported."
+msgstr "Saving could not be independently verified. No successful activation has been reported."
+
+msgctxt "#39023"
+msgid "No verified recovery file is available. Existing settings were not deleted."
+msgstr "No verified recovery file is available. Existing settings were not deleted."
+
+msgctxt "#39024"
+msgid "No valid TMDB token is available. Existing values are preserved."
+msgstr "No valid TMDB token is available. Existing values are preserved."
+
+msgctxt "#39025"
+msgid "Action incomplete. Check settings and storage diagnostics. Private error details are not displayed."
+msgstr "Action incomplete. Check settings and storage diagnostics. Private error details are not displayed."
+
+msgctxt "#39026"
+msgid "Search XMLTV images again"
+msgstr "Search XMLTV images again"
+
+msgctxt "#39027"
+msgid "Assign EPG"
+msgstr "Assign EPG"
+
+msgctxt "#39028"
+msgid "More player controls"
+msgstr "More player controls"
+
+msgctxt "#39029"
+msgid "Assign programme image manually"
+msgstr "Assign programme image manually"
+
+msgctxt "#39030"
+msgid "Select channel group"
+msgstr "Select channel group"
+
+msgctxt "#39031"
+msgid "Next channels"
+msgstr "Next channels"
+
+msgctxt "#39032"
+msgid "Previous channels"
+msgstr "Previous channels"
+
+msgctxt "#39033"
+msgid "Rebuild XCMate settings (no LastGood needed)"
+msgstr "Rebuild XCMate settings (no LastGood needed)"
+
+msgctxt "#39034"
+msgid "Rebuild settings and turn off optional image sources? XCMate will save any existing settings file exactly as it is. Values stored only there, including credentials, will no longer be active. Separate portals, token file, EPG databases, favourites and logos are kept. After confirming, fully quit and start Kodi twice. Close any Kodi settings window without saving."
+msgstr "Rebuild settings and turn off optional image sources? XCMate will save any existing settings file exactly as it is. Values stored only there, including credentials, will no longer be active. Separate portals, token file, EPG databases, favourites and logos are kept. After confirming, fully quit and start Kodi twice. Close any Kodi settings window without saving."
+
+msgctxt "#39035"
+msgid "Full Kodi restart required. The first restart writes the new file. The next restart checks it in Kodi. Keep Kodi settings closed until verification succeeds."
+msgstr "Full Kodi restart required. The first restart writes the new file. The next restart checks it in Kodi. Keep Kodi settings closed until verification succeeds."
+
+msgctxt "#39036"
+msgid "Settings rebuild verified after a full Kodi restart. Provider EPG is enabled. Optional image sources can be enabled separately."
+msgstr "Settings rebuild verified after a full Kodi restart. Provider EPG is enabled. Optional image sources can be enabled separately."
+
+msgctxt "#39037"
+msgid "BACKUP_FAILED: XCMate could not create or verify a safe copy of the original settings. Check storage and access."
+msgstr "BACKUP_FAILED: XCMate could not create or verify a safe copy of the original settings. Check storage and access."
+
+msgctxt "#39038"
+msgid "NO_SPACE: There is not enough free space to finish safely. Free space and retry the repair or restart as instructed."
+msgstr "NO_SPACE: There is not enough free space to finish safely. Free space and retry the repair or restart as instructed."
+
+msgctxt "#39039"
+msgid "READBACK_FAILED: The new settings could not be verified on disk. The original copy is kept. Fully restart Kodi to check the repair again."
+msgstr "READBACK_FAILED: The new settings could not be verified on disk. The original copy is kept. Fully restart Kodi to check the repair again."
+
+msgctxt "#39040"
+msgid "KODI_CACHE_CONFLICT: Kodi read different settings or the file changed during repair. The original copy is kept. Close Kodi settings before starting a new repair."
+msgstr "KODI_CACHE_CONFLICT: Kodi read different settings or the file changed during repair. The original copy is kept. Close Kodi settings before starting a new repair."
+
+msgctxt "#39041"
+msgid "REPAIR_BUSY: Another XCMate operation is in progress. Wait a moment and reopen XCMate."
+msgstr "REPAIR_BUSY: Another XCMate operation is in progress. Wait a moment and reopen XCMate."
+
+msgctxt "#39042"
+msgid "REPAIR_STATE_INVALID: The repair status could not be verified. No further replacement will be attempted automatically."
+msgstr "REPAIR_STATE_INVALID: The repair status could not be verified. No further replacement will be attempted automatically."
+
+msgctxt "#39043"
+msgid "KODI_PROCESS_UNKNOWN: XCMate could not confirm that Kodi fully stopped. Wait for Kodi to stop and try again."
+msgstr "KODI_PROCESS_UNKNOWN: XCMate could not confirm that Kodi fully stopped. Wait for Kodi to stop and try again."
+
+msgctxt "#39044"
+msgid "Close the Kodi add-on settings window without saving and reopen XCMate to continue the repair."
+msgstr "Close the Kodi add-on settings window without saving and reopen XCMate to continue the repair."
+
+msgctxt "#39100"
+msgid "XCMate EPG Agent"
+msgstr ""
+
+msgctxt "#39101"
+msgid "Enable XCMate EPG Agent"
+msgstr ""
+
+msgctxt "#39102"
+msgid "Check for an update now"
+msgstr ""
+
+msgctxt "#39103"
+msgid "Status and diagnostics"
+msgstr ""
+
+msgctxt "#39104"
+msgid "Current"
+msgstr ""
+
+msgctxt "#39105"
+msgid "Update in progress"
+msgstr ""
+
+msgctxt "#39106"
+msgid "Offline"
+msgstr ""
+
+msgctxt "#39107"
+msgid "Error"
+msgstr ""
+
+msgctxt "#39108"
+msgid "Disabled"
+msgstr ""
+
+msgctxt "#39109"
+msgid "Private feed awaiting approval"
+msgstr ""
+
+msgctxt "#39110"
+msgid "Private read access has not been set up"
+msgstr ""
+
+msgctxt "#39111"
+msgid "Guide import pending"
+msgstr ""
+
+msgctxt "#39112"
+msgid "Last check"
+msgstr ""
+
+msgctxt "#39113"
+msgid "Next check"
+msgstr ""
+
+msgctxt "#39114"
+msgid "Last verified import"
+msgstr ""
+
+msgctxt "#39115"
+msgid "Revision"
+msgstr ""
+
+msgctxt "#39116"
+msgid "Feed channels / programmes / artwork references"
+msgstr ""
+
+msgctxt "#39117"
+msgid "Matched streams / staged channels"
+msgstr ""
+
+msgctxt "#39118"
+msgid "Read / saved / verified programmes"
+msgstr ""
+
+msgctxt "#39119"
+msgid "Check requested"
+msgstr ""
+
+msgctxt "#39120"
+msgid "No check yet"
+msgstr ""
+
+msgctxt "#39121"
+msgid "Provider guide stays available."
+msgstr ""
+
+msgctxt "#39122"
+msgid "Could not save the Agent setting."
+msgstr ""
+
+msgctxt "#39123"
+msgid "Artwork references from the Agent follow the selected image sources."
+msgstr ""
+
+msgctxt "#38980"
+msgid "Choose movie groups"
+msgstr "Choose movie groups"
+
+msgctxt "#38981"
+msgid "Restore last saved selection"
+msgstr "Restore last saved selection"
+
+msgctxt "#38982"
+msgid "Suggest hiding adult groups on Home"
+msgstr "Suggest hiding adult groups on Home"
+
+msgctxt "#38983"
+msgid "The movie groups or your saved selection are currently unavailable. Try again in a moment."
+msgstr "The movie groups or your saved selection are currently unavailable. Try again in a moment."
+
+msgctxt "#38984"
+msgid "No local movie groups are available yet."
+msgstr "No local movie groups are available yet."
+
+msgctxt "#38985"
+msgid "Movie groups on Home · {0} of {1} selected"
+msgstr "Movie groups on Home · {0} of {1} selected"
+
+msgctxt "#38986"
+msgid "The Home selection could not be saved and verified."
+msgstr "The Home selection could not be saved and verified."
+
+msgctxt "#38987"
+msgid "Home selection saved"
+msgstr "Home selection saved"
+
+msgctxt "#39200"
+msgid "Background dimmer"
+msgstr "Background dimmer"
+
+msgctxt "#39201"
+msgid "Panel colour"
+msgstr "Panel colour"
+
+msgctxt "#39202"
+msgid "Heading colour"
+msgstr "Heading colour"
+
+msgctxt "#39203"
+msgid "Selected text colour"
+msgstr "Selected text colour"
+
+msgctxt "#39204"
+msgid "Progress colour"
+msgstr "Progress colour"
+
+msgctxt "#39205"
+msgid "Warning colour"
+msgstr "Warning colour"
+
+msgctxt "#39206"
+msgid "Error colour"
+msgstr "Error colour"
+
+msgctxt "#39207"
+msgid "Very large"
+msgstr "Very large"
+
+msgctxt "#39208"
+msgid "Active design · {0}"
+msgstr "Active design · {0}"
+
+msgctxt "#39209"
+msgid "Token missing or invalid"
+msgstr "Token missing or invalid"
+
+msgctxt "#39210"
+msgid "Saved · image EPG disabled"
+msgstr "Saved · image EPG disabled"
+
+msgctxt "#39211"
+msgid "Installed designs"
+msgstr "Installed designs"
+
+msgctxt "#39124"
+msgid "Posters / backdrops / episode images / station logos"
+msgstr ""

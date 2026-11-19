@@ -3,6 +3,7 @@ import importlib,io,json,sys,time,unittest
 from pathlib import Path
 from unittest import mock
 from xcmate027_fixture import Fixture
+from artwork_request100_fixture import isolated_metadata
 
 class ProgrammeArt46(Fixture,unittest.TestCase):
  def setUp(self):
@@ -78,18 +79,21 @@ class ProgrammeArt46(Fixture,unittest.TestCase):
   search=dict(total_pages=1,total_results=1,results=[dict(id=42,name=event['title'],first_air_date='2024-01-01')])
   wrong=dict(id=42004,season_number=2,episode_number=4,name='Exact episode',still_path='/wrong.jpg')
   right=dict(id=42003,season_number=2,episode_number=3,name='Exact episode',still_path='/correct.jpg')
-  with mock.patch('media_sources43.tmdb_token',return_value='synthetic'),mock.patch('media_sources43.get',side_effect=[search,wrong]):self.assertIsNone(self.m.candidate(event))
-  with mock.patch('media_sources43.tmdb_token',return_value='synthetic'),mock.patch('media_sources43.get',side_effect=[search,right]):self.assertEqual(self.m.candidate(event)['match'],'EXACT_SEASON_EPISODE')
+  with isolated_metadata(),mock.patch('media_sources43.tmdb_token',return_value='synthetic'),mock.patch('media_sources43.get',side_effect=[search,wrong]) as get:self.assertIsNone(self.m.candidate(event))
+  self.assertEqual(get.call_count,2)
+  with isolated_metadata(),mock.patch('media_sources43.tmdb_token',return_value='synthetic'),mock.patch('media_sources43.get',side_effect=[search,right]) as get:self.assertEqual(self.m.candidate(event)['match'],'EXACT_SEASON_EPISODE')
+  self.assertEqual(get.call_count,2)
  def test_news_talk_or_unknown_year_never_become_arbitrary_movie(self):
   self.options['programme_tmdb46']='true'
   for extra in [dict(genre='News'),dict(genre='Talkshow'),dict(genre='Film')]:
    with mock.patch('media_sources43.tmdb',side_effect=AssertionError('unverified identity')):self.assertIsNone(self.m.candidate(dict(self.event,**extra)))
  def test_event_cache_budget_is_configurable_without_disabling_global_reserve(self):
-  self.assertEqual(self.a.limit(),64*1024*1024);self.options['programme_art_budget46']='2';self.assertEqual(self.a.limit(),128*1024*1024)
+  # .96 starts demand caching at 32 MiB; deliberate larger budgets survive.
+  self.assertEqual(self.a.limit(),32*1024*1024);self.options['programme_art_budget46']='2';self.assertEqual(self.a.limit(),128*1024*1024)
   self.assertNotIn('media_art_reserve_mb',self.options)
  def test_internal_programme_budget_is_distinguished_from_real_disk_full(self):
   with mock.patch.object(self.a,'space',side_effect=self.a.CacheBudget('PROGRAMME_CACHE_BUDGET')):value=self.prepare()
-  self.assertEqual(value['code'],'PROGRAMME_CACHE_BUDGET');self.assertNotEqual(value['code'],'DISK_FULL');self.assertEqual(value['budget46'],64*1024*1024)
+  self.assertEqual(value['code'],'PROGRAMME_CACHE_BUDGET');self.assertNotEqual(value['code'],'DISK_FULL');self.assertEqual(value['budget46'],32*1024*1024)
 
  def test_large_source_becomes_bounded_display_derivative_without_crop_or_logo(self):
   from PIL import Image

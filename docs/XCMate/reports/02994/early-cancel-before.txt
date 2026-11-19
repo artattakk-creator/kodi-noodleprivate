@@ -1,0 +1,4 @@
+{'before': 'CANCELLED', 'after': 'QUEUED', 'cancel_before': True, 'cancel_after': False}
+Traceback (most recent call last):
+  File "<stdin>", line 6, in <module>
+AssertionError: P0_CANCELLED_JOB_REQUEUED_BY_LEGACY_HINT

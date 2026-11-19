@@ -70,6 +70,10 @@ def resolve_guide(cache, epg_id='', stream_id='', now=None, client=None, mapping
     Cached short EPG is a fallback for missing *current* XMLTV data, never HTTP.
     """
     sid = str(stream_id or '')
+    from local_epg import for_channel
+    cache = for_channel(cache,sid)
+    from epg_binding48 import view_mappings
+    mappings = view_mappings(mappings)
     mapped = (mappings or {}).get(sid)
     if mapped:
         from epg_binding48 import qualified_cache

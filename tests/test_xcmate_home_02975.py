@@ -98,19 +98,21 @@ class QueueFocus75(Fixture,unittest.TestCase):
         for i in range(24):self.assertTrue(self.q.enqueue(self.event75(str(i)),priority68=True))
         self.assertTrue(self.q.enqueue(self.event75('focus'),priority68=2))
         self.assertEqual((len(self.q._pending),len(self.q._queue),len(self.q._urgent68)),(24,24,24))
-        self.assertEqual(next(iter(self.q._queue)),'focus');self.assertNotIn('23',self.q._urgent68)
+        self.assertEqual(next(iter(self.q._queue.values()))[0]['key'],'focus')
+        self.assertNotIn('23',[self.q._queue[key][0]['key'] for key in self.q._urgent68])
     def test_existing_focus_is_promoted_without_a_second_job_or_worker(self):
         self.q.enqueue(self.event75('old'),priority68=True);self.q.enqueue(self.event75('focus'))
         self.assertFalse(self.q.enqueue(self.event75('focus'),allow_lookup=True,priority68=2))
-        self.assertEqual(list(self.q._queue),['focus','old']);self.assertEqual(len(self.q._pending),2)
-        self.assertTrue(self.q._queue['focus'][1])
+        jobs=list(self.q._queue.values())
+        self.assertEqual([job[0]['key'] for job in jobs],['focus','old']);self.assertEqual(len(self.q._pending),2)
+        self.assertTrue(jobs[0][1])
     def test_queued_intent_promotes_exact_profile_and_never_reads_files_or_http(self):
         from programme_requests68 import identity
         event=self.event75('focus');self.q.enqueue(self.event75('old'),priority68=True);self.q.enqueue(event)
         tag=identity(event)
         with mock.patch('builtins.open',side_effect=AssertionError('FOCUS_FILE')),mock.patch('media_sources43.get',side_effect=AssertionError('FOCUS_HTTP')):
             self.assertTrue(self.q.promote_focus75(tag))
-        self.assertEqual(next(iter(self.q._queue)),'focus')
+        self.assertEqual(next(iter(self.q._queue.values()))[0]['key'],'focus')
         with mock.patch('epg_handoff63.profile_scope',return_value='foreign'):
             self.assertFalse(self.q.promote_focus75(tag))
     def test_latest_focus_wins_even_after_the_visible_job_fairness_burst(self):

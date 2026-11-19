@@ -1,0 +1,50 @@
+.FF                                                                      [100%]
+=================================== FAILURES ===================================
+___ Fixture98.test_only_exact_own_disabled_test_addon_prompt_is_acknowledged ___
+
+self = <test_native_fixture98.Fixture98 testMethod=test_only_exact_own_disabled_test_addon_prompt_is_acknowledged>
+
+    def test_only_exact_own_disabled_test_addon_prompt_is_acknowledged(self):
+     helper=self.helper()
+     def invoke(body,window=10100,heading='Disabled add-ons',control='No'):
+      def answer(method,params=None):
+       if method=='GUI.GetProperties':return dict(currentwindow=dict(id=window),currentcontrol=dict(label=control))
+       if method=='XBMC.GetInfoLabels':return {key:(heading if key=='Control.GetLabel(1)' else body) for key in params['labels']}
+       if method=='Input.Select':return 'OK'
+       self.fail(method)
+      rpc=mock.Mock(side_effect=answer);result=helper.settle_fixture_prompt(rpc)
+      return result,[c for c in rpc.call_args_list if c.args[0]=='Input.Select']
+     for body,window,heading,control in [('Would you like to enable this add-on? Foreign add-on referencing Catalog73 synthetic GUI contract',10100,'Disabled add-ons','No'),('Another installed add-on',10100,'Disabled add-ons','No'),('Catalog73 synthetic GUI contract',12000,'Select','No'),('Catalog73 synthetic GUI contract',10100,'Delete profile?','No'),('Catalog73 synthetic GUI contract',10100,'Disabled add-ons','Yes')]:
+>     with self.subTest(body=body,window=window,heading=heading):self.assertEqual(invoke(body,window,heading,control),(False,[]))
+                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E     AssertionError: Tuples differ: (True, [call('Input.Select')]) != (False, [])
+E     
+E     First differing element 0:
+E     True
+E     False
+E     
+E     - (True, [call('Input.Select')])
+E     + (False, [])
+
+tests/test_native_fixture98.py:23: AssertionError
+_ Fixture98.test_post_screenshot_receipt_observes_focus_loss_without_resetting_it _
+
+self = <test_native_fixture98.Fixture98 testMethod=test_post_screenshot_receipt_observes_focus_loss_without_resetting_it>
+
+    def test_post_screenshot_receipt_observes_focus_loss_without_resetting_it(self):
+     import ast
+     source=ast.parse((HOST/'mapping482.py').read_text())
+     function=next(n for n in source.body if isinstance(n,ast.FunctionDef) and n.name=='mapping_shot98')
+     receipt=dict(dialog=13001,owner='mini',control=200)
+     focus=mock.Mock(return_value=receipt);observe=mock.Mock(return_value=None)
+     namespace=dict(mapping_focus98=focus,read_mapping_focus98=observe,shot=lambda name:name+'.png')
+     exec(compile(ast.Module(body=[function],type_ignores=[]),'native_mapping_observer','exec'),namespace)
+>    with self.assertRaisesRegex(AssertionError,'FOCUS_CHANGED_DURING_SCREENSHOT'):
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E    AssertionError: AssertionError not raised
+
+tests/test_native_fixture98.py:34: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_native_fixture98.py::Fixture98::test_only_exact_own_disabled_test_addon_prompt_is_acknowledged
+FAILED tests/test_native_fixture98.py::Fixture98::test_post_screenshot_receipt_observes_focus_loss_without_resetting_it
+2 failed, 1 passed in 0.10s

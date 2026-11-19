@@ -2,9 +2,29 @@
 import json
 from localization import tr
 
+def create_window(value):
+    import xbmcgui,xbmcaddon
+    from storage_report93 import report
+    class StorageReport(xbmcgui.WindowXMLDialog):
+        def onInit(self):
+            self.page=0
+            self.getControl(101).setLabel(tr(38730))
+            self.getControl(103).setText(report(value))
+            self.getControl(501).setLabel(tr(36101));self.getControl(502).setLabel(tr(38731))
+            self.setFocusId(501)
+        def onClick(self,cid):
+            if cid==501:self.close()
+            elif cid==502:xbmcgui.Dialog().textviewer(tr(38731),json.dumps(value,ensure_ascii=False,indent=2))
+        def onAction(self,action):
+            key=action.getId()
+            if key in (9,10,92):self.close()
+            elif key in (3,4,5,6):
+                self.page=max(0,self.page+(-1 if key in (3,5) else 1))
+                self.getControl(103).scroll(self.page)
+    return StorageReport('XCMateStorage93.xml',xbmcaddon.Addon().getAddonInfo('path'),'Default','720p')
+
 def show(value):
-    import xbmcgui
-    xbmcgui.Dialog().textviewer(tr(38700),json.dumps(value,ensure_ascii=False,indent=2))
+    if value is not None:create_window(value).doModal()
 
 def image_choice():
     import xbmcgui
@@ -31,12 +51,16 @@ def manage(setup=False):
     dialog=xbmcgui.Dialog()
     if setup:image_choice()
     labels=[tr(i) for i in (38701,38702,38703,38707,38708,38709,38710,38711,38712,38713,38714)]
+    labels[8]='Artwork & Cache'
+    labels[1]='Wartungsstatus (nur lesen)'
     while True:
         choice=__import__('menu_icons45').select(dialog,tr(38700),labels)
         if choice<0:return
         try:
             if choice==0:show(job(lambda cancel,progress:__import__('storage_inventory92').collect(cancel,progress)))
-            elif choice==1:show(job(lambda cancel,progress:__import__('storage_maintenance92').run(cancel,progress,force=True)))
+            elif choice==1:
+                value=job(lambda cancel,progress:__import__('storage_maintenance92').read())
+                if value is not None:dialog.textviewer(labels[1],json.dumps(value,ensure_ascii=False,indent=2))
             elif choice==2:image_choice()
             elif choice==3:
                 target=pick_usb()
@@ -61,7 +85,7 @@ def manage(setup=False):
                 current=job(lambda cancel,progress:migration.status())
                 if current and dialog.yesno(tr(38700),tr(38717)) and dialog.yesno(tr(38700),tr(38718)):
                     show(job(lambda cancel,progress:migration.cleanup_report(current.get('transfer',''),cancel,progress)))
-            elif choice==8:__import__('artwork_ui').manage()
+            elif choice==8:__import__('storage_artwork96').manage()
             elif choice==9:show(job(lambda cancel,progress:dict(migration=migration.status(),policy=__import__('storage_policy92').read(),maintenance=__import__('storage_maintenance92').read())))
             elif choice==10:
                 # Actual Kodi 21 global cache settings; no fabricated per-stream knob.

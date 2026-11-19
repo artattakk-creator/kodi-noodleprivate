@@ -51,6 +51,8 @@ class PendingLiveSessionTests(unittest.TestCase):
         xbmcgui = types.ModuleType('xbmcgui')
         xbmcgui.Window = lambda number: self.window
         temp=tempfile.TemporaryDirectory();self.addCleanup(temp.cleanup)
+        xbmcvfs = types.ModuleType('xbmcvfs')
+        xbmcvfs.translatePath = lambda path: str(Path(temp.name) / Path(path).name)
         utils = types.ModuleType('utils')
         utils.addon_data_dir=lambda:temp.name
         utils.setting_bool = lambda *args: False
@@ -64,7 +66,7 @@ class PendingLiveSessionTests(unittest.TestCase):
         remote.COMMAND_KEY = 'XtreamMate.RemoteCommand'
         remote.parse_command = lambda raw: None
         p = mock.patch.dict(sys.modules, {
-            'xbmc': xbmc, 'xbmcaddon': xbmcaddon, 'xbmcgui': xbmcgui,
+            'xbmc': xbmc, 'xbmcaddon': xbmcaddon, 'xbmcgui': xbmcgui, 'xbmcvfs': xbmcvfs,
             'utils': utils, 'live_overlay': live_overlay,
             'remote_control': remote,
             # This fixture tests idle-session grace, not additive app workers.

@@ -46,21 +46,10 @@ def store(pid,run):
             except OSError:pass
 
 
-def statistics(pid):
+def statistics(pid, **options):
+    from epg_inventory95 import collect
     from guide_store import path as guide_path
-    filename=guide_path();db=None
-    if not os.path.isfile(filename):return dict(code='NOT_CREATED',sources=[],programmes=0,first=None,last=None)
-    try:
-        db=sqlite3.connect('file:'+quote(filename,safe='/')+'?mode=ro',uri=True,timeout=.05)
-        db.execute('PRAGMA query_only=ON');db.execute('BEGIN');end=time.monotonic()+1
-        db.set_progress_handler(lambda:int(time.monotonic()>end),1000)
-        row=db.execute('SELECT count(*),min(start),max(stop) FROM programmes WHERE pid=?',(str(pid),)).fetchone()
-        sources=[dict(id=r[0],channels=r[1],programmes=r[2],first=r[3],last=r[4]) for r in db.execute('SELECT source_id,count(DISTINCT cid),count(*),min(start),max(stop) FROM guide44_inputs WHERE pid=? GROUP BY source_id LIMIT 129',(str(pid),))]
-        if len(sources)>128:return dict(code='BUDGET',sources=[],programmes=None,first=None,last=None)
-        return dict(code='READY',sources=sources,programmes=row[0],first=row[1],last=row[2])
-    except (OSError,sqlite3.Error):return dict(code='UNAVAILABLE',sources=[],programmes=None,first=None,last=None)
-    finally:
-        if db is not None:db.close()
+    return collect(str(pid),guide_path(),**options)
 
 
 def started(pid,key,identity,rank):
@@ -76,7 +65,7 @@ def source_done(pid,identity,code,counts=None,outcome=None):
     row=run['sources'].get(identity)
     if row is None:return
     row.update(code=code,finished=time.time());row['seconds']=round(row['finished']-row['started'],3)
-    for key in ('channels','stored','bytes','min_start66','max_end66','mapped_channels66','stored_unique66','selected_streams66','matched_streams66'):
+    for key in ('channels','programmes','stored','bytes','min_start66','max_end66','mapped_channels66','stored_unique66','selected_streams66','matched_streams66','committed','committed_channels','verified','verified_channels','verified_first','verified_last'):
         value=(counts or {}).get(key)
         if isinstance(value,(int,float)) and value>=0:row[key]=value
     revision66=(counts or {}).get('revision66','')
@@ -123,10 +112,14 @@ def stamp(value):return time.strftime('%d.%m.%Y %H:%M',time.localtime(value)) if
 
 
 def meaning(code):
+    if code in ('DB_BUSY','BACKUP_GATE_TIMEOUT','BACKUP_MISSING','BACKUP_RECEIPT_MISMATCH','BACKUP_DIR_UNAVAILABLE','DB_SCHEMA_MISSING','DB_AUTHORIZATION_MISSING','DB_AUTHORIZATION_CHANGED','DB_INTERRUPTED','STORAGE_IO','STORAGE_FULL','STORAGE_ACCESS_DENIED','IMPORT_AUTHORIZED'):
+        return __import__('epg_gate95').message(code)
     return {'REQUESTED':'Auftrag gespeichert; Übernahme durch den Dienst ausstehend','SERVICE_NOT_CONFIRMED':'Dienstübernahme noch nicht bestätigt; Dienststatus prüfen','DOWNLOADING':'XMLTV wird heruntergeladen','PARSING':'XMLTV wird gelesen und Sendern zugeordnet','SAVING':'EPG wird gespeichert','SOURCE_UNAVAILABLE':'Anbieter liefert keine XMLTV-Adresse','EMPTY_GUIDE':'Keine nutzbaren Sendungen im gelieferten XMLTV','NO_CHANNEL_MATCH':'XMLTV enthält Sendungen, aber keine passende eindeutige Senderzuordnung','INVALID_XMLTV':'Ungültiges XMLTV; Import verworfen','DOWNLOAD_TIMEOUT':'Zeitüberschreitung beim Download','DOWNLOAD_FAILED':'Download nicht möglich; Verbindung oder HTTP-Status prüfen','PARSE_TIMEOUT':'Zeitüberschreitung beim XMLTV-Lesen','PARSE_FAILED':'XMLTV konnte nicht verarbeitet werden','GZIP_INVALID':'Komprimierte XMLTV-Datei ungültig','CACHE_WRITE_FAILED':'Lokaler EPG-Cache konnte nicht gespeichert werden','STATUS_UNVERIFIED':'Früherer Status nicht durch gespeicherte Daten bestätigt','NO_SAVED_PROGRAMMES':'Noch keine gespeicherten Sendungen bestätigt','READY':'Erfolgreich gespeichert','READY_NO_NOW':'Gespeichert; aktuell keine laufende Sendung','PARTIAL_SUCCESS':'Teilweise erfolgreich','PARTIAL_PRESERVED':'Gespeichert; widersprüchliche Einträge geschützt','UNCHANGED':'Unverändert bestätigt','BACKUP_REQUIRED':'Verifizierte EPG-Sicherung erforderlich','WAIT_ACTIVE_CATALOG':'Senderkatalog noch nicht bereit','NO_NEW_GUIDE':'Keine neue gültige Programmliste','CANCELLED':'Abgebrochen; bisherige Daten bleiben erhalten','IMPORT_BUSY_OR_LOCK_UNAVAILABLE':'Ein EPG-Import läuft bereits','RUNNING':'Wird aktualisiert','DISABLED':'Deaktiviert','WAITING':'Noch kein Lauf bestätigt'}.get(code,'Aktualisierung fehlgeschlagen; bisherige Daten bleiben erhalten')
 
 
 def advice(code):
+    if code in ('DB_BUSY','BACKUP_GATE_TIMEOUT','DB_INTERRUPTED'):return 'Laufende Arbeit abwarten und Importfreigabe erneut prüfen. Keine neue Sicherung, keine Daten löschen.'
+    if code in ('BACKUP_MISSING','BACKUP_RECEIPT_MISMATCH','BACKUP_DIR_UNAVAILABLE','DB_AUTHORIZATION_MISSING','DB_SCHEMA_MISSING','STORAGE_IO','STORAGE_ACCESS_DENIED'):return 'Vorhandene Sicherung und Diagnose prüfen. Keine blinde neue Sicherung und kein Zurücksetzen.'
     if code in SUCCESS:return 'Fehlende Tage oder Bilder können von der Quelle fehlen. Gespeicherten Zeitraum unten prüfen.'
     if code=='BACKUP_REQUIRED':return 'Die vorhandene EPG-Sicherungsfunktion ausführen und BACKUP_VERIFIED abwarten. Keine Datenbank löschen.'
     if code=='NO_CHANNEL_MATCH':return 'EPG-ID und Quellenzuordnung im großen EPG prüfen. Vorschau verwenden; bisherige Zuordnungen bleiben erhalten.'
@@ -141,17 +134,35 @@ def configured(portal):
     from epg_sources import configuration
     from guide_publish44 import source_id
     result=[dict(id='provider',key='provider',name='Anbieter-EPG',rank=0,enabled=portal.get('provider_epg_enabled',True))]
-    for rank,s in enumerate(configuration(portal['id'])['sources'],1):
+    try:
+        sources=configuration(portal['id'])['sources']
+    except (OSError,ValueError,TypeError):
+        sources=[]
+    for rank,s in enumerate(sources,1):
         result.append(dict(id=source_id(s,rank),key=__import__('epg_status').source_key(s),name=label(s.get('name')),rank=rank,enabled=s.get('enabled',True),record=s))
+    try:
+        from epg_agent100 import SOURCE_RANK, enabled
+    except ModuleNotFoundError as exc:
+        if exc.name!='epg_agent100':
+            raise
+    else:
+        result.append(dict(id='agent',key='agent',name='XCMate EPG Agent',rank=SOURCE_RANK,enabled=enabled()))
     return result
 
 
-def overview(portal):
+def overview(portal, items=None, *, cancel=None):
     from epg_status import read
-    stats=statistics(portal['id']);runs=history(portal['id']);state=read(portal['id']);rows=[]
-    for item in configured(portal):
-        row=dict(item);events=[s for run in runs for s in run.get('sources',[]) if s.get('id')==item['id']]
-        saved=next((s for s in stats['sources'] if s['id']==item['id']),{})
+    pid=portal['id']
+    stats=statistics(pid) if cancel is None else statistics(pid,cancel=cancel)
+    runs=history(pid);state=read(pid);rows=[]
+    stored={source['id']:source for source in stats['sources']}
+    observations={}
+    for run in runs:
+        for source in run.get('sources',[]):
+            observations.setdefault(source.get('id'),[]).append(source)
+    for item in configured(portal) if items is None else items:
+        row=dict(item);events=observations.get(item['id'],[])
+        saved=stored.get(item['id'],{})
         legacy=state.get(item['key'],{});last=events[-1] if events else legacy
         if legacy.get('at',0)>last.get('finished',last.get('at',0)):last=legacy
         refresh=state.get('refresh',{})
@@ -162,9 +173,19 @@ def overview(portal):
                 last=dict(refresh)
                 if time.time()-refresh.get('at',0)>15:last['code']='SERVICE_NOT_CONFIRMED'
         row.update(code=last.get('code','WAITING') if item['enabled'] else 'DISABLED',saved=saved,statistics_code=stats['code'])
-        if row['code'] in SUCCESS:
-            if stats['code']!='READY':row['code']='STATUS_UNVERIFIED'
-            elif not saved.get('programmes'):row['code']='NO_SAVED_PROGRAMMES'
+        row['inventory95']=saved.get('code',stats['code'])
+        if row['inventory95']!='READY':
+            prior=next((s for s in reversed(events) if s.get('verified') or s.get('saved',{}).get('programmes')),None)
+            if prior:
+                previous=prior.get('saved',{})
+                if previous.get('programmes') is None:
+                    previous=dict(programmes=prior['verified'],first=prior.get('verified_first'),last=prior.get('verified_last'))
+                    if 'verified_channels' in prior:
+                        previous['channels']=prior['verified_channels']
+                row['saved']=dict(previous)
+                row['historical95']=True
+            # A busy current inventory never revokes an older verified import.
+        elif row['code'] in SUCCESS and not saved.get('programmes'):row['code']='NO_SAVED_PROGRAMMES'
         row['progress59']={k:last[k] for k in ('bytes','programmes','count','http_status','failure_stage') if k in last}
         row['last_success']=max([s.get('finished',0) for s in events if s.get('code') in SUCCESS]+[legacy.get('last_success',0)])
         row['last_failure']=max([s.get('finished',0) for s in events if s.get('code') not in SUCCESS]+[0])
@@ -179,6 +200,8 @@ def describe(run,portal):
     names={r['id']:r['name'] for r in configured(portal)}
     lines=['Automatische Aktualisierung' if run.get('automatic') else 'Manuelle Aktualisierung',
            'Beginn: '+stamp(run.get('started')),'Dauer: '+str(run.get('seconds',0))+' Sekunden',meaning(run.get('code')),'',advice(run.get('code'))]
+    gate95=__import__('epg_gate95').latest(__import__('guide_store').path())
+    if gate95:lines+=['','Letzte unabhängige Importfreigabe: '+meaning(gate95['code']),stamp(gate95.get('checked_at'))+' · '+str(gate95.get('elapsed_ms',0))+' ms']
     after=run.get('after',{});before=run.get('before',{})
     if after.get('code')=='READY':
         lines+=['','Gespeicherte Programme: '+str(after['programmes']),'Zeitraum: '+stamp(after.get('first'))+' bis '+stamp(after.get('last'))]
@@ -188,13 +211,30 @@ def describe(run,portal):
     lines+=['','Quellen: '+str(good)+' erfolgreich, '+str(len(sources)-good)+' nicht erfolgreich']
     for s in sources:
         lines+=['','[B]'+names.get(s['id'],'Früher konfigurierte Quelle')+'[/B]',meaning(s.get('code')),
-                'Geladen: '+str(s.get('channels',0))+' Sender / '+str(s.get('stored',0))+' passende Sendungen',
                 'Dauer: '+str(s.get('seconds',0))+' Sekunden']
-        if s.get('selected_streams66'):lines.append('Zugeordnete Sender: '+str(s.get('matched_streams66',0))+' / '+str(s['selected_streams66']))
+        if 'bytes' in s:
+            lines.append('Gelesene Bytes: '+str(s['bytes']))
+        if 'programmes' in s:
+            lines.append('Gelesen: '+str(s.get('channels',0))+' XMLTV-Kanäle / '+str(s['programmes'])+' Programme')
+        elif 'channels' in s and 'stored' in s:
+            lines.append('Geladen: '+str(s['channels'])+' Sender (XMLTV) / '+str(s['stored'])+' passende Sendungen')
+        if 'selected_streams66' in s:
+            lines.append('Zugeordnete IPTV-Streams: '+str(s.get('matched_streams66',0))+' / '+str(s['selected_streams66']))
+        for channels,programmes,title in (
+            ('mapped_channels66','stored_unique66','Staging'),
+            ('committed_channels','committed','DB-Commit'),
+            ('verified_channels','verified','Readback bestätigt'),
+        ):
+            if programmes in s:
+                count=str(s[channels])+' XMLTV-Kanäle / ' if channels in s else ''
+                lines.append(title+': '+count+str(s[programmes])+' Programme')
         if s.get('revision66'):lines.append('Quellrevision: '+s['revision66'][:16])
         if s.get('min_start66') and s.get('max_end66'):lines.append('Tatsächlich gelieferte Abdeckung: '+stamp(s['min_start66'])+' bis '+stamp(s['max_end66']))
         saved=s.get('saved',{})
-        if saved:lines+=['Gespeichert: '+str(saved.get('channels',0))+' Sender / '+str(saved.get('programmes',0))+' Sendungen',stamp(saved.get('first'))+' bis '+stamp(saved.get('last'))]
+        if saved.get('programmes') is not None:
+            lines+=['Gespeichert: '+str(saved.get('channels',0))+' XMLTV-Kanäle / '+str(saved['programmes'])+' Programme',
+                    stamp(saved.get('first'))+' bis '+stamp(saved.get('last'))]
         if any(k in s for k in ('added','corrected','conflicts')):lines.append('Neu: '+str(s.get('added',0))+' · aktualisiert: '+str(s.get('corrected',0))+' · Konflikte bewahrt: '+str(s.get('conflicts',0)))
-        if s.get('code') not in SUCCESS:lines.append(advice(s.get('code')))
+        if s.get('code') not in SUCCESS:
+            lines.append(advice(s.get('code')))
     return '\n'.join(lines)

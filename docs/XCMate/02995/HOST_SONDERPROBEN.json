@@ -1,0 +1,14 @@
+{
+  "real_sqlite_progress_interrupt": {
+    "code": "DB_INTERRUPTED",
+    "sqlite_code": 9,
+    "status": "PASS"
+  },
+  "busy_epg_settings_route": {
+    "directory_finishes": 1,
+    "profile_reset": false,
+    "status": "PASS"
+  },
+  "android": "ANDROID_NOT_TESTED",
+  "profile": "DISPOSABLE_SYNTHETIC_ONLY"
+}

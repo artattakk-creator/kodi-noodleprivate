@@ -2,7 +2,8 @@
 import hashlib,json,os,tempfile
 
 def remember(pid,sid,event):
-    return __import__('reminder_bridge89').toggle(dict(pid=str(pid),sid=str(sid),start=event['start'],stop=event['stop'],title=event['title']),wanted=True)
+    from programme_actions88 import bookmark
+    return bookmark(dict(pid=str(pid),sid=str(sid),start=event['start'],stop=event['stop'],title=event['title']),wanted=True)
 
 
 def entries(pid):

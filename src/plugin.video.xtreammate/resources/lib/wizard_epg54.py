@@ -112,7 +112,22 @@ def run(portal,cancel=lambda:False,status=lambda *a:None):
     from stream_epg import portal_lease44
     with portal_lease44(portal['id']) as held:
         if not held:raise OSError('EPG_IMPORT_BUSY')
-        return _run(portal,cancel,status)
+        import epg_jobs94 as jobs94
+        current94=jobs94.read(portal['id'])
+        if current94.get('state') in ('RUNNING','CANCELLING'):
+            jobs94.finish(portal['id'],current94['id'],'INTERRUPTED')
+        job94=jobs94.request(portal['id'],force=True)
+        if not jobs94.acknowledge(portal['id'],job94['id']):raise OSError('EPG_SERVICE_NOT_CONFIRMED')
+        original94=cancel
+        cancel=lambda:original94() or jobs94.cancelled(portal['id'],job94['id'])
+        portal=dict(portal,_epg_job94=job94['id'])
+        try:
+            result=_run(portal,cancel,status)
+            jobs94.finish(portal['id'],job94['id'],'DONE' if result.get('phase') in ('READY','NONE') else 'PARTIAL')
+            return result
+        except BaseException:
+            jobs94.finish(portal['id'],job94['id'],'CANCELLED' if cancel() else 'FAILED')
+            raise
 
 
 def _run(portal,cancel,status):
@@ -122,6 +137,14 @@ def _run(portal,cancel,status):
     from epg_sources import configuration
     from epg_status import update
     from epg_report53 import observing,started,source_done
+    def observe94(key,phase,**values):
+        import epg_jobs94 as jobs94
+        if key not in ('provider','refresh') and (len(key)!=24 or any(c not in '0123456789abcdef' for c in key)):
+            key=hashlib.sha256(key.encode()).hexdigest()[:24]
+        identity94=portal.get('_epg_job94')
+        if identity94:
+            try:jobs94.observe(portal['id'],identity94,key,phase,**values)
+            except OSError:pass  # Telemetry cannot invalidate a good guide.
     state=prepare(portal);state.update(phase='RUNNING',updated=time.time());write(portal,state)
     try:configured=plans(portal)
     except Exception:
@@ -136,6 +159,7 @@ def _run(portal,cancel,status):
             authorized=None
             for number,(identity,key,source,rank,name) in enumerate(configured,1):
                 if cancel():raise InterruptedError('EPG_CANCELLED')
+                observe94(key,'DOWNLOAD',source_index=number,sources=len(configured))
                 prefix='EPG-Quelle '+str(number)+' von '+str(len(configured))+' · '+name
                 if source.get('_plan_error54'):
                     state['sources'][identity]=dict(code='SOURCE_UNAVAILABLE');write(portal,state)
@@ -166,24 +190,29 @@ def _run(portal,cancel,status):
                 state['sources'][identity]=dict(code='RUNNING',fingerprint=fingerprint,generation=generation);write(portal,state)
                 started(portal['id'],key,identity,rank);stage=None
                 def progress(value):
-                    phase={'DOWNLOAD':'Download läuft','PARSE':'XMLTV-Datei wird verarbeitet und Sendern zugeordnet','SAVING':'EPG-Daten werden gespeichert'}.get(value['phase'],'Quelle wird geprüft')
+                    observe94(key,value['phase'],bytes=value.get('bytes',0),total_bytes=value.get('total_bytes',0),channels=value.get('channels',0),programmes=value.get('programmes',0),matched=value.get('matched',0),staged=value.get('stored',0))
+                    phase={'DOWNLOAD':'Download läuft','PARSE':'XMLTV-Datei wird verarbeitet und Sendern zugeordnet','STAGING':'Zwischenstand wird gespeichert','MATCHING':'Sender werden zugeordnet'}.get(value['phase'],'Quelle wird geprüft')
                     status(None,prefix+'\n'+phase+'\n'+str(value.get('bytes',0))+' Bytes · '+str(value.get('programmes',0))+' Sendungen gelesen · '+str(value.get('stored',0))+' zugeordnet')
                 status(None,prefix+'\nDownload läuft')
                 try:
                     stage=import_source(portal['id'],source,rank,streams,mappings,cancel=cancel,stage_only=True,progress=progress,generation54=generation)
                     status(None,prefix+'\nEPG-Daten werden gespeichert')
+                    stage['observe94']=lambda phase,_key=key,**values:observe94(_key,phase,**values)
+                    observe94(key,'COMMIT')
                     outcome=publish_stages44(portal['id'],[stage],cancel=cancel)[0]
                     actual=stored(portal,identity,cancel,status)
                     if not actual or not actual['rows']:raise ValueError('EPG_PUBLICATION_UNVERIFIED')
                     state['sources'][identity]=dict(code='READY',fingerprint=fingerprint,completed=time.time(),verified=actual)
                     write(portal,state)
+                    observe94(key,'DONE',matched=stage['counts'].get('matched_streams66',0),staged=stage['counts'].get('stored_unique66',0),committed=actual['rows'],verified=actual['rows'],first=actual['first'],last=actual['last'])
                     counts=stage['counts'];update(portal['id'],key,'READY',running=False,source_index=rank,channels=counts['channels'],programmes=counts['stored'],bytes=counts['bytes'])
-                    source_done(portal['id'],identity,'READY',counts,outcome)
+                    source_done(portal['id'],identity,'READY',dict(counts,committed=actual['rows'],verified=actual['rows'],verified_first=actual['first'],verified_last=actual['last']),outcome)
                     status(None,prefix+'\nQuelle erfolgreich abgeschlossen · '+str(actual['rows'])+' gespeicherte Sendungen')
                 except InterruptedError:raise
                 except Exception as exc:
                     from epg_errors import failure_details
                     code,fields=failure_details(exc,getattr(exc,'xcmate_stage','MERGE'))
+                    observe94(key,'FAILED',error_code=code)
                     state['sources'][identity]=dict(code=code,fingerprint=fingerprint);write(portal,state)
                     update(portal['id'],key,code,running=False,**fields);source_done(portal['id'],identity,code)
                     status(None,prefix+'\nQuelle nicht abgeschlossen. Portal und bisherige Daten bleiben erhalten.')

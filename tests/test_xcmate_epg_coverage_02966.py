@@ -73,6 +73,36 @@ class Publication66(unittest.TestCase):
   changed=dict(old,start=old['start']+120,stop=old['stop']+120)
   result=self.m.put('a',[changed],1);rows=self.m.master()
   self.assertEqual(len(rows),2);self.assertEqual(rows[0][1:3],(changed['start'],changed['stop']));self.assertEqual(rows[1][3],'Other valid programme');self.assertGreaterEqual(result['corrected'],1)
+ def test_correction_search_uses_inclusive_proven_start_bound(self):
+  old=dict(self.m.event(title='Episode'),description='Unique episode identity fixture')
+  old['stop']=old['start']+5400
+  self.m.put('a',[old],1)
+  changed=dict(old,start=old['start']+900,stop=old['stop']+900)
+  db=sqlite3.connect(self.m.g.path());generation='a'*32
+  try:
+   with db:
+    db.execute('INSERT INTO xml_stage VALUES(?,?,?,?,?,?)',(generation,'a',changed['start'],changed['stop'],changed['title'],changed['description']))
+   from guide_corrections66 import apply
+   from guide_publish44 import source_id
+   identity=source_id(self.m.config['sources'][0],1)
+   statements=[];db.set_trace_callback(statements.append)
+   with db:
+    self.assertEqual(apply(db,'p','xml_stage','generation=?',(generation,),identity,1),1)
+   query=next(query for query in statements if 'JOIN guide44_inputs' in query)
+   self.assertIn('p.start BETWEEN',query)
+  finally:db.close()
+  self.assertEqual(self.m.master()[0][1:3],(changed['start'],changed['stop']))
+
+ def test_new_source_correction_does_not_scan_its_staged_rows(self):
+  self.m.put('a',[self.m.event()],1)
+  db=sqlite3.connect(self.m.g.path())
+  try:
+   from guide_corrections66 import apply
+   statements=[];db.set_trace_callback(statements.append)
+   self.assertEqual(apply(db,'p','xml_stage','generation=?',('g',),'new_source',1),0)
+   self.assertFalse(any('xml_stage' in query for query in statements))
+  finally:db.close()
+
  def test_short_or_ambiguous_description_does_not_shift_published_slot(self):
   old=dict(self.m.event(title='Repeated episode'),description='Generic')
   self.m.put('a',[old],1);before=self.m.master()

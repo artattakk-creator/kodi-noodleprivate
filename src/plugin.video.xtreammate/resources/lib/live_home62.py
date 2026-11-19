@@ -30,7 +30,7 @@ def selection(portal):
     if cid not in allowed:raise Failure('GROUP_DISABLED','GROUP_POLICY')
     trace('GROUP_POLICY','READY');return cid
 
-def read(portal,filename=None):
+def read(portal,filename=None,*,seconds=1.5,page_seconds=.5):
     cid=selection(portal)
     from library_index import path
     filename=filename or path()
@@ -38,11 +38,11 @@ def read(portal,filename=None):
     if cid=='*':
         from live_group68 import read as all_enabled68
         return all_enabled68(portal,filename)
-    db=None;stage='DATABASE';remaining=1.5;pages=0;recovered=0
+    db=None;stage='DATABASE';remaining=seconds;pages=0;recovered=0
     def query(sql,args):
         nonlocal remaining
         if remaining<=0:raise Failure('BUDGET',stage)
-        started=time.monotonic();deadline=started+min(.5,remaining)
+        started=time.monotonic();deadline=started+min(page_seconds,remaining)
         db.set_progress_handler(lambda:int(time.monotonic()>=deadline),1000)
         try:return db.execute(sql,args).fetchall()
         finally:remaining-=max(0,time.monotonic()-started)
@@ -74,7 +74,7 @@ def read(portal,filename=None):
                 value.update(sid=sid,name=name[:512],category_id=cid,kind='live');result.append(value)
             last=(rows[-1]['ordinal'],rows[-1]['sid'])
         if not result and not head:raise Failure('GENERATION_MISSING','HEAD')
-        trace('PAGE','READY',len(result),pages=pages,sql_ms=int((1.5-remaining)*1000))
+        trace('PAGE','READY',len(result),pages=pages,sql_ms=int((seconds-remaining)*1000))
         if recovered:trace('PAYLOAD','PAYLOAD_IDENTITY_RECOVERED',len(result),recovered=recovered)
         return result,'READY' if result else 'EMPTY_GROUP'
     except sqlite3.Error as exc:

@@ -71,3 +71,15 @@ class PreviousEPG45(Fixture,unittest.TestCase):
   self.g.import_cache('p',{'wrong':[dict(name='Wrong',start_timestamp=self.now-100,stop_timestamp=self.now-1)],'right':[dict(name='Chosen',start_timestamp=self.now-100,stop_timestamp=self.now-1)]},revision='actual')
   channel=dict(sid='1',epg_channel_id='wrong');view=self.local.window('p',[channel],{'1':'right'},self.now,self.now+3600)
   self.assertEqual(self.m.previous('p',channel,{'1':'right'},self.now,view.revision),'Chosen')
+
+class Countdown100(unittest.TestCase):
+ setUp=ReferenceInfo45.setUp
+
+ def test_infobar_displays_remaining_minutes_for_current_event_only(self):
+  bar=self.o._infobar45
+  bar.render('Channel','',dict(now='Current',remaining=61,progress=.5),{})
+  self.assertEqual(bar.remaining.label,'Noch 2 Min.')
+  self.assertTrue(bar.remaining.visible)
+  bar.render('Channel','',dict(next='Future',remaining=30),{})
+  self.assertFalse(bar.remaining.visible)
+  self.assertFalse(bar.remaining.label)

@@ -53,9 +53,14 @@ class Cold53(unittest.TestCase):
         self.assertTrue(window('p','new',self.m.now-120,self.m.now+1200,source48=self.m.bid))
     def test_failed_publication_never_writes_mapping(self):
         d=self.dialog();d._preview();before=Path(self.m.sources._file_path()).read_bytes()
-        with mock.patch.object(self.c,'publish',side_effect=self.c.PreviewUnavailable('PREVIEW_WRITE_FAILED')):
-            with self.assertRaises(self.c.PreviewUnavailable):d.onClick(405)
-        self.assertFalse(d.saved);self.assertEqual(Path(self.m.sources._file_path()).read_bytes(),before)
+        with mock.patch.object(self.c,'publish',side_effect=self.c.PreviewUnavailable('PREVIEW_WRITE_FAILED')) as publish:
+            # #474 requires a visible, retryable failure instead of an exception
+            # escaping Kodi's onClick callback. Keep the original byte invariant.
+            d.onClick(405)
+        publish.assert_called_once()
+        self.assertFalse(d.saved);self.assertFalse(d._closed)
+        self.assertIn('MAPPING_WRITE_FAILED',d.getControl(103).text)
+        self.assertEqual(Path(self.m.sources._file_path()).read_bytes(),before)
     def test_cancelled_or_truncated_gzip_never_exposes_partial_result(self):
         before=self.snapshot()
         with self.assertRaises(InterruptedError):self.c.scan(self.m.portal,self.m.bid,'new',lambda:True)

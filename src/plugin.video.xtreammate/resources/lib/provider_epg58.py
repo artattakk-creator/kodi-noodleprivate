@@ -1,5 +1,4 @@
-"""Verified per-portal switch; enablement is never an import acknowledgement."""
-from profile_transaction import writing
+"""Mandatory Xtream baseline compatibility and optional-feed management."""
 
 
 def current(portal,xtream_only=True):
@@ -11,16 +10,9 @@ def current(portal,xtream_only=True):
 
 
 def toggle(portal):
-    from portals import update
-    with writing():
-        value=current(portal)
-        enabled=not value.get('provider_epg_enabled',True)
-        if not update(value['id'],{'provider_epg_enabled':enabled}):
-            raise OSError('PROVIDER_SAVE_FAILED')
-        saved=current(value)
-        if saved.get('provider_epg_enabled',True)!=enabled:
-            raise OSError('PROVIDER_SAVE_UNVERIFIED')
-        return saved
+    """Compatibility entry point: Xtream baseline can no longer be disabled."""
+    from provider_baseline96 import migrate_portal
+    return migrate_portal(current(portal))
 
 
 def same_feed(left,right):

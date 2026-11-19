@@ -1,6 +1,15 @@
 """Single coalescing local-cache reader; no GUI SQL/files/HTTP."""
 import os,threading,time,uuid
 _lock=threading.Lock();_wanted={};_done={};_wake=threading.Event();_thread=None
+_shared93={}
+
+def shared(event):
+ """Worker-only exact profile/event/source/revision handoff, never title-only."""
+ from programme_requests68 import identity
+ with _lock:value=_shared93.get(identity(event))
+ if value and 0<=time.monotonic()-value[0]<30 and __import__('programme_image69').eligible(value[1],event):
+  if __import__('programme_lastgood80').file_valid(value[1]):return dict(value[1])
+ return {}
 def eligible(art):
  from programme_image69 import eligible as admit69
  return admit69(art)
@@ -18,11 +27,17 @@ def _work():
     from programme_art46 import cached
     complete69=event.get('pid')==str(portal['id']) and event.get('sid')==str(channel.get('sid',channel.get('stream_id',''))) and event.get('code') in ('LOCAL_EVENT','CACHED_EVENT') and event.get('key')
     value=dict(event) if complete69 else describe(portal,channel,event,event.get('canonical46',event.get('canonical','')),event.get('revision68',event.get('revision')))
-    art=cached(value)
+    value['_detail93']=True
     from programme_requests68 import request,result
-    if not eligible(art) and not event.get('_no_art_request68'):request(value,priority=True)
-    art=result(value,art)
-    art=dict(art) if eligible(art) else {}
+    from programme_image69 import eligible as eligible_for_event
+    art=result(value,cached(value))
+    if not eligible_for_event(art,value) and not event.get('_no_art_request68'):request(value,priority=True)
+    art=dict(art) if eligible_for_event(art,value) else {}
+    if art:
+     from programme_requests68 import identity
+     with _lock:
+      _shared93[identity(value)]=(time.monotonic(),dict(art))
+      while len(_shared93)>16:_shared93.pop(next(iter(_shared93)))
    except Exception:art={}
    with _lock:
     if token in _done and _done[token][0]==key:
@@ -67,6 +82,10 @@ class Preview:
   if signature67==self._painted67:return
   self._painted67=signature67;self._hidden67=not real;self._source_hidden67=not real
   if real:self.image.setImage(art['image'])
-  self.image.setVisible(real);self.logo.setVisible(real and str(art.get('source','')).startswith('tmdb'))
-  self.source.setLabel(('TMDB' if str(art.get('source','')).startswith('tmdb') else 'TVmaze' if str(art.get('source','')).startswith('tvmaze') else 'XMLTV' if art.get('source')=='xmltv_event' else 'Provider')+(' · Serienbild' if art.get('image_scope57')=='series_fallback' else '') if real else '')
+  origin=str(art.get('source',''))
+  tmdb=origin.startswith('tmdb') or origin=='agent_tmdb'
+  self.image.setVisible(real);self.logo.setVisible(real and tmdb)
+  source='TMDB' if tmdb else 'TVmaze' if origin.startswith('tvmaze') or origin=='agent_tvmaze' else 'XMLTV' if origin in ('xmltv_event','agent_xmltv') else 'Provider'
+  if origin.startswith('agent_'):source='XCMate EPG Agent · '+source
+  self.source.setLabel(source+(' · Serienbild' if art.get('image_scope57')=='series_fallback' else '') if real else '')
   self.source.setVisible(real)

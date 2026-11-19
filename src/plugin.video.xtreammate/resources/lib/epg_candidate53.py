@@ -16,6 +16,12 @@ class PreviewUnavailable(ValueError):
 def source(portal,identity):
     from epg_sources import configuration
     from guide_publish44 import source_id
+    if identity=='agent':
+        from epg_agent100 import installed_source, SOURCE_RANK
+        active = installed_source(portal['id'])
+        if not active:
+            raise PreviewUnavailable('SOURCE_MISSING')
+        return active, SOURCE_RANK
     if identity=='provider':
         if not portal.get('provider_epg_enabled',True):raise PreviewUnavailable('SOURCE_DISABLED')
         from source_adapters import for_portal
@@ -44,6 +50,10 @@ def scan(portal,identity,cid=None,cancel=lambda:False):
     from programme_index46 import bounds
     selected,rank=source(portal,identity);left,right=bounds()
     names={};events=[];used=0
+    agent=bool(selected.get('_agent_artwork') and cid is not None)
+    if agent:
+        from epg_agent100_art import event_art, validator
+        admit_art=validator()
     def channel(ident,name):
         nonlocal used
         if cid is not None:return
@@ -54,13 +64,19 @@ def scan(portal,identity,cid=None,cancel=lambda:False):
         nonlocal used
         if cid is None or event['channel']!=cid or event['stop_timestamp']<=left or event['start_timestamp']>=right:return
         event=dict(event,source_key46=identity,_source_index=rank,source=rank)
+        if agent:
+            references=event_art(event,admit_art)
+            if references:event['agent_art']=references
+            for key in ('screenshot_uri','icons','images'):event.pop(key,None)
         used+=len(json.dumps(event,ensure_ascii=False).encode())+256
         if len(events)>=512 or used>4*1024*1024:raise PreviewUnavailable('PREVIEW_EVENT_BUDGET')
         events.append(event)
     with source_stream(selected,cancel=cancel) as stream:
         packed=PrefixReader(Limited(stream,64*1024*1024,cancel))
         decoded=gzip.GzipFile(fileobj=packed) if packed.prefix==b'\x1f\x8b' else packed
-        try:parse(Limited(decoded,256*1024*1024,cancel),channel,programme,cancel,max_seconds=45)
+        try:
+            parse(Limited(decoded,256*1024*1024,cancel),channel,programme,cancel,
+                  max_seconds=45,include_icons=agent,include_images=agent)
         finally:
             if isinstance(decoded,gzip.GzipFile):decoded.close()
     if cancel():raise InterruptedError('PREVIEW_CANCELLED')
@@ -73,8 +89,11 @@ class Candidates:
     def channels(self,portal,identity,query,offset,cancel):
         if self.catalogue is None or self.catalogue[0]!=identity:
             self.catalogue=(identity,scan(portal,identity,cancel=cancel))
-        q=query.casefold()
-        rows=[r for r in self.catalogue[1] if q in r['id'].casefold() or q in r['name'].casefold()]
+        from mapping_search482 import matches,rank
+        rows=[r for r in self.catalogue[1] if matches(r,query)]
+        if query:
+            score=rank(query)
+            rows.sort(key=lambda row:(score(row['id'],row['name']),row['id']))
         return rows[offset:offset+100]
     def programmes(self,portal,identity,cid,cancel):
         if self.events is None or self.events[:2]!=(identity,cid):

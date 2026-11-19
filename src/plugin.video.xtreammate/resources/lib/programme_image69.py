@@ -1,6 +1,6 @@
 """Pure display admission for verified public URL references and local images."""
 import json,math,os,time
-FIELDS=('key','fingerprint','code','source','match','image','thumbnail','source_url','url_version55','url_verified69','scope69','profile69','until','image_scope57','persisted69','storage69','storage_code69','policy69','display84','display_key84','temp85','sha256','provisional85','manual85','mapping_epoch85','role81','image_width77','image_height77','decoded77','decoded88','asset88','vote_average88','vote_count88')
+FIELDS=('key','fingerprint','code','source','match','image','thumbnail','source_url','url_version55','url_verified69','scope69','profile69','until','image_scope57','persisted69','storage69','storage_code69','policy69','display84','display_key84','temp85','sha256','provisional85','manual85','mapping_epoch85','role81','image_width77','image_height77','decoded77','decoded88','asset88','vote_average88','vote_count88','xmltv96')
 def url(art):
  from programme_urls55 import safe,OPTIONS
  value=art.get('source_url','') if isinstance(art,dict) else ''
@@ -11,6 +11,10 @@ def eligible(art,event=None):
  if not isinstance(art,dict) or art.get('code') not in ('READY','READY_STALE') or art.get('source') in (None,'','placeholder'):return False
  from utils import setting_bool
  source=art.get('source','')
+ if source.startswith('agent_'):
+  import agent_programme100 as roles499
+  if not roles499.allowed(source) or event is not None and not roles499.fits(art,roles499.view(event)):return False
+ if source=='xmltv_event' and (not setting_bool('programme_xmltv96',True) or not __import__('xmltv_art96').display_allowed(art,event)):return False
  if source.startswith('tmdb') and setting_bool('programme_tmdb_optout77',False) or source.startswith('tvmaze') and setting_bool('programme_tvmaze_optout77',False):return False
  if event is not None and art.get('fingerprint') and art['fingerprint']!=__import__('programme_art46').fingerprint(event):return False
  image=art.get('image')

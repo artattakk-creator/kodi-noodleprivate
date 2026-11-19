@@ -231,6 +231,13 @@ class LiveNavigator(xbmcgui.WindowDialog):
         names = {str(c.get('category_id')): c.get('category_name', '')
                  for c in groups}
         channels = []
+        logo_rows96=[dict(v,sid=str(v.get('stream_id',''))) for v in streams if isinstance(v,dict)]
+        overrides96=__import__('logo_overrides96')
+        scope96=overrides96.scope(self.portal);persistent96=__import__('artwork_config').persistent()
+        # Legacy/M3U construction keeps the existing provider-cache lane;
+        # the prepared worker model supplies verified manifest fallbacks.
+        base96={}
+        logos96=dict(base96,**overrides96.read(self.portal,logo_rows96))
         for stream in streams:
             if not isinstance(stream, dict) or not stream.get('stream_id'):
                 continue
@@ -238,11 +245,13 @@ class LiveNavigator(xbmcgui.WindowDialog):
             channels.append(Channel(
                 name=stream.get('name', ''),
                 url=self.xc.live_stream_url(stream['stream_id'], 'ts'),
-                logo=stream.get('stream_icon', ''),
+                logo=logos96.get(str(stream['stream_id']),stream.get('stream_icon','')),
                 group=str(names.get(cid, cid)),
                 tvg_id=str(stream.get('epg_channel_id') or ''),
                 extra={'category_id': cid,
-                       'stream_id': str(stream['stream_id'])}))
+                       'stream_id': str(stream['stream_id']),
+                       **overrides96.binding(self.portal,dict(stream,sid=str(stream['stream_id'])),base96.get(str(stream['stream_id']),''),scope96=scope96,persistent96=persistent96),
+                       **({'logo_local96':True} if logos96.get(str(stream['stream_id'])) else {})}))
         self.groups, self.channels = groups, channels
         from group_selection import enabled_ids
         self.enabled=enabled_ids(self.portal['id'],'live',groups)
@@ -508,6 +517,21 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self._button_icons[0][1].setImage(__import__('player_controls').texture('play' if paused else 'pause'))
 
     def _local_logo(self, channel):
+        extra96=getattr(channel,'extra',{})
+        if extra96.get('logo_key96'):
+            overrides96=__import__('logo_overrides96')
+            scope96=extra96.get('logo_scope96')
+            if scope96 is not None and scope96.matches(self.portal) and extra96.get('logo_sid96')==str(extra96.get('stream_id','')):
+                current96=overrides96.reference(extra96['logo_key96'])
+                if current96:return current96
+                if extra96.get('logo_base96'):return extra96['logo_base96']
+                agent100=__import__('agent_logos100').reference(extra96['logo_key96'])
+                if agent100:return agent100
+                from logo_cache import local_logo
+                current96=local_logo(extra96.get('logo_provider96',''),persistent96=extra96.get('logo_persistent96',True))
+                if current96:return current96
+            return os.path.join(self._media,'tv.png')
+        if channel is not None and getattr(channel,'extra',{}).get('logo_local96'):return channel.logo
         from logo_cache import local_logo
         return local_logo(getattr(channel,'logo','')) or __import__('theme_render').texture(self,os.path.join(self._media,'tv.png'),'icon.settings.groups' if self.mode=='groups' else 'icon.epg.clock' if self.mode=='guide' else 'icon.live')
 
@@ -538,6 +562,14 @@ class LiveNavigator(xbmcgui.WindowDialog):
                     time.strftime('%H:%M',time.localtime(e['stop'])),e['title']) for e in self._programme_events] or [
                     'Keine EPG-Daten - Quellenstatus im XCMate-Hauptmenü prüfen']
         self.visible_channels, positions = self.index.selection(self.category_id,self.enabled)
+        empty93=False
+        if self.category_id!='*' and (not self.visible_channels or getattr(self,'_catalog_partial46',False) or getattr(self,'_group_task93',None) or str(self.category_id) in getattr(self,'_group_verify94',set())):
+            group93=__import__('live_group93').rows(self)
+            if group93 is not None:
+                if group93 and getattr(self,'_visible_group94',None)!=(self.category_id,id(group93)):
+                    __import__('live_group93').trace94(self,'GROUP_UI_VISIBLE',len(group93));self._visible_group94=(self.category_id,id(group93))
+                self.visible_channels=group93;empty93=not group93
+                positions={str(c.extra.get('stream_id')):i for i,c in enumerate(group93)}
         pos = self._highlight['channels']
         if self._scroll_to_current:
             pos = positions.get(self.sid,pos)
@@ -548,6 +580,11 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self._row_offset = 0
         page = self.visible_channels[self._page_start:self._page_start+CHANNEL_PAGE_SIZE]
         labels = [c.name for c in page]
+        if empty93:return [__import__('localization').tr(38805)]
+        if not labels:
+            state94=__import__('live_group93').state(self)
+            if state94 in ('LOADING_GROUP','GROUP_UNAVAILABLE','GROUP_PENDING','GROUP_SQL_BUSY','GROUP_RETRY_EXHAUSTED'):
+                return [__import__('localization').tr(38804 if state94 in ('LOADING_GROUP','GROUP_PENDING','GROUP_SQL_BUSY') else 38806)]
         return labels or ['Senderkatalog wird vorbereitet' if not self._catalog_ready or getattr(self,'_catalog_partial46',False) else 'Keine aktivierten Sender']
 
     def _row_value44(self,control,method,*values):
@@ -644,7 +681,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
             return
         # Both mini columns share the existing panel; groups retain old geometry.
         left=int(self._width*.32) if self.mode=='channels' else self._sidebar
-        self.bg.setWidth(int(self._width*.76) if self.mode=='channels' else self._sidebar)
+        self.bg.setWidth(self._width-48 if self.mode=='channels' else self._sidebar)
         shift=92 if self.mode=='groups' else 0
         self.bg.setPosition(24+shift,24);self.heading.setPosition(48+shift,38)
         self.sub.setPosition(48+shift,78);self.control.setPosition(44+shift,116)
@@ -705,6 +742,13 @@ class LiveNavigator(xbmcgui.WindowDialog):
 
     def tick(self):
         if self._closed or not self._drawn: return
+        if getattr(self,'_mini_context96',False):
+            self._mini_context96=False
+            from menu_icons45 import select
+            choice=select(xbmcgui.Dialog(),'XCMate',[__import__('localization').tr(39027),__import__('localization').tr(39028)])
+            if choice==0:__import__('guide_mapping48').request_mini(self)
+            elif choice==1:self._switch('extras')
+        if getattr(self,'_mapping_request96',None):__import__('guide_mapping48').open_pending(self)
         if getattr(self,'_programme_request46',None):
             from programme_window46 import open_pending
             open_pending(self)
@@ -726,6 +770,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
         if self.mode=='info' and self._info_deadline is not None and now>=self._info_deadline:
             self._switch('hidden')
             return
+        if self.mode=='channels':
+            if __import__('live_group93').refresh_due(self):self._render(focus=False)
         if now-self._last_tick<1: return
         self._last_tick=now
         if self.mode=='info': self._render_info()
@@ -820,6 +866,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 cid, _, active = self.rows[i]
                 if not active: return
                 self.category_id = cid
+                __import__('live_group93').selected(self)
                 self._scroll_to_current = False
                 self._highlight['channels'] = 0
                 self._switch('channels')
@@ -977,6 +1024,10 @@ class LiveNavigator(xbmcgui.WindowDialog):
     def _handle_command(self, command):
         """XCMate-local TV commands; never open Kodi's own player OSD."""
         self._intro_deadline = None
+        if command=='long_ok' and self.mode=='channels':
+            if __import__('guide_mapping48').request_mini(self):return
+        if command=='menu' and self.mode=='channels' and not self._mini.focused:
+            self._mini_context96=True;return
         if self.mode in ('nav_icons','nav_expanded'):
             rail_mode86=self.mode
             if self._nav_rail.command(command):

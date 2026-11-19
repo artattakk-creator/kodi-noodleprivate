@@ -1,0 +1,32 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_ Fixture98.test_focus_receipt_requires_matching_owner_dialog_and_requested_control _
+
+self = <test_native_fixture98.Fixture98 testMethod=test_focus_receipt_requires_matching_owner_dialog_and_requested_control>
+
+    def test_focus_receipt_requires_matching_owner_dialog_and_requested_control(self):
+>    helper=self.helper()
+            ^^^^^^^^^^^^^
+
+tests/test_native_fixture98.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_fixture98.py:9: in helper
+    self.assertIsNotNone(importlib.util.find_spec('bootstrap98'))
+E   AssertionError: unexpectedly None
+___ Fixture98.test_only_exact_own_disabled_test_addon_prompt_is_acknowledged ___
+
+self = <test_native_fixture98.Fixture98 testMethod=test_only_exact_own_disabled_test_addon_prompt_is_acknowledged>
+
+    def test_only_exact_own_disabled_test_addon_prompt_is_acknowledged(self):
+>    helper=self.helper()
+            ^^^^^^^^^^^^^
+
+tests/test_native_fixture98.py:13: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_fixture98.py:9: in helper
+    self.assertIsNotNone(importlib.util.find_spec('bootstrap98'))
+E   AssertionError: unexpectedly None
+=========================== short test summary info ============================
+FAILED tests/test_native_fixture98.py::Fixture98::test_focus_receipt_requires_matching_owner_dialog_and_requested_control
+FAILED tests/test_native_fixture98.py::Fixture98::test_only_exact_own_disabled_test_addon_prompt_is_acknowledged
+2 failed in 0.10s

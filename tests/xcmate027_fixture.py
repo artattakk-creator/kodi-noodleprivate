@@ -22,6 +22,7 @@ class ListItem:
     def __init__(self,label='',label2='',path='',offscreen=False):
         self.label,self.path=label,path;self.art={};self.props={};self.info={}
     def setLabel(self,label): self.label=label
+    def setLabel2(self,label): self.label2=label
     def setArt(self,dictionary): self.art.update(dictionary)
     def setInfo(self,type,infoLabels): self.info.update(infoLabels)
     def addContextMenuItems(self,items,replaceItems=False):self.context=list(items)

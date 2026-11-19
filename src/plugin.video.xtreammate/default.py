@@ -15,6 +15,12 @@ def run():
     timing_entry46(sys.argv)
     router = None
     try:
+        from settings_rebuild99_ui import entry as rebuild_entry
+        if rebuild_entry(sys.argv):
+            from types import SimpleNamespace
+            finish_directory(SimpleNamespace(_handle=int(sys.argv[1])),
+                             succeeded=True, cacheToDisc=False)
+            return
         from artwork_config import initialize
         with phase('ARTWORK_PROFILE'):
             try:initialize()

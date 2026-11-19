@@ -16,6 +16,26 @@ class ReminderH89(Fixture,unittest.TestCase):
   self.assertTrue(self.actions.toggle(self.event));rows=self.timers.list_timers('p');self.assertEqual(len(rows),1);self.assertEqual(rows[0]['notify_at'],self.event['start']-300)
   self.assertEqual(len(__import__('guide_bookmarks').entries('p')),1);self.assertFalse(self.actions.toggle(self.event));self.assertEqual(self.timers.list_timers('p')[0]['state'],'cancelled')
   self.assertTrue(self.actions.toggle(self.event));self.assertEqual(len(self.timers.list_timers('p')),1);self.assertEqual(self.timers.list_timers('p')[0]['state'],'pending')
+ def test_detail_bookmark_button_never_creates_a_future_reminder(self):
+  from programme_window46 import ProgrammeWindow46
+  from guide_bookmarks import entries
+  row=self.index.Reader('p').get('live','1')
+  window=ProgrammeWindow46('XCMateProgramme46.xml',str(ADDON),'Default','720p')
+  window.configure(self.portal,row,self.event)
+  window.event=dict(self.event);window._next=float('inf')
+  window.onClick(502);window.pump()
+  if window._action88 is not None:window._action88.result(timeout=2);window.pump()
+  self.assertEqual(len(entries('p')),1)
+  self.assertFalse((self.folder/'guide_timers_v1.sqlite').exists())
+  self.assertEqual(window.getControl(502).label,'Nicht mehr merken')
+
+ def test_guide_remember_is_idempotent_without_scheduling_explicit_reminder(self):
+  from guide_bookmarks import entries,remember
+  self.assertTrue(remember('p','1',self.event))
+  self.assertTrue(remember('p','1',self.event))
+  self.assertEqual(len(entries('p')),1)
+  self.assertFalse((self.folder/'guide_timers_v1.sqlite').exists())
+
  def test_started_programme_remains_only_bookmark_without_late_timer(self):
   self.assertTrue(self.actions.toggle(dict(self.event,start=self.now-1)));self.assertFalse((self.folder/'guide_timers_v1.sqlite').exists());self.assertEqual(len(__import__('guide_bookmarks').entries('p')),1)
  def test_dismiss_is_durable_keeps_watchlist_and_never_fires_again_after_restart(self):

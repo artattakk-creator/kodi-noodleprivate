@@ -6,8 +6,8 @@ def bookmark_id(event):
 def toggle(event,cancel=lambda:False):
  return __import__('reminder_bridge89').toggle(event,cancel)
 
-def _toggle88(event,cancel=lambda:False):
- from profile_transaction import writing
+def bookmark(event,cancel=lambda:False,wanted=None):
+ from reminder_transaction95 import writing
  from utils import addon_data_dir
  if not event.get('sid') or not 0<int(event.get('start',0))<int(event.get('stop',0)):raise ValueError('BOOKMARK_INVALID')
  path=Path(addon_data_dir())/'guide_bookmarks_v1.json'
@@ -17,7 +17,7 @@ def _toggle88(event,cancel=lambda:False):
   try:values=json.loads(path.read_bytes())
   except FileNotFoundError:values={}
   if not isinstance(values,dict):raise ValueError('BOOKMARK_INVALID')
-  tag=bookmark_id(event);added=tag not in values
+  tag=bookmark_id(event);added=tag not in values if wanted is None else bool(wanted)
   if added:values[tag]={k:event[k] for k in ('pid','sid','start','stop','title')}
   else:values.pop(tag)
   raw=json.dumps(values,ensure_ascii=False,separators=(',',':')).encode()
@@ -42,9 +42,13 @@ def timeline(event,now=None):
  minutes=max(0,math.ceil((stop-now)/60));duration=max(1,math.ceil((stop-start)/60))
  state='beginnt in '+str(max(0,math.ceil((start-now)/60)))+' Min.' if now<start else 'beendet' if now>=stop else 'noch '+str(minutes)+' Min.'
  return times+' · '+str(duration)+' Min. · '+state,max(0,min(100,(now-start)*100/(stop-start)))
+def tmdb_source(source):
+ return str(source).startswith('tmdb') or source=='agent_tmdb'
+
+
 def rating(value):
  score=value.get('vote_average88');votes=value.get('vote_count88')
- if not str(value.get('source','')).startswith('tmdb') or value.get('provisional85') or type(score) not in (int,float) or not math.isfinite(score) or not 0<score<=10 or type(votes) is not int or votes<=0:return ''
+ if not tmdb_source(value.get('source','')) or value.get('provisional85') or type(score) not in (int,float) or not math.isfinite(score) or not 0<score<=10 or type(votes) is not int or votes<=0:return ''
  return 'TMDB '+format(score,'.1f').replace('.',',')+'/10'
 def tune(parent,portal,channel):
  if parent is None:return False

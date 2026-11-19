@@ -16,6 +16,7 @@ class Artwork66(Fixture,unittest.TestCase):
    result=self.tv.candidate(self.event)
   self.assertEqual(result['source'],'tmdb_series');self.assertEqual(result['image_scope57'],'series_fallback')
   self.assertIn('kein Episodenbild',result['attribution']);self.assertEqual(request.call_count,2)
+  self.assertNotIn('/images',request.call_args_list[-1].args[0])
  def test_remakes_without_year_are_ambiguous_not_a_random_first_hit(self):
   data=self.replies()[0];data['results'].append(dict(id=85,name='MacGyver',first_air_date='1985-01-01'));data['total_results']=2
   with mock.patch('tmdb_connection60.request',return_value=data):

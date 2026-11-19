@@ -297,6 +297,7 @@ class CacheAndEPGTests(unittest.TestCase):
         diagnostic = types.ModuleType('live_diagnostics')
         diagnostic.record = mock.Mock()
         diagnostic.checkpoint = lambda:None
+        diagnostic._clean=load('limits_actual_clean94','live_diagnostics.py')._clean
         raw = ('<tv>'+self.programme()*2+'</tv>').encode()
         with mock.patch.dict(sys.modules,{'live_diagnostics':diagnostic}), \
              mock.patch.object(self.epg,'http_get',return_value=(raw,{})), \

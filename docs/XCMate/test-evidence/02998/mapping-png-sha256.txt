@@ -1,0 +1,12 @@
+09c41cd6f64384fd35d71d388a1b6cc1bcd0fa43c7cde8ceea8837c6da8babda  /tmp/release98-final-evidence/mapping-720/epg482-busy-grid.png
+ce365636f8a493919155fdf9c796e69f62eebe0e5bd8b7174819231930dda24c  /tmp/release98-final-evidence/mapping-720/epg482-busy-mini.png
+0edfd3ed6fef1e41a4bbb2955b66224cc68eb6abf20c3b07cc0dc15be9619079  /tmp/release98-final-evidence/mapping-720/epg482-preview-grid.png
+e3495e3fb76ac4c07fd9a54fcecf2ece426fd5fd85e67dd1134526962e0a3082  /tmp/release98-final-evidence/mapping-720/epg482-preview-mini.png
+b6bda1c100c68de646ee3478c6245f4b4cd914270cc6e7a96e6843a4e48b14bc  /tmp/release98-final-evidence/mapping-720/epg482-source-grid.png
+fd4fbcc89cc953d13f08fc76ada2073c9f3a7a99ec6a678cc313e2104e910186  /tmp/release98-final-evidence/mapping-720/epg482-source-mini.png
+5d540e3f9118c287bf043e2f2d1a05f0ca13f94e6ec3f1c03edbb206f707dc0e  /tmp/release98-final-evidence/mapping-1080/epg482-busy-grid.png
+998ff1cd520be439ae50d9b289c5a43ed2e0659cb106d396e2ad004955865834  /tmp/release98-final-evidence/mapping-1080/epg482-busy-mini.png
+eb19ea80a8dc724146aa3073ac7044a0a4471f81575400167cfb72691af0f682  /tmp/release98-final-evidence/mapping-1080/epg482-preview-grid.png
+b77d7c03f2705109517e22e12e601aee3f9dfd1e9ee2d766df990361e420c18d  /tmp/release98-final-evidence/mapping-1080/epg482-preview-mini.png
+5573938e8c7ea12167f6c448feb8a05dfaf1a558915da065dac97836c41daa68  /tmp/release98-final-evidence/mapping-1080/epg482-source-grid.png
+49ffd4a6437ef4f9faf2c993a2b183366531e7e588f8011b7f186782a50186cc  /tmp/release98-final-evidence/mapping-1080/epg482-source-mini.png

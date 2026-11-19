@@ -132,13 +132,14 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
     def _render(self):
         if self._closed or self._leaving or self.mode=='groups':return
         self._cells={};target=None
+        logos96=__import__('logo_manifest86').read(self.portal,[row['channel'] for row in self.rows[:ROWS]],with_fallback=False)
         for r in range(ROWS):
             row=self.rows[r] if r<len(self.rows) else None
             self.getControl(730+r).setVisible(row is not None)
             self.getControl(750+r).setVisible(row is not None and r==self.row)
             self.getControl(700+r).setText(__import__('presentation80').clipped(row['channel']['name'],236) if row else '')
             from media_art import local_art
-            self.getControl(720+r).setImage(local_art(row['channel'],self._theme)['thumb'] if row else '')
+            self.getControl(720+r).setImage((logos96.get(str(row['channel']['sid'])) or local_art(row['channel'],self._theme)['thumb']) if row else '')
             candidates=[e for e in row['events'] if rectangle(e['start'],e['stop'],self.origin)] if row else []
             selected=self._selected() if r==self.row else None
             # If an unusually dense schedule exceeds the native pool, pan to
@@ -163,12 +164,13 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         group=next((g['title'] for g in self.groups if g['cid']==self.category),'')
         self.getControl(101).setLabel(tr(33100)+' · '+group+' · '+time.strftime('%a %d.%m.%Y',time.localtime(self.origin)))
         available=sum(bool(r['events']) for r in self.rows)
-        self.getControl(102).setLabel(tr(33111,self.offset+1 if self.rows else 0,min(self.total,self.offset+len(self.rows)),self.total,available,len(self.rows))+(' · '+tr(33120) if any(len(r['events'])>CELLS for r in self.rows) else '')+(' · '+tr(35984,len(self._history44)) if getattr(self,'_history44',None) is not None else ''))
+        self.getControl(102).setLabel(tr(33111,self.offset+1 if self.rows else 0,min(self.total,self.offset+len(self.rows)),self.total,available,len(self.rows))+(' · '+tr(33120) if any(len(r['events'])>CELLS for r in self.rows) else '')+(' · '+tr(35984,len(self._history44)) if getattr(self,'_history44',None) is not None else '')+(' · EPG manuell zugeordnet' if self.rows and self.rows[self.row].get('mapping')=='MANUAL' else ''))
         self._focus_cell(target)
 
     def _refresh_logos(self):
         from media_art import local_art
-        for r,row in enumerate(self.rows):self.getControl(720+r).setImage(local_art(row['channel'],self._theme)['thumb'])
+        logos96=__import__('logo_manifest86').read(self.portal,[row['channel'] for row in self.rows[:ROWS]],with_fallback=False)
+        for r,row in enumerate(self.rows[:ROWS]):self.getControl(720+r).setImage(logos96.get(str(row['channel']['sid'])) or local_art(row['channel'],self._theme)['thumb'])
 
     def _focus_cell(self,cid=None):
         if cid is None:
@@ -430,6 +432,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         elif cid==313:self._show_groups()
 
     def _owner_tick(self):
+        if not self._ready:return  # Native show/onInit is asynchronous.
         if __import__('programme_lifecycle69').pulse(self):return
         if getattr(self,'_mapping_request48',False):
             from guide_mapping48 import open_pending

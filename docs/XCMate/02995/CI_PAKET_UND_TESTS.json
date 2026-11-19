@@ -1,0 +1,22 @@
+{
+  "ci_run": 43698021646,
+  "ci_job": 132762832428,
+  "branch_head": "1bc86a07affceaa3fe615ffe556b4f451bdd5589",
+  "pr_test_merge": "a606ba5c28464936ecb711657d3ef0c1d7ae1935",
+  "runtime_commit": "d47ad2205f87418855fd0df06fac8d9f24d366d9",
+  "unittest": {
+    "passed": 4017,
+    "seconds": 892.639
+  },
+  "pytest": {
+    "passed": 4028,
+    "warnings": 4,
+    "seconds": 950.65
+  },
+  "downloaded_ci_zip_matches_branch_bytes": true,
+  "sha256": "1eed4d84c1317190f1936883eee2d9393368117f5a1e84516605c8ba141beb3b",
+  "bytes": 4734921,
+  "android": "ANDROID_NOT_TESTED",
+  "merged_to_main": false,
+  "repository_published": false
+}

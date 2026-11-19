@@ -63,7 +63,7 @@ def prepare(cancel=lambda:False):
    rows,code=snapshot(portal,kind)
    if not rows:
     __import__('home_loading85').update(portal,kind,rows,code,pending=row_pending(portal,kind))
-    if code in ('READY','CACHE') and allowed(kind,portal) and publish(portal,kind,rows,code):
+    if code in ('READY','CACHE','READ_ONLY') and allowed(kind,portal) and publish(portal,kind,rows,code):
      prepared(kind,0,portal=portal,rows=rows)
     continue
    admitted=allowed(kind,portal)

@@ -18,7 +18,8 @@ class Provider59(unittest.TestCase):
  def test_pending_setup_does_not_replace_explicit_regular_refresh(self):
   with mock.patch('wizard_epg54.pending',return_value=True):w=self.manager()
   self.assertTrue(w.getControl(411).enabled);self.assertEqual(w.getControl(402).label,'Jetzt aktualisieren')
-  with mock.patch('epg.request_refresh',create=True,return_value=True) as request:w.onClick(402)
+  with mock.patch('epg.request_refresh',create=True,return_value=True) as request:
+   w.onClick(402);request.assert_not_called();w._pool.drain();w.pump()
   request.assert_called_once_with('p',self.data.portal,force=True)
   self.assertFalse(w._closed);self.assertIsNone(w.next_action)
  def test_resume_remains_explicit_and_separate(self):

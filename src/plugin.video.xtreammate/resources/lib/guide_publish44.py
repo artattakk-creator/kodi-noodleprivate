@@ -34,6 +34,8 @@ def require(db):
 
 def source_id(source,index):
     if index==0:return 'provider'
+    if source.get('_agent_artwork') and source.get('id')=='agent':
+        return 'agent'
     ident=source.get('id') or source.get('uri')
     # Legacy synthetic adapters may omit an ID; never store raw source URI.
     return 'external:'+hashlib.sha256(str(ident or 'legacy-index-'+str(index)).encode()).hexdigest()[:24]
@@ -61,7 +63,9 @@ def publish(db,pid,table,where='',args=(),*,source='compatibility',rank=None,rev
     # No destructive historical/source-retention operation is part of .44.
     db.execute('''INSERT INTO guide44_inputs SELECT ?,?,cid,start,stop,title,description,'''+('source' if compatibility else '?')+' FROM '+table+selector+'''
       ON CONFLICT(pid,source_id,cid,start,stop) DO UPDATE SET
-      title=excluded.title,description=CASE WHEN excluded.title=guide44_inputs.title AND trim(excluded.description)='' THEN guide44_inputs.description ELSE excluded.description END,rank=excluded.rank''',
+      title=excluded.title,description=CASE WHEN excluded.title=guide44_inputs.title AND trim(excluded.description)='' THEN guide44_inputs.description ELSE excluded.description END,rank=excluded.rank
+      WHERE excluded.title!=guide44_inputs.title OR excluded.rank!=guide44_inputs.rank
+         OR (trim(excluded.description)!='' AND excluded.description!=guide44_inputs.description)''',
       [pid,source]+([] if compatibility else [rank])+list(args))
     if db.execute('SELECT count(*) FROM guide44_inputs WHERE pid=?',(pid,)).fetchone()[0]>2000000:
         raise ValueError('GUIDE_SOURCE_BUDGET')

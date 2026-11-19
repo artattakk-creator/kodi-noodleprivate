@@ -12,7 +12,7 @@ import time
 from pathlib import Path
 from urllib.parse import quote
 
-VERSION = '0.1.29.92'
+VERSION = '0.1.29.94'
 _due = 0
 
 def root():
@@ -188,11 +188,15 @@ def run(cancel=lambda:False,progress=lambda **kw:None,force=False):
         results=[]
         for name,owned_tables in tables:
             if cancel():break
-            result=expire_epg(root()/name,owned_tables,day_window(-7,now)[0],protected)
+            # .95 diagnoses the existing guide and its authorization in place.
+            # No automatic guide retention/checkpoint while this repair is tested.
+            result=dict(code='PROTECTED_95',deleted=0) if name=='guide_v1.sqlite' else expire_epg(root()/name,owned_tables,day_window(-7,now)[0],protected)
             results.append(dict(category=name,**result));progress(stage='RETENTION',done=len(results),files=3)
-        record.update(state='PAUSED' if cancel() or any(r['code'] not in ('NOT_CREATED','VERIFIED_RETENTION') for r in results) else 'DONE',
+        record.update(state='PAUSED' if cancel() or any(r['code'] not in ('NOT_CREATED','VERIFIED_RETENTION','PROTECTED_95') for r in results) else 'DONE',
                       temp=temp,databases=results,free_after=free(),artwork_orphans='OPEN_REFERENCE_PROOF_REQUIRED',
                       kodi_cache='PROTECTED',fallback90='PROTECTED')
+        record['epg_cleanup93']=dict(code='PROTECTED_95',deleted_files=0,deleted_bytes=0)
+        record['free_after']=free()
         record['observed_free_change']=record['free_after']-record['free_before']
         journal(record);return record
 

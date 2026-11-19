@@ -17,13 +17,27 @@ class Provider58(Fixture,unittest.TestCase):
         sys.modules['portals'].update=mock.Mock(side_effect=update)
     def test_toggle_rereads_saved_state_not_stale_dialog_row(self):
         stale=dict(self.portal);self.portal['provider_epg_enabled']=True
-        self.assertFalse(self.provider.toggle(stale)['provider_epg_enabled'])
+        saved=self.provider.toggle(stale)
+        self.assertTrue(saved['provider_epg_enabled'])
+        # .96 keeps baseline ON; history must describe the fresh portal,
+        # never the obsolete OFF flag still displayed by the caller.
+        self.assertTrue(saved['provider_baseline_history96'][0]['values']['provider_epg_enabled'])
+        self.assertFalse(stale['provider_epg_enabled'])
+        before=copy.deepcopy(saved)
+        self.assertEqual(self.provider.toggle(stale),before)
     def test_only_selected_portal_changed_and_other_fields_preserved(self):
         second=dict(self.portal,id='other',provider_epg_enabled=True);self.portals.append(second)
         before=copy.deepcopy(self.portals)
         self.provider.toggle(self.portal)
-        before[0]['provider_epg_enabled']=True
-        self.assertEqual(self.portals,before)
+        self.assertEqual(self.portals[1],before[1])
+        saved=self.portals[0]
+        for key,value in before[0].items():
+            if key!='provider_epg_enabled':self.assertEqual(saved[key],value,key)
+        self.assertTrue(saved['provider_epg_enabled']);self.assertTrue(saved['epg_show'])
+        self.assertFalse(saved['epg_opt_out94']);self.assertFalse(saved['provider_epg_opt_out94'])
+        self.assertTrue(saved['provider_baseline96'])
+        self.assertEqual(saved['provider_baseline_history96'],[dict(contract='0.1.29.96',reason='provider_epg_baseline',values=dict(provider_epg_enabled=False))])
+        sys.modules['portals'].update.assert_called_once()
     def test_missing_portal_cannot_be_created_or_enabled(self):
         with self.assertRaises(ValueError):self.provider.toggle(dict(self.portal,id='missing'))
         sys.modules['portals'].update.assert_not_called()
@@ -80,11 +94,24 @@ class Provider58(Fixture,unittest.TestCase):
         self.assertFalse(fresh.get_by_id('other')['provider_epg_enabled'])
         self.assertEqual(fresh.get_by_id('p')['xc_pass'],self.portal['xc_pass'])
     def test_visible_toggle_is_initial_remote_focus_and_roundtrips(self):
-        w=self.manager();self.assertEqual(w.getFocusId(),410)
-        self.assertIn('aktivieren',w.getControl(410).label)
-        w.onClick(410);w._pool.drain();w.pump();w._pool.drain();w.pump()
-        self.assertTrue(self.portal['provider_epg_enabled']);self.assertIn('deaktivieren',w.getControl(410).label)
-        w.close();again=self.manager();self.assertIn('deaktivieren',again.getControl(410).label)
+        w=self.manager();self.assertEqual(w.getFocusId(),401)
+        self.assertTrue(w.getControl(401).enabled)
+        self.assertEqual(w.getControl(410).label,'Anbieter-EPG · Grundversorgung')
+        self.assertFalse(w.getControl(410).enabled)
+        self.assertTrue(self.portal['provider_epg_enabled'])
+        self.assertFalse(self.portal['provider_baseline_history96'][0]['values']['provider_epg_enabled'])
+        saved=copy.deepcopy(self.portal);sys.modules['portals'].update.reset_mock()
+        # The former toggle and the actual provider row now explain the
+        # baseline; neither callback disables it or starts an import.
+        w.onClick(410)
+        provider=next(i for i,row in enumerate(w.rows) if row['id']=='provider')
+        w.getControl(200).selectItem(provider);w.setFocusId(200);w.native(7)
+        self.assertIn('Grundversorgung',self.dialog.ok.call_args.args[1])
+        self.assertEqual(self.portal,saved);sys.modules['portals'].update.assert_not_called()
+        w.close();again=self.manager()
+        self.assertEqual(again.getFocusId(),401);self.assertFalse(again.getControl(410).enabled)
+        self.assertEqual(again.getControl(410).label,'Anbieter-EPG · Grundversorgung')
+        self.assertEqual(self.portal,saved)
     def test_back_remains_responsive_during_pending_switch(self):
         w=self.manager();w.onClick(410);w.onClick(406);w._pool.drain();self.assertTrue(w._closed)
     def test_remote_control_graph_reaches_sources_and_every_button_at_720_and_1080(self):

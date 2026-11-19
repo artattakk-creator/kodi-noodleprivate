@@ -53,6 +53,7 @@ class GuideSnapshot:
         self._thread = None
         self._request_generation=0;self._refresh_serial=0
         self._seeded63={}
+        self._preview96={};self._preview_epoch96=0
         if initial_sid:self.seed63(initial_sid)
 
     def seed63(self,sid):
@@ -91,10 +92,38 @@ class GuideSnapshot:
             if getattr(self,'_infobar_sid45','')!=str(sid):
                 self._infobar_sid45=str(sid);self._wake.set()
 
+    def begin_preview96(self,sid):
+        """Reserve a dialog epoch; background snapshots remain separate."""
+        with self._lock:
+            self._preview_epoch96+=1
+            epoch=self._preview_epoch96
+            self._preview96[str(sid)]=(epoch,None)
+            return epoch
+
+    def set_preview96(self,sid,epoch,info):
+        with self._lock:
+            current=self._preview96.get(str(sid))
+            if current is None or current[0]!=epoch:return False
+            self._preview96[str(sid)]=(epoch,dict(info));self.generation+=1
+            return True
+
+    def clear_preview96(self,sid,epoch,refresh=False):
+        with self._lock:
+            current=self._preview96.get(str(sid))
+            if current is None or current[0]!=epoch:return False
+            self._preview96.pop(str(sid));self.generation+=1
+            if refresh:
+                self._values.pop(str(sid),None);self._seeded63.pop(str(sid),None)
+                self._revision=None;self._request_generation+=1;self._wake.set()
+            return True
+
     def get(self, sid, now=None):
         ts = time.time() if now is None else now
-        with self._lock: base = self._values.get(str(sid))
-        if str(sid) in self._seeded63:
+        with self._lock:
+            preview96=self._preview96.get(str(sid))
+            base=preview96[1] if preview96 and preview96[1] is not None else self._values.get(str(sid))
+        is_preview96=bool(preview96 and preview96[1] is not None)
+        if not is_preview96 and str(sid) in self._seeded63:
             from epg_status import revision
             if self._seeded63[str(sid)]!=revision(self.portal['id']):
                 base=None;self._wake.set()
@@ -116,6 +145,7 @@ class GuideSnapshot:
         info['previous']=base.get('now') if base.get('now') and base.get('stop',0)<=ts else base.get('previous','')
         info.update(epg_id=base.get('epg_id',''), mapping=base.get('mapping',''),
                     source_index=base.get('source_index'),snapshot_revision=base.get('snapshot_revision'),canonical46=base.get('canonical46',''))
+        if is_preview96:info['preview_epoch96']=preview96[0]
         if base.get('programme_events'):info['programme_events']=base['programme_events']
         if not info['events']: info['reason'] = base.get('reason','NO_DATA')
         from programme_snapshot47 import bind
@@ -186,11 +216,17 @@ class GuideSnapshot:
                 except (OSError,RuntimeError,sqlite3.Error): pass
             if sid==selected:
                 from epg_events import deduplicate
-                raw=self._cache.get(info.get('epg_id',''),[])
-                info['programme_events']=[e for e in deduplicate(raw,channel=info.get('epg_id','')) if e['stop']>now][:256] if raw else info.get('events',[])
+                from epg_binding48 import qualified_cache
+                from infobar_epg45 import history
+                from local_epg import for_channel
+                raw=qualified_cache(for_channel(self._cache,sid),self._mappings,sid).get(info.get('epg_id',''),[])
+                earlier=history(self.portal['id'],c,self._mappings,info.get('start') or now,
+                                info.get('snapshot_revision'),guide_id=info.get('epg_id') or None)
+                upcoming=[e for e in deduplicate(raw,channel=info.get('epg_id','')) if e['stop']>now][:256]
+                info['programme_events']=earlier+(upcoming or info.get('events',[]))
             if sid==getattr(self,'_infobar_sid45',''):
                 from infobar_epg45 import previous
-                info['previous']=previous(self.portal['id'],c,self._mappings,now,info.get('snapshot_revision'))
+                info['previous']=previous(self.portal['id'],c,self._mappings,info.get('start') or now,info.get('snapshot_revision'))
             info['canonical46']=getattr(local,'canonical',{}).get(info.get('epg_id',''),info.get('epg_id',''))
             from programme_snapshot47 import bind
             values[sid] = bind(self.portal['id'],c,info)

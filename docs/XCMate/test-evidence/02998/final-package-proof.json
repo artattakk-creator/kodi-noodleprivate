@@ -1,0 +1,14 @@
+{
+  "version": "0.1.29.98",
+  "sha256": "d37d34fbb5be5e46154b912d3ce960f6e248431fcf7d0a9651fa9785b20a12c3",
+  "bytes": 4772893,
+  "files": 901,
+  "crc": "PASS",
+  "source_bytes": "PASS",
+  "status": "REVIEW_PACKAGE_ONLY",
+  "source_base": "eb6c0857e4cb3abf20ffb94a0ed31e48b7daf59a",
+  "repository_staged": "NONE",
+  "repository_released": false,
+  "merge_or_publish_authorized": false,
+  "android": "ANDROID_NOT_TESTED"
+}

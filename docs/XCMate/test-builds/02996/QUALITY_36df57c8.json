@@ -1,0 +1,68 @@
+{
+  "source_commit": "36df57c82d4036a7820a46f36ce141247201091f",
+  "status": "HOST_CI_NATIVE_PASS_ANDROID_PENDING",
+  "package": {
+    "version": "0.1.29.96",
+    "sha256": "249d7908d83cf7808d950e938e572fc046c2b0fc767aeebd3195b18b87b9d740",
+    "bytes": 4764280,
+    "files": 899,
+    "crc": "PASS",
+    "source_bytes": "PASS",
+    "status": "REVIEW_PACKAGE_ONLY",
+    "source_base": "dfea6a72226b8c5fcccfce7d14e186e5e4007673",
+    "repository_staged": "NONE",
+    "repository_released": false,
+    "merge_or_publish_authorized": false,
+    "android": "ANDROID_NOT_TESTED"
+  },
+  "independent_review": {
+    "agent": "review96_final",
+    "read_only": true,
+    "passed": 332,
+    "failed": 0,
+    "seconds": 57.56,
+    "open_findings": [],
+    "comment": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/471#issuecomment-6913699606"
+  },
+  "host": {
+    "unittest": {
+      "status": "PASS",
+      "tests": 4142,
+      "seconds": 1111.159,
+      "exit_code": 0
+    },
+    "pytest": {
+      "status": "PASS",
+      "passed": 4153,
+      "seconds": 1173.99,
+      "warnings": 4,
+      "exit_code": 0
+    }
+  },
+  "native": {
+    "epg_720": "PASS",
+    "epg_1080": "PASS",
+    "media_stop_ack_cycles": 60,
+    "media_status": "PASS",
+    "home_720": "PASS",
+    "home_1080": "PASS",
+    "home_720_db_pause_seconds": 1800.95,
+    "startup_retention_720": "PASS",
+    "startup_retention_1080": "PASS",
+    "original_picker": "PASS"
+  },
+  "android": "ANDROID_NOT_TESTED",
+  "merged": false,
+  "released": false,
+  "model_b_changed": false,
+  "ci": {
+    "status": "PASS",
+    "workflows_success": 17,
+    "workflows_failed": 0,
+    "unittest_tests": 4142,
+    "unittest_seconds": 1415.964,
+    "pytest_passed": 4153,
+    "pytest_seconds": 1473.32,
+    "pytest_warnings": 4
+  }
+}

@@ -22,7 +22,7 @@ def poll():
     with _lock:
         changed=_focus!=current;_focus=current;art=dict(_art) if _art else {}
     if changed:_focused_at=time.monotonic();note('HOME_FOCUS',pid,sid)
-    info=get(pid,sid);intent68=None;raw68=None
+    info=get(pid,sid);intent68=None;raw68=None;status482={}
     if info:
         # The displayed RAM event is sufficient for a small intent. Do not
         # wait for the optional bulk publisher/prepare() to get a timeslice.
@@ -32,6 +32,7 @@ def poll():
             intent68=dict(raw68,pid=pid,sid=sid,canonical=info.get('canonical46') or info.get('epg_id',''),revision=info.get('snapshot_revision'))
             request(intent68,priority=True)
             ready68=result(intent68)
+            status482=ready68
             if ready68.get('code') in ('READY','READY_STALE') and ready68.get('source')!='placeholder':
                 art=dict(ready68,profile63=scope)
     if not info:
@@ -74,6 +75,12 @@ def poll():
         Percent=props['XCMate.ProgrammePercent46'],Image=props.get('XCMate.HeroImage63',neutral),
         ArtSource=props.get('XCMate.HeroArtSource63',''),Facts=props.get('XCMate.ProgrammeFacts75',''),LongTitle='true' if len(props['XCMate.ProgrammeTitle46'])>26 else 'false')
     values['Provisional85']=props.get('XCMate.Provisional85','')
+    # The existing description binding already reaches installed Home skins.
+    # Keep status event-bound, without a new skin install or a new renderer.
+    from programme_state482 import code as state_code482,text as state_text482
+    values['ArtStatus']=state_code482(status482) if intent68 else ''
+    values['ArtStatusText']=state_text482(status482) if intent68 else ''
+    if values['ArtStatusText']:values['Description']=values['ArtStatusText']+'\n'+values['Description']
     values['Rating88']=__import__('programme_actions88').rating(art)
     # .86 typed/hysteretic commit; pending textures never blank a current bank.
     if xbmcgui.Window(10000).getProperty('XCMate.Home86.IdentityReady')=='true':

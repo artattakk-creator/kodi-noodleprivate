@@ -19,6 +19,15 @@ base=base.replace(marker,addition+'\n'+marker)
 _read90=Path.read_text
 def _source90(path,*args,**kwargs):
  text=_read90(path,*args,**kwargs)
+ if str(path)=='/base_gui86.py':
+  # The warm .90 manager intentionally saves a mapping. On cold restart,
+  # the older candidate-only gate must prove nonmutation of that baseline,
+  # rather than incorrectly requiring the profile to have no mapping file.
+  start93="view85=show85();check(view85.chosen is None,'SERIES85_AUTOCOMMITTED')"
+  check93="check(not path().exists(),'SERIES85_SELECTION_WITHOUT_MANAGER_WROTE_MAPPING')"
+  assert text.count(start93)==1 and text.count(check93)==1
+  text=text.replace(start93,"from programme_mapping85 import path as mapping_path93\nbefore_mapping93=mapping_path93().read_bytes() if mapping_path93().exists() else None\n"+start93)
+  text=text.replace(check93,"check((path().read_bytes() if path().exists() else None)==before_mapping93,'SERIES85_SELECTION_WITHOUT_MANAGER_WROTE_MAPPING')")
  if str(path)=='/base_gui84.py':
   anchor90="local=refs.get(str(rows[0]['sid']),{}).get('poster','')"
   assert text.count(anchor90)==1
