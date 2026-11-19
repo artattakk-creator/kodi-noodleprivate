@@ -72,6 +72,20 @@ def argb(colour,opacity=100):
     return '{:02X}{}'.format(round(max(0,min(100,opacity))*255/100),colour)
 
 
+def luminance(colour):
+    channels = [int(colour[i:i+2], 16) / 255 for i in (0, 2, 4)]
+    linear = [v / 12.92 if v <= 0.04045 else ((v + 0.055) / 1.055) ** 2.4 for v in channels]
+    return sum(weight * value for weight, value in zip((0.2126, 0.7152, 0.0722), linear))
+
+
+def readable(colour, surface):
+    foreground = luminance(colour) + 0.05
+    background = luminance(surface) + 0.05
+    if max(foreground, background) / min(foreground, background) >= 4.5:
+        return colour
+    return 'FFFFFF' if 1.05 / background >= background / 0.05 else '000000'
+
+
 def palette(values, theme):
     values = validate(values)
     if theme:
@@ -149,6 +163,8 @@ def window_source(xml_filename, kind='vod'):
     menu_layout(tree,xml_filename)
     names = fonts()
     flat = str(Path(original)/'resources/media/appearance-solid.png')
+    is_guide = xml_filename == 'XCMateGuideGrid.xml'
+    render_colours = not is_guide or bool(preferences['custom_colours']) or bool(theme)
     for control in tree.iter('control'):
         font = control.find('font')
         if font is not None:
@@ -158,13 +174,13 @@ def window_source(xml_filename, kind='vod'):
                 font.text = font_for(values, height, names)
             elif font.text in ('font16','font24'):
                 font.text = names['large' if font.text=='font16' else 'very_large']
-        render_colours = xml_filename != 'XCMateGuideGrid.xml' or bool(preferences['custom_colours'])
         if render_colours:
+            surface = values['panel'] if control.get('type') == 'button' else values['background']
             for node in control.findall('textcolor'):
                 colour = 'secondary' if node.text in ('FFB6BCC6', 'FFBCC7D2', 'FF99A9B8') else 'text'
                 if node.text in ('FFFFBC58','FFFFCC66','FFFFB15A'):colour = 'warning'
                 if node.text in ('FFFF8A91','FFFF7070'):colour = 'error'
-                node.text = argb(values[colour])
+                node.text = argb(readable(values[colour], surface) if is_guide else values[colour])
         texture = control.find('texture')
         if texture is not None and texture.text:
             name = texture.text.rsplit('/', 1)[-1]
@@ -182,6 +198,8 @@ def window_source(xml_filename, kind='vod'):
                                      values['panel_opacity']))
             elif control.get('xcmate-menu45') or control.get('xcmate-decoration'):
                 diffuse(control,argb('FFFFFF',values['icon_opacity']))
+            elif texture.text.startswith('$INFO[ListItem.Art') and values['icon_opacity'] != DEFAULT['icon_opacity']:
+                texture.set('colordiffuse', argb('FFFFFF', values['icon_opacity']))
         for node in control.findall('texturefocus'):
             if not (node.text or '').endswith(FOCUS_ASSETS) or 'focus' in preferences['custom_colours']:
                 tint = values['focus'] if not theme or 'focus' in preferences['custom_colours'] else 'FFFFFF'
@@ -194,14 +212,16 @@ def window_source(xml_filename, kind='vod'):
         backdrop_layers(tree, values, flat)
     # Keep the known readable native plan by default and allow explicit focus text.
     if xml_filename=='XCMateMedia.xml' or 'active_text' in preferences['custom_colours']:
+        focused_text = readable(values['active_text'], values['panel']) if is_guide else values['active_text']
         for layout in tree.iter('focusedlayout'):
-            for text in layout.iter('textcolor'):text.text=argb(values['active_text'])
+            for text in layout.iter('textcolor'):text.text=argb(focused_text)
         for button in tree.findall(".//control[@type='button']"):
             colour=button.find('focusedcolor')
             if colour is None:colour=ET.SubElement(button,'focusedcolor')
-            colour.text=argb(values['active_text'])
+            colour.text=argb(focused_text)
     heading=tree.find("./controls/control[@id='101']/textcolor")
-    if heading is not None: heading.text=argb(values['heading'])
+    if heading is not None:
+        heading.text=argb(readable(values['heading'], values['background']) if is_guide else values['heading'])
     data=ET.tostring(tree.getroot(),encoding='utf-8',xml_declaration=True)
     variant=hashlib.sha256(RENDER_REVISION.encode()+data).hexdigest()[:16]
     root=Path(addon_data_dir())/('ui_'+variant+'_'+kind)

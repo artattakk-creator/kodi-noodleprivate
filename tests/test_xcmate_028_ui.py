@@ -52,8 +52,12 @@ class NewUITests(Fixture,unittest.TestCase):
             self.assertEqual(a.get('id'),b.get('id'))
             for key in ('onleft','onright','onup','ondown'): self.assertEqual(a.findtext(key),b.findtext(key))
         self.assertEqual(generated.findtext("./controls/control[@id='101']/textcolor"),'FF112233')
-        posters=[n for n in generated.iter('texture') if (n.text or '').startswith('$INFO[ListItem.Art')]
-        self.assertTrue(posters);self.assertTrue(all(n.get('colordiffuse')=='80FFFFFF' for n in posters))
+        images=[(control,texture) for control in generated.iter('control') for texture in control.findall('texture')
+                if (texture.text or '').startswith('$INFO[ListItem.Art')]
+        self.assertTrue(any(t.text.startswith('$INFO[ListItem.Art(poster)') for _,t in images))
+        for control,texture in images:
+            alpha = control.findtext('colordiffuse') if control.get('xcmate-menu45') else texture.get('colordiffuse')
+            self.assertEqual(alpha, '80FFFFFF', texture.text)
         self.assertEqual((ADDON/'resources/skins/Default/720p/XCMateMedia.xml').read_bytes(),original)
         self.assertNotIn('skin.',script)
 

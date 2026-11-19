@@ -173,11 +173,17 @@ class GuideNavigationTests(Fixture,unittest.TestCase):
             self.assertLessEqual(int(button.findtext('left'))+int(button.findtext('width')),340)
 
     def test_appearance_keeps_guide_contrast_with_user_dark_text_preference(self):
-        appearance=importlib.import_module('appearance');appearance.save(dict(appearance.DEFAULT,text='000000',focus='FFFFFF',icon_opacity=25))
+        appearance=importlib.import_module('appearance');appearance.save(dict(appearance.DEFAULT,text='000000',icon_opacity=25))
         target=Path(appearance.window_source('XCMateGuideGrid.xml'))/'resources/skins/Default/720p/XCMateGuideGrid.xml'
         root=ET.parse(target).getroot()
         self.assertTrue(all(e.text!='FF000000' for e in root.findall('.//textcolor')))
         self.assertTrue(all('colordiffuse' not in e.attrib for e in root.findall('.//texturefocus')))
+
+        appearance.save(dict(appearance.DEFAULT, text='DDEEFF', focus='F8FEFF'))
+        target=Path(appearance.window_source('XCMateGuideGrid.xml'))/'resources/skins/Default/720p/XCMateGuideGrid.xml'
+        root=ET.parse(target).getroot()
+        self.assertEqual(root.findtext("./controls/control[@id='102']/textcolor"), 'FFDDEEFF')
+        self.assertEqual(root.find("./controls/control[@id='310']/texturefocus").get('colordiffuse'), 'E6F8FEFF')
 
     def test_group_refresh_failure_preserves_focusable_group_screen(self):
         w=self.window();w._show_groups()

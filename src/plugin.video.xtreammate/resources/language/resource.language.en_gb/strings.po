@@ -6247,6 +6247,7 @@ msgstr "The Home selection could not be saved and verified."
 msgctxt "#38987"
 msgid "Home selection saved"
 msgstr "Home selection saved"
+
 msgctxt "#39200"
 msgid "Background dimmer"
 msgstr "Background dimmer"

@@ -77,7 +77,7 @@ class Token61(Fixture,unittest.TestCase):
   ui.show();self.assertEqual(self.path.read_bytes(),before);self.assertFalse(set(self.options)-{'tmdb_token_revision61'})
  def test_exact_epg_submenu_and_import_does_not_enable_artwork(self):
   sections=importlib.import_module('settings_sections45')
-  self.assertEqual(sections.ROWS['epg'][0],(39000,'native_options45',{'group':'tmdb_access61'}))
+  self.assertEqual(sections.ROWS['epg'][:2],[(39100,'epg_agent100',{}),(39000,'native_options45',{'group':'tmdb_access61'})])
   self.router._params.update(action='native_options45',group='tmdb_access61')
   with mock.patch('artwork_hub96.show') as hub:self.routes.dispatch(self.router)
   hub.assert_called_once_with()

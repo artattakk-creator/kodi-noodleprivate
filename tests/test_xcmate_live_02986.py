@@ -83,7 +83,7 @@ class Live86(Fixture,unittest.TestCase):
    self.assertEqual(status('other')['home_live'],{})
   self.assertEqual(w.getProperty('XCMate.Hero63.A.ArtStatusText'),'Bildsuche angefordert …')
 
- def test_missing_artwork_times_out_to_diagnostics_without_a_home_banner(self):
+ def test_missing_artwork_ends_in_static_diagnostic_not_endless_loading(self):
   m=__import__('home_status86');w=m.window();scope=__import__('epg_handoff63').profile_scope()
   w.setProperty('XCMate.Home86.Rail',json.dumps(dict(profile=scope,pid='p',total=88,local=0,first_at=time.monotonic()-61)))
   with mock.patch('xbmc.getSkinDir',create=True,return_value='skin.titan.bingie.mod'),mock.patch('xbmcgui.getCurrentWindowId',return_value=10000):m.observe()
