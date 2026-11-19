@@ -21,6 +21,8 @@ def delta99():
 
 
 def without99(source, module):
+    from stabilization_contract100 import without100
+    source = without100(source, module)
     binary = isinstance(source, bytes)
     raw = source if binary else source.encode('utf-8')
     for name, change in delta99()['changed'].items():
@@ -38,6 +40,8 @@ def without99(source, module):
 
 
 def runtime_without99(source):
+    from stabilization_contract100 import runtime_without100
+    source = runtime_without100(source)
     added = delta99()['added']
     for name in source.keys() & added.keys():
         if digest(source[name]) != added[name]:

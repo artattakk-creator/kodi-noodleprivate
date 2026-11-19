@@ -68,6 +68,34 @@ class ProgrammeEvents46(Fixture,unittest.TestCase):
   raw=b'<tv><channel id="xml"><display-name>Station</display-name><icon src="https://logo.invalid/station.png"/></channel><programme channel="xml" start="20261027200000 +0000" stop="20261027210000 +0000"><title>Series</title><sub-title>Episode title</sub-title><date>2024</date><category>Drama</category><credits><actor>Actor One</actor><actor>Actor Two</actor></credits><episode-num system="xmltv_ns">1.2.</episode-num><icon src="https://image.invalid/episode.png"/></programme></tv>'
   parser.parse(io.BytesIO(raw),lambda *a:None,rows.append)
   self.assertEqual((rows[0]['season'],rows[0]['episode_number'],rows[0]['sub_title'],rows[0]['date'],rows[0]['cast']),(2,3,'Episode title','2024',['Actor One','Actor Two']));self.assertEqual(rows[0]['screenshot_uri'],'https://image.invalid/episode.png')
+ def test_confirmed_age_rating_and_configured_epg_source_reach_details(self):
+  from guide_publish44 import source_id
+  import epg_sources
+  parser=importlib.import_module('xmltv_stream')
+  source=dict(id='local-test-source',name='Sendungen Deutschland')
+  stamp=lambda when:time.strftime('%Y%m%d%H%M%S +0000',time.gmtime(when))
+  raw=(f'<tv><programme channel="xml" start="{stamp(self.now-60)}" stop="{stamp(self.now+600)}">'
+       '<title>Age proof</title><star-rating><value>7/10</value></star-rating>'
+       '<rating system="FSK"><value>12</value></rating></programme></tv>').encode()
+  rows=[];parser.parse(io.BytesIO(raw),lambda *a:None,rows.append)
+  self.guide.import_cache('p',{'xml':[dict(rows[0],_source_index=1)]},'age-proof',now=self.now,trusted_feed=True,source_records={1:source})
+  value=self.events.load(self.portal,self.channel,now=self.now)
+  self.assertEqual(value['epg_source46'],source_id(source,1))
+  self.assertEqual(value['age_rating'],'FSK 12')
+  self.assertIn('FSK 12',self.events.summary(value))
+  with mock.patch.object(epg_sources,'configuration',return_value=dict(sources=[source])):
+   self.assertEqual(self.events.source_name(self.portal,value),'Sendungen Deutschland')
+
+ def test_agent_source_is_identifiable_in_programme_details(self):
+  value=dict(title='Fixture programme',source_key46='agent',source=1000)
+  self.assertEqual(self.events.source_name(self.portal,value),'XCMate EPG Agent')
+
+ def test_star_rating_does_not_become_a_parental_classification(self):
+  self.save(rating='8/10')
+  value=self.events.load(self.portal,self.channel,now=self.now)
+  self.assertNotIn('age_rating',value)
+  self.assertNotIn('8/10',self.events.summary(value))
+
  def test_failed_xml_source_does_not_publish_rich_metadata_or_replace_guide(self):
   self.save();import stream_epg
   raw=b'<tv><channel id="xml"><display-name>Station</display-name></channel><programme channel="xml" start="20261027200000 +0000" stop="20261027210000 +0000"><title>Changed</title><icon src="https://bad.invalid/a.png"/></programme><broken>'

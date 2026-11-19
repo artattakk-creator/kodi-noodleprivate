@@ -15,7 +15,8 @@ def channel_keys(channel, mappings):
     extra=channel.extra if hasattr(channel,'extra') else channel
     sid=str(extra.get('stream_id',extra.get('sid','')))
     provider=str(getattr(channel,'tvg_id','') or extra.get('epg_channel_id') or extra.get('tvg_id') or extra.get('xmltv_id') or '')
-    manual=(mappings or {}).get(sid)
+    from epg_binding48 import view_mappings
+    manual=(view_mappings(mappings) or {}).get(sid)
     return sid,([str(manual)] if manual else list(dict.fromkeys(k for k in (sid,provider) if k)))
 
 
@@ -41,6 +42,8 @@ def for_channel(cache,sid):
 
 
 def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,budget=.4,text_only65=False,strict48=False):
+    from epg_binding48 import view_mappings
+    mappings = view_mappings(mappings)
     # The exact full .64 metadata path stays authoritative for matching/art.
     # Only an explicit display request uses the RAM/text latency projection.
     if text_only65 and not strict48:
@@ -193,6 +196,8 @@ def _text_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
 @scoped
 def now_next(pid,channels,mappings,now=None,client=None,display_only65=False):
     from epg_single89 import run
+    from epg_binding48 import view_mappings
+    mappings = view_mappings(mappings)
     return run(pid,channels,mappings,now,display_only65,lambda:_now_next89(pid,channels,mappings,now,client,display_only65))
 
 

@@ -4,16 +4,19 @@ from urllib.parse import quote
 
 
 def digest(db,pid,source,cancel=lambda:False,progress=lambda count:None):
-    h=hashlib.sha256();count=0;first=None;last=None
+    h=hashlib.sha256();count=channels=0;first=last=previous_channel=None
     db.set_progress_handler(lambda:int(cancel()),1000)
     try:
         for row in db.execute('SELECT cid,start,stop,title,description,rank FROM guide44_inputs WHERE pid=? AND source_id=? ORDER BY cid,start,stop',(str(pid),source)):
             if cancel():raise InterruptedError('EPG_CANCELLED')
             h.update(json.dumps(tuple(row),ensure_ascii=False,separators=(',',':')).encode());h.update(b'\n')
+            if count==0 or row[0]!=previous_channel:
+                channels+=1
+                previous_channel=row[0]
             count+=1;first=row[1] if first is None else min(first,row[1]);last=row[2] if last is None else max(last,row[2])
             if count%1024==0:progress(count)
         progress(count)
-        return dict(rows=count,digest=h.hexdigest(),first=first,last=last)
+        return dict(rows=count,channels=channels,digest=h.hexdigest(),first=first,last=last)
     except sqlite3.Error:
         if cancel():raise InterruptedError('EPG_CANCELLED')
         raise

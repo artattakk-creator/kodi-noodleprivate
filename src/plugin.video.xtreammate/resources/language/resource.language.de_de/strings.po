@@ -1662,16 +1662,16 @@ msgid "Standard (lightweight core)"
 msgstr "Standard (schlanke Grundinstallation)"
 
 msgctxt "#32637"
-msgid "Small / font12"
-msgstr "Klein / font12"
+msgid "Small"
+msgstr "Klein"
 
 msgctxt "#32638"
-msgid "Normal / font13"
-msgstr "Normal / font13"
+msgid "Normal"
+msgstr "Normal"
 
 msgctxt "#32639"
-msgid "Large / font16"
-msgstr "Groß / font16"
+msgid "Large"
+msgstr "Groß"
 
 msgctxt "#32640"
 msgid "Invalid colour. Use six RGB hex digits."
@@ -6005,8 +6005,8 @@ msgid "Valid existing token: {}"
 msgstr "Gültiger vorhandener Token: {}"
 
 msgctxt "#39016"
-msgid "Image EPG is disabled in storage settings. Enabling a source records the same explicit permission there."
-msgstr "Bild-EPG ist in der Speicherverwaltung ausgeschaltet. Das Aktivieren einer Quelle übernimmt dort dieselbe ausdrückliche Freigabe."
+msgid "Image EPG is disabled. Change this permission under Storage → Image EPG."
+msgstr "Bild-EPG ist ausgeschaltet. Die Freigabe lässt sich unter Speicher → Bild-EPG ändern."
 
 msgctxt "#39017"
 msgid "Restore the last verified backup? The damaged file is also preserved unchanged. Restart Kodi afterwards."
@@ -6119,3 +6119,183 @@ msgstr "KODI_PROCESS_UNKNOWN: XCMate konnte das vollständige Ende des Kodi-Proz
 msgctxt "#39044"
 msgid "Close the Kodi add-on settings window without saving and reopen XCMate to continue the repair."
 msgstr "Kodi-Add-on-Einstellungen ohne Speichern schließen und XCMate erneut öffnen, um die Reparatur fortzusetzen."
+
+msgctxt "#39100"
+msgid "XCMate EPG Agent"
+msgstr "XCMate EPG Agent"
+
+msgctxt "#39101"
+msgid "Enable XCMate EPG Agent"
+msgstr "XCMate EPG Agent aktivieren"
+
+msgctxt "#39102"
+msgid "Check for an update now"
+msgstr "Jetzt auf Aktualisierung prüfen"
+
+msgctxt "#39103"
+msgid "Status and diagnostics"
+msgstr "Status und Diagnose"
+
+msgctxt "#39104"
+msgid "Current"
+msgstr "Aktuell"
+
+msgctxt "#39105"
+msgid "Update in progress"
+msgstr "Aktualisierung läuft"
+
+msgctxt "#39106"
+msgid "Offline"
+msgstr "Offline"
+
+msgctxt "#39107"
+msgid "Error"
+msgstr "Fehler"
+
+msgctxt "#39108"
+msgid "Disabled"
+msgstr "Deaktiviert"
+
+msgctxt "#39109"
+msgid "Private feed awaiting approval"
+msgstr "Privater Feed wartet auf Freigabe"
+
+msgctxt "#39110"
+msgid "Private read access has not been set up"
+msgstr "Privater Lesezugang ist noch nicht eingerichtet"
+
+msgctxt "#39111"
+msgid "Guide import pending"
+msgstr "EPG-Import ausstehend"
+
+msgctxt "#39112"
+msgid "Last check"
+msgstr "Letzte Prüfung"
+
+msgctxt "#39113"
+msgid "Next check"
+msgstr "Nächste Prüfung"
+
+msgctxt "#39114"
+msgid "Last verified import"
+msgstr "Letzter verifizierter Import"
+
+msgctxt "#39115"
+msgid "Revision"
+msgstr "Revision"
+
+msgctxt "#39116"
+msgid "Feed channels / programmes / artwork references"
+msgstr "Feed-Kanäle / Sendungen / Bildreferenzen"
+
+msgctxt "#39117"
+msgid "Matched streams / staged channels"
+msgstr "Zugeordnete Streams / vorbereitete Kanäle"
+
+msgctxt "#39118"
+msgid "Read / saved / verified programmes"
+msgstr "Gelesene / gespeicherte / verifizierte Sendungen"
+
+msgctxt "#39119"
+msgid "Check requested"
+msgstr "Prüfung angefordert"
+
+msgctxt "#39120"
+msgid "No check yet"
+msgstr "Prüfung steht aus"
+
+msgctxt "#39121"
+msgid "Provider guide stays available."
+msgstr "Anbieter-EPG bleibt verfügbar."
+
+msgctxt "#39122"
+msgid "Could not save the Agent setting."
+msgstr "Die Agent-Einstellung konnte nicht gespeichert werden."
+
+msgctxt "#39123"
+msgid "Artwork references from the Agent follow the selected image sources."
+msgstr "Für Agent-Bildreferenzen gelten die gewählten Bildquellen."
+
+msgctxt "#38980"
+msgid "Choose movie groups"
+msgstr "Filmgruppen auswählen"
+
+msgctxt "#38981"
+msgid "Restore last saved selection"
+msgstr "Zuletzt gespeicherte Auswahl wiederherstellen"
+
+msgctxt "#38982"
+msgid "Suggest hiding adult groups on Home"
+msgstr "Vorschlag: Erotikgruppen auf Home ausblenden"
+
+msgctxt "#38983"
+msgid "The movie groups or your saved selection are currently unavailable. Try again in a moment."
+msgstr "Die Filmgruppen oder die gespeicherte Auswahl sind gerade nicht verfügbar. Bitte gleich erneut versuchen."
+
+msgctxt "#38984"
+msgid "No local movie groups are available yet."
+msgstr "Es sind noch keine lokalen Filmgruppen verfügbar."
+
+msgctxt "#38985"
+msgid "Movie groups on Home · {0} of {1} selected"
+msgstr "Filmgruppen auf Home · {0} von {1} ausgewählt"
+
+msgctxt "#38986"
+msgid "The Home selection could not be saved and verified."
+msgstr "Die Home-Auswahl konnte nicht gespeichert und überprüft werden."
+
+msgctxt "#38987"
+msgid "Home selection saved"
+msgstr "Home-Auswahl gespeichert"
+
+msgctxt "#39200"
+msgid "Background dimmer"
+msgstr "Hintergrund-Dimmer"
+
+msgctxt "#39201"
+msgid "Panel colour"
+msgstr "Panelfarbe"
+
+msgctxt "#39202"
+msgid "Heading colour"
+msgstr "Überschriftenfarbe"
+
+msgctxt "#39203"
+msgid "Selected text colour"
+msgstr "Farbe für markierten Text"
+
+msgctxt "#39204"
+msgid "Progress colour"
+msgstr "Fortschrittsfarbe"
+
+msgctxt "#39205"
+msgid "Warning colour"
+msgstr "Warnfarbe"
+
+msgctxt "#39206"
+msgid "Error colour"
+msgstr "Fehlerfarbe"
+
+msgctxt "#39207"
+msgid "Very large"
+msgstr "Sehr groß"
+
+msgctxt "#39208"
+msgid "Active design · {0}"
+msgstr "Aktives Design · {0}"
+
+msgctxt "#39209"
+msgid "Token missing or invalid"
+msgstr "Token fehlt oder ist ungültig"
+
+msgctxt "#39210"
+msgid "Saved · image EPG disabled"
+msgstr "Gespeichert · Bild-EPG aus"
+
+msgctxt "#39211"
+msgid "Installed designs"
+msgstr "Installierte Designs"
+
+msgctxt "#39124"
+msgid "Posters / backdrops / episode images / station logos"
+msgstr "Poster / Hintergründe / Episodenbilder / Senderlogos"

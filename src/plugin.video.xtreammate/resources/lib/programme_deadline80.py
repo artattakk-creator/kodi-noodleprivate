@@ -5,8 +5,9 @@ WAITING=frozenset(('REQUESTED','WAITING_SERVICE','PENDING','QUEUED','RUNNING','A
 
 def code(event,current):
  if current not in WAITING:return current
- from programme_requests68 import identity,_read,SLOTS
- tag=identity(event);value=_read('request.'+str(int(tag[:8],16)%SLOTS))
+ from programme_requests68 import identity,_read,slot_for
+ from agent_programme100 import view
+ tag=identity(event);value=_read('request.'+str(slot_for(tag,view(event))))
  if value.get('tag')==tag and time.time()-value.get('since70',time.time())>=45:return 'IMAGE_LOOKUP_TIMEOUT'
  return current
 

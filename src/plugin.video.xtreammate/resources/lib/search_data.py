@@ -21,6 +21,7 @@ def _short_client(portal):
 
 def _now_events(pid,identifiers,now,cancel=lambda:False):
     from guide_store import path
+    from epg_binding48 import read as read_source
     events={};aliases={};db=None;code='NO_EPG';sources=set()
     if not os.path.exists(path()):return events,aliases,code,0
     try:
@@ -28,11 +29,12 @@ def _now_events(pid,identifiers,now,cancel=lambda:False):
         db.row_factory=sqlite3.Row;db.execute('PRAGMA query_only=ON');db.execute('BEGIN')
         deadline=time.monotonic()+1
         db.set_progress_handler(lambda:int(cancel() or time.monotonic()>deadline),1000)
-        ids=sorted(identifiers)
+        qualified=sorted(ident for ident in identifiers if isinstance(ident,tuple))
+        ids=sorted(ident for ident in identifiers if isinstance(ident,str))
         for offset in range(0,len(ids),256):
             chunk=ids[offset:offset+256];marks=','.join('?' for _ in chunk)
             aliases.update(db.execute('SELECT alias,cid FROM guide_alias WHERE pid=? AND alias IN ('+marks+')',[pid]+chunk))
-        ids=sorted({aliases.get(ident,ident) for ident in identifiers})
+        ids=sorted({aliases.get(ident,ident) for ident in ids})
         examined=0;by_channel={}
         for offset in range(0,len(ids),256):
             chunk=ids[offset:offset+256];marks=','.join('?' for _ in chunk)
@@ -48,7 +50,28 @@ def _now_events(pid,identifiers,now,cancel=lambda:False):
         from epg_views import guide_for_channel
         for cid,rows in by_channel.items():
             info=guide_for_channel({'v':rows},'v',now=now)
-            if info['now']:events[cid]=dict(cid=cid,title=info['now'],start=info['start'],stop=info['stop'],source=info['source_index'])
+            if info['now']:
+                events[cid]=dict(title=info['now'],start=info['start'],stop=info['stop'],source=info['source_index'])
+        # An explicitly saved source uses its own archive even when the
+        # merged schedule assigns the same CID to a different source.
+        for source,cid in qualified:
+            if cancel() or time.monotonic()>deadline:break
+            rows=read_source(db,pid,cid,source,now,now+2*86400,limit=16)
+            info=guide_for_channel({'v':rows},'v',now=now)
+            if info['now']:
+                events[(source,cid)]=dict(title=info['now'],start=info['start'],stop=info['stop'],
+                                          next=info['next'],next_start=info['next_start'],source_id=source)
+                sources.add(source)
+        # Next is optional enrichment. A scarce budget preserves all NOW
+        # matches already read; every lookup uses the existing CID/time index.
+        for cid,event in events.items():
+            if cancel() or time.monotonic()>deadline:break
+            if not isinstance(cid,str):continue
+            try:
+                following=db.execute('SELECT substr(title,1,512),start FROM programmes WHERE pid=? AND cid=? AND start>=? AND stop>start AND length(title)>0 ORDER BY start,source LIMIT 1',
+                                     (pid,cid,event['stop'])).fetchone()
+            except sqlite3.Error:break
+            if following:event.update(next=following[0],next_start=following[1])
         code='READY' if events else 'NO_CURRENT_EPG'
     except (sqlite3.Error,OSError,ValueError):events={};aliases={};code='EPG_UNAVAILABLE';sources.clear()
     finally:
@@ -102,7 +125,7 @@ class LiveSearch:
         state=reader.state('live') or {}
         self.catalogue_revision=(state.get('revision'),state.get('updated'));self.guide_revision=None
         self.tokens=list(dict.fromkeys(normalized(query).split()));self.position=0
-        self.channels=None;self.mappings={};self.events={};self.aliases={};self.code='NO_EPG'
+        self.channels=None;self.mappings={};self.events={};self.aliases={};self.code='NO_EPG';self.source_names={}
         self.client=None;self.client_checked=False;self.phase='names';self.short=[];self.short_position=0
         self.media_cache={};self.media_revisions={};self.slices=0;self.last_trace=0;self.result=[];self.by_sid={}
         self.short_ns=0;self.short_rows=0;self.short_inventory=False
@@ -150,20 +173,34 @@ class LiveSearch:
     @property
     def done(self):return self.phase=='done'
 
-    def _add(self,row,title,programme):
+    def _add(self,row,title,programme,event=None):
+        entry=dict(row,_now_title=title,_now_match=programme)
+        if event:
+            source=event.get('source_id')
+            if not source:
+                rank=event.get('source')
+                source='provider' if rank in (-1,0) else 'xmltv' if isinstance(rank,int) and rank>0 else ''
+            entry.update(_now_start=event.get('start'),_now_stop=event.get('stop'),
+                         _next_title=event.get('next',''),_next_start=event.get('next_start'),
+                         _epg_source=source,_epg_source_name=self.source_names.get(source,''))
         if row['sid'] in self.by_sid:
             pos=self.by_sid[row['sid']]
             # Replace records, never mutate a row already published to Kodi.
-            self.result[pos]=dict(row,_now_title=title,_now_match=programme)
+            self.result[pos]=entry
         else:
             self.by_sid[row['sid']]=len(self.result)
-            self.result.append(dict(row,_now_title=title,_now_match=programme))
+            self.result.append(entry)
 
     def _prepare(self):
         from epg_sources import configuration
+        from epg_binding48 import binding
+        from guide_publish44 import source_id
         from guide_store import path as guide_path
         reader=self.reader
         publication=_guide_revision(self.portal['id'])
+        config=configuration(self.portal['id'])
+        self.source_names={source_id(row,rank):str(row.get('name') or 'XMLTV')[:80]
+                           for rank,row in enumerate(config.get('sources',()),1) if row.get('enabled',True)}
         key=(guide_path(),str(self.portal['id']),self.catalogue_revision,self.stamp[2:4],publication)
         cached=_PREPARED.get('value')
         if cached and cached['key']==key and self.now<cached['expires']:
@@ -180,11 +217,15 @@ class LiveSearch:
             self.channels=[json.loads(row['payload']) for row in raw]
         if self.cancel():return
         with self.profile.span('MAPPING'):
-            self.mappings=configuration(self.portal['id']).get('mappings',{})
+            self.mappings=config.get('mappings',{})
             identifiers=set()
             for row in self.channels:
-                manual=self.mappings.get(row['sid'])
-                identifiers.update([str(manual)] if manual else [row['sid'],str(row.get('epg_channel_id') or '')])
+                selected=binding(self.mappings,row['sid'])
+                if selected:
+                    identifiers.add((selected['source'],selected['channel']))
+                else:
+                    manual=self.mappings.get(row['sid'])
+                    identifiers.update([str(manual)] if manual else [row['sid'],str(row.get('epg_channel_id') or '')])
             identifiers.discard('')
         with self.profile.span('EPG_NOW_SQL'):
             self.guide_revision=publication
@@ -192,7 +233,7 @@ class LiveSearch:
         self.counts['source_count']=count
         stops=[event['stop'] for event in self.events.values() if event.get('stop',0)>self.now]
         from local_epg import next_start
-        boundary=next_start(self.portal['id'],{self.aliases.get(i,i) for i in identifiers},self.now)
+        boundary=next_start(self.portal['id'],{self.aliases.get(i,i) for i in identifiers if isinstance(i,str)},self.now)
         self.expires=min(self.expires,min(stops) if stops else self.expires,boundary or self.expires)
         # At most one portal and <=4 MiB serialized live payload, never VOD.
         if len(self.channels)<=6000 and sum(len(row['payload']) for row in raw)<=4*1024*1024:
@@ -200,16 +241,17 @@ class LiveSearch:
                                     events=self.events,aliases=self.aliases,code=self.code,sources=count)
         self.phase='xml'
 
-    def _match(self,row,title,short=False):
+    def _match(self,row,title,short=False,event=None):
         from library_index import normalized
         if title:
             self.counts['now_count']+=1;self.counts['short_now' if short else 'xml_now']+=1
         programme=bool(title and all(t in normalized(title) for t in self.tokens))
         if programme:
             self.counts['programme_hits']+=1;self.profile.emit('FIRST_PROGRAMME_MATCH',once=True,rows=1)
-        if row['sid'] in self.by_sid or programme:self._add(row,title,programme)
+        if row['sid'] in self.by_sid or programme:self._add(row,title,programme,event)
 
     def step(self,budget=.2):
+        from epg_binding48 import binding
         if self.cancel():
             self.phase='done';self.profile.emit('STALE_CANCEL',once=True);return list(self.result),'EPG_PARTIAL'
         if self.done and self.final_code is not None:return list(self.result),self.final_code
@@ -225,11 +267,12 @@ class LiveSearch:
                 self.phase='short';break
             row=self.channels[self.position];self.position+=1;processed+=1
             manual=self.mappings.get(row['sid']);self.counts['manual_count']+=int(bool(manual))
-            keys=[str(manual)] if manual else [row['sid'],str(row.get('epg_channel_id') or '')]
+            selected=binding(self.mappings,row['sid'])
+            keys=[(selected['source'],selected['channel'])] if selected else [str(manual)] if manual else [row['sid'],str(row.get('epg_channel_id') or '')]
             self.counts['alias_count']+=int(any(self.aliases.get(k,k)!=k for k in keys))
             event=next((self.events[self.aliases.get(k,k)] for k in keys if k and self.aliases.get(k,k) in self.events),None)
             title=event['title'] if event else ''
-            if title:self._match(row,title)
+            if title:self._match(row,title,event=event)
             elif manual:self.counts['manual_missing']+=1
             else:self.short.append(row)
             if processed>=256 or time.monotonic()>=deadline:break
@@ -247,11 +290,12 @@ class LiveSearch:
             while self.client is not None and self.short_position<len(self.short) and not self.cancel():
                 row=self.short[self.short_position];self.short_position+=1;processed+=1
                 from epg_views import cached_short_guide
+                guide={}
                 try:
                     guide=cached_short_guide(self.client,row['sid'],now=self.now);title=guide.get('now','')
                     if title and guide.get('stop',0)>self.now:self.expires=min(self.expires,guide['stop'])
                 except (OSError,TimeoutError,ValueError):title=''
-                self._match(row,title,short=True)
+                self._match(row,title,short=True,event=dict(guide,source_id='provider') if title or guide.get('next') else None)
                 if processed>=16 or time.monotonic()>=deadline:break
             self.short_ns+=time.monotonic_ns()-cache_start;self.short_rows+=processed
             self.profile.emit('CACHE_BATCH_DONE',rows=processed,scanned=self.short_position,duration_ms=(time.monotonic_ns()-cache_start)//1000000)

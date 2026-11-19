@@ -525,6 +525,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 current96=overrides96.reference(extra96['logo_key96'])
                 if current96:return current96
                 if extra96.get('logo_base96'):return extra96['logo_base96']
+                agent100=__import__('agent_logos100').reference(extra96['logo_key96'])
+                if agent100:return agent100
                 from logo_cache import local_logo
                 current96=local_logo(extra96.get('logo_provider96',''),persistent96=extra96.get('logo_persistent96',True))
                 if current96:return current96
@@ -679,7 +681,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
             return
         # Both mini columns share the existing panel; groups retain old geometry.
         left=int(self._width*.32) if self.mode=='channels' else self._sidebar
-        self.bg.setWidth(int(self._width*.76) if self.mode=='channels' else self._sidebar)
+        self.bg.setWidth(self._width-48 if self.mode=='channels' else self._sidebar)
         shift=92 if self.mode=='groups' else 0
         self.bg.setPosition(24+shift,24);self.heading.setPosition(48+shift,38)
         self.sub.setPosition(48+shift,78);self.control.setPosition(44+shift,116)

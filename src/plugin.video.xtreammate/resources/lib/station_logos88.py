@@ -96,9 +96,9 @@ def prepare(portal,rows,cancel=lambda:False):
  from media_sources43 import SourceError,validate_image
  from art_storage import check
  from station_logos87 import note
- existing=manifest_read(portal,rows,with_fallback=False);scope=context(portal);offset=_cursor.get(scope,0);attempts=0;changed=False
+ existing=manifest_read(portal,rows,with_fallback=False,with_agent=False);scope=context(portal);offset=_cursor.get(scope,0);attempts=0;changed=False
  # One batch fallback, never a fresh 88-entry manifest read for every miss.
- fallback90=manifest_read(portal,[r for r in rows if str(r['sid']) not in existing])
+ fallback90=manifest_read(portal,[r for r in rows if str(r['sid']) not in existing],with_agent=False)
  round90=time.monotonic()+2;remote90=0
  if __import__('external_art89').enabled():
   try:__import__('external_art89').backend('logo')
@@ -151,6 +151,8 @@ def prepare(portal,rows,cancel=lambda:False):
   except (OSError,TimeoutError):pass
  while len(_due)>512:_due.pop(next(iter(_due)))
  while len(_cursor)>16:_cursor.pop(next(iter(_cursor)))
+ agents=__import__('agent_logos100')
+ agents.prepare(portal,[r for r in rows if str(r['sid']) not in existing and str(r['sid']) not in fallback90],cancel)
  hits=manifest_read(portal,rows)
  __import__('startup_diag90').note('REMOTE_FETCH_COUNT',count=remote90,total=len(rows))
  return 'READY' if len(hits)==len(rows) else 'PARTIAL' if hits else 'EXTERNAL_UNAVAILABLE'
@@ -160,7 +162,9 @@ def next_delay90(portal,rows):
  from logo_manifest86 import read,key,context
  own=read(portal,rows,with_fallback=False);scope=context(portal);now=time.monotonic()
  missing=[r for r in rows if source(r) and str(r['sid']) not in own]
- return min(max(.25,_due.get(key(portal,r,scope),0)-now) for r in missing) if missing else None
+ provider=min((max(.25,_due.get(key(portal,r,scope),0)-now) for r in missing),default=None)
+ agent=__import__('agent_logos100').next_delay(portal,[r for r in rows if str(r['sid']) not in own])
+ return min((delay for delay in (provider,agent) if delay is not None),default=None)
 
 def reference(props):
  """UI-only exact station/account receipt, never a general localhost grant."""

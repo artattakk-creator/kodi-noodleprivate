@@ -1,4 +1,5 @@
 """Typed local search rows; no HTTP, SQL or artwork jobs in presentation."""
+import time
 import xbmcgui
 from localization import tr
 from media_art import local_art
@@ -6,11 +7,19 @@ from media_art import local_art
 KINDS={'live':35100,'vod':35101,'series':35102}
 
 
+def clock(timestamp):
+    return time.strftime('%H:%M',time.localtime(timestamp)) if timestamp else ''
+
+
 def secondary(row):
     kind=row.get('kind','vod');parts=[tr(KINDS.get(kind,35101))]
     if kind=='live':
         title=str(row.get('_now_title') or '')[:512]
-        parts.append(tr(35103)+': '+title if title else tr(35104))
+        if title:
+            interval='–'.join(v for v in (clock(row.get('_now_start')),clock(row.get('_now_stop'))) if v)
+            prefix=tr(36031) if row.get('_now_match') else tr(35103)
+            parts.append(' '.join(v for v in (prefix,interval,title) if v))
+        else:parts.append(tr(35104))
     else:
         year=str(row.get('year') or row.get('releaseDate') or '')[:4]
         if year.isdigit() and 1880<=int(year)<=2100:parts.append(year)
@@ -29,10 +38,19 @@ def secondary(row):
     return ' · '.join(parts)
 
 
+def tertiary(row):
+    if row.get('kind')!='live':return ''
+    next_title=str(row.get('_next_title') or '')[:90]
+    following=' '.join(v for v in (tr(36032),clock(row.get('_next_start')),next_title) if v) if next_title else ''
+    source=row.get('_epg_source_name') or {'provider':tr(32555),'xmltv':'XMLTV'}.get(row.get('_epg_source'),'')
+    return ' · '.join(v for v in (following,source) if v)
+
+
 def item(row,theme=None,art=None):
     result=xbmcgui.ListItem(str(row.get('name') or ''))
     kind=row.get('kind','vod')
     result.setArt(local_art(dict(row,kind=kind),theme) if art is None else art)
     result.setProperty('XCMate.SearchKind',kind if kind in KINDS else 'vod')
     result.setProperty('XCMate.SearchSecondary',secondary(row))
+    result.setProperty('XCMate.SearchTertiary',tertiary(row))
     return result

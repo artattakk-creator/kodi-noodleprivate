@@ -18,7 +18,7 @@ q.joinpath('addon.xml').write_text('<addon id="script.xcmate.epg94" version="1.0
 q.joinpath('main.py').write_text("import runpy;runpy.run_path('/work/native94.py')")
 PY
 cat > /root/.kodi/userdata/guisettings.xml <<'EOF'
-<settings version="2"><setting id="services.webserver">true</setting><setting id="services.webserverport">18080</setting><setting id="services.webserverauthentication">false</setting><setting id="services.zeroconf">false</setting><setting id="services.upnpserver">false</setting><setting id="general.addonupdates">2</setting></settings>
+<settings version="2"><setting id="services.webserver">true</setting><setting id="services.webserverport">18080</setting><setting id="services.webserverauthentication">false</setting><setting id="services.zeroconf">false</setting><setting id="services.upnpserver">false</setting><setting id="general.addonupdates">2</setting><viewstates/><resolutions/></settings>
 EOF
 Xvfb :99 -screen 0 ${XCMATE_RES94:-1280x720}x24 -nolisten tcp -ac &
 python3 -c 'import time;time.sleep(1)'

@@ -90,6 +90,8 @@ def status():
         safe = type(free) is int and facts.get('capacity82')=='SAME_VOLUME_VERIFIED' and free>=reserve+256*1024
         classes.append(dict(role=role,used_mib=round(used/MIB,2),budget_mib=maximum//MIB,
             free_mib=round(free/MIB,2) if type(free) is int else None,
+            free_bytes=free if type(free) is int else None, used_bytes=used, budget_bytes=maximum,
+            volume=facts.get('volume82'), mount=facts.get('mount82'),
             write_reserve_mib=reserve//MIB,capacity=facts.get('capacity82','UNKNOWN'),
             state='AVAILABLE' if safe else 'RAM_OR_LINK_ONLY' if role!='PERSISTENT_LOGOS' else 'WRITE_BLOCKED',
             rolling=role!='PERSISTENT_LOGOS'))
@@ -122,9 +124,10 @@ def manage():
                     for row in value['classes']:
                         lines.extend(['',names[row['role']],
                             'Belegt: '+str(row['used_mib'])+' MiB · Budget: '+str(row['budget_mib'])+' MiB',
-                            'Freier Zielplatz: '+str(row['free_mib'] if row['free_mib'] is not None else 'unbekannt')+' MiB',
+                            'Zielvolume: '+str(row['volume'] or 'unbekannt')+' · '+str(row['mount'] or 'unbekannt'),
+                            'Freier Zielplatz: '+(str(row['free_bytes'])+' Bytes · '+str(row['free_mib'])+' MiB' if row['free_bytes'] is not None else 'unbekannt'),
                             'Reale Schreibreserve: '+str(row['write_reserve_mib'])+' MiB',
-                            'Schreiben möglich' if row['state']=='AVAILABLE' else 'Schreiben blockiert; URL/RAM weiter möglich'])
+                            'Schreiben möglich' if row['state']=='AVAILABLE' else 'Schreiben blockiert · URL/RAM möglich' if row['rolling'] else 'Dauerhafte Logos derzeit nur lesbar'])
                     dialog.textviewer('Artwork & Cache','\n'.join(lines))
             elif choice == 1:
                 index = __import__('menu_icons45').select(dialog, 'Cache-Budget (MiB)', ['32','64','128','256'])

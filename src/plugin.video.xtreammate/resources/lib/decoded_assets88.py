@@ -108,7 +108,11 @@ def put(key,body,until,kind='event',receipt88=None):
   if old and old.get('sha256')==digest:return old
   for path,item in list(_items.items()):
    if item['until']<=time.time():_remove(path,item)
-  while len(_items)>=MAX_OBJECTS or sum(len(v['body']) for v in _items.values())+len(body)>MAX_BYTES:
+  while True:
+   # Several scoped URL receipts may serve the same immutable image bytes.
+   bodies={item['sha256']:item['body'] for item in _items.values()}
+   storage=sum(map(len,bodies.values()))+(0 if digest in bodies else len(body))
+   if len(_items)<MAX_OBJECTS and storage<=MAX_BYTES:break
    candidate=next(((p,v) for p,v in _items.items() if v['active']<=now and not active(v['key'])),None)
    if candidate is None:raise OSError('DECODED_PINNED_LIMIT')
    _remove(*candidate)
@@ -127,7 +131,7 @@ def put(key,body,until,kind='event',receipt88=None):
   if proof88:path+='?event88='+key.split('.')[0]+'&body88='+digest+'&proof88='+proof88
   uri='http://127.0.0.1:'+str(_server.server_port)+path
   record=dict(instance88=_server.instance88,uri=uri,key=key,sha256=digest,width=width,height=height,until=min(until,time.time()+86400),storage='RAM_ONLY')
-  _items[path]=dict(body=body,mime='image/png' if body.startswith(b'\x89PNG') else 'image/jpeg',until=record['until'],active=now+60,key=key,slot88=slot(key))
+  _items[path]=dict(body=bodies.get(digest,body),sha256=digest,mime='image/png' if body.startswith(b'\x89PNG') else 'image/jpeg',until=record['until'],active=now+60,key=key,slot88=slot(key))
   window().setProperty(slot(key),json.dumps(record,separators=(',',':')))
   return record
 def _remove(path,item):

@@ -6,7 +6,7 @@ missing facts. Different channel IDs require an explicit per-source name match.
 """
 import bisect,hashlib,json,sqlite3,time
 
-DETAILS=('descr','subtitle','genre','season','episode','episode_label','year','cast','director','xmltv_image','provider_image')
+DETAILS=('descr','subtitle','genre','season','episode','episode_label','year','cast','director','xmltv_image','provider_image','agent_art')
 
 
 def same(a,b,cid):
@@ -95,6 +95,8 @@ def publish_aliases(pid,source,aliases,streams,mappings,guide=None,proofs=None):
                 # existing unambiguous exact normalized channel-name matcher.
                 proof=(proofs or {}).get(sid,'manual' if mappings.get(sid) else 'provider_id')
                 records.append((str(pid),sid,source,str(cid),proof))
+            if source=='agent':
+                db.execute('DELETE FROM source_aliases52 WHERE pid=? AND source_id=?',(str(pid),source))
             db.executemany('INSERT OR REPLACE INTO source_aliases52 VALUES(?,?,?,?,?)',records)
         return True
     except (OSError,sqlite3.Error,ValueError):return False
@@ -104,7 +106,7 @@ def publish_aliases(pid,source,aliases,streams,mappings,guide=None,proofs=None):
 
 def window(pid,sid,cid,start,stop,primary=(),limit=256,manual=False,guide=None):
     """Read retained facts and source aliases using bounded indexed queries."""
-    from programme_index46 import connect,ranks
+    from programme_index46 import connect,ranks,read_fact
     db=None;donors=[]
     try:
         db=connect(False,guide)
@@ -122,7 +124,7 @@ def window(pid,sid,cid,start,stop,primary=(),limit=256,manual=False,guide=None):
             sql+=' ORDER BY start,stop LIMIT ?';args.append(min(1024,max(128,limit*4)))
             for identity,fingerprint,data,updated in db.execute(sql,args):
                 if identity not in allowed or len(data)>24576:continue
-                value=json.loads(data)
+                value=read_fact(data)
                 if identity=='compatibility' and primary:
                     # Legacy facts still require exact authoritative text and
                     # one unambiguous archived origin. This also preserves

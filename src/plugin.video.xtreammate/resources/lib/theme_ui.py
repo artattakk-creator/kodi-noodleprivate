@@ -87,6 +87,21 @@ def manage():
     dialog=xbmcgui.Dialog()
     def activate(revision):
         deferred=select(revision);dialog.ok(tr(32800),tr(32809) if deferred else tr(33811))
+    def installed_themes(rows, theme):
+        if not rows:
+            dialog.ok(tr(32800),tr(32813));return
+        active=theme.get('revision') if theme else None
+        labels=[r['spec']['name']+' '+r['spec']['version']+
+                (' · '+tr(33805) if r['revision']==active else '') for r in rows]
+        selected=__import__('menu_icons45').select(dialog,tr(39211),labels,default='palette')
+        if not 0<=selected<len(rows):return
+        row=rows[selected]
+        action=__import__('menu_icons45').select(
+            dialog,labels[selected],[tr(33808),tr(33809),tr(33810)],default='palette')
+        if action==0:activate(row['revision'])
+        elif action==1 and row['revision']==active:activate('')
+        elif action==2 and dialog.yesno(tr(33810),row['spec']['name']):remove(row['spec']['id'])
+
     def online(ident=None):
         rows=job(lambda cancel:catalogue(core_version(),cancel))
         if ident:rows=[r for r in rows if r['id']==ident]
@@ -102,8 +117,8 @@ def manage():
             premium=[r for r in rows if r['spec']['id']=='space-premium']
             active=bool(theme and theme['spec']['id']=='space-premium')
             status=33805 if active else 33804 if premium else 33803
-            labels=[tr(33801)+(' · '+tr(33805) if not theme else ''),tr(33802)+' · '+tr(status),tr(32823),tr(32803),tr(33810)]
-            choice=__import__('menu_icons45').select(dialog,tr(33813),choice_items(labels,['icon.start','icon.shared.info','icon.shared.search','icon.shared.forward','icon.shared.clear'],theme),useDetails=bool(theme),default='palette')
+            labels=[tr(33801)+(' · '+tr(33805) if not theme else ''),tr(33802)+' · '+tr(status),tr(32823),tr(32803),tr(33810),tr(39211)]
+            choice=__import__('menu_icons45').select(dialog,tr(33813),choice_items(labels,['icon.start','icon.shared.info','icon.shared.search','icon.shared.forward','icon.shared.clear','icon.shared.info'],theme),useDetails=bool(theme),default='palette')
             if choice<0:return
             if choice==0:activate('')
             elif choice==1:
@@ -125,6 +140,7 @@ def manage():
                 if not rows:dialog.ok(tr(32800),tr(32813));continue
                 selected=__import__('menu_icons45').select(dialog,tr(33810),[r['spec']['name']+' '+r['spec']['version'] for r in rows],default='palette')
                 if selected>=0 and dialog.yesno(tr(33810),rows[selected]['spec']['name']):remove(rows[selected]['spec']['id'])
+            elif choice==5:installed_themes(rows,theme)
         except ThemeError as error:
             if str(error)!='CANCELLED':_message(str(error))
         except OSError as error:_message('SPACE' if error.errno==28 else 'DOWNLOAD')

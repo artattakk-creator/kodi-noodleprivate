@@ -122,7 +122,9 @@ def choose(event,value,values,win):
   # Always the focused station's logo; no small feed cover/foreign event.
   import xbmc
   logo=xbmc.getInfoLabel('ListItem.Property(XCMate.ProgrammeLogo46)')
-  values.update(Image=logo,ArtSource='station_logo' if logo else '',Kind86='station_logo',Rank86='9',SourceUrl86='',Digest87='')
+  default = '' if logo else __import__('standard_hero100').image()
+  source = 'station_logo' if logo else 'standard' if default else ''
+  values.update(Image=logo or default,ArtSource=source,Kind86=source,Rank86='9',SourceUrl86='',Digest87='')
  win.setProperty(PREFIX+'Event',event_key)
  return values
 

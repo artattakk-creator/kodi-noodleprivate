@@ -16,6 +16,15 @@ class Jobs94(Fixture,unittest.TestCase):
   m=self.jobs();j=m.request('p')
   with mock.patch.object(m.time,'time',return_value=j['requested']+16):self.assertFalse(m.acknowledge('p',j['id']))
   self.assertEqual(m.read('p')['state'],'SERVICE_NOT_CONFIRMED')
+ def test_automatic_request_cannot_take_a_pending_manual_job_id(self):
+  module=self.jobs();manual=module.request('p',force=True)
+  self.assertIsNone(module.request('p',exclusive=True))
+  self.assertEqual(module.read('p'),manual)
+  self.assertTrue(module.acknowledge('p',manual['id']))
+  self.assertIsNone(module.request('p',exclusive=True))
+  module.finish('p',manual['id'],'DONE')
+  self.assertNotEqual(module.request('p',exclusive=True)['id'],manual['id'])
+
  def test_legacy_hint_cannot_resurrect_cancelled_job_before_service_ack(self):
   m=self.jobs();j=m.request('p');self.assertTrue(m.cancel('p',j['id']))
   m.adopt('p',j['id'],j['requested']);value=m.read('p')
@@ -40,6 +49,58 @@ class Jobs94(Fixture,unittest.TestCase):
   n=importlib.import_module('network_io');raw=b'<tv>'+b'x'*10000+b'</tv>';compressed=gzip.compress(raw)
   reader=n.wire_reader94(iter([compressed]),{'Content-Encoding':'gzip','Content-Length':str(len(compressed))},None,lambda:False)
   self.assertEqual(reader.read(20000),raw);self.assertEqual(reader.wire94,dict(bytes=len(compressed),total=len(compressed)))
+ def test_staging_and_commit_silence_keep_worker_state_distinct(self):
+  m=self.jobs();j=m.request('p');m.acknowledge('p',j['id'])
+  self.assertFalse(m.snapshot('p',now=j['requested']+200)['stalled'])
+  m.observe('p',j['id'],'provider','STAGING',staged=100,staged_channels=7)
+  first=m.read('p')['progress']
+  m.observe('p',j['id'],'provider','STAGING',staged=100,staged_channels=7)
+  self.assertEqual(m.read('p')['progress'],first)
+  value=m.snapshot('p',now=first+200)
+  self.assertFalse(value['stalled']);self.assertEqual(value['state'],'RUNNING')
+  self.assertEqual(value['sources']['provider']['staged_channels'],7)
+  m.observe('p',j['id'],'provider','COMMIT')
+  self.assertFalse(m.snapshot('p',now=m.read('p')['progress']+200)['stalled'])
+  m.observe('p',j['id'],'provider','READBACK',committed=100,committed_channels=7,readback_rows=10)
+  value=m.read('p')
+  self.assertNotIn('verified',value['sources']['provider'])
+  self.assertTrue(m.snapshot('p',now=value['progress']+200)['stalled'])
+  m.observe('p',j['id'],'provider','DONE',verified=100,verified_channels=7)
+  self.assertFalse(m.snapshot('p',now=m.read('p')['progress']+200)['stalled'])
+
+ def test_cancel_reader_limits_repeated_durable_reads_and_forces_commit_check(self):
+  module=self.jobs();job=module.request('p');module.acknowledge('p',job['id'])
+  clock=[100.0]
+  with mock.patch.object(module.time,'monotonic',side_effect=lambda:clock[0]),mock.patch.object(module,'cancelled',wraps=module.cancelled) as read:
+   check=module.cancel_reader('p',job['id'])
+   self.assertFalse(any(check() for _ in range(2000)))
+   self.assertEqual(read.call_count,1)
+   clock[0]+=.2
+   self.assertFalse(check());self.assertEqual(read.call_count,2)
+   module.cancel('p',job['id'])
+   self.assertFalse(check())
+   self.assertTrue(check(force=True));self.assertEqual(read.call_count,3)
+   self.assertTrue(check());self.assertEqual(read.call_count,3)
+
+ def test_readback_scan_is_distinct_from_verified_programmes(self):
+  render=importlib.import_module('epg_progress94').row
+  scanned=dict(phase='READBACK',committed=22,readback_rows=5)
+  job=dict(state='RUNNING',source='provider',sources={'provider':scanned})
+  self.assertIn('Readback läuft 5',render(job,'provider')['stats'])
+  self.assertNotIn('bestätigt',render(job,'provider')['stats'])
+  legacy=dict(job,sources={'provider':dict(phase='READBACK',verified=5)})
+  self.assertIn('Readback läuft 5',render(legacy,'provider')['stats'])
+  done=dict(job,state='DONE',sources={'provider':dict(scanned,phase='DONE',verified=22,verified_channels=2)})
+  result=render(done,'provider')['stats']
+  self.assertIn('Readback bestätigt 2 Kanäle / 22 Programme',result)
+  self.assertNotIn('Readback läuft',result)
+
+ def test_agent_uses_the_same_durable_source_observations(self):
+  module=self.jobs();job=module.request('p')
+  self.assertTrue(module.acknowledge('p',job['id']))
+  self.assertTrue(module.observe('p',job['id'],'agent','STAGING',staged=12,staged_channels=2))
+  self.assertEqual(module.snapshot('p')['sources']['agent']['staged_channels'],2)
+
  def test_unknown_total_never_invents_percentage(self):
   m=importlib.import_module('network_io');r=m.wire_reader94(iter([b'x']),{'Content-Length':'100','Transfer-Encoding':'chunked'},None,lambda:False)
   r.read(10);self.assertEqual(r.wire94['total'],0)
@@ -67,6 +128,7 @@ class Pipeline94(unittest.TestCase):
   r=importlib.import_module('epg_readback94');from guide_store import path
   db=sqlite3.connect(path());sid=next(iter(self.mod.read(self.portal)['sources']));expected=r.digest(db,self.portal['id'],sid)
   revision=db.execute('SELECT revision FROM guide_meta WHERE pid=?',(self.portal['id'],)).fetchone()[0];db.close()
+  self.assertEqual(expected['channels'],1)
   self.assertEqual(r.verify(path(),self.portal['id'],sid,expected,revision),expected)
   with sqlite3.connect(path()) as db:db.execute('UPDATE guide44_inputs SET title=? WHERE source_id=?',('Changed after commit',sid))
   with self.assertRaisesRegex(OSError,'READBACK_MISMATCH'):r.verify(path(),self.portal['id'],sid,expected,revision)
@@ -121,5 +183,5 @@ class Capacity94(Fixture,unittest.TestCase):
   m=importlib.import_module('epg_jobs94');j=m.request('p');m.acknowledge('p',j['id'])
   for i in range(128):
    for phase in ('DOWNLOAD','PARSE','MATCHING','STAGING','COMMIT','READBACK','CLEANUP','DONE'):
-    m.observe('p',j['id'],format(i,'024x'),phase,bytes=123456789,channels=3357,programmes=2000000,matched=3357,staged=2000000,committed=2000000,verified=2000000,source_index=i+1,sources=128)
+    m.observe('p',j['id'],format(i,'024x'),phase,bytes=123456789,channels=3357,programmes=2000000,matched=3357,staged=2000000,committed=2000000,verified=2000000,source_index=i+1,sources=128,matched_channels=3357,staged_channels=3357,committed_channels=3357,verified_channels=3357,readback_rows=2000000,selected_streams=9000)
   self.assertLess(os.path.getsize(m.path('p')),131072);self.assertEqual(len(m.read('p')['sources']),128)

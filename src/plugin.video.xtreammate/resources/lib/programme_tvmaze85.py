@@ -4,7 +4,8 @@ from urllib.parse import urlencode
 from html import unescape
 
 def details(event,ident,cancel=lambda:False,manual=False,row=None):
- from media_sources43 import get,SourceError
+ from media_sources43 import SourceError
+ from artwork_request100 import tvmaze as get
  from programme_mapping85 import name
  data=get('https://api.tvmaze.com/shows/'+str(ident),api=True,cancel=cancel)
  if data.get('id')!=ident:raise SourceError('NO_MATCH')
@@ -22,7 +23,8 @@ def details(event,ident,cancel=lambda:False,manual=False,row=None):
  return dict(id=ident,source='tvmaze',title=title[:200],original=title[:200],year=int(year),country=[country] if isinstance(country,str) and len(country)==2 else [],overview=unescape(re.sub('<[^>]*>','',str(data.get('summary') or '')))[:1000],poster=url,url=url,role='poster',verified85=True)
 def search(event,cancel=lambda:False,strict=False):
  from programme_candidates85 import enabled
- from media_sources43 import get,SourceError
+ from media_sources43 import SourceError
+ from artwork_request100 import tvmaze as get
  from programme_mapping85 import name
  if not enabled('tvmaze'):return [],True
  genre=str(event.get('genre') or '').casefold()

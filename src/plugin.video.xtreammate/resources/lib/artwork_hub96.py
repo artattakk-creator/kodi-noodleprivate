@@ -22,7 +22,12 @@ def show():
  dialog=xbmcgui.Dialog()
  while True:
   value=status();healthy=value['settings'] in ('READY','NOT_CREATED')
-  state=lambda k:tr(39002 if value.get(k) else 39003) if healthy else tr(39004)
+  def state(source):
+   if not healthy:return tr(39004)
+   if value.get(source):
+    if source=='tmdb' and not value['token_valid']:return tr(39209)
+    return tr(39002) if value.get('images_enabled') else tr(39210)
+   return tr(39003)
   labels=['XMLTV: '+state('xmltv'),'TMDB: '+state('tmdb'),'TVMaze: '+state('tvmaze'),tr(39005),tr(39006),tr(39007),tr(39008),tr(39009),tr(39010),tr(39011),tr(39029),tr(rebuild_label),tr(36012)]
   action=select(dialog,tr(39000),labels,default='settings')
   if not isinstance(action,int) or not 0<=action<12:return

@@ -1,6 +1,9 @@
 """Proven same-source time corrections; caller owns the existing guide transaction."""
 def apply(db,pid,table,where,args,source,rank,cancel=lambda:False):
  if table!='xml_stage' or rank is None:return 0
+ if cancel():raise InterruptedError('CANCELLED')
+ if not db.execute('SELECT 1 FROM guide44_inputs WHERE pid=? AND source_id=? AND rank=? LIMIT 1',
+                   (pid,source,rank)).fetchone():return 0
  from epg_events import title_key
  selector=' WHERE '+where if where else ''
  candidates=[];used=set()
@@ -11,7 +14,7 @@ def apply(db,pid,table,where,args,source,rank,cancel=lambda:False):
   possible=[]
   for old in db.execute('''SELECT p.start,p.stop,p.title,p.description FROM programmes p JOIN guide44_inputs g
     ON g.pid=p.pid AND g.cid=p.cid AND g.start=p.start AND g.stop=p.stop
-    WHERE p.pid=? AND p.cid=? AND g.source_id=? AND p.source=? AND g.rank=? AND p.stop>? AND p.start<?''',(pid,cid,source,rank,rank,start,stop)):
+    WHERE p.pid=? AND p.cid=? AND g.source_id=? AND p.source=? AND g.rank=? AND p.stop>? AND p.start<? AND p.start BETWEEN ? AND ?''',(pid,cid,source,rank,rank,start,stop,start-900,start+900)):
    left,right,old_title,old_description=old
    overlap=max(0,min(stop,right)-max(start,left))
    if title_key(old_title)==title_key(title) and old_description.strip()==description.strip() and abs(start-left)<=900 and abs((stop-start)-(right-left))<=300 and overlap>=.8*max(stop-start,right-left):possible.append((left,right))
@@ -22,11 +25,14 @@ def apply(db,pid,table,where,args,source,rank,cancel=lambda:False):
  if not candidates:return 0
  # Refuse a correction that would overlap any unaffected committed programme.
  for cid,left,right,start,stop in candidates:
+  if cancel():raise InterruptedError('CANCELLED')
   for other_start,other_stop in db.execute('SELECT start,stop FROM programmes WHERE pid=? AND cid=? AND stop>? AND start<?',(pid,cid,start,stop)):
    if (cid,other_start,other_stop) not in used:return 0
- for i,one in enumerate(candidates):
-  for two in candidates[i+1:]:
-   if one[0]==two[0] and one[3]<two[4] and two[3]<one[4]:return 0
+ previous_cid=None
+ previous_stop=None
+ for cid,_,_,start,stop in sorted(candidates,key=lambda candidate:(candidate[0],candidate[3])):
+  if cid==previous_cid and start<previous_stop:return 0
+  previous_cid,previous_stop=cid,stop
  for cid,left,right,start,stop in candidates:
   if cancel():raise InterruptedError('CANCELLED')
   db.execute('UPDATE programmes SET start=?,stop=? WHERE pid=? AND cid=? AND start=? AND stop=?',(start,stop,pid,cid,left,right))

@@ -72,5 +72,17 @@ class SearchUI33(Fixture,unittest.TestCase):
         w.native(4);w.native(7);self.settle(w);self.assertEqual(w.mode,'detail')
         w.native(92);self.settle(w);self.assertEqual(w.mode,'search');self.assertIn(w.getFocusId(),w._valid_focus());self.assertFalse(self.builtins)
 
+    def test_rich_live_item_has_a_separate_line_for_following_epg_and_source(self):
+        import time
+        module=importlib.import_module('search_results')
+        with mock.patch.object(module,'tr',side_effect=lambda i: {35100:'Sender',35103:'Läuft jetzt',36032:'DANACH'}.get(i,'')):
+            row=dict(name='Kanal',kind='live',_now_title='Current',_now_start=60,_now_stop=3600,
+                     _next_title='Upcoming',_next_start=3600,_epg_source_name='XMLTV DE')
+            result=module.item(row,art={})
+        expected=time.strftime('%H:%M',time.localtime(3600))
+        self.assertIn('Current',result.getProperty('XCMate.SearchSecondary'))
+        self.assertIn(expected,result.getProperty('XCMate.SearchSecondary'))
+        self.assertEqual(result.getProperty('XCMate.SearchTertiary'),f'DANACH {expected} Upcoming · XMLTV DE')
+
 
 if __name__=='__main__':unittest.main()

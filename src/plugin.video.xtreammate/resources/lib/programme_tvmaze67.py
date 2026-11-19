@@ -7,7 +7,8 @@ def candidate84(event,cancel=lambda:False):
  genre=str(event.get('genre','')).casefold()
  classified=any(v in genre for v in ('serie','series','sitcom','episode')) or type(event.get('season')) is int and type(event.get('episode')) is int or __import__('programme_series84').known(event)
  if any(v in genre for v in ('news','nachricht','sport','talk','spielfilm','movie','film')) or not classified:return None
- from media_sources43 import get,SourceError
+ from media_sources43 import SourceError
+ from artwork_request100 import tvmaze as get
  from epg_events import title_key
  label=str(event.get('title',''))[:200];year=str(event.get('year') or '')
  if year and (not year.isdigit() or not 1880<=int(year)<=2100):raise SourceError('NO_MATCH')

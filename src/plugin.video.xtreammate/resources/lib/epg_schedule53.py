@@ -29,7 +29,7 @@ def plan(portal,now=None):
     if runs and runs[-1].get('code') in transient95 and now-runs[-1]['started']<900:return []
     if runs and runs[-1].get('code') in ('WAIT_ACTIVE_CATALOG','IMPORT_BUSY_OR_LOCK_UNAVAILABLE') and now-runs[-1]['started']<60:return []
     for source in configured(portal):
-        if not source['enabled']:continue
+        if not source['enabled'] or source['id']=='agent':continue
         events=[s for r in runs for s in r.get('sources',[]) if s.get('id')==source['id']]
         success=max([s.get('finished',0) for s in events if s.get('code') in SUCCESS]+[state.get(source['key'],{}).get('last_success',0),anchors.get(source['id'],0) if not events else 0])
         if success and now-success<period:continue
@@ -40,3 +40,11 @@ def plan(portal,now=None):
                 if attempts>=3 or now-last<(900 if attempts==1 else 3600):continue
         wanted.append(source['id'])
     return wanted
+
+
+AGENT_INTERVAL = 24 * 3600
+
+
+def agent_due(last_checked, now):
+    """The shared worker polls the private manifest at most once per day."""
+    return not last_checked or now < last_checked or now - last_checked >= AGENT_INTERVAL

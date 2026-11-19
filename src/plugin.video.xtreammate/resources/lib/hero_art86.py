@@ -6,12 +6,16 @@ def classify(value):
  width=value.get('image_width77',value.get('width',0));height=value.get('image_height77',value.get('height',0))
  if type(width) not in (int,float) or type(height) not in (int,float) or not math.isfinite(width+height) or height<=0:return None
  if value.get('provisional85'):return None
- if source in ('tmdb_movie','tmdb_series','tvmaze_series','user_local86') and role=='poster':
-  if width>=500 and height>=700 and .45<=width/height<=.85:return ('official_poster',2)
+ manual=value.get('manual85') or value.get('match')=='MANUAL_CONFIRMED'
+ if source in ('tmdb_movie','tmdb_series','tvmaze_series','user_local86','agent_tmdb','agent_tvmaze','agent_xmltv') and role=='poster':
+  if width>=500 and height>=700 and .45<=width/height<=.85:return ('official_poster',-1 if manual else 2)
   return None
- if width<960 or height<540 or not 1.3<=width/height<=2.5:return None
- if source in ('tmdb_movie','tmdb_series') and role=='backdrop':return ('hero_backdrop',0)
- if source in ('tmdb_episode','tvmaze_episode','xmltv_event','provider_event','user_local86') and role!='poster':return ('hero_backdrop',1)
+ if role=='thumb' or width<960 or height<540 or not 1.3<=width/height<=2.5:return None
+ if source in ('tmdb_movie','tmdb_series','agent_tmdb') and role=='backdrop':return ('hero_backdrop',-1 if manual else 0)
+ if source in ('agent_tmdb','agent_tvmaze','agent_xmltv') and role in ('backdrop','legacy_icon'):
+  return ('hero_backdrop',1)
+ if source in ('tmdb_episode','tvmaze_episode','xmltv_event','provider_event','user_local86') and role!='poster':
+  return ('hero_backdrop',-1 if manual else 1)
  return None
 def poster(candidate):
  if candidate.get('manual85') or candidate.get('match')=='MANUAL_CONFIRMED':return None

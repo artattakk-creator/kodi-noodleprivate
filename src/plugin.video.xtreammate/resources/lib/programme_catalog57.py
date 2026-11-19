@@ -40,7 +40,7 @@ def xcmate(event,cancel=lambda:False):
     if wanted=='unsupported':return None
     for group in (('vod',) if wanted=='movie' else ('series',) if wanted=='tv' else ('vod','series')):
         if cancel():raise Error('CANCELLED')
-        reader=MovieReader(event['pid'],kind=group)
+        reader=MovieReader(event['pid'],kind=group,home_filter=False)
         try:
             reader.groups(group)
             found=reader._query('''/* direct44 */ SELECT payload FROM readable_titles

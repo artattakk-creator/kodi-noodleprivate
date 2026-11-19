@@ -27,7 +27,7 @@ def model(portal,client,categories,streams):
     rows96=[dict(v,sid=str(v.get('stream_id',''))) for v in streams if isinstance(v,dict)]
     overrides96=__import__('logo_overrides96')
     scope96=overrides96.scope(portal);persistent96=__import__('artwork_config').persistent()
-    base96=__import__('logo_manifest86').read(portal,rows96,with_overrides=False)
+    base96=__import__('logo_manifest86').read(portal,rows96,with_overrides=False,with_agent=False)
     logos96=dict(base96,**overrides96.read(portal,rows96))
     for stream in streams:
         if not isinstance(stream,dict) or not stream.get('stream_id'):

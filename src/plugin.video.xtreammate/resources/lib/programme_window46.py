@@ -72,13 +72,17 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
    try:
     if not future.set_running_or_notify_cancel():return
     try:
-     from programme_events46 import load
+     from programme_events46 import load,source_name
      from media_art import local_art,request as request_logos
      value=load(self.portal,self.channel,self.selected)
+     value['_source_label100']=source_name(self.portal,value)
      value['_detail93']=True
      if self.selected and self.selected.get('_no_art_request68'):value['_no_art_request68']=True
      logos88=__import__('logo_manifest86').read(self.portal,[self.channel])
-     value['logo']=logos88.get(str(self.channel.get('sid')),local_art(self.channel)['thumb']);request_logos([self.channel])
+     verified_logo=logos88.get(str(self.channel.get('sid')),'')
+     value['logo']=verified_logo or local_art(self.channel)['thumb'];request_logos([self.channel])
+     if __import__('agent_programme100').typed(value):
+      value['_fallback499']=verified_logo or __import__('standard_hero100').image()
      from programme_art46 import cached
      from programme_requests68 import request
      value['_art68']=__import__('programme_preview67').shared(value) or cached(value)
@@ -98,7 +102,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
    def save88():
     try:
      if future88.set_running_or_notify_cancel():
-      try:future88.set_result(__import__('programme_actions88').toggle(event88,self._cancel.is_set))
+      try:future88.set_result(__import__('programme_actions88').bookmark(event88,self._cancel.is_set))
       except Exception:future88.set_exception(OSError('BOOKMARK_FAILED'))
     finally:_slots.release()
    try:threading.Thread(target=save88,name='XCMate-programme-bookmark88',daemon=True).start()
@@ -106,7 +110,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   if self._action88 is not None and self._action88.done():
    try:
     added88=self._action88.result();self.getControl(502).setLabel('Nicht mehr merken' if added88 else 'Sendung merken')
-    if added88 and self.event.get('start',0)<=time.time():xbmcgui.Dialog().notification('XCMate',__import__('localization').tr(37155))
+    if added88:xbmcgui.Dialog().notification('XCMate',tr(33116))
    except Exception:xbmcgui.Dialog().notification('XCMate','Merkliste konnte nicht gespeichert werden.')
    self._action88=None
   if getattr(self,'_series_menu85',False):
@@ -128,6 +132,8 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
     self._art68=self.event.pop('_art68',{})
     from programme_events46 import summary
     self.getControl(101).setLabel(self.event.get('title') or tr(36102));self.getControl(103).setText(summary(self.event))
+    source=self.event.get('_source_label100','')
+    self.getControl(109).setLabel(tr(32753)+' · '+source if source else '')
     from programme_assets47 import station_image
     logo=self.event.get('logo','');real=station_image(logo)
     self.getControl(111).setImage(logo if real else '');self.getControl(111).setVisible(real)
@@ -146,10 +152,12 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
    if art.get('source') in (None,'','placeholder'):
     from programme_requests68 import request
     request(self.event,priority=True)
-   signature=(art.get('image'),art.get('code'),art.get('source'),art.get('match'))
+   ready499=__import__('programme_image69').eligible(art,self.event)
+   image499=art.get('image') if ready499 else self.event.get('_fallback499','')
+   signature=(image499,art.get('code'),art.get('source'),art.get('match'))
    if signature!=self._art_signature:
-    self._art_signature=signature;self.getControl(110).setImage(art.get('image') if __import__('programme_image69').eligible(art,self.event) else '')
-    self.getControl(110).setVisible(__import__('programme_image69').eligible(art,self.event))
+    self._art_signature=signature;self.getControl(110).setImage(image499)
+    self.getControl(110).setVisible(bool(image499))
     from programme_pipeline77 import note
     note(self.event,'RENDER_CONTROL','IMAGE_REQUESTED' if __import__('programme_image69').eligible(art,self.event) else 'SOURCE_MISSING',control=110,visible=__import__('programme_image69').eligible(art,self.event))
     from programme_flow48 import trace
@@ -158,7 +166,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
     self.getControl(104).setLabel('' if __import__('programme_image69').eligible(art,self.event) else message(self.event,art))
     self.getControl(105).setText(str(art.get('attribution',''))[:500])
     self.getControl(108).setLabel(__import__('programme_actions88').rating(art))
-    self.getControl(130).setVisible(__import__('programme_image69').eligible(art,self.event) and str(art.get('source','')).startswith('tmdb'))
+    self.getControl(130).setVisible(__import__('programme_image69').eligible(art,self.event) and __import__('programme_actions88').tmdb_source(art.get('source')))
    text88,percent88=__import__('programme_actions88').timeline(self.event)
    if text88!=self._timeline88:self.getControl(107).setLabel(text88);self._timeline88=text88
    now=time.time();e=self.event;current=e.get('start',0)<=now<e.get('stop',0)
@@ -186,7 +194,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
  def onClick(self,cid):
   self._gui()
   if cid==501:self.close()
-  elif cid==502 and self.event:self._intent88='bookmark'
+  elif cid==502 and self.event and self._action88 is None:self._intent88='bookmark'
   elif cid==503 and not self._tune88 and not __import__('station_rows88').header(self.channel):self._tune88=True;self.close()
  def close(self):
   self._gui()

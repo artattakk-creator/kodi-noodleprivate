@@ -48,7 +48,8 @@ class Inventory95(Fixture,unittest.TestCase):
  def setUp(self):
   super().setUp();self.g=importlib.import_module('guide_store');self.g.connect().close();self.m=importlib.import_module('epg_inventory95')
  def seed(self,sources=2,each=3):
-  with sqlite3.connect(self.g.path()) as db:
+  from contextlib import closing
+  with closing(sqlite3.connect(self.g.path())) as db, db:
    for s in range(sources):db.executemany('INSERT INTO guide44_inputs VALUES(?,?,?,?,?,?,?,?)',(('p',str(s),'c'+str(i//1000),self.now+i*10,self.now+i*10+60,'SYNTHETIC','',s) for i in range(each)))
  def test_120000_stored_rows_are_read_in_indexed_source_pages(self):
   self.seed(each=60000);r=self.m.collect('p',self.g.path())
@@ -60,17 +61,44 @@ class Inventory95(Fixture,unittest.TestCase):
   self.seed();real=sqlite3.connect
   class Slow(sqlite3.Connection):
    def execute(self,sql,params=(),*args,**kw):
-    if sql.startswith('SELECT cid,start,stop') and len(params)>1 and params[1]=='0':time.sleep(.06)
+    if 'GROUP BY cid' in sql and len(params)>1 and params[1]=='0':time.sleep(.06)
     return super().execute(sql,params,*args,**kw)
   with mock.patch.object(sqlite3,'connect',side_effect=lambda *a,**kw:real(*a,**dict(kw,factory=Slow))):r=self.m.collect('p',self.g.path(),source_seconds=.04)
   self.assertEqual(r['code'],'PARTIAL');self.assertEqual(r['sources'][1]['code'],'READY');self.assertEqual(r['sources'][1]['programmes'],3)
+ def test_inventory_cancellation_does_not_cache_an_unread_result(self):
+  self.seed()
+  cancelled=self.m.collect('p',self.g.path(),cancel=lambda:True)
+  self.assertEqual(cancelled['code'],'INVENTORY_CANCELLED')
+  self.assertEqual(self.m.collect('p',self.g.path())['code'],'READY')
+
  def test_unchanged_inventory_is_cached_but_database_write_invalidates_it(self):
   self.seed();self.m.collect('p',self.g.path())
   with mock.patch.object(sqlite3,'connect',side_effect=AssertionError('UNCHANGED_RECOUNT')):self.assertEqual(self.m.collect('p',self.g.path())['sources'][0]['programmes'],3)
   with sqlite3.connect(self.g.path()) as db:db.execute('DELETE FROM guide44_inputs WHERE source_id=?',('0',))
   self.assertEqual(len(self.m.collect('p',self.g.path())['sources']),1)
+ def test_only_nonempty_wal_changes_inventory_generation(self):
+  path=self.folder/'inventory-token.sqlite'
+  path.write_bytes(b'DATABASE_FIXTURE')
+  wal=self.folder/'inventory-token.sqlite-wal'
+  before=self.m.token(str(path))
+  wal.touch()
+  self.assertEqual(self.m.token(str(path)),before)
+  wal.write_bytes(b'WAL_FIXTURE')
+  self.assertNotEqual(self.m.token(str(path)),before)
+  wal.unlink()
+  path.write_bytes(b'NEW_DATABASE_GENERATION')
+  self.assertNotEqual(self.m.token(str(path)),before)
+
  def test_busy_inventory_does_not_revoke_historical_verified_source(self):
   report=importlib.import_module('epg_report53');item=dict(id='provider',key='provider',name='Provider',rank=0,enabled=True)
   run=dict(sources=[dict(id='provider',code='READY',started=1,finished=2,verified=37,verified_first=100,verified_last=200)])
   with mock.patch.object(report,'statistics',return_value=dict(code='DB_BUSY',sources=[])),mock.patch.object(report,'configured',return_value=[item]),mock.patch.object(report,'history',return_value=[run]):rows=report.overview(self.portal)
   self.assertEqual(rows[0]['code'],'READY');self.assertEqual(rows[0]['saved']['programmes'],37);self.assertTrue(rows[0]['historical95']);self.assertEqual(rows[0]['inventory95'],'DB_BUSY')
+
+ def test_partial_historical_inventory_falls_back_to_independent_verified_count(self):
+  report=importlib.import_module('epg_report53')
+  item=dict(id='provider',key='provider',name='Provider',rank=0,enabled=True)
+  run=dict(sources=[dict(id='provider',code='READY',started=1,finished=2,verified=37,verified_channels=3,
+                         verified_first=100,verified_last=200,saved=dict(programmes=None,channels=None))])
+  with mock.patch.object(report,'statistics',return_value=dict(code='DB_BUSY',sources=[])),mock.patch.object(report,'configured',return_value=[item]),mock.patch.object(report,'history',return_value=[run]):rows=report.overview(self.portal)
+  self.assertEqual(rows[0]['saved'],dict(programmes=37,channels=3,first=100,last=200))

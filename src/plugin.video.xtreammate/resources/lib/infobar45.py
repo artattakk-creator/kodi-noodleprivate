@@ -1,5 +1,5 @@
 """Reference infobar presentation; never read player/network/EPG from the GUI."""
-import os,time
+import math,os,time
 from localization import tr
 
 
@@ -14,7 +14,7 @@ def _label(rect,text,font,color,alignment=0):
 def layout(width,height):
  s=min(width/1920.,height/1080.);dx=(width-1920*s)/2;dy=height-1080*s
  def box(x,y,w,h):return (round(dx+x*s),round(dy+y*s),max(1,round(w*s)),max(1,round(h*s)))
- return dict(scale=s,box=box,panel=box(26,670,1868,362),logo=box(78,720,208,138),name=box(78,874,240,44),date=box(78,923,242,34),clock=box(78,958,242,48),previous=box(378,720,994,45),badge_now=box(378,786,132,50),now=box(534,774,838,80),start=box(378,868,94,40),end=box(1301,868,91,40),track=box(477,880,796,16),badge_next=box(378,932,147,40),next=box(576,923,470,53),next_time=box(1050,934,325,34),left_sep=box(338,715,2,270),right_sep=box(1410,715,2,270))
+ return dict(scale=s,box=box,panel=box(26,670,1868,362),logo=box(78,720,208,138),name=box(78,874,240,44),date=box(78,923,242,34),clock=box(78,958,242,48),previous=box(378,720,994,45),badge_now=box(378,786,132,50),now=box(534,774,838,80),start=box(378,868,94,40),end=box(1301,868,91,40),remaining=box(1050,850,225,26),track=box(477,880,796,16),badge_next=box(378,932,147,40),next=box(576,923,470,53),next_time=box(1050,934,325,34),left_sep=box(338,715,2,270),right_sep=box(1410,715,2,270))
 
 
 def fonts(scale):
@@ -104,6 +104,7 @@ class InfoBar:
   self.now_badge=label('badge_now','badge','0xFF081A08',tr(36031));self.next_badge=label('badge_next','caption','0xFFD0D5D8',tr(36032))
   self.now=label('now','title');self.next=label('next','next');self.next_time=label('next_time','caption','0xFF9EA6AD')
   self.start=label('start','time');self.end=label('end','time');self.track=image('track','track');self.progress=image('track','progress')
+  self.remaining=label('remaining','caption','0xFFB9C2CC')
   x,y,w,h=g['track'];self.knob=xbmcgui.ControlImage(x,y-4,max(1,round(28*g['scale'])),max(1,round(28*g['scale'])),os.path.join(media,'infobar45','knob.png'));self.controls.append(self.knob)
   self.technology=Technology(owner,media,g,self.font)
   # Compatibility handles stay blank and hidden, never a duplicate info line.
@@ -119,6 +120,10 @@ class InfoBar:
   self.write(self.now,'setLabel',info.get('now') or 'Für diesen Sender keine EPG-Daten verfügbar')
   self.write(self.start,'setLabel',info.get('now_time','') if info.get('now') else '')
   self.write(self.end,'setLabel',info.get('now_end_time','') if info.get('now') else '')
+  remaining=info.get('remaining')
+  countdown=tr(35620,str(math.ceil(remaining/60))+' Min.') if info.get('now') and type(remaining) in (int,float) and math.isfinite(remaining) and remaining>0 else ''
+  self.write(self.remaining,'setLabel',countdown)
+  self.write(self.remaining,'setVisible',bool(countdown))
   self.write(self.next,'setLabel',info.get('next') or '—')
   times=' – '.join(v for v in (info.get('next_time',''),info.get('next_end_time','')) if v)
   self.write(self.next_time,'setLabel',times if info.get('next') else '')

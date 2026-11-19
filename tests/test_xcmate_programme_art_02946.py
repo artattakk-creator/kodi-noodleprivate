@@ -3,6 +3,7 @@ import importlib,io,json,sys,time,unittest
 from pathlib import Path
 from unittest import mock
 from xcmate027_fixture import Fixture
+from artwork_request100_fixture import isolated_metadata
 
 class ProgrammeArt46(Fixture,unittest.TestCase):
  def setUp(self):
@@ -78,8 +79,10 @@ class ProgrammeArt46(Fixture,unittest.TestCase):
   search=dict(total_pages=1,total_results=1,results=[dict(id=42,name=event['title'],first_air_date='2024-01-01')])
   wrong=dict(id=42004,season_number=2,episode_number=4,name='Exact episode',still_path='/wrong.jpg')
   right=dict(id=42003,season_number=2,episode_number=3,name='Exact episode',still_path='/correct.jpg')
-  with mock.patch('media_sources43.tmdb_token',return_value='synthetic'),mock.patch('media_sources43.get',side_effect=[search,wrong]):self.assertIsNone(self.m.candidate(event))
-  with mock.patch('media_sources43.tmdb_token',return_value='synthetic'),mock.patch('media_sources43.get',side_effect=[search,right]):self.assertEqual(self.m.candidate(event)['match'],'EXACT_SEASON_EPISODE')
+  with isolated_metadata(),mock.patch('media_sources43.tmdb_token',return_value='synthetic'),mock.patch('media_sources43.get',side_effect=[search,wrong]) as get:self.assertIsNone(self.m.candidate(event))
+  self.assertEqual(get.call_count,2)
+  with isolated_metadata(),mock.patch('media_sources43.tmdb_token',return_value='synthetic'),mock.patch('media_sources43.get',side_effect=[search,right]) as get:self.assertEqual(self.m.candidate(event)['match'],'EXACT_SEASON_EPISODE')
+  self.assertEqual(get.call_count,2)
  def test_news_talk_or_unknown_year_never_become_arbitrary_movie(self):
   self.options['programme_tmdb46']='true'
   for extra in [dict(genre='News'),dict(genre='Talkshow'),dict(genre='Film')]:

@@ -1,5 +1,6 @@
 """Reject explicit region, SD/HD and +1 conflicts in automatic name proofs."""
 import re
+import unicodedata
 
 
 def compatible(provider_name,provider_id,source_name,source_id):
@@ -11,3 +12,13 @@ def compatible(provider_name,provider_id,source_name,source_id):
         return shift,quality,country
     a,b=variants(provider_name,provider_id),variants(source_name,source_id)
     return a[0]==b[0] and all(x is None or y is None or x==y for x,y in zip(a[1:],b[1:]))
+
+
+def channel_name_key(value):
+    """Conservative exact-name comparison; no uncertain title mapping."""
+    value = unicodedata.normalize('NFKD', str(value or '')).casefold()
+    # Strip country only with a separator; keep meaningful variants/regions.
+    value = re.sub(r'^\s*(?:de|ger|germany|deutschland|at|aut|ch|sui|nl)\s*[|:–-]\s*', '', value)
+    suffix=r'(?:uhd|fhd|hd|sd|4k|hevc|avc|h[. ]?26[45]|x26[45])'
+    value = re.sub(r'(?:[\s|:()\[\]-]+'+suffix+r')+[\s)\]]*$', '', value)
+    return re.sub(r'[^a-z0-9]+', '', value)

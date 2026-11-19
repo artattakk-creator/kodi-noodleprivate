@@ -61,3 +61,40 @@ class EpgSearch30Tests(Fixture,unittest.TestCase):
 
 
 if __name__=='__main__':unittest.main()
+
+class RichLiveSearch100(Fixture,unittest.TestCase):
+    def search(self,query):
+        return importlib.import_module('search_data').search(self.portal,query,kind='live',now=self.now)['live']
+
+    def test_sqlite_hit_publishes_current_interval_following_event_and_actual_source(self):
+        guide=importlib.import_module('guide_store')
+        now=self.now
+        guide.import_cache('p',{'xml':[
+            dict(channel='xml',name='Upload',start_timestamp=now-60,stop_timestamp=now+60),
+            dict(channel='xml',name='Overlap',start_timestamp=now+30,stop_timestamp=now+50),
+            dict(channel='xml',name='Following',start_timestamp=now+60,stop_timestamp=now+120),
+        ]},now=now,trusted_feed=True)
+        row=self.search('Upload')['rows'][0]
+        self.assertEqual((row['_now_start'],row['_now_stop']),(now-60,now+60))
+        self.assertEqual((row['_next_title'],row['_next_start']),('Following',now+60))
+        self.assertEqual(row['_epg_source'],'provider')
+
+    def test_cached_provider_epg_exposes_next_without_an_external_request(self):
+        now=self.now
+        name=self.client._cache_key('get_short_epg',dict(stream_id='1',limit=4))+'.json'
+        (self.folder/name).write_text('{}')
+        self.details['get_short_epg']={'epg_listings':[
+            dict(title='Upload',start_timestamp=now-60,stop_timestamp=now+60),
+            dict(title='Next cached',start_timestamp=now+60,stop_timestamp=now+180),
+        ]}
+        row=self.search('Upload')['rows'][0]
+        self.assertEqual((row['_next_title'],row['_epg_source']),('Next cached','provider'))
+        self.assertTrue(all(call.kwargs['cached_only'] for call in self.client._get_json.call_args_list))
+
+    def test_saved_source_binding_wins_over_same_id_in_published_merged_feed(self):
+        from test_xcmate_issue474_views import SourceViews474
+        fixture=SourceViews474(methodName='runTest');fixture.setUp();self.addCleanup(fixture.doCleanups)
+        search=importlib.import_module('search_data').search
+        result=search(fixture.portal,'Source 2',kind='live',now=fixture.now)['live']
+        self.assertEqual([row['sid'] for row in result['rows']],['2'])
+        self.assertEqual(result['rows'][0]['_epg_source'],fixture.bid)

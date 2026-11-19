@@ -8,7 +8,10 @@ ACTIVE={'QUEUED','RUNNING','CANCELLING'}
 TERMINAL={'DONE','PARTIAL','FAILED','CANCELLED','INTERRUPTED','SERVICE_NOT_CONFIRMED'}
 FAILURES={'DNS_FAILED','TLS_FAILED','DOWNLOAD_TIMEOUT','PARSE_TIMEOUT','DOWNLOAD_FAILED','PARSE_FAILED','HTTP_COMPRESSION_FAILED','GZIP_INVALID','INVALID_XMLTV','XMLTV_UNSAFE_DECLARATION','NO_CHANNEL_MATCH','EMPTY_GUIDE','SQLITE_BUSY','SQLITE_FULL','SQLITE_IO','SQLITE_ERROR','SQLITE_CANCELLED','RESERVE_BLOCKED','EPG_READBACK_MISMATCH','EPG_READBACK_REVISION_CHANGED','SOURCE_UNAVAILABLE','BACKUP_REQUIRED','CANCELLED'}
 PHASES={'QUEUED','DOWNLOAD','PARSE','MATCHING','STAGING','COMMIT','READBACK','CLEANUP','DONE','FAILED','CANCELLED','WAIT_CATALOG'}
-COUNTERS={'bytes','total_bytes','channels','programmes','matched','staged','committed','verified','source_index','sources','free_before','free_after','raw_deleted_bytes','first','last'}
+# Only phases that publish continuing work can support a telemetry-gap warning.
+# A SQLite transaction or final batch can be active without intermediate proof.
+PROGRESS_LIMITS={'DOWNLOAD':45,'PARSE':90,'READBACK':90}
+COUNTERS={'bytes','total_bytes','channels','programmes','matched','staged','committed','verified','source_index','sources','free_before','free_after','raw_deleted_bytes','first','last','matched_channels','selected_streams','staged_channels','committed_channels','verified_channels','readback_rows'}
 
 
 def path(pid):
@@ -62,13 +65,14 @@ def write(pid,value):
         if temp:os.unlink(temp)
 
 
-def request(pid,force=False):
+def request(pid,force=False,exclusive=False):
     with locked(pid):
         old=read(pid);now=time.time()
         if old.get('state') in ACTIVE:
             # A queued request is reusable until the worker confirms it or the
             # explicit confirmation deadline expires; never spawn duplicates.
-            if old['state']!='QUEUED' or now-old.get('requested',0)<=15:return old
+            if old['state']!='QUEUED' or now-old.get('requested',0)<=15:
+                return None if exclusive else old
         value=dict(version=1,id=uuid.uuid4().hex,state='QUEUED',requested=now,force=bool(force),cancel=False,phase='QUEUED',sources={})
         write(pid,value);return value
 
@@ -84,7 +88,7 @@ def acknowledge(pid,identity):
 
 
 def observe(pid,identity,key,phase,**counts):
-    if phase not in PHASES or not (key in ('refresh','provider') or re.fullmatch('[a-f0-9]{24}',key)):raise ValueError('EPG_STATUS_INVALID')
+    if phase not in PHASES or not (key in ('refresh','provider','agent') or re.fullmatch('[a-f0-9]{24}',key)):raise ValueError('EPG_STATUS_INVALID')
     safe={k:int(v) for k,v in counts.items() if k in COUNTERS and isinstance(v,(int,float)) and 0<=v<=2**63-1}
     if counts.get('error_code') in FAILURES:safe['error_code']=counts['error_code']
     with locked(pid):
@@ -98,13 +102,33 @@ def observe(pid,identity,key,phase,**counts):
             row['phase_started']=now
             row.setdefault('phases',{})[phase]=dict(at=now)
         if key not in rows and len(rows)>=128:return False
-        rows[key]=row;value.update(phase=phase,source=key)
-        write(pid,value);return True
+        if changed or value.get('source')!=key or value.get('phase')!=phase:
+            rows[key]=row;value.update(phase=phase,source=key)
+            write(pid,value)
+        return True
 
 
 def cancelled(pid,identity):
     value=read(pid)
     return value.get('id')!=identity or bool(value.get('cancel'))
+
+
+def cancel_reader(pid,identity):
+    """Cooperative worker poll with a fresh check at transactional boundaries."""
+    next_read=0
+    stopped=False
+
+    def check(force=False):
+        nonlocal next_read,stopped
+        if stopped:
+            return True
+        now=time.monotonic()
+        if force or now>=next_read:
+            next_read=now+.1
+            stopped=cancelled(pid,identity)
+        return stopped
+
+    return check
 
 
 def cancel(pid,identity):
@@ -131,8 +155,12 @@ def snapshot(pid,now=None):
     if value['state']=='QUEUED' and now-value['requested']>15:value['state']='SERVICE_NOT_CONFIRMED'
     value['stalled']=False
     if value['state']=='RUNNING':
-        phase=value.get('phase');limit={'DOWNLOAD':45,'PARSE':90,'MATCHING':90,'STAGING':90,'COMMIT':30,'READBACK':90,'CLEANUP':30}.get(phase,90)
-        value['stalled']=now-value.get('progress',value.get('ack',now))>limit
+        source=value.get('sources',{}).get(value.get('source'),{})
+        limit=PROGRESS_LIMITS.get(source.get('phase'))
+        observed=source.get('progress')
+        if observed is not None:
+            value['progress_age']=max(0,int(now-observed))
+            value['stalled']=bool(limit and value['progress_age']>limit)
     return value
 
 

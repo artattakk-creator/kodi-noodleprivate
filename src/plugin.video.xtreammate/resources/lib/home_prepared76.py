@@ -3,7 +3,7 @@ import os
 
 def proof(portal,kind,rows):
     if kind not in ('vod','series') or not isinstance(rows,list):return None
-    if __import__('artwork_display84').enabled():
+    if not rows or __import__('artwork_display84').enabled():
         result84=__import__('widget_readonly56').proof84(portal,kind,rows)
         if result84 is not None:return result84
     from widget_refresh45 import read

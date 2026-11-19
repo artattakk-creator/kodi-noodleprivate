@@ -126,5 +126,9 @@ class Capacity69(Fixture,unittest.TestCase):
    art=resolve(event,allow_lookup=True,url_mode69=True,match=lambda *a,**kw:found,check=mock.Mock())
   key=event['key'];monitor=types.SimpleNamespace(abortRequested=mock.Mock(side_effect=[False,True]),waitForAbort=lambda timeout:False)
   with mock.patch('xbmc.Monitor',return_value=monitor),mock.patch.dict(preview._wanted,{'test69':(key,self.portal,dict(sid='1',name='Synthetic'),event)},clear=True),mock.patch.dict(preview._done,{'test69':(key,{})},clear=True),mock.patch('programme_art46.cached',return_value=art) as cached,mock.patch('programme_requests68.result',return_value=art):
-   preview._work();self.assertEqual(cached.call_args.args[0],event)
+   preview._work()
+   preview_event=cached.call_args.args[0]
+   self.assertEqual(preview_event,dict(event,_detail93=True))
+   self.assertNotIn('_detail93',event)
+   self.assertEqual(__import__('agent_programme100').view(preview_event),'details')
    self.assertEqual(preview._done['test69'][1]['image'],art['image'])

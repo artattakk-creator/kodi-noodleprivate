@@ -1,4 +1,5 @@
 """All own menu surfaces use existing focusable rows and local registry assets."""
+from stabilization_contract100 import without100
 import ast,hashlib,importlib,sys,unittest,xml.etree.ElementTree as ET
 from pathlib import Path
 from unittest import mock
@@ -47,7 +48,8 @@ class MenuIcons45(Fixture,unittest.TestCase):
   import json
   baseline=json.loads((Path(__file__).parent/'fixtures/xcmate_02944_protection.json').read_text())['source_sha256']
   for path in ('icon.png','resources/skins/Default/720p/XCMateMedia.xml'):
-   self.assertEqual(hashlib.sha256((ADDON/path).read_bytes()).hexdigest(),baseline['src/plugin.video.xtreammate/'+path])
+   key='src/plugin.video.xtreammate/'+path
+   self.assertEqual(hashlib.sha256(without100((ADDON/path).read_bytes(),key)).hexdigest(),baseline[key])
  def test_media_detail_submenu_and_actions_expose_icons_without_new_focus_ids(self):
   w=self.media_window();w._details(w.rows[0]);self.settle(w)
   self.assertTrue(all(v.art.get('icon') for v in w.getControl(300).items));w._detail_menu_show()

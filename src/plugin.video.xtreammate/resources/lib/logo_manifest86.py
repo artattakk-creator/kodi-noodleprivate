@@ -43,7 +43,7 @@ def load(portal,all_records=False):
   records=data.get('records',{});scope=context(portal)
   return {k:copy.deepcopy(v) for k,v in records.items() if isinstance(v,dict) and (all_records or v.get('context')==scope)} if isinstance(records,dict) and len(records)<=512 else {}
  except (OSError,ValueError,TypeError,AttributeError):return {}
-def read(portal,rows,with_fallback=True,with_overrides=True):
+def read(portal,rows,with_fallback=True,with_overrides=True,with_agent=True):
  # Publish the own verified batch first. Cold legacy Kodi recovery is useful
  # for misses only; never repeat it for 88 already persisted station icons.
  records=load(portal,all_records=True);stable={v.get('stable89'):v for v in records.values() if v.get('stable89')}
@@ -65,6 +65,9 @@ def read(portal,rows,with_fallback=True,with_overrides=True):
  from widget_refs74 import revoked
  missing=[r for r in rows if str(r['sid']) not in result and not revoked(source(r))]
  if missing:result.update(_legacy_read90(portal,missing,with_fallback))
+ if with_agent:
+  missing=[row for row in rows if str(row['sid']) not in result]
+  if missing:result.update(__import__('agent_logos100').read(portal,missing))
  # A station choice survives provider URL, EPG and group revisions.
  if with_overrides:result.update(__import__('logo_overrides96').read(portal,rows))
  __import__('startup_diag90').note('LOCAL_HIT',count=len(result),total=len(rows))

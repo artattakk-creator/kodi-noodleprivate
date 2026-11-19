@@ -6,6 +6,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 import warnings
 import zipfile
 
@@ -19,6 +20,12 @@ class Release99(unittest.TestCase):
         self.assertIsNotNone(importlib.util.find_spec('release_candidate99'),
                              'Missing review-only .99 packaging contract')
         import release_candidate99
+        import release_candidate98
+        from stabilization_contract100 import snapshot99
+        for module in (release_candidate99, release_candidate98):
+            patch = mock.patch.object(module, "ROOT", snapshot99())
+            patch.start()
+            self.addCleanup(patch.stop)
         return release_candidate99
 
     def test_build_is_byte_reproducible_and_installable(self):
@@ -42,12 +49,13 @@ class Release99(unittest.TestCase):
             with zipfile.ZipFile(archive) as zipped:
                 self.assertIsNone(zipped.testzip())
                 self.assertEqual(zipped.read('plugin.video.xtreammate/addon.xml'),
-                                 (ROOT / 'src/plugin.video.xtreammate/addon.xml').read_bytes())
+                                 (candidate.ROOT / 'src/plugin.video.xtreammate/addon.xml').read_bytes())
 
     def test_rejects_release_destinations_and_output_links(self):
         candidate = self.contract()
-        for destination in (ROOT.parent, ROOT, ROOT / 'online-test', ROOT / 'src',
-                            ROOT / 'docs/XCMate/test-builds/02998'):
+        root = candidate.ROOT
+        for destination in (root.parent, root, root / 'online-test', root / 'src',
+                            root / 'docs/XCMate/test-builds/02998'):
             with self.subTest(destination=destination):
                 with self.assertRaisesRegex(ValueError, 'RC99_OUTPUT'):
                     candidate.stage(destination)
@@ -124,7 +132,8 @@ class Release99(unittest.TestCase):
         from stabilization_contract99 import baseline_runtime, current_runtime, delta99
         from stabilization_contract99 import digest, runtime_without99, without99
 
-        original, current = baseline_runtime(), current_runtime()
+        from stabilization_contract100 import runtime_without100
+        original, current = baseline_runtime(), runtime_without100(current_runtime())
         delta = delta99()
         self.assertEqual(delta['base'], BASE)
         self.assertEqual(set(current), set(original) | set(delta['added']))

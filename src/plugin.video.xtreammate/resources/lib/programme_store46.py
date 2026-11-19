@@ -4,7 +4,7 @@ Only metadata from a successfully committed source generation is published.
 Readers require the exact canonical channel, interval, title and source rank.
 Failures in this bounded cache cannot fail or modify the authoritative guide.
 """
-import hashlib,json,os,sqlite3,time
+import hashlib,json,os,re,sqlite3,time
 from urllib.parse import quote
 MAX_BYTES=32*1024*1024
 
@@ -17,9 +17,23 @@ def title_hash(title):
  from epg_events import title_key
  return hashlib.sha256(title_key(title).encode()).hexdigest()
 
+def age_rating(event):
+ raw=str(event.get('age_rating') or event.get('rating') or '').strip().upper()
+ system=str(event.get('rating_system') or '').strip().upper()
+ fsk=re.fullmatch(r'(?:FSK[ -]*)?(0|6|12|16|18)',raw)
+ if fsk and (system=='FSK' or raw.startswith('FSK')):return 'FSK '+fsk.group(1)
+ if re.fullmatch(r'TV-(?:Y|Y7|Y7-FV|G|PG|14|MA)',raw):return raw
+ if system in ('BBFC','MPAA','MPA') and raw in ('U','PG','12','12A','15','18','R18','G','PG-13','R','NC-17'):
+  return system+' '+raw
+ if re.fullmatch(r'(?:BBFC|MPAA|MPA) (?:U|PG|12|12A|15|18|R18|G|PG-13|R|NC-17)',raw):return raw
+ return ''
+
 def metadata(event):
  """Bounded source facts, no title/description replacement or network calls."""
  result={}
+ if isinstance(event.get('agent_art'),dict):result['agent_art']=event['agent_art']
+ rating=age_rating(event)
+ if rating:result['age_rating']=rating
  country=event.get('country')
  if isinstance(country,str):country={'UK':'GB','United Kingdom':'GB','Großbritannien':'GB','United States':'US','USA':'US','Deutschland':'DE'}.get(country.strip(),country)
  if isinstance(country,str) and __import__('re').fullmatch('[A-Za-z]{2}',country.strip()):result['country']=country.strip().upper()
@@ -87,7 +101,7 @@ class Stage:
   value['epg_source46']=__import__('guide_publish44').source_id(self.source_records.get(source,{}),source) if self.source_records is not None else self.source_identity
   value['epg_text46']=hashlib.sha256(str(event.get('descr') or event.get('description') or '')[:4096].encode()).hexdigest()
   self.facts46.add(event,value,value['epg_source46'])
-  if self.failed or len(value)==2:return
+  if self.failed or len(value)==2 or self.source_identity=='agent':return
   try:
    self.rows.append((self.generation,self.pid,str(event.get('channel') or event.get('cid') or ''),int(event.get('start_timestamp',event.get('start',0))),int(event.get('stop_timestamp',event.get('stop',0))),title_hash(event.get('name') or event.get('title')),int(event.get('_source_index',self.source)),json.dumps(value,ensure_ascii=False)))
    if len(self.rows)>=128:self.flush()

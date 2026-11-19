@@ -102,6 +102,7 @@ class IdentityTests(unittest.TestCase):
         player.play_stream=mock.Mock()
         with mock.patch.dict(sys.modules,dict(portals=portals,xtream=xtream,live_overlay=live,
                                              live_recovery=self.r,player=player,
+                                             live_exit=types.SimpleNamespace(_trace=lambda *args:None),
                                              play_intent=types.SimpleNamespace(before_play=lambda session:True))):
             namespace['_play_live'](types.SimpleNamespace(_params={
                 'url':self.client.live_stream_url('17','ts'),'sid':'999'},_handle=1))
@@ -298,10 +299,13 @@ class RefreshJobTests(unittest.TestCase):
         tree=ast.parse((LIB/'epg.py').read_text())
         nodes=[n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name in ('request_refresh','poll_refresh_request')]
         started=[]
-        ns=dict(json=json,time=time,_LAST_REFRESH_REQUEST='',_WARMUP_THREADS={},diagnostic=lambda *a,**kw:None,
+        ns=dict(json=json,time=time,_LAST_REFRESH_REQUEST='',_WARMUP_THREADS={},_REFRESH_LOCK=threading.Lock(),
+                diagnostic=lambda *a,**kw:None,
                 warmup_async=lambda *a,**kw:started.append((a,kw)))
         exec(compile(ast.Module(body=nodes,type_ignores=[]),'epg jobs','exec'),ns)
-        with tempfile.TemporaryDirectory() as profile94,mock.patch.dict(sys.modules,dict(utils=types.SimpleNamespace(addon_data_dir=lambda:profile94),xbmcgui=gui,portals=portals,guide_store=types.SimpleNamespace(path=lambda:'/fixture/missing-guide.sqlite'),guide_publish44=types.SimpleNamespace(access=lambda _: 'NOT_CREATED'))):
+        with tempfile.TemporaryDirectory() as profile94, mock.patch.object(sys, 'path', [str(LIB), *sys.path]), mock.patch.dict(sys.modules, dict(
+                utils=types.SimpleNamespace(addon_data_dir=lambda:profile94), xbmcgui=gui, portals=portals,
+                guide_store=types.SimpleNamespace(path=lambda:str(Path(profile94) / 'missing-guide.sqlite')))):
             ns['request_refresh']('p',{'id':'p'},force=True)
             self.assertEqual(started,[])
             ns['poll_refresh_request']();ns['poll_refresh_request']()

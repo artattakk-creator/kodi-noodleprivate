@@ -49,14 +49,16 @@ def prepare(portals):
   with _lock:_plan=None
   return
  checked={}
- def enabled(addon):
+ def details(addon):
   if addon not in checked:
    try:
-    reply=json.loads(xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=438,method='Addons.GetAddonDetails',params=dict(addonid=addon,properties=['enabled'])))))
-    checked[addon]=reply.get('result',{}).get('addon',{}).get('enabled') is True
-   except (ValueError,TypeError,RuntimeError):checked[addon]=False
+    query=dict(jsonrpc='2.0',id=438,method='Addons.GetAddonDetails',params=dict(addonid=addon,properties=['enabled','version']))
+    reply=json.loads(xbmc.executeJSONRPC(json.dumps(query)))
+    checked[addon]=reply.get('result',{}).get('addon',{})
+   except (AttributeError,RuntimeError,ValueError,TypeError):checked[addon]={}
   return checked[addon]
- plan=discover(profile,selected['id'],enabled,dict(reloads).get)
+ plan=discover(profile,selected['id'],lambda addon:details(addon).get('enabled') is True,dict(reloads).get,
+               version=lambda addon:details(addon).get('version',''))
  if plan['code']!='READY':return
  plan.update(binding=binding,scope=(str(profile),str(selected['id'])),profile_scope=__import__('epg_handoff63').profile_scope())
  with _lock:_plan=plan;_stamp=stamp

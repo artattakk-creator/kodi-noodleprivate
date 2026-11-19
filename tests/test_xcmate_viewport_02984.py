@@ -13,11 +13,11 @@ class Viewport84(Fixture,unittest.TestCase):
   rows=[dict(sid=str(i),name='Synthetic '+str(i)) for i in range(8)];focus={'sid':'0','left':0}
   def event(portal,row,info):return dict(pid=portal['id'],sid=row['sid'],key='event-'+row['sid'],title='Synthetic',start=self.now-10,stop=self.now+1000,placeholder='/not-a-real-picture')
   with mock.patch('programme_urls55.enqueue',new=q.enqueue),mock.patch('home_schedule75.applicable',return_value=True),mock.patch('home_schedule75.rest_allowed',return_value=True),mock.patch('home_schedule75.visible_position',side_effect=lambda *a:focus['left']),mock.patch('hero_epg63.focused64',side_effect=lambda *a:focus['sid']),mock.patch('epg_coverage66.warm'),mock.patch('local_epg.now_next',return_value={}),mock.patch('programme_events46.from_info',side_effect=event),mock.patch('programme_index46.publish'),mock.patch('epg_snapshot75.checkpoint'):
-   work.prepare(self.portal,rows);self.assertEqual(set(q._queue),{'event-'+str(i) for i in range(5)})
+   work.prepare(self.portal,rows);self.assertEqual({job[0]['key'] for job in q._queue.values()},{'event-'+str(i) for i in range(5)})
    focus.update(sid='5',left=1);work._next.clear();work.prepare(self.portal,rows)
-   self.assertEqual(set(q._queue),{'event-'+str(i) for i in range(6)})
+   self.assertEqual({job[0]['key'] for job in q._queue.values()},{'event-'+str(i) for i in range(6)})
    focus.update(sid='0',left=0);work._next.clear();work.prepare(self.portal,rows)
-   self.assertEqual(len(q._queue),6);self.assertEqual(next(iter(q._queue)),'event-0')
+   self.assertEqual(len(q._queue),6);self.assertEqual(next(iter(q._queue.values()))[0]['key'],'event-0')
    self.assertLessEqual(len(q._pending),24)
  def test_pressure_flush_never_retries_optional_sqlite_write_on_each_poll(self):
   import programme_session69
