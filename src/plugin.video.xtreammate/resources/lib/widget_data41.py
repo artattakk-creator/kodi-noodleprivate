@@ -11,8 +11,9 @@ MAX_BYTES=8*1024*1024
 _last_trace46={}
 
 class WidgetReader(Reader):
-    def __init__(self,pid,seconds=.75):
+    def __init__(self,pid,seconds=.75,*,home_filter=True):
         super().__init__(pid,timeout=.05,query_seconds=.25);self.until=time.monotonic()+seconds
+        self._home_filter44=home_filter
         self._home_blocked44=set()
     def _query(self,sql,args=(),kind=None):
         db=None

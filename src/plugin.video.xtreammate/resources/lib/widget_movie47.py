@@ -29,8 +29,8 @@ def cold_read(portal):
 
 
 class MovieReader(WidgetReader):
-    def __init__(self,pid,filename=None,kind='vod'):
-        super().__init__(pid)
+    def __init__(self,pid,filename=None,kind='vod',*,home_filter=True):
+        super().__init__(pid,home_filter=home_filter)
         self.filename=filename
         self.kind47=kind
         self._connection47=None

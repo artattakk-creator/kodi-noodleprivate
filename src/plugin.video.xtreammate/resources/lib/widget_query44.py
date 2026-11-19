@@ -12,7 +12,7 @@ def groups(reader,kind):
         from group_selection import enabled_ids
         rows=reader._query('SELECT * FROM groups WHERE pid=? AND kind=? ORDER BY ordinal',(reader.pid,kind))
         allowed=enabled_ids(reader.pid,kind,[dict(category_id=g['cid']) for g in rows])
-        if kind=='vod':
+        if kind=='vod' and reader._home_filter44:
             from home_filter92 import selected
             chosen=selected(reader.pid)
             if chosen is not None:

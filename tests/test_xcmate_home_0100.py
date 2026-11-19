@@ -168,3 +168,18 @@ class HomeGroupPolicy(Fixture, unittest.TestCase):
         self.assertEqual(updated['ready76']['vod']['p']['count'], 0)
         self.assertEqual(updated['phase'], 3)
         self.assertFalse(Path(filename).exists())
+
+    def test_home_filter_does_not_hide_exact_film_from_local_epg_artwork_lookup(self):
+        from home_filter92 import save
+        from library_index import import_group
+        from programme_catalog57 import xcmate
+        self.seed_groups()
+        cover = 'https://image.tmdb.org/t/p/w500/SYNTHETIC_EXACT_FILM.jpg'
+        film = dict(self.movie('exact', 'films', 2), name='Exact Film', year=2002, stream_icon=cover)
+        import_group('p', 'vod', 'films', [film])
+        save('p', [])
+
+        self.assertEqual(self.widget_ids(), [])
+        match = xcmate(dict(pid='p', title='Exact Film', year=2002, genre='Spielfilm'))
+        self.assertIsNotNone(match)
+        self.assertEqual(match['url'], cover)
