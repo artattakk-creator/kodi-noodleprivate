@@ -4,6 +4,7 @@ Standalone testable transport, to be wired into XCMate's worker and stream_epg
 import path. A read-only PAT is supplied only by a private installer build step.
 """
 import gzip
+from datetime import datetime
 import hashlib
 import io
 import json
@@ -109,6 +110,12 @@ def _manifest(raw):
         return m
     if state != 'PRIVATE_READY':
         raise EPGAgentError('MANIFEST_INVALID')
+    try:
+        created = datetime.fromisoformat(m['generated_at_utc'].replace('Z', '+00:00'))
+        if created.tzinfo is None:
+            raise ValueError('timezone missing')
+    except (KeyError, AttributeError, ValueError, TypeError):
+        raise EPGAgentError('MANIFEST_INVALID') from None
     if not isinstance(m.get('sha256'), str) or not re.fullmatch('[a-f0-9]{64}', m['sha256']):
         raise EPGAgentError('MANIFEST_INVALID')
     if not isinstance(m.get('bytes'), int) or isinstance(m['bytes'], bool) or not 1 <= m['bytes'] <= MAX_GZIP_BYTES:
