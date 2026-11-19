@@ -1,0 +1,40 @@
+name: XCMate Agent Framework Preflight (review only)
+
+on:
+  pull_request:
+    paths:
+      - "AGENTS.md"
+      - ".github/PULL_REQUEST_TEMPLATE/agent_change.md"
+      - ".github/workflows/xcmate-agent-preflight.yml"
+      - "docs/agents/**"
+      - "docs/superpowers/**"
+      - "tools/agent_framework/**"
+      - "tests/test_agent_framework_preflight.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: xcmate-agent-preflight-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  review-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact review commit
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Test offline metadata preflight
+        run: python -m unittest discover -s tests -p 'test_agent_framework_preflight.py' -v
+      - name: Validate synthetic example (not a real test build)
+        run: python tools/agent_framework/preflight.py --manifest docs/agents/examples/review-only.json
+      - name: State explicit non-activation
+        run: echo 'REVIEW_ONLY, NO_API_JOBS, ANDROID_NOT_RUN, NO_RELEASE'

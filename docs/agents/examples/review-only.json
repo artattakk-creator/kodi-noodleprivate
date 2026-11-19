@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "issue": 470,
+  "branch": "agent/xcmate-review-example",
+  "commit_sha": "1111111111111111111111111111111111111111",
+  "zip_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+  "tests": {
+    "host": "PASS",
+    "kodi_sim": "PASS"
+  },
+  "android": {
+    "status": "NOT_RUN"
+  },
+  "approval": {
+    "merge": false,
+    "release": false
+  }
+}

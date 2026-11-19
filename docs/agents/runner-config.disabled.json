@@ -1,0 +1,36 @@
+{
+  "purpose": "Template only; not used by a running service",
+  "enabled": false,
+  "repository": "artattakk-creator/kodi-noodleprivate",
+  "codex_runner": {
+    "enabled": false,
+    "trigger": "manual_dispatch_only",
+    "allow_issue_label_autostart": false,
+    "branch_prefix": "agent/",
+    "max_concurrent_jobs": 1,
+    "max_steps_per_job": 0,
+    "max_api_cost_usd_per_job": 0,
+    "max_api_cost_usd_per_month": 0,
+    "secrets_provider": "NOT_CONFIGURED",
+    "openai_model": "NOT_SELECTED"
+  },
+  "work": {
+    "pr_monitoring_enabled": false,
+    "require_account_trigger_setup": true
+  },
+  "google_drive": {
+    "logs_access_enabled": false,
+    "redact_before_publication": true
+  },
+  "android": {
+    "automation_enabled": false,
+    "allow_adb_internet": false,
+    "initial_status": "NOT_RUN"
+  },
+  "approvals": {
+    "auto_merge": false,
+    "auto_release": false,
+    "auto_install_on_device": false,
+    "delete_user_data": false
+  }
+}
