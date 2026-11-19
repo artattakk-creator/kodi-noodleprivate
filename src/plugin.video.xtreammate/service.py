@@ -79,26 +79,35 @@ class IPTVMasterService(xbmc.Monitor):
             error(f'reminder monitor: {e}')
 
     def _maybe_refresh_epg(self):
-        if not setting_bool('epg_auto_refresh', True):return
+        from epg_agent100 import enabled as agent_enabled
+        provider_due = setting_bool('epg_auto_refresh', True)
+        if not provider_due and not agent_enabled():return
         if time.time()-self._last_epg<60:return
         if self._epg_worker and self._epg_worker.is_alive():return
         self._last_epg=time.time()
         def refresh():
             try:
                 import portals as P
-                __import__('provider_baseline96').ensure()
-                from epg_schedule53 import plan
-                from epg import ensure_epg_loaded_for_portal
-                for portal in P.get_active():
-                    if self.abortRequested():return
-                    selected=plan(portal)
-                    if not selected:continue
-                    # Force bypasses the short-cache age, not the existing
-                    # backup/schema/worker gates. Retry only failed sources.
-                    job=dict(portal,_epg_auto53=True,_epg_sources53=selected)
-                    ensure_epg_loaded_for_portal(job,force=True)
+                if provider_due:
+                    __import__('provider_baseline96').ensure()
+                    from epg_schedule53 import plan
+                    from epg import ensure_epg_loaded_for_portal
+                    for portal in P.get_active():
+                        if self.abortRequested():return
+                        selected=plan(portal)
+                        if not selected:continue
+                        # Only the short-cache age is bypassed in the existing importer.
+                        job=dict(portal,_epg_auto53=True,_epg_sources53=selected)
+                        ensure_epg_loaded_for_portal(job,force=True)
             except Exception as exc:
                 error('Service EPG refresh: '+type(exc).__name__)
+            if agent_enabled() and not self.abortRequested():
+                try:
+                    from portals import get_active
+                    from epg_agent100 import run
+                    run(get_active(), self.abortRequested)
+                except Exception as exc:
+                    error('Service EPG Agent: '+type(exc).__name__)
         self._epg_worker=threading.Thread(target=refresh,name='XCMateEPG',daemon=True)
         self._epg_worker.start()
 

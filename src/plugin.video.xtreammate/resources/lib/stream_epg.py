@@ -23,7 +23,10 @@ def active_streams(portal):
 @contextmanager
 def source_stream(source,cancel=lambda:False):
     uri=source['uri']
-    if source.get('local'):
+    if source.get('_agent_artwork'):
+        with open(uri, 'rb') as stream:
+            yield stream
+    elif source.get('local'):
         import xbmcvfs
         class Reader:
             def __init__(self): self.file=xbmcvfs.File(uri)
@@ -61,6 +64,9 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
     from programme_store46 import Stage as ProgrammeStage46
     metadata46=ProgrammeStage46(pid,generation,source_index,filename,source_identity=__import__('guide_publish44').source_id(source,source_index))
     batch=[];stored=0;unique94=0;now=time.time();keep_stage=False;right46=__import__('programme_index46').bounds(now)[1]
+    left=__import__('guide_store').day_window(-7,now)[0]
+    agent_artwork=source.get('_agent_artwork')
+    agent_channels={};agent_db=None;agent_matched=False
     def flush():
         nonlocal unique94
         if not batch: return
@@ -74,6 +80,9 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         progress54.emit('STAGING',stored=unique94)
     def channel(cid,name):
         metadata46.channel48(cid,name)
+        if agent_artwork:
+            agent_channels[cid]=name
+            return
         key=_channel_name_key(name)
         # Only requested names are remembered. Ambiguous XMLTV names do not
         # overwrite provider/manual IDs; match conservatively at source end.
@@ -85,10 +94,19 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
             elif key not in channel_names: channel_names[key]=cid
             ids.add(cid)
     def programme(event):
-        nonlocal stored
-        if event['channel'] not in ids or event['stop_timestamp']<=__import__('guide_store').day_window(-7,now)[0]: return
+        nonlocal stored,agent_matched
+        if agent_artwork and not agent_matched:
+            from epg_agent100_import import match
+            aliases.clear();aliases.update(match(agent_channels,streams,mappings))
+            ids.clear();ids.update(aliases.values())
+            agent_matched=True
+        if event['channel'] not in ids or event['stop_timestamp']<=left: return
         if not event['name']: return
         if event['start_timestamp']>=right46:return
+        if agent_artwork:
+            from epg_agent100_art import event_art
+            event['agent_art']=event_art(agent_db,event)
+            event.pop('screenshot_uri',None)  # Use only typed, verified refs.
         metadata46.add(event)  # Independent cache may keep real feed days11–20.
         batch.append((generation,event['channel'],event['start_timestamp'],event['stop_timestamp'],event['name'],event['descr']))
         stored+=1
@@ -99,10 +117,14 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         # Each import owns only its generation; no deletion of another stage.
         phase='DOWNLOAD'
         try:
+            if agent_artwork:
+                from pathlib import Path
+                agent_db=sqlite3.connect(Path(agent_artwork).as_uri()+'?mode=ro',uri=True,timeout=.25)
+            parse_options={'include_icons':True,'max_seconds':720} if agent_artwork else {}
             with source_stream(source,cancel=cancel) as stream:
                 phase='PARSE'
-                if progress:counts=parse(progress54.wrap(stream),channel,programme,cancel,progress=progress54.parsed)
-                else:counts=parse(stream,channel,programme,cancel)
+                if progress:counts=parse(progress54.wrap(stream),channel,programme,cancel,progress=progress54.parsed,**parse_options)
+                else:counts=parse(stream,channel,programme,cancel,**parse_options)
         except Exception as exc:
             try: exc.xcmate_stage=phase
             except Exception: pass
@@ -114,7 +136,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
             error=EmptyGuideError('No matching current programmes')
             error.xcmate_no_match59=bool(counts.get('programmes'))
             raise error
-        for key,sids in names.items():
+        for key,sids in (() if agent_artwork else names.items()):
             cid=channel_names.get(key)
             if cid:
                 for sid in sids:
@@ -136,6 +158,10 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         progress54.emit('MATCHING',force=True,stored=counts['stored'],matched=counts['matched_streams66'])
         stage=dict(generation=generation,source=source,index=source_index,aliases=aliases,meta_pid46=str(pid),metadata_ok46=not metadata46.failed,index_ok46=not metadata46.facts46.failed,
                    now=now,counts=dict(counts),streams52=streams,mappings52=mappings,proofs52={str(row['sid']):('manual' if str(row['sid']) in mappings else 'name' if channel_names.get(_channel_name_key(row.get('name')))==aliases.get(str(row['sid'])) and __import__('epg_variant53').compatible(row.get('name'),row.get('epg_channel_id'),variant_names53.get(aliases.get(str(row['sid'])),''),aliases.get(str(row['sid']))) else 'provider_id') for row in streams})
+        if agent_artwork:
+            if metadata46.failed or metadata46.facts46.failed:
+                raise OSError('AGENT_METADATA_STAGING_FAILED')
+            stage['proofs52']={sid:('manual' if sid in mappings else 'name') for sid in aliases}
         if stage_only:
             keep_stage=True
             return stage
@@ -144,6 +170,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         return counts
     finally:
         # SQL rollback restores the complete previous guide on ENOSPC or error.
+        if agent_db is not None:agent_db.close()
         db.rollback()
         if not keep_stage:
             metadata46.finish(False)
@@ -181,7 +208,7 @@ def publish_stages44(pid,stages,filename=None,cancel=lambda:False):
                     rank=stage['index'],revision=revision,now=stage['now'],cancel=cancel,correct_times66=True)
                 outcomes.append(outcome)
                 before=db.total_changes
-                for alias,cid in stage['aliases'].items():
+                for alias,cid in (() if stage['source'].get('_agent_artwork') else stage['aliases'].items()):
                     if db.execute('SELECT 1 FROM xml_stage WHERE generation=? AND cid=? LIMIT 1',(generation,cid)).fetchone():
                         db.execute('INSERT OR IGNORE INTO guide_alias VALUES(?,?,?)',(pid,alias,cid))
                 changed=changed or db.total_changes!=before
@@ -309,6 +336,7 @@ def _refresh44(portal,force=False,cancel=lambda:False):
     if not portal.get('epg_show',True): return {}
     from epg_report53 import started as source_started53,source_done as source_done53
     selected53=portal.get('_epg_sources53')
+    agent_source=portal.get('_agent_source')
     provider_failure52=0;uri=''
     if portal.get('provider_epg_enabled',True) and (selected53 is None or 'provider' in selected53):
         try:uri=portal.get('epg_url') or for_portal(portal).get_xmltv_epg_url() or ''
@@ -322,6 +350,9 @@ def _refresh44(portal,force=False,cancel=lambda:False):
         source_started53(pid,'provider','provider',0);source_done53(pid,'provider','SOURCE_UNAVAILABLE')
     provider=dict(uri=uri,local=not uri.startswith(('http://','https://')))
     sources=([('provider',provider,0)] if uri and portal.get('provider_epg_enabled',True) else [])+[(source_key(s),s,i) for i,s in enumerate(config['sources'],1) if s.get('enabled',True)]
+    if agent_source:
+        from epg_agent100 import SOURCE_RANK, SOURCE_ID
+        sources.append((SOURCE_ID,agent_source,SOURCE_RANK))
     if selected53 is not None:
         from guide_publish44 import source_id
         sources=[s for s in sources if source_id(s[1],s[2]) in selected53]
@@ -373,6 +404,21 @@ def _refresh44(portal,force=False,cancel=lambda:False):
         source_done53(pid,__import__('guide_publish44').source_id(stage['source'],stage['index']),'PARTIAL_PRESERVED' if outcome['code']=='PARTIAL_PRESERVED' else 'READY',history_counts95,outcome)
         update(pid,stage['key'],'PARTIAL_PRESERVED' if outcome['code']=='PARTIAL_PRESERVED' else 'READY',running=False,
             source_index=stage['index'],channels=counts['channels'],programmes=counts['stored'],bytes=counts['bytes'])
+    if agent_source:
+        receipt=portal.get('_agent_result')
+        if outcomes:
+            from epg_agent100_art import bind_streams
+            stage=stages[-1];counts=stage['counts'];verified=stage['verified94']['rows']
+            bind_streams(agent_source['_agent_artwork'],pid,stage['aliases'])
+            receipt.update(code='READY',read=counts['programmes'],mapped_channels=counts['mapped_channels66'],
+                           matched=counts['matched_streams66'],committed=verified,verified=verified)
+            update(pid,'refresh','READY',running=False,loaded=1)
+        else:
+            from epg_status import read
+            state=read(pid).get('agent',{})
+            receipt.update(code=state.get('code','NO_NEW_GUIDE'))
+            update(pid,'refresh',receipt['code'],running=False)
+        return {}
     result=fast_snapshot(pid,streams,config['mappings'])
     if successes and result:
         _save_disk(pid,result);_mem_set(pid,result)

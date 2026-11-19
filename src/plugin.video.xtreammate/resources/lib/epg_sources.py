@@ -9,12 +9,12 @@ import json
 import os
 import re
 import tempfile
-import unicodedata
 import uuid
 from urllib.parse import urlsplit
 
 from utils import addon_data_dir, cache_key, cache_get, cache_set, http_get, error
 
+from epg_variant53 import channel_name_key as _channel_name_key
 from epg_io import MAX_XML_BYTES, MAX_PROGRAMMES, XMLTVLimitError
 from network_io import ResponseLimitError
 INDEX_TTL = 30 * 86400
@@ -202,16 +202,6 @@ def _channels_cache_key(portal_id):
 def available_channels(portal_id):
     result = cache_get(_channels_cache_key(portal_id), max_age=INDEX_TTL)
     return result if isinstance(result, dict) else {}
-
-
-def _channel_name_key(value):
-    """Conservative exact-name comparison; no uncertain title mapping."""
-    value = unicodedata.normalize('NFKD', str(value or '')).casefold()
-    # Strip country only with a separator; keep meaningful variants/regions.
-    value = re.sub(r'^\s*(?:de|ger|germany|deutschland|at|aut|ch|sui|nl)\s*[|:–-]\s*', '', value)
-    suffix=r'(?:uhd|fhd|hd|sd|4k|hevc|avc|h[. ]?26[45]|x26[45])'
-    value = re.sub(r'(?:[\s|:()\[\]-]+'+suffix+r')+[\s)\]]*$', '', value)
-    return re.sub(r'[^a-z0-9]+', '', value)
 
 
 def _link_cached_xtream_channels(portal_id, programmes, channel_index):

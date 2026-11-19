@@ -43,7 +43,7 @@ class PrefixReader:
         return data+(self.stream.read(remaining) if remaining>0 else b'')
 
 
-def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None,progress=None):
+def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None,progress=None,include_icons=False):
     stream=PrefixReader(stream)
     data=gzip.GzipFile(fileobj=stream) if stream.prefix==b'\x1f\x8b' else stream
     parser=expat.ParserCreate()
@@ -67,7 +67,11 @@ def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None,pr
             record=dict(attributes);record['type']=tag;record['cast']=[];record['director']=[]
         if record is not None:
             text=[];text_length=0;attrs=attributes
-            if tag=='icon' and len(stack)==3 and not record.get('icon'): record['icon']=str(attributes.get('src',''))[:2048]
+            if tag=='icon' and len(stack)==3:
+                icon=str(attributes.get('src',''))[:2048]
+                if not record.get('icon'): record['icon']=icon
+                if include_icons and len(record.get('icons',()))<32:
+                    record.setdefault('icons',[]).append(icon)
             if tag=='episode-num': record['_episode_system']=attributes.get('system','')
     def characters(value):
         nonlocal text_length
@@ -105,7 +109,7 @@ def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None,pr
                             name=str(record.get('title',''))[:512],descr=record.get('desc',''),category=record.get('category',''),
                             screenshot_uri=record.get('icon',''),episode=record.get('episode',''),rating=record.get('value',''),
                             sub_title=record.get('sub-title',''),date=record.get('date',''),cast=record.get('cast',[]),director=record.get('director',[]),
-                            season=record.get('season'),episode_number=record.get('episode_number'),**({'country':record['country']} if record.get('country') else {})))
+                            season=record.get('season'),episode_number=record.get('episode_number'),**({'icons':record.get('icons',[])} if include_icons else {}),**({'country':record['country']} if record.get('country') else {})))
                 record=None
         stack.pop();text=[];text_length=0
     parser.StartElementHandler=start;parser.CharacterDataHandler=characters;parser.EndElementHandler=end

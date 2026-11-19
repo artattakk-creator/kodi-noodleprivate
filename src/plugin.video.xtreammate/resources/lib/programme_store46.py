@@ -20,6 +20,7 @@ def title_hash(title):
 def metadata(event):
  """Bounded source facts, no title/description replacement or network calls."""
  result={}
+ if isinstance(event.get('agent_art'),dict):result['agent_art']=event['agent_art']
  country=event.get('country')
  if isinstance(country,str):country={'UK':'GB','United Kingdom':'GB','Großbritannien':'GB','United States':'US','USA':'US','Deutschland':'DE'}.get(country.strip(),country)
  if isinstance(country,str) and __import__('re').fullmatch('[A-Za-z]{2}',country.strip()):result['country']=country.strip().upper()

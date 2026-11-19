@@ -10,7 +10,7 @@ from programme_read47 import scoped
 MAX_BYTES=128*1024*1024
 APPLICATION_ID=0x58434D46
 _scans={};_reports={};_pauses={}
-FIELDS=('_work_ids_verified85','country','original_title','external_ids','work_id','pid','sid','canonical','key','start','stop','title','description','source','revision','code','subtitle','genre','episode_label','year','season','episode','cast','director','xmltv_image','provider_image','epg_source46','epg_text46','placeholder','source_key46','fact_revision46','field_sources52','updated52')
+FIELDS=('_work_ids_verified85','country','original_title','external_ids','work_id','pid','sid','canonical','key','start','stop','title','description','source','revision','code','subtitle','genre','episode_label','year','season','episode','cast','director','xmltv_image','provider_image','agent_art','epg_source46','epg_text46','placeholder','source_key46','fact_revision46','field_sources52','updated52')
 
 
 def path(guide=None):
@@ -198,6 +198,8 @@ def _ranks47(pid):
     result={'provider':0,'compatibility':0}
     for index,source in enumerate(configuration(pid).get('sources',[]),1):
         if source.get('enabled',True):result[source_id(source,index)]=index
+    from epg_agent100 import enabled, SOURCE_ID, SOURCE_RANK
+    if enabled():result[SOURCE_ID]=SOURCE_RANK
     return result
 
 

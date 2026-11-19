@@ -6119,3 +6119,99 @@ msgstr "KODI_PROCESS_UNKNOWN: XCMate konnte das vollständige Ende des Kodi-Proz
 msgctxt "#39044"
 msgid "Close the Kodi add-on settings window without saving and reopen XCMate to continue the repair."
 msgstr "Kodi-Add-on-Einstellungen ohne Speichern schließen und XCMate erneut öffnen, um die Reparatur fortzusetzen."
+
+msgctxt "#39100"
+msgid "XCMate EPG Agent"
+msgstr "XCMate EPG Agent"
+
+msgctxt "#39101"
+msgid "Enable XCMate EPG Agent"
+msgstr "XCMate EPG Agent aktivieren"
+
+msgctxt "#39102"
+msgid "Check for an update now"
+msgstr "Jetzt auf Aktualisierung prüfen"
+
+msgctxt "#39103"
+msgid "Status and diagnostics"
+msgstr "Status und Diagnose"
+
+msgctxt "#39104"
+msgid "Current"
+msgstr "Aktuell"
+
+msgctxt "#39105"
+msgid "Update in progress"
+msgstr "Aktualisierung läuft"
+
+msgctxt "#39106"
+msgid "Offline"
+msgstr "Offline"
+
+msgctxt "#39107"
+msgid "Error"
+msgstr "Fehler"
+
+msgctxt "#39108"
+msgid "Disabled"
+msgstr "Deaktiviert"
+
+msgctxt "#39109"
+msgid "Private feed awaiting approval"
+msgstr "Privater Feed wartet auf Freigabe"
+
+msgctxt "#39110"
+msgid "Private read access has not been set up"
+msgstr "Privater Lesezugang ist noch nicht eingerichtet"
+
+msgctxt "#39111"
+msgid "Guide import pending"
+msgstr "EPG-Import ausstehend"
+
+msgctxt "#39112"
+msgid "Last check"
+msgstr "Letzte Prüfung"
+
+msgctxt "#39113"
+msgid "Next check"
+msgstr "Nächste Prüfung"
+
+msgctxt "#39114"
+msgid "Last verified import"
+msgstr "Letzter verifizierter Import"
+
+msgctxt "#39115"
+msgid "Revision"
+msgstr "Revision"
+
+msgctxt "#39116"
+msgid "Feed channels / programmes / artwork references"
+msgstr "Feed-Kanäle / Sendungen / Bildreferenzen"
+
+msgctxt "#39117"
+msgid "Matched streams / staged channels"
+msgstr "Zugeordnete Streams / vorbereitete Kanäle"
+
+msgctxt "#39118"
+msgid "Read / saved / verified programmes"
+msgstr "Gelesene / gespeicherte / verifizierte Sendungen"
+
+msgctxt "#39119"
+msgid "Check requested"
+msgstr "Prüfung angefordert"
+
+msgctxt "#39120"
+msgid "No check yet"
+msgstr "Prüfung steht aus"
+
+msgctxt "#39121"
+msgid "Provider guide stays available."
+msgstr "Anbieter-EPG bleibt verfügbar."
+
+msgctxt "#39122"
+msgid "Could not save the Agent setting."
+msgstr "Die Agent-Einstellung konnte nicht gespeichert werden."
+
+msgctxt "#39123"
+msgid "Artwork references from the Agent follow the selected image sources."
+msgstr "Für Agent-Bildreferenzen gelten die gewählten Bildquellen."

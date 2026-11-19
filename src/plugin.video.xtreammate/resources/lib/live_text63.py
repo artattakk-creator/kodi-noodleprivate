@@ -80,6 +80,7 @@ def _hero(props):
         logo84=bool(image)
         local=logo84
     if logo84 or not local:props['XCMate.Provisional85']=''
-    props['XCMate.HeroImage63']=image if local else ''
-    props['XCMate.HeroArtSource63']='station_logo' if logo84 else props.get('XCMate.ProgrammeArtSource57','') if local else ''
+    default = '' if local else __import__('standard_hero100').image()
+    props['XCMate.HeroImage63']=image if local else default
+    props['XCMate.HeroArtSource63']='station_logo' if logo84 else props.get('XCMate.ProgrammeArtSource57','') if local else 'standard' if default else ''
     props['XCMate.HeroArtCode63']=props.get('XCMate.ProgrammeArtCode46','') if local else 'PENDING_LOCAL_DOWNLOAD' if str(image).startswith(('http://','https://','image://')) else 'NO_IMAGE'

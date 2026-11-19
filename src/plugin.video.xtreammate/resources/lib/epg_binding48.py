@@ -22,6 +22,9 @@ def sources(portal):
     result=[dict(id='provider',name='Anbieter-EPG / Xtream')]
     for rank,source in enumerate(configuration(portal['id'])['sources'],1):
         if source.get('enabled',True):result.append(dict(id=source_id(source,rank),name=str(source.get('name') or 'XMLTV')[:160]))
+    from epg_agent100 import enabled, SOURCE_ID, SOURCE_NAME
+    if enabled():
+        result.append(dict(id=SOURCE_ID, name=SOURCE_NAME))
     return result
 
 
@@ -46,6 +49,10 @@ def channels(pid,source,query='',offset=0,strict482=False):
 
 def read(db,pid,cid,source,start,stop,limit=48,strict=False):
     """Read exact source even when two XMLTV feeds use identical channel IDs."""
+    if source == 'agent':
+        from epg_agent100 import enabled
+        if not enabled():
+            return []
     try:
         rows=db.execute('''SELECT title,description,start,stop,rank FROM guide44_inputs
           WHERE pid=? AND source_id=? AND cid=? AND start<? AND stop>?
@@ -170,6 +177,19 @@ def binding(mappings,sid):
             and isinstance(value.get('source'),str)):
         return value
     return None
+
+
+def view_mappings(mappings):
+    """Exclude inactive Agent bindings from view resolution only."""
+    sources = getattr(mappings, 'sources48', {})
+    agent_sids = {sid for sid, value in sources.items()
+                  if isinstance(value, dict) and value.get('source') == 'agent'}
+    if agent_sids:
+        from epg_agent100 import enabled
+        if not enabled():
+            return Mappings({sid: cid for sid, cid in mappings.items() if sid not in agent_sids},
+                            {sid: value for sid, value in sources.items() if sid not in agent_sids})
+    return mappings
 
 
 def stage_channels(pid,generation,source,rows,guide=None):

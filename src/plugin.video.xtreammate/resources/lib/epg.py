@@ -515,12 +515,17 @@ def _refresh_portal_epg(portal_id, p, force=False):
             from epg_report53 import observing
             with observing(portal_id,automatic=p.get('_epg_auto53',False)) as run53:
                 result=_refresh_portal_epg_inner(portal_id,p,force=force)
-                run53['result']=bool(result)
+                run53['result']=bool(result or p.get('_agent_result', {}).get('verified'))
             state94=__import__('epg_status').read(portal_id).get('refresh',{}).get('code','')
             jobs94.finish(portal_id,identity94,'DONE' if state94 in ('READY','READY_NO_NOW') else 'PARTIAL' if state94=='PARTIAL_SUCCESS' else 'FAILED')
             if result:
                 diagnostic('READY',running=False,channels=len(result),
                            programmes=sum(len(v) for v in result.values()),last_success=time.time())
+                from epg_views import refresh_visible_page
+                refresh_visible_page(portal_id)
+            elif p.get('_agent_result', {}).get('verified'):
+                from epg_status import changed
+                changed(portal_id)
                 from epg_views import refresh_visible_page
                 refresh_visible_page(portal_id)
             else:
@@ -538,8 +543,8 @@ def _refresh_portal_epg(portal_id, p, force=False):
 
 
 def _refresh_portal_epg_inner(portal_id, p, force=False):
-    indexed_xmltv52=False
-    if p.get('type') in ('m3u','stb') and p.get('source_schema')!=1:
+    indexed_xmltv52=bool(p.get('_agent_source'))
+    if not indexed_xmltv52 and p.get('type') in ('m3u','stb') and p.get('source_schema')!=1:
         # Reuse the same source-qualified streaming importer for already
         # indexed legacy playlists/MAG portals with configured XMLTV sources.
         # Unindexed STB bulk/short fallback keeps its existing entry path.
@@ -553,7 +558,8 @@ def _refresh_portal_epg_inner(portal_id, p, force=False):
         import xbmc
         cancel = xbmc.Monitor().abortRequested if hasattr(xbmc,'Monitor') else lambda: False
         identity94=p.get('_epg_job94')
-        return refresh(p,force=force,cancel=lambda:cancel() or bool(identity94 and __import__('epg_jobs94').cancelled(portal_id,identity94)))
+        agent_cancel = p.get('_agent_cancel', lambda: False)
+        return refresh(p,force=force,cancel=lambda:cancel() or agent_cancel() or bool(identity94 and __import__('epg_jobs94').cancelled(portal_id,identity94)))
     from guide_store import path
     from epg_gate46 import access
     state=access(path())

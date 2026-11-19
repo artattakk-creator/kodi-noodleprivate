@@ -6,7 +6,7 @@ missing facts. Different channel IDs require an explicit per-source name match.
 """
 import bisect,hashlib,json,sqlite3,time
 
-DETAILS=('descr','subtitle','genre','season','episode','episode_label','year','cast','director','xmltv_image','provider_image')
+DETAILS=('descr','subtitle','genre','season','episode','episode_label','year','cast','director','xmltv_image','provider_image','agent_art')
 
 
 def same(a,b,cid):
@@ -95,6 +95,8 @@ def publish_aliases(pid,source,aliases,streams,mappings,guide=None,proofs=None):
                 # existing unambiguous exact normalized channel-name matcher.
                 proof=(proofs or {}).get(sid,'manual' if mappings.get(sid) else 'provider_id')
                 records.append((str(pid),sid,source,str(cid),proof))
+            if source=='agent':
+                db.execute('DELETE FROM source_aliases52 WHERE pid=? AND source_id=?',(str(pid),source))
             db.executemany('INSERT OR REPLACE INTO source_aliases52 VALUES(?,?,?,?,?)',records)
         return True
     except (OSError,sqlite3.Error,ValueError):return False
