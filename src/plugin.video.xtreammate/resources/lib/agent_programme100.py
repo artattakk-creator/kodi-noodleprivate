@@ -115,23 +115,30 @@ def candidates(event, requested=None):
     result = []
     roles = (VIEW_ROLE[requested], 'legacy_icon') if requested else ROLE_ORDER
     for role in roles:
-        row = raw.get(role)
-        if not isinstance(row, dict):
+        primary = raw.get(role)
+        if not isinstance(primary, dict):
             continue
-        source = row.get('source')
-        uri = row.get('url')
-        if (not isinstance(source, str) or source not in SOURCES or SOURCES[source] != row.get('provider')
-                or not allowed(source) or row.get('match') != 'EXACT_EVENT'
-                or not isinstance(uri, str) or len(uri) > 2048):
-            continue
-        try:
-            parsed = urlsplit(uri)
-            if parsed.scheme != 'https' or not parsed.hostname or parsed.port not in (None, 443) or (
-                    parsed.username is not None or parsed.password is not None or '?' in uri or '#' in uri):
+        alternatives = primary.get('alternatives', [])
+        rows = [primary, *alternatives[:4]] if isinstance(alternatives, list) else [primary]
+        seen = set()
+        for row in rows:
+            if not isinstance(row, dict):
                 continue
-        except ValueError:
-            continue
-        credit = row.get('attribution')
-        result.append(dict(source=source, match='EXACT_EVENT', role81=role, url=uri,
-                           attribution=credit[:500] if isinstance(credit, str) else 'XCMate EPG Agent'))
+            source = row.get('source')
+            uri = row.get('url')
+            if (not isinstance(source, str) or source not in SOURCES or SOURCES[source] != row.get('provider')
+                    or not allowed(source) or row.get('match') != 'EXACT_EVENT'
+                    or not isinstance(uri, str) or len(uri) > 2048 or uri in seen):
+                continue
+            try:
+                parsed = urlsplit(uri)
+                if parsed.scheme != 'https' or not parsed.hostname or parsed.port not in (None, 443) or (
+                        parsed.username is not None or parsed.password is not None or '?' in uri or '#' in uri):
+                    continue
+            except ValueError:
+                continue
+            seen.add(uri)
+            credit = row.get('attribution')
+            result.append(dict(source=source, match='EXACT_EVENT', role81=role, url=uri,
+                               attribution=credit[:500] if isinstance(credit, str) else 'XCMate EPG Agent'))
     return result

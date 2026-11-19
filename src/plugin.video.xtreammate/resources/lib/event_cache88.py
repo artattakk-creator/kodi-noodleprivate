@@ -17,10 +17,20 @@ def clean(value):
  if 'vote_average88' in value and (type(value['vote_average88']) not in (int,float) or not 0<=value['vote_average88']<=10):raise ValueError('CACHE88_RATING')
  if 'vote_count88' in value and (type(value['vote_count88']) is not int or value['vote_count88']<0):raise ValueError('CACHE88_RATING')
  return dict(value)
+def _serialized(proof):
+ return json.dumps(clean(proof),sort_keys=True,separators=(',',':')).encode()
+def asset_key(context,digest,proof=None):
+ base=context+'.'+digest
+ if proof and proof.get('source','').startswith('agent_'):
+  return base+'.'+hashlib.sha256(_serialized(proof)).hexdigest()
+ return base
 def encode(key,value):
  if not value:return ''
- if not re.fullmatch('[a-f0-9]{64}\\.[a-f0-9]{64}',key):raise ValueError('CACHE88_KEY')
- return base64.urlsafe_b64encode(json.dumps(clean(value),sort_keys=True,separators=(',',':')).encode()).decode().rstrip('=')
+ parts=key.split('.')
+ if len(parts) not in (2,3) or not all(re.fullmatch('[a-f0-9]{64}',part) for part in parts):
+  raise ValueError('CACHE88_KEY')
+ if key!=asset_key(parts[0],parts[1],value):raise ValueError('CACHE88_KEY')
+ return base64.urlsafe_b64encode(_serialized(value)).decode().rstrip('=')
 def receipt(value):
  from urllib.parse import urlsplit
  if value.get('source') not in SOURCES:return None
@@ -70,11 +80,13 @@ def recover(event):
     parsed=urlsplit(uri);params=parse_qs(parsed.query,strict_parsing=True)
     if parsed.scheme!='http' or parsed.hostname!='127.0.0.1' or parsed.username is not None or parsed.password is not None or not parsed.port or parsed.fragment or not re.fullmatch('/xcmate88/[a-f0-9]{64}/[a-f0-9]{64}\\.(png|jpg)',parsed.path):continue
     if set(params)!={'event88','body88','proof88'} or any(len(v)!=1 for v in params.values()) or params['event88']!=[context] or not re.fullmatch('[a-f0-9]{64}',params['body88'][0]):continue
-    asset=context+'.'+params['body88'][0]
-    if parsed.path.rsplit('/',1)[1].split('.')[0]!=hashlib.sha256(asset.encode()).hexdigest():continue
+    digest=params['body88'][0]
     encoded=params['proof88'][0]
     if len(encoded)>768 or not re.fullmatch('[a-zA-Z0-9_-]+',encoded):continue
     proof=clean(json.loads(base64.urlsafe_b64decode(encoded+'='*(-len(encoded)%4))))
+    key_hash=parsed.path.rsplit('/',1)[1].split('.')[0]
+    if key_hash not in (hashlib.sha256((context+'.'+digest).encode()).hexdigest(),
+                        hashlib.sha256(asset_key(context,digest,proof).encode()).hexdigest()):continue
     if not admitted(proof,event):continue
     if view499 and not roles499.manual(proof) and not roles499.selected(proof,view499):continue
     record=decoded(texture,texture.get('url',''))

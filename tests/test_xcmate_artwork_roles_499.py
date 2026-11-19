@@ -175,3 +175,148 @@ class ArtworkRoles499(Fixture, unittest.TestCase):
         self.assertTrue(window.getControl(110).visible)
         self.assertEqual(window.getControl(110).image,event['_fallback499'])
         self.assertFalse(window.getControl(130).visible)
+    def test_gui_intent_and_worker_preserve_concurrent_roles_and_coalesce_same_role(self):
+        import importlib.util
+        import sys
+        import threading
+        from programme_requests68 import drain, request, result
+        import programme_urls55
+        spec=importlib.util.spec_from_file_location('programme_urls55',programme_urls55.__file__)
+        worker=importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(worker)
+
+        hero = self.event(('backdrop','poster','episode_still'))
+        details = dict(hero,_detail93=True)
+        card = dict(hero,_art_view499='card')
+        self.index.import_group('p','live','a',[{'stream_id':'1','category_id':'a','name':'Test channel'}])
+        entered = threading.Event()
+        release = threading.Event()
+        fetched = []
+        def check(url, **kwargs):
+            fetched.append(url)
+            if len(fetched) == 1:
+                entered.set()
+                self.assertTrue(release.wait(3))
+            return self.preflight(url, **kwargs)
+        with mock.patch.dict(sys.modules,programme_urls55=worker), \
+             mock.patch('programme_events46.load',side_effect=lambda *args:dict(hero,code='LOCAL_EVENT')), \
+             mock.patch.object(worker,'probe',side_effect=check), \
+             mock.patch('programme_reference84.tick'):
+            try:
+                self.assertTrue(request(hero,priority=True))
+                self.assertTrue(request(card))
+                self.assertTrue(request(details,priority=True))
+                self.assertEqual(drain(),3)
+                self.assertTrue(entered.wait(3), (result(hero).get('code'), result(card).get('code'), result(details).get('code'), list(worker._pending)))
+                self.assertTrue(request(card))
+                self.assertEqual(drain(),0)
+                release.set()
+                import time
+                deadline=time.monotonic()+3
+                while worker._pending and time.monotonic()<deadline:
+                    time.sleep(.01)
+                self.assertFalse(worker._pending)
+                self.assertEqual(result(hero)['role81'],'backdrop')
+                self.assertEqual(result(card)['role81'],'poster')
+                self.assertEqual(result(details)['role81'],'episode_still')
+                self.assertCountEqual(fetched,[role['url'] for role in hero['agent_art'].values()])
+            finally:
+                release.set()
+                worker.shutdown()
+                if worker._thread:
+                    worker._thread.join(3)
+                if 'decoded_assets88' in sys.modules:
+                    sys.modules['decoded_assets88'].shutdown()
+
+    def test_worker_keeps_same_event_roles_queued_but_only_one_job_per_role(self):
+        import importlib.util
+        import programme_urls55
+        spec=importlib.util.spec_from_file_location('role_queue499_fixture',programme_urls55.__file__)
+        worker=importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(worker)
+
+        event = self.event(('backdrop','poster'))
+        card = dict(event,_art_view499='card')
+        with mock.patch.object(worker,'_thread',mock.Mock(is_alive=lambda:True)):
+            self.assertTrue(worker.enqueue(event,priority68=True))
+            self.assertTrue(worker.enqueue(card,priority68=True))
+            self.assertFalse(worker.enqueue(dict(card),priority68=True))
+            self.assertEqual(len(worker._pending),2)
+
+
+    def test_same_verified_body_deduplicates_bytes_but_recovers_both_role_proofs(self):
+        import hashlib
+        import json
+        import decoded_assets88 as assets
+        from event_cache88 import recover
+        from programme_urls55 import resolve
+
+        hero=self.event(('backdrop','episode_still'))
+        details=dict(hero,_detail93=True)
+        hero['agent_art']['episode_still']['url']=hero['agent_art']['backdrop']['url']
+        body=self.preflight(hero['agent_art']['backdrop']['url'])['_body81']
+        with mock.patch('programme_transport77.verified',side_effect=lambda url,cancel,**kw:self.preflight(url,**kw)) as fetch, \
+             mock.patch.object(assets,'MAX_BYTES',len(body)):
+            wide=resolve(hero,url_mode69=True)
+            still=resolve(details,url_mode69=True)
+        self.assertEqual(fetch.call_count,1)
+        self.assertEqual(wide['sha256'],still['sha256'])
+        self.assertNotEqual(wide['image'],still['image'])
+        self.assertEqual(len([item for item in assets._items.values() if item['body']==body]),2)
+        self.assertEqual(len({id(item['body']) for item in assets._items.values() if item['body']==body}),1)
+        file=self.folder/'texture.png'
+        file.write_bytes(body)
+        record=dict(file=str(file),sha256=hashlib.sha256(body).hexdigest(),width=1280,height=720)
+        textures=[{'url':wide['image']},{'url':still['image']}]
+        assets.shutdown()
+        self.properties.clear()
+        with mock.patch('xbmc.executeJSONRPC',create=True,return_value=json.dumps(dict(result=dict(textures=textures)))), \
+             mock.patch('widget_cache82.decoded',return_value=record):
+             self.assertEqual(recover(hero)['role81'],'backdrop')
+             self.assertEqual(recover(details)['role81'],'episode_still')
+
+    def test_bad_primary_tries_same_role_alternative_before_legacy_icon(self):
+        from programme_urls55 import resolve
+
+        event=self.event(('poster','legacy_icon'))
+        poster=event['agent_art']['poster']
+        alternate=dict(poster,url='https://image.tmdb.org/t/p/w1280/test_alternate.png')
+        poster['alternatives']=[alternate]
+        def check(url, **kwargs):
+            result=self.preflight(url,**kwargs)
+            if url==poster['url']:
+                return dict(result,width=1280,height=720)
+            if url==alternate['url']:
+                return dict(self.preflight(poster['url'],**kwargs),url=url)
+            raise AssertionError('legacy before valid alternate')
+        with mock.patch('programme_urls55.probe',side_effect=check) as fetch:
+            art=resolve(dict(event,_art_view499='card'),url_mode69=True)
+        self.assertEqual(art['source_url'],alternate['url'])
+        self.assertEqual(art['role81'],'poster')
+        self.assertEqual(fetch.call_count,2)
+
+    def test_same_qualified_xmltv_origin_asset_only_downloads_once_across_roles(self):
+        from programme_urls55 import resolve
+
+        hero=dict(self.event(('backdrop','episode_still')),canonical='fixture.channel')
+        uri='https://cdn.example.org/test_backdrop.png'
+        for candidate in hero['agent_art'].values():
+            candidate.update(url=uri,source='agent_xmltv',provider='xmltv')
+        details=dict(hero,_detail93=True)
+        with mock.patch('programme_transport77.verified',side_effect=lambda url,cancel,**kw:self.preflight(url,**kw)) as fetch:
+            self.assertEqual(resolve(hero,url_mode69=True)['role81'],'backdrop')
+            self.assertEqual(resolve(details,url_mode69=True)['role81'],'episode_still')
+        self.assertEqual(fetch.call_count,1)
+
+    def test_previous_hero_legacy_icon_does_not_mask_valid_card_poster(self):
+        from programme_requests68 import result
+        from programme_urls55 import resolve
+
+        hero=self.event(('poster','legacy_icon'))
+        card=dict(hero,_art_view499='card')
+        with mock.patch('home_schedule75.applicable',return_value=True), \
+             mock.patch('programme_urls55.probe',side_effect=self.preflight) as fetch:
+            self.assertEqual(resolve(hero,url_mode69=True)['role81'],'legacy_icon')
+            self.assertNotEqual(result(card).get('role81'),'legacy_icon')
+            self.assertEqual(resolve(card,url_mode69=True)['role81'],'poster')
+        self.assertEqual(fetch.call_count,2)

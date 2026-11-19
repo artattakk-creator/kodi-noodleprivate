@@ -83,7 +83,7 @@ def display(event,value):
     return dict(value,image=url+OPTIONS,thumbnail=url+OPTIONS)
 
 
-def probe(url,cancel=lambda:False):
+def probe(url,cancel=lambda:False,*,qualified_origin=False):
     """Bounded credentialless preflight, pinned public DNS/TLS, bounded trusted redirects.
 
     Fully decodes bounded PNG/JPEG bytes without forcing an image archive.
@@ -91,10 +91,10 @@ def probe(url,cancel=lambda:False):
     """
     from programme_transport77 import verified
     fetch = lambda: verified(url,cancel,keep_data81=True)
-    # Exact files on the known public CDNs can share previously decoded bytes.
-    # Configured XMLTV and dynamically admitted origins retain their own probes.
+    # An exact Agent event origin or a known public CDN can share decoded
+    # bytes across roles. Other configured XMLTV origins keep their probes.
     parsed = urlsplit(url)
-    if parsed.hostname not in ('image.tmdb.org','static.tvmaze.com') or not safe(url):
+    if not qualified_origin and (parsed.hostname not in ('image.tmdb.org','static.tvmaze.com') or not safe(url)):
         return fetch()
     from widget_refs74 import revoked
     if revoked(url):
@@ -126,7 +126,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         if not v or not roles499.fits(v,view499):
             return False
         if typed499 and not roles499.manual(v):
-            if not roles499.selected(v,view499) and v.get('role81')!='legacy_icon':
+            if not roles499.selected(v,view499):
                 return False
         return not home86 or bool(__import__('hero_art86').classify(v))
     upgrade81=False;best86=None
@@ -344,8 +344,10 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
                 retain86(local86)
                 return best86 or local86
         verified77=None
+        agent_origin499=candidate.get('source')=='agent_xmltv'
         if new_origin75:
-            try:verified77=probe(url,cancel=cancel)
+            try:
+                verified77=probe(url,cancel=cancel,qualified_origin=True) if agent_origin499 else probe(url,cancel=cancel)
             except SourceError as exc:value['code']=exc.code;continue
             if cancel():return None
             grant75(url)
@@ -356,7 +358,10 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             from programme_art46 import prepare as materialize60
             return materialize60(event,cancel=cancel,resolved60=dict(candidate,_local_only63=True) if local_image63 else candidate)
         try:
-            if not new_origin75:verified77=(check or probe)(url,cancel=cancel)
+            if not new_origin75:
+                if agent_origin499 and not check:
+                    verified77=probe(url,cancel=cancel,qualified_origin=True)
+                else:verified77=(check or probe)(url,cancel=cancel)
             if isinstance(verified77,dict) and verified77.get('url'):url=verified77['url']
         except SourceError as exc:value['code']=exc.code;continue
         if cancel():return None
@@ -439,17 +444,18 @@ def refreshed(pid,revision):
     return eligible
 
 
-def promote_focus75(tag):
+def promote_focus75(tag,requested='hero'):
     """Worker-only promotion of an exact queued intent; never another lookup."""
     global _focus75
     from programme_requests68 import identity,_aliases
+    from agent_programme100 import view
     from epg_handoff63 import profile_scope
     current=profile_scope()
     with _lock:
         for key,job in _queue.items():
-            if len(job)<4 or job[3]!=current:continue
+            if len(job)<4 or job[3]!=current or view(job[0])!=requested:continue
             bound=identity(job[0])
-            if tag==bound or tag in _aliases.get(bound,()):
+            if tag==bound or tag in _aliases.get((bound,requested),()):
                 _focus75=key;_urgent68.add(key);_queue.move_to_end(key,last=False)
                 return True
     return False
@@ -458,16 +464,18 @@ def enqueue(event,allow_lookup=False,local_image63=False,priority68=False,refere
     """Worker producer: True prioritizes visible items; 2 is current focus."""
     global _thread,_focus75
     if _stop.is_set() or not event.get('title'):return False
+    import agent_programme100 as roles499
+    from epg_handoff63 import profile_scope
+    view499=roles499.view(event)
+    profile499=profile_scope()
     with _lock:
-        key=('reference84:' if reference_only84 else '')+event['key']
+        key=(profile499,event['key'],'reference84' if reference_only84 else view499)
         if not reference_only84 and __import__('home_schedule75').applicable():local_image63=False
         if priority68==2:_focus75=key
         from utils import setting_bool
         if not reference_only84 and not local_image63 and not setting_bool('programme_art_local69',False):
             from programme_session69 import get as session69
             available69=session69(event)
-            import agent_programme100 as roles499
-            view499=roles499.view(event)
             if available69 and (not roles499.fits(available69,view499) or roles499.typed(event)
                                 and not roles499.manual(available69) and not roles499.selected(available69,view499)):
                 available69=None
@@ -478,8 +486,7 @@ def enqueue(event,allow_lookup=False,local_image63=False,priority68=False,refere
         if key in _pending:
             if priority68 and key in _queue:
                 old=_queue[key]
-                bound93=dict(old[0],_detail93=True,_art_view499='details') if event.get('_detail93') else old[0]
-                _queue[key]=(bound93,old[1] or allow_lookup,old[2] or local_image63,old[3],bool(reference_only84))
+                _queue[key]=(old[0],old[1] or allow_lookup,old[2] or local_image63,old[3],old[4])
                 _urgent68.add(key)
                 if priority68==2:_queue.move_to_end(key,last=False)
             return False
@@ -492,8 +499,7 @@ def enqueue(event,allow_lookup=False,local_image63=False,priority68=False,refere
                 from programme_requests68 import status
                 status(deferred75[0],'REQUESTED')
             except (ImportError,AttributeError,RuntimeError):pass
-        from epg_handoff63 import profile_scope
-        _pending.add(key);_queue[key]=(dict(event),allow_lookup,bool(local_image63),profile_scope(),bool(reference_only84))
+        _pending.add(key);_queue[key]=(dict(event),allow_lookup,bool(local_image63),profile499,bool(reference_only84))
         if priority68:_urgent68.add(key)
         if priority68==2:_queue.move_to_end(key,last=False)
         try:
