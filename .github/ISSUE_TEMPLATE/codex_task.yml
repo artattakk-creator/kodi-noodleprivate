@@ -1,0 +1,25 @@
+name: Freizugebender Codex-Auftrag
+description: Kleine Aufgabe mit Verhalten, Reproduktion und Abnahmekriterien
+labels: ['codex:proposed']
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem und Reproduktion
+      description: Keine Zugangsdaten oder privaten Rohlogs. Tatsächliche Version, Verhalten und anonymisierte Fehlercodes.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Erwartetes Verhalten und Abnahme
+      description: Daten-/Regressionsschutz und Grenzen der Aufgabe benennen.
+    validations:
+      required: true
+  - type: textarea
+    id: references
+    attributes:
+      label: Issues und Projektdokumentation
+  - type: markdown
+    attributes:
+      value: 'Der Eigentümer gibt die konkrete Aufgabe separat mit codex:approved frei. Das ist keine Merge-, API-Kosten- oder Releasefreigabe. Android bleibt ohne Geräteprüfung NOT_TESTED.'
