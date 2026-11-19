@@ -95,11 +95,12 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
                     current["previous_generation"] = old
                 current.update(remote="AVAILABLE", generation=payload["generation"],
                                channels=payload["channels"], programmes=payload["programmes"],
-                               artwork_records=payload["artwork_records"], etag=payload["etag"])
+                               artwork_records=payload["artwork_records"],
+                               image_counts=payload.get("image_counts", {}), etag=payload["etag"])
             elif status == "NOT_MODIFIED":
                 current.update(remote="AVAILABLE", etag=payload["etag"])
             elif status == "PRIVATE_PENDING":
-                current.update(remote=status, code=status, etag="")
+                current.update(remote=status, code=status, etag="", remote_reason=payload.get("reason", ""))
         _save(directory, current)
     if current.get("remote") != "AVAILABLE" or cancel():
         return current
@@ -188,5 +189,18 @@ def run(portals, cancel):
         receipts.get(str(p["id"]), {}).get("generation") != generation for p in eligible)
     if (agent_due(record.get("last_checked", 0), now) or request > record.get("request", 0)
             or pending_import or record.get("code") in ("IMPORTING", "CHECKING")):
+        next_consent = 0
+        consent = True
+
+        def cancelled():
+            nonlocal next_consent, consent
+            if cancel():
+                return True
+            tick = time.monotonic()
+            if tick >= next_consent:
+                consent = enabled()
+                next_consent = tick + .1
+            return not consent
+
         cycle(directory, directory / "reader-token.txt", eligible, now=now,
-              request=request, cancel=lambda: cancel() or not enabled())
+              request=request, cancel=cancelled)

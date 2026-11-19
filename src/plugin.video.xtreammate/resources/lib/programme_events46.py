@@ -101,6 +101,7 @@ def source_name(portal,event):
  from localization import tr
  if not event.get('title'):return ''
  source=event.get('source_key46') or event.get('epg_source46')
+ if source=='agent':return __import__('epg_agent100').SOURCE_NAME
  if source=='provider':return tr(32555)
  if isinstance(source,str) and source.startswith('external:'):
   for rank,row in enumerate(configuration(portal['id']).get('sources',()),1):

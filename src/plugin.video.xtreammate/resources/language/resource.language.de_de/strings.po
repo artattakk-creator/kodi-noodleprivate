@@ -6294,3 +6294,7 @@ msgstr "Gespeichert · Bild-EPG aus"
 msgctxt "#39211"
 msgid "Installed designs"
 msgstr "Installierte Designs"
+
+msgctxt "#39124"
+msgid "Posters / backdrops / episode images / station logos"
+msgstr "Poster / Hintergründe / Episodenbilder / Senderlogos"

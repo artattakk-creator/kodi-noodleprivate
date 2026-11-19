@@ -1,4 +1,5 @@
-"""Read and validate immutable XMLTV and artwork candidates from private GitHub."""
+"""Read one immutable, verified XMLTV generation from private GitHub."""
+from datetime import datetime, timezone
 import gzip
 import hashlib
 import json
@@ -15,19 +16,17 @@ API_BASE = ("https://api.github.com/repos/"
             "artattakk-creator/xcmate-epg-private/contents/")
 MANIFEST_URL = API_BASE + "manifest.json"
 XMLTV_FILE = "xcmate-epg.xml.gz"
-ARTWORK_FILE = "xcmate-artwork.jsonl.gz"
+SCHEMA_VERSION = 3
 EXPECTED_SOURCES = 3
 MAX_GZIP_BYTES = 48 * 1024 * 1024
 MAX_XML_UNCOMPRESSED = 768 * 1024 * 1024
-MAX_ARTWORK_UNCOMPRESSED = 192 * 1024 * 1024
 MAX_MANIFEST_BYTES = 65536
-MAX_SIDE_RECORDS = 500000
-USER_AGENT = "XCMate-EPG-Agent/1.0"
+USER_AGENT = "XCMate-EPG-Agent/3.0"
 SHA_RE = re.compile(r"^[a-f0-9]{64}$")
 GIT_REF_RE = re.compile(r"^[a-f0-9]{40}$")
 ETAG_RE = re.compile(r'^(?:W/)?"[!-~]{1,128}"$')
-ROLE_SET = frozenset(("poster", "backdrop", "fanart", "episode_still",
-                      "thumb", "channel_logo", "clearlogo", "season_poster"))
+XMLTV_IMAGE_TYPES = ("poster", "backdrop", "still", "person", "character")
+IMAGE_COUNT_KEYS = (*XMLTV_IMAGE_TYPES, "programme_icon", "channel_logo")
 
 
 class DeliveryError(ValueError):
@@ -37,14 +36,10 @@ class DeliveryError(ValueError):
         super().__init__(self.code)
 
 
-def packaged_token_path():
-    # resources/lib/epg_agent_github.py -> resources/private/<file>.
-    # Inject only into the explicitly authorised private Kodi build, not Git.
-    return Path(__file__).resolve().parent.parent / "private" / "xcmate_epg_read_token.txt"
-
-
-def read_packaged_token(path=None):
-    path = Path(path or packaged_token_path())
+def read_token(path):
+    if path is None:
+        raise DeliveryError("AUTH_NOT_PROVISIONED")
+    path = Path(path)
     try:
         if path.is_symlink() or not path.is_file():
             raise DeliveryError("AUTH_NOT_PROVISIONED")
@@ -73,7 +68,7 @@ class _LimitedGitHubRedirect(request.HTTPRedirectHandler):
 
 
 def _open(path, token, opener=None, *, etag="", payload_ref=""):
-    if path not in ("manifest.json", XMLTV_FILE, ARTWORK_FILE):
+    if path not in ("manifest.json", XMLTV_FILE):
         raise DeliveryError("UNEXPECTED_REMOTE_PATH")
     if not token:
         raise DeliveryError("AUTH_NOT_PROVISIONED")
@@ -136,7 +131,7 @@ def _read_manifest(token, opener=None, *, etag="", cancel=lambda: False):
     response = _open("manifest.json", token, opener, etag=etag)
     if response is None:
         return {"status": "NOT_MODIFIED"}, etag
-    response_etag = getattr(response, "headers", {}).get("ETag", "")
+    response_etag = getattr(response, "headers", {}).get("ETag") or ""
     if not ETAG_RE.fullmatch(response_etag):
         response_etag = ""
     _consume(response, MAX_MANIFEST_BYTES, pieces.append, cancel)
@@ -152,40 +147,51 @@ def _read_manifest(token, opener=None, *, etag="", cancel=lambda: False):
         reason = obj.get("reason_code")
         return {"status": "PRIVATE_PENDING", "reason": (reason if reason ==
                 "PRODUCTION_DATA_NOT_APPROVED" else "PRIVATE_PENDING")}, response_etag
-    if obj.get("status") != "PRIVATE_READY" or obj.get("schema_version") != 2:
+    if obj.get("status") != "PRIVATE_READY" or obj.get("schema_version") != SCHEMA_VERSION:
         raise DeliveryError("UNSUPPORTED_MANIFEST_VERSION")
+    _validate_manifest(obj)
+    return obj, response_etag
+
+
+def _utc(value):
+    if not isinstance(value, str) or not 20 <= len(value) <= 35:
+        raise ValueError("INVALID_UTC")
+    date = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    if date.utcoffset() != timezone.utc.utcoffset(None):
+        raise ValueError("INVALID_UTC")
+    return date.timestamp()
+
+
+def _validate_manifest(obj):
     if obj.get("file") != XMLTV_FILE:
         raise DeliveryError("INVALID_MANIFEST")
-    if "payload_ref" in obj and (not isinstance(obj["payload_ref"], str) or
-                                 not GIT_REF_RE.fullmatch(obj["payload_ref"])):
-        raise DeliveryError("INVALID_PAYLOAD_REF")
     try:
+        roles = obj["image_counts"]
+        _, start, stop = (_utc(obj["generated_at_utc"]), _utc(obj["window"]["start_utc"]),
+                           _utc(obj["window"]["stop_utc"]))
         valid = (type(obj["bytes"]) is int and 0 < obj["bytes"] <= MAX_GZIP_BYTES and
                  type(obj["channel_count"]) is int and 1 <= obj["channel_count"] <= 100000 and
                  type(obj["programme_count"]) is int and 1 <= obj["programme_count"] <= 3000000 and
-                 type(obj["source_count"]) is int and obj["source_count"] >= EXPECTED_SOURCES and
-                 bool(SHA_RE.fullmatch(obj["sha256"])))
-        art = obj["artwork"]
-        valid = (valid and isinstance(art, dict) and
-                 art.get("file") == ARTWORK_FILE and
-                 type(art["bytes"]) is int and 0 < art["bytes"] <= MAX_GZIP_BYTES and
-                 type(art["records"]) is int and 1 <= art["records"] <= MAX_SIDE_RECORDS and
-                 bool(SHA_RE.fullmatch(art["sha256"])))
-    except (KeyError, TypeError, ValueError):
+                 type(obj["source_count"]) is int and EXPECTED_SOURCES <= obj["source_count"] <= 32 and
+                 bool(SHA_RE.fullmatch(obj["sha256"])) and obj["revision"] == obj["sha256"] and
+                 bool(GIT_REF_RE.fullmatch(obj["payload_ref"])) and start < stop and
+                 start.is_integer() and stop.is_integer() and
+                 isinstance(roles, dict) and set(roles) == set(IMAGE_COUNT_KEYS) and
+                 all(type(count) is int and 0 <= count <= 16_000_000 for count in roles.values()))
+    except (KeyError, TypeError, ValueError, OverflowError):
         valid = False
     if not valid:
         raise DeliveryError("INCOMPLETE_FULL_EPG_MANIFEST")
-    return obj, response_etag
 
 
 def probe(token_path=None, opener=None):
     """Read-only status probe, no data download when server is PRIVATE_PENDING."""
-    token = read_packaged_token(token_path)
+    token = read_token(token_path)
     return _read_manifest(token, opener)[0]
 
 
 def _download_to(path, token, dest, expected_size, expected_sha, opener=None, *,
-                 payload_ref="", reuse=None, cancel=lambda: False):
+                 payload_ref="", cancel=lambda: False):
     fd, name = tempfile.mkstemp(prefix=".xcmate-agent-", dir=str(dest))
     digest = hashlib.sha256()
     count = 0
@@ -196,10 +202,7 @@ def _download_to(path, token, dest, expected_size, expected_sha, opener=None, *,
                 stream.write(chunk)
                 digest.update(chunk)
                 count += len(chunk)
-            if reuse and reuse.is_file() and not reuse.is_symlink():
-                response = reuse.open("rb")
-            else:
-                response = _open(path, token, opener, payload_ref=payload_ref)
+            response = _open(path, token, opener, payload_ref=payload_ref)
             _consume(response, expected_size, sink, cancel)
             stream.flush()
             os.fsync(stream.fileno())
@@ -214,88 +217,69 @@ def _download_to(path, token, dest, expected_size, expected_sha, opener=None, *,
         raise
 
 
-def _validate_gzip(path, max_uncompressed, cancel=lambda: False):
-    if path.stat().st_size == 0:
-        raise DeliveryError("EMPTY_PAYLOAD")
-    count = 0
-    try:
-        with gzip.open(str(path), "rb") as stream:
-            while True:
-                if cancel():
-                    raise InterruptedError("CANCELLED")
-                data = stream.read(65536)
-                if not data:
-                    break
-                count += len(data)
-                if count > max_uncompressed:
-                    raise DeliveryError("UNCOMPRESSED_SIZE_LIMIT")
-    except InterruptedError:
-        raise
-    except (OSError, EOFError):
-        raise DeliveryError("INVALID_GZIP") from None
-    if not count:
-        raise DeliveryError("EMPTY_PAYLOAD")
-
-
-def _check_xmltv(path, manifest, cancel=lambda: False):
-    """Full SAX parse; no arbitrary 150k-programme legacy in-memory limit."""
+def _check_xmltv(path, manifest, cancel):
+    """Validate every event and image count in one bounded streaming pass."""
     from xmltv_stream import parse as parse_xmltv_stream
+    from epg_agent100_art import validator
+
     channel_ids = set()
+    images = dict.fromkeys(IMAGE_COUNT_KEYS, 0)
+    first = last = None
+    validate = validator()
+    expanded_limit = min(MAX_XML_UNCOMPRESSED, max(8 * 1024 * 1024, manifest["bytes"] * 512))
+
+    def image(role, url, system=""):
+        if not validate(url, system):
+            raise DeliveryError("ARTWORK_REFERENCE_INVALID")
+        images[role] += 1
+
     def channel(cid, _name):
-        if not cid or len(cid) > 512 or cid in channel_ids:
+        if not cid or len(cid) > 512 or cid in channel_ids or len(channel_ids) >= manifest["channel_count"]:
             raise DeliveryError("XMLTV_CHANNEL_INVALID")
         channel_ids.add(cid)
+
     def programme(event):
+        nonlocal first, last
         if event["channel"] not in channel_ids or not event["name"]:
             raise DeliveryError("XMLTV_EVENT_INVALID")
+        start, stop = event["start_timestamp"], event["stop_timestamp"]
+        first = start if first is None else min(first, start)
+        last = stop if last is None else max(last, stop)
+        for reference in event["images"]:
+            image(reference["type"], reference["url"], reference["system"])
+        for url in event["icons"]:
+            image("programme_icon", url)
+
+    def progress(counts):
+        if counts["bytes"] > expanded_limit:
+            raise DeliveryError("UNCOMPRESSED_SIZE_LIMIT")
+        if counts["programmes"] > manifest["programme_count"]:
+            raise DeliveryError("XMLTV_COUNT_MISMATCH")
+
     try:
-        with open(path, "rb") as stream:
-            def progress(counts):
-                if counts["bytes"] > MAX_XML_UNCOMPRESSED:
-                    raise DeliveryError("UNCOMPRESSED_SIZE_LIMIT")
-            counts = parse_xmltv_stream(stream, channel, programme,
-                                        cancel=cancel, max_seconds=720, progress=progress)
+        with path.open("rb") as stream:
+            if stream.read(2) != b"\x1f\x8b":
+                raise DeliveryError("INVALID_GZIP")
+            stream.seek(0)
+            counts = parse_xmltv_stream(
+                stream, channel, programme, cancel=cancel, max_seconds=720,
+                progress=progress, include_icons=True, include_images=True,
+                channel_image=lambda cid, url: image("channel_logo", url),
+                strict_images=True,
+            )
+    except (gzip.BadGzipFile, EOFError):
+        raise DeliveryError("INVALID_GZIP") from None
     except (DeliveryError, InterruptedError):
         raise
-    except (OSError, ValueError, EOFError, TimeoutError):
+    except (OSError, ValueError):
         raise DeliveryError("XMLTV_INVALID") from None
-    if (counts["skipped"] or counts["programmes"] != manifest["programme_count"] or
-            len(channel_ids) != manifest["channel_count"]):
+    if (counts["skipped"] or counts["programmes"] != manifest["programme_count"]
+            or len(channel_ids) != manifest["channel_count"]):
         raise DeliveryError("XMLTV_COUNT_MISMATCH")
-
-
-def _check_artwork(path, expected_records, cancel=lambda: False):
-    count = 0
-    total = 0
-    try:
-        with gzip.open(str(path), "rt", encoding="utf-8") as source:
-            while line := source.readline(131073):
-                if cancel():
-                    raise InterruptedError("CANCELLED")
-                total += len(line.encode("utf-8"))
-                if total > MAX_ARTWORK_UNCOMPRESSED:
-                    raise DeliveryError("UNCOMPRESSED_SIZE_LIMIT")
-                if len(line) > 131072:
-                    raise DeliveryError("ARTWORK_RECORD_TOO_LARGE")
-                item = json.loads(line)
-                if (not isinstance(item, dict) or item.get("type") not in ROLE_SET or
-                        not isinstance(item.get("url"), str) or
-                        not item["url"].startswith("https://")):
-                    raise DeliveryError("ARTWORK_RECORD_INVALID")
-                count += 1
-                if count > MAX_SIDE_RECORDS:
-                    raise DeliveryError("ARTWORK_RECORD_LIMIT")
-    except (DeliveryError, InterruptedError):
-        raise
-    except (OSError, ValueError, UnicodeError, EOFError):
-        raise DeliveryError("ARTWORK_INVALID") from None
-    if count != expected_records:
+    if images != manifest["image_counts"]:
         raise DeliveryError("ARTWORK_COUNT_MISMATCH")
-
-
-def generation_of(manifest):
-    """Cover both files: artwork updates can leave the programme gzip unchanged."""
-    return hashlib.sha256((manifest["sha256"] + manifest["artwork"]["sha256"]).encode()).hexdigest()
+    if (first, last) != (_utc(manifest["window"]["start_utc"]), _utc(manifest["window"]["stop_utc"])):
+        raise DeliveryError("XMLTV_WINDOW_MISMATCH")
 
 
 def candidate_path(directory, generation):
@@ -307,67 +291,63 @@ def candidate_path(directory, generation):
     folder = root / ("candidate-" + generation)
     if folder.is_symlink() or not folder.is_dir():
         return None
-    for name in (XMLTV_FILE, ARTWORK_FILE, "manifest.json"):
+    for name in (XMLTV_FILE, "manifest.json"):
         path = folder / name
         if path.is_symlink() or not path.is_file():
             return None
     return folder
 
 
+def local_manifest(folder):
+    if folder is None:
+        return {}
+    try:
+        with (folder / "manifest.json").open("rb") as stream:
+            raw = stream.read(MAX_MANIFEST_BYTES + 1)
+        value = json.loads(raw) if len(raw) <= MAX_MANIFEST_BYTES else {}
+        return value if isinstance(value, dict) else {}
+    except (OSError, ValueError):
+        return {}
+
+
 def stage_full_candidate(directory, token_path=None, opener=None, *,
                          known="", etag="", cancel=lambda: False):
-    """Return the current generation or stage both validated payloads privately."""
-    token = read_packaged_token(token_path)
+    """Stage one GZIP and its manifest. Keep prior V1/V2 snapshots offline."""
+    token = read_token(token_path)
     root = Path(directory)
-    previous = candidate_path(root, known)
+    previous = local_manifest(candidate_path(root, known))
     manifest, response_etag = _read_manifest(token, opener,
-                                            etag=etag if previous else "",
-                                            cancel=cancel)
+        etag=etag if previous.get("schema_version") == SCHEMA_VERSION else "", cancel=cancel)
     response = {"status": manifest["status"], "etag": response_etag}
     if manifest["status"] != "PRIVATE_READY":
         if "reason" in manifest:
             response["reason"] = manifest["reason"]
         return response
-    generation = generation_of(manifest)
+    generation = manifest["revision"]
     response.update(generation=generation, channels=manifest["channel_count"],
-                    programmes=manifest["programme_count"],
-                    artwork_records=manifest["artwork"]["records"])
-    if candidate_path(root, generation):
+                    programmes=manifest["programme_count"], image_counts=manifest["image_counts"],
+                    artwork_records=sum(manifest["image_counts"].values()))
+    existing = candidate_path(root, generation)
+    if existing is not None:
+        remembered = local_manifest(existing)
+        fields = ("schema_version", "sha256", "revision", "bytes", "channel_count",
+                  "programme_count", "image_counts", "window")
+        if any(remembered.get(field) != manifest[field] for field in fields):
+            raise DeliveryError("XMLTV_MANIFEST_CHANGED_WITHOUT_REVISION")
+        if (existing / XMLTV_FILE).stat().st_size != manifest["bytes"]:
+            raise DeliveryError("LOCAL_LASTGOOD_SIZE_MISMATCH")
         return dict(response, status="UNCHANGED")
     root.mkdir(mode=0o700, parents=True, exist_ok=True)
     if root.is_symlink():
         raise DeliveryError("CANDIDATE_DIRECTORY_UNSAFE")
-    previous_manifest = {}
-    if previous:
-        try:
-            with (previous / "manifest.json").open("rb") as stream:
-                previous_manifest = json.loads(stream.read(MAX_MANIFEST_BYTES))
-        except (OSError, ValueError):
-            previous = None
     from import_budget import check_space
-    check_space(str(root / "manifest.json"), manifest["bytes"] + manifest["artwork"]["bytes"])
+    check_space(str(root / "manifest.json"), manifest["bytes"])
     stage = Path(tempfile.mkdtemp(prefix=".candidate-", dir=root))
     try:
-        for filename, spec, old_spec, limit in (
-                (XMLTV_FILE, manifest, previous_manifest, MAX_XML_UNCOMPRESSED),
-                (ARTWORK_FILE, manifest["artwork"], previous_manifest.get("artwork", {}),
-                 MAX_ARTWORK_UNCOMPRESSED)):
-            reuse = previous / filename if previous and old_spec.get("sha256") == spec["sha256"] else None
-            options = dict(payload_ref=manifest.get("payload_ref", ""), cancel=cancel)
-            try:
-                item = _download_to(filename, token, stage, spec["bytes"], spec["sha256"],
-                                    opener, reuse=reuse, **options)
-            except DeliveryError as exc:
-                if reuse is None or exc.code != "CHECKSUM_OR_SIZE_MISMATCH":
-                    raise
-                item = _download_to(filename, token, stage, spec["bytes"], spec["sha256"],
-                                    opener, **options)
-            _validate_gzip(item, limit, cancel)
-            if filename == XMLTV_FILE:
-                _check_xmltv(item, manifest, cancel)
-            else:
-                _check_artwork(item, spec["records"], cancel)
-            os.replace(item, stage / filename)
+        item = _download_to(XMLTV_FILE, token, stage, manifest["bytes"], manifest["sha256"],
+                            opener, payload_ref=manifest["payload_ref"], cancel=cancel)
+        _check_xmltv(item, manifest, cancel)
+        os.replace(item, stage / XMLTV_FILE)
         with (stage / "manifest.json").open("w", encoding="utf-8") as stream:
             json.dump(manifest, stream, sort_keys=True)
             stream.flush()

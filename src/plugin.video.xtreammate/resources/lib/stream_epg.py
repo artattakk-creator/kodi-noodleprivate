@@ -66,7 +66,10 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
     batch=[];stored=0;unique94=0;now=time.time();keep_stage=False;right46=__import__('programme_index46').bounds(now)[1]
     left=__import__('guide_store').day_window(-7,now)[0]
     agent_artwork=source.get('_agent_artwork')
-    agent_channels={};agent_db=None;agent_matched=False
+    agent_channels={};agent_icons={};agent_matched=False
+    if agent_artwork:
+        from epg_agent100_art import event_art, validator
+        admit_agent_art=validator()
     staged_channels=set()
     def flush():
         nonlocal unique94
@@ -95,6 +98,9 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
             if key in channel_names and channel_names[key]!=cid: channel_names[key]=None
             elif key not in channel_names: channel_names[key]=cid
             ids.add(cid)
+    def channel_icon(cid,url):
+        if cid not in agent_icons and admit_agent_art(url):
+            agent_icons[cid]=url
     def programme(event):
         nonlocal stored,agent_matched
         if agent_artwork and not agent_matched:
@@ -106,9 +112,9 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         if not event['name']: return
         if event['start_timestamp']>=right46:return
         if agent_artwork:
-            from epg_agent100_art import event_art
-            event['agent_art']=event_art(agent_db,event)
-            event.pop('screenshot_uri',None)  # Use only typed, verified refs.
+            references=event_art(event,admit_agent_art)
+            if references:event['agent_art']=references
+            event.pop('screenshot_uri',None)  # Keep only the admitted references.
         metadata46.add(event)  # Independent cache may keep real feed days11–20.
         batch.append((generation,event['channel'],event['start_timestamp'],event['stop_timestamp'],event['name'],event['descr']))
         stored+=1
@@ -119,10 +125,8 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         # Each import owns only its generation; no deletion of another stage.
         phase='DOWNLOAD'
         try:
-            if agent_artwork:
-                from pathlib import Path
-                agent_db=sqlite3.connect(Path(agent_artwork).as_uri()+'?mode=ro',uri=True,timeout=.25)
-            parse_options={'include_icons':True,'max_seconds':720} if agent_artwork else {}
+            parse_options=dict(include_icons=True,include_images=True,strict_images=True,
+                               channel_image=channel_icon,max_seconds=720) if agent_artwork else {}
             with source_stream(source,cancel=cancel) as stream:
                 phase='PARSE'
                 if progress:counts=parse(progress54.wrap(stream),channel,programme,cancel,progress=progress54.parsed,**parse_options)
@@ -166,6 +170,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
             if metadata46.failed or metadata46.facts46.failed:
                 raise OSError('AGENT_METADATA_STAGING_FAILED')
             stage['proofs52']={sid:('manual' if sid in mappings else 'name') for sid in aliases}
+            stage['agent_icons']=agent_icons
         if stage_only:
             keep_stage=True
             return stage
@@ -174,7 +179,6 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         return counts
     finally:
         # SQL rollback restores the complete previous guide on ENOSPC or error.
-        if agent_db is not None:agent_db.close()
         db.rollback()
         if not keep_stage:
             metadata46.finish(False)
@@ -246,6 +250,10 @@ def publish_stages44(pid,stages,filename=None,cancel=lambda:False):
             finish_metadata46(pid,stage['generation'],stage.get('metadata_ok46',True),filename,index_ok46=stage.get('index_ok46',True),index_publish46=True)
             from epg_merge52 import publish_aliases
             publish_aliases(pid,source_id(stage['source'],stage['index']),stage['aliases'],stage.get('streams52',()),stage.get('mappings52',{}),filename,proofs=stage.get('proofs52'))
+            agent_index=stage['source'].get('_agent_artwork')
+            if agent_index:
+                from epg_agent100_art import bind_streams
+                bind_streams(agent_index,pid,stage['aliases'],stage['agent_icons'])
         if filename is None and proofs94:
             try:
                 cleanup94=__import__('epg_cleanup94').confirmed(pid,proofs94[-1][3])
@@ -423,9 +431,7 @@ def _refresh44(portal,force=False,cancel=lambda:False):
     if agent_source:
         receipt=portal.get('_agent_result')
         if outcomes:
-            from epg_agent100_art import bind_streams
             stage=stages[-1];counts=stage['counts'];verified=stage['verified94']['rows']
-            bind_streams(agent_source['_agent_artwork'],pid,stage['aliases'])
             receipt.update(code='READY',read=counts['programmes'],mapped_channels=counts['mapped_channels66'],
                            matched=counts['matched_streams66'],committed=verified,verified=verified)
             update(pid,'refresh','READY',running=False,loaded=1)

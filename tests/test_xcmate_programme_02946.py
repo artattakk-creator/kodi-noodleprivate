@@ -86,6 +86,10 @@ class ProgrammeEvents46(Fixture,unittest.TestCase):
   with mock.patch.object(epg_sources,'configuration',return_value=dict(sources=[source])):
    self.assertEqual(self.events.source_name(self.portal,value),'Sendungen Deutschland')
 
+ def test_agent_source_is_identifiable_in_programme_details(self):
+  value=dict(title='Fixture programme',source_key46='agent',source=1000)
+  self.assertEqual(self.events.source_name(self.portal,value),'XCMate EPG Agent')
+
  def test_star_rating_does_not_become_a_parental_classification(self):
   self.save(rating='8/10')
   value=self.events.load(self.portal,self.channel,now=self.now)

@@ -1,7 +1,6 @@
 """Agent integration contracts with isolated profiles and synthetic data."""
 from pathlib import Path
 import gzip
-import json
 import sqlite3
 import sys
 import tempfile
@@ -31,7 +30,7 @@ class AgentCycleTests(unittest.TestCase):
         self.fetch_calls.append(options)
         folder = root / ("candidate-" + self.generation)
         folder.mkdir(exist_ok=True)
-        for path in ("xcmate-epg.xml.gz", "xcmate-artwork.jsonl.gz", "manifest.json"):
+        for path in ("xcmate-epg.xml.gz", "manifest.json"):
             (folder / path).touch()
         return dict(status=self.status, generation=self.generation, etag='"synthetic"',
                     channels=3, programmes=42, artwork_records=2)
@@ -129,25 +128,23 @@ class AgentImportTests(unittest.TestCase):
         self.assertEqual(match(stations, streams, mappings),
                          {"2": "s1:ZDF.de", "4": "s2:ARD.de"})
 
-    def test_only_verified_artwork_bound_to_the_xmltv_event_is_exposed(self):
-        from epg_agent100_art import build, event_art
-        from xmltv_stream import timestamp
-        tmp = tempfile.TemporaryDirectory()
-        self.addCleanup(tmp.cleanup)
-        folder = Path(tmp.name)
+    def test_typed_artwork_is_scoped_to_the_parsed_event(self):
+        from epg_agent100_art import event_art, validator
         poster = "https://image.tmdb.org/t/p/w500/test.jpg"
-        start = "20261119120000 +0000"
-        end = "20261119130000 +0000"
-        row = dict(type="poster", provider="tmdb", verified=True, attribution="TMDB",
-                   channel="s1:test", start=start, stop=end, url=poster)
-        with gzip.open(folder / "xcmate-artwork.jsonl.gz", "wt") as stream:
-            stream.write(json.dumps(row) + "\n")
-        db = sqlite3.connect(build(folder, cancel=lambda: False))
-        self.addCleanup(db.close)
-        event = dict(channel="s1:test", start_timestamp=timestamp(start), stop_timestamp=timestamp(end))
-        self.assertEqual(event_art(db, dict(event, icons=[])), {})
-        self.assertEqual(event_art(db, dict(event, icons=[poster]))["poster"]["url"], poster)
-        self.assertEqual(event_art(db, dict(event, icons=[poster], channel="s2:test")), {})
+        still = "https://static.tvmaze.com/uploads/images/still.jpg"
+        event = dict(images=[
+            dict(type="poster", url=poster, system="tmdb", orient="P", size="3"),
+            dict(type="still", url=still, system="tvmaze", orient="L", size="3"),
+            dict(type="backdrop", url="https://images.example.invalid/rejected.jpg",
+                 system="xmltv", orient="L", size="3"),
+        ], icons=[poster])
+        read = validator()
+        facts = event_art(event, read)
+        self.assertEqual(facts["poster"]["url"], poster)
+        self.assertEqual(facts["episode_still"]["url"], still)
+        self.assertEqual(facts["legacy_icon"]["url"], poster)
+        self.assertNotIn("backdrop", facts)
+        self.assertEqual(event_art(dict(images=[], icons=[]), read), {})
 
 
 class AgentGuideTests(Fixture, unittest.TestCase):
@@ -166,16 +163,16 @@ class AgentGuideTests(Fixture, unittest.TestCase):
         start, stop = (time.strftime("%Y%m%d%H%M%S +0000", time.gmtime(t)) for t in events)
         url = "https://image.tmdb.org/t/p/w500/test.jpg"
         cid = "feed1:ZDF.de"
-        raw = ('<tv><channel id="' + cid + '"><display-name>ZDF HD</display-name></channel>'
+        logo = "https://image.tmdb.org/t/p/w500/logo.png"
+        raw = ('<tv><channel id="' + cid + '"><display-name>ZDF HD</display-name>'
+               '<icon src="' + logo + '"/></channel>'
                '<programme channel="' + cid + '" start="' + start + '" stop="' + stop + '">'
-               '<title>Fixture</title><icon src="' + url + '"/></programme></tv>')
+               '<title>Fixture</title><icon src="' + url + '"/>'
+               '<image type="poster" orient="P" system="tmdb">' + url + '</image></programme></tv>')
         folder = Path(path()).parent / "synthetic"
         folder.mkdir()
         xml = folder / "xcmate-epg.xml.gz"
         xml.write_bytes(gzip.compress(raw.encode()))
-        with gzip.open(folder / "xcmate-artwork.jsonl.gz", "wt") as stream:
-            stream.write(json.dumps(dict(type="poster", provider="tmdb", verified=True,
-                                        channel=cid, start=start, stop=stop, url=url)) + "\n")
         agent = dict(id="agent", uri=str(xml), local=True, _agent_artwork=str(build(folder, lambda: False)))
         stream = dict(sid="1", name="ZDF HD", epg_channel_id="ZDF.de")
         provider_xml = folder / "provider.xml.gz"
@@ -186,8 +183,14 @@ class AgentGuideTests(Fixture, unittest.TestCase):
         with provider_xml.open("rb") as feed:
             with mock.patch.object(stream_epg, "source_stream", return_value=contextlib.nullcontext(feed)):
                 import_source("p", dict(uri=str(provider_xml)), 0, [stream], Mappings())
-        counts = import_source("p", agent, SOURCE_RANK, [stream], Mappings())
-        self.assertEqual(counts["stored"], 1)
+        stage = import_source("p", agent, SOURCE_RANK, [stream], Mappings(), stage_only=True)
+        self.assertEqual(stage["counts"]["stored"], 1)
+        self.assertEqual(stage["agent_icons"], {cid: logo})
+        from stream_epg import publish_stages44
+        publish_stages44("p", [stage])
+        self.assertEqual(stage["verified94"]["rows"], 1)
+        with sqlite3.connect(agent["_agent_artwork"]) as db:
+            self.assertEqual(db.execute("SELECT url FROM channel_assets WHERE cid=?", (cid,)).fetchone()[0], logo)
         with sqlite3.connect(path()) as db:
             self.assertEqual(db.execute("SELECT source_id,title FROM guide44_inputs ORDER BY rank").fetchall(),
                              [("provider", "Fixture"), ("agent", "Fixture")])
@@ -196,6 +199,7 @@ class AgentGuideTests(Fixture, unittest.TestCase):
         with mock.patch("epg_agent100.enabled", return_value=True):
             facts = programme_index46.window("p", cid, *events, source48="agent")
         self.assertEqual(facts[0]["agent_art"]["poster"]["url"], url)
+        self.assertEqual(facts[0]["agent_art"]["legacy_icon"]["url"], url)
 
 
 if __name__ == "__main__":

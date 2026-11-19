@@ -11,6 +11,13 @@ from xcmate027_fixture import Fixture
 
 
 class Artwork100(Fixture, unittest.TestCase):
+    def test_agent_tmdb_has_the_same_brand_and_verified_rating_rules(self):
+        from programme_actions88 import tmdb_source, rating
+        self.assertTrue(tmdb_source('agent_tmdb'))
+        self.assertFalse(tmdb_source('agent_tvmaze'))
+        self.assertTrue(rating(dict(source='agent_tmdb', vote_average88=8.0, vote_count88=10)))
+        self.assertEqual(rating(dict(source='agent_tmdb', vote_average88=8.0)), '')
+
     def test_repeated_tmdb_request_shares_pending_http_and_returns_owned_json(self):
         connection = importlib.import_module('tmdb_connection60')
         entered = threading.Event()

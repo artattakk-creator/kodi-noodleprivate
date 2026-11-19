@@ -161,7 +161,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
     self.getControl(104).setLabel('' if __import__('programme_image69').eligible(art,self.event) else message(self.event,art))
     self.getControl(105).setText(str(art.get('attribution',''))[:500])
     self.getControl(108).setLabel(__import__('programme_actions88').rating(art))
-    self.getControl(130).setVisible(__import__('programme_image69').eligible(art,self.event) and str(art.get('source','')).startswith('tmdb'))
+    self.getControl(130).setVisible(__import__('programme_image69').eligible(art,self.event) and __import__('programme_actions88').tmdb_source(art.get('source')))
    text88,percent88=__import__('programme_actions88').timeline(self.event)
    if text88!=self._timeline88:self.getControl(107).setLabel(text88);self._timeline88=text88
    now=time.time();e=self.event;current=e.get('start',0)<=now<e.get('stop',0)

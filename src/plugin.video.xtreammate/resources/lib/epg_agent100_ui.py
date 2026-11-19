@@ -41,8 +41,13 @@ def details(portal):
         f"{tr(39118)}  {selected.get('read', 0)} / {selected.get('committed', 0)} / {selected.get('verified', 0)}",
         tr(39121), tr(39123),
     ]
+    images = receipt.get("image_counts", {})
+    if images:
+        lines.append(f"{tr(39124)}  {images.get('poster', 0)} / {images.get('backdrop', 0)} / "
+                     f"{images.get('still', 0)} / {images.get('channel_logo', 0)}")
     if enabled() and code:
-        lines.append(" · ".join(dict.fromkeys(filter(None, (code, selected.get("code"))))))
+        reason = receipt.get("remote_reason") if code == "PRIVATE_PENDING" else ""
+        lines.append(" · ".join(dict.fromkeys(filter(None, (code, reason, selected.get("code"))))))
     return "\n".join(lines)
 
 

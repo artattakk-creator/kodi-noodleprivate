@@ -6294,3 +6294,7 @@ msgstr "Saved · image EPG disabled"
 msgctxt "#39211"
 msgid "Installed designs"
 msgstr "Installed designs"
+
+msgctxt "#39124"
+msgid "Posters / backdrops / episode images / station logos"
+msgstr ""

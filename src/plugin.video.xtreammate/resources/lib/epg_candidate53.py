@@ -49,8 +49,11 @@ def scan(portal,identity,cid=None,cancel=lambda:False):
     from xmltv_stream import parse,PrefixReader
     from programme_index46 import bounds
     selected,rank=source(portal,identity);left,right=bounds()
-    names={};events=[];used=0; artwork=None
-    agent=selected.get('_agent_artwork')
+    names={};events=[];used=0
+    agent=bool(selected.get('_agent_artwork') and cid is not None)
+    if agent:
+        from epg_agent100_art import event_art, validator
+        admit_art=validator()
     def channel(ident,name):
         nonlocal used
         if cid is not None:return
@@ -61,11 +64,10 @@ def scan(portal,identity,cid=None,cancel=lambda:False):
         nonlocal used
         if cid is None or event['channel']!=cid or event['stop_timestamp']<=left or event['start_timestamp']>=right:return
         event=dict(event,source_key46=identity,_source_index=rank,source=rank)
-        if artwork is not None:
-            from epg_agent100_art import event_art
-            event['agent_art']=event_art(artwork,event)
-            event.pop('screenshot_uri',None)
-            event.pop('icons',None)
+        if agent:
+            references=event_art(event,admit_art)
+            if references:event['agent_art']=references
+            for key in ('screenshot_uri','icons','images'):event.pop(key,None)
         used+=len(json.dumps(event,ensure_ascii=False).encode())+256
         if len(events)>=512 or used>4*1024*1024:raise PreviewUnavailable('PREVIEW_EVENT_BUDGET')
         events.append(event)
@@ -73,14 +75,9 @@ def scan(portal,identity,cid=None,cancel=lambda:False):
         packed=PrefixReader(Limited(stream,64*1024*1024,cancel))
         decoded=gzip.GzipFile(fileobj=packed) if packed.prefix==b'\x1f\x8b' else packed
         try:
-            if agent and cid is not None:
-                import sqlite3
-                from pathlib import Path
-                artwork=sqlite3.connect(Path(agent).as_uri()+'?mode=ro',uri=True,timeout=.1)
             parse(Limited(decoded,256*1024*1024,cancel),channel,programme,cancel,
-                  max_seconds=45,include_icons=bool(artwork))
+                  max_seconds=45,include_icons=agent,include_images=agent)
         finally:
-            if artwork is not None:artwork.close()
             if isinstance(decoded,gzip.GzipFile):decoded.close()
     if cancel():raise InterruptedError('PREVIEW_CANCELLED')
     return sorted(events,key=lambda e:(e['start_timestamp'],e['stop_timestamp'])) if cid is not None else [dict(id=k,name=v) for k,v in sorted(names.items())]
