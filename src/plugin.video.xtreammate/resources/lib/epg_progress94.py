@@ -6,14 +6,40 @@ STATE={'QUEUED':38807,'RUNNING':38819,'CANCELLING':38820,'DONE':38815,'PARTIAL':
 
 def row(job,key):
     source=job.get('sources',{}).get(key,{})
-    active=job.get('state')=='RUNNING' and source.get('phase') not in ('DONE','FAILED','CANCELLED') and bool(source)
-    total=source.get('total_bytes',0);size=source.get('bytes',0)
-    text=tr(PHASE.get(source.get('phase'),38807))
-    if source.get('phase')=='DOWNLOAD':text+=' · '+tr(38824,size,total) if total else ' · '+tr(38825,size)
-    stats=tr(38826,source.get('channels',0),source.get('programmes',0),source.get('matched',0),source.get('staged',0))
-    if source.get('committed') is not None:text+=' · '+tr(38827,source['committed'],source.get('verified',0))
-    if source.get('error_code'):text+=' · '+source['error_code']
-    return dict(text=text,stats=stats,busy=active and not job.get('stalled'),percent=min(100,100*size/total) if total and source.get('phase')=='DOWNLOAD' else None)
+    phase=source.get('phase')
+    active=job.get('state')=='RUNNING' and phase not in ('DONE','FAILED','CANCELLED') and job.get('source',key)==key and bool(source)
+    total=source.get('total_bytes',0)
+    size=source.get('bytes',0)
+    text=tr(PHASE.get(phase,38807))
+    if 'bytes' in source:
+        text+=' · '+(tr(38824,size,total) if total else tr(38825,size))
+    if source.get('error_code'):
+        text+=' · '+source['error_code']
+    counts=[]
+    if 'programmes' in source:
+        prefix=f"{source['channels']} Kanäle / " if 'channels' in source else ''
+        counts.append(f"Gelesen {prefix}{source['programmes']} Programme")
+    elif 'channels' in source:
+        counts.append(f"Gelesen {source['channels']} XMLTV-Kanäle")
+    if 'matched' in source:
+        selected=f"/{source['selected_streams']}" if 'selected_streams' in source else ''
+        counts.append(f"IPTV-Zuordnung {source['matched']}{selected}")
+    for count,channels,label in (
+        ('staged','staged_channels','Staging'),
+        ('committed','committed_channels','Commit'),
+        ('verified','verified_channels','Readback bestätigt'),
+    ):
+        if count in source and not (count=='verified' and phase=='READBACK'):
+            subjects=f"{source[channels]} Kanäle / " if channels in source else ''
+            counts.append(f"{label} {subjects}{source[count]} Programme")
+    if phase=='READBACK':
+        scanned=source.get('readback_rows',source.get('verified'))
+        if scanned is not None:
+            counts.append(f"Readback läuft {scanned} Programme")
+    if 'matched_channels' in source:
+        counts.append(f"XMLTV-Zuordnung {source['matched_channels']} Kanäle")
+    return dict(text=text,stats=' · '.join(counts),counts=counts,
+                busy=active,percent=min(100,100*size/total) if total and phase=='DOWNLOAD' else None)
 
 
 def summary(job):
@@ -21,5 +47,26 @@ def summary(job):
     text=tr(STATE.get(job['state'],38816))+' · '+tr(38828,job['id'][:8])
     source=job.get('sources',{}).get(job.get('source'),{})
     if source.get('sources'):text+=' · '+tr(38829,source.get('source_index',0),source['sources'])
-    if job.get('stalled'):text+=' · '+tr(38830)
+    if source and job['state']=='RUNNING':
+        text+=' · '+tr(PHASE.get(source.get('phase'),38807))
+    if job.get('stalled'):
+        text+=' · '+tr(38830)
     return text
+
+
+def report(job, names):
+    from epg_report53 import stamp
+    lines=[job['state']+' · '+summary(job)]
+    if job.get('ack'):
+        lines.append('Dienstübernahme bestätigt (SERVICE_ACK) · '+stamp(job['ack']))
+    if job['state'] in ('QUEUED','RUNNING','CANCELLING'):
+        lines.append('Der Abschlussbericht erscheint nach Ende des Imports.')
+    for key,source in job.get('sources',{}).items():
+        value=row(job,key)
+        lines.extend(['',names.get(key,'EPG-Quelle'),value['text'],*value['counts']])
+        if source.get('phase_started') and key==job.get('source'):
+            lines.append('Aktuelle Phase seit · '+stamp(source['phase_started']))
+        if source.get('progress'):
+            elapsed=f" · vor {job['progress_age']} s" if key==job.get('source') and 'progress_age' in job else ''
+            lines.append('Letzter Fortschritt · '+stamp(source['progress'])+elapsed)
+    return '\n'.join(lines)

@@ -46,10 +46,10 @@ def store(pid,run):
             except OSError:pass
 
 
-def statistics(pid):
+def statistics(pid, **options):
     from epg_inventory95 import collect
     from guide_store import path as guide_path
-    return collect(str(pid),guide_path())
+    return collect(str(pid),guide_path(),**options)
 
 
 def started(pid,key,identity,rank):
@@ -65,7 +65,7 @@ def source_done(pid,identity,code,counts=None,outcome=None):
     row=run['sources'].get(identity)
     if row is None:return
     row.update(code=code,finished=time.time());row['seconds']=round(row['finished']-row['started'],3)
-    for key in ('channels','stored','bytes','min_start66','max_end66','mapped_channels66','stored_unique66','selected_streams66','matched_streams66','committed','verified','verified_first','verified_last'):
+    for key in ('channels','programmes','stored','bytes','min_start66','max_end66','mapped_channels66','stored_unique66','selected_streams66','matched_streams66','committed','committed_channels','verified','verified_channels','verified_first','verified_last'):
         value=(counts or {}).get(key)
         if isinstance(value,(int,float)) and value>=0:row[key]=value
     revision66=(counts or {}).get('revision66','')
@@ -134,17 +134,35 @@ def configured(portal):
     from epg_sources import configuration
     from guide_publish44 import source_id
     result=[dict(id='provider',key='provider',name='Anbieter-EPG',rank=0,enabled=portal.get('provider_epg_enabled',True))]
-    for rank,s in enumerate(configuration(portal['id'])['sources'],1):
+    try:
+        sources=configuration(portal['id'])['sources']
+    except (OSError,ValueError,TypeError):
+        sources=[]
+    for rank,s in enumerate(sources,1):
         result.append(dict(id=source_id(s,rank),key=__import__('epg_status').source_key(s),name=label(s.get('name')),rank=rank,enabled=s.get('enabled',True),record=s))
+    try:
+        from epg_agent100 import SOURCE_RANK, enabled
+    except ModuleNotFoundError as exc:
+        if exc.name!='epg_agent100':
+            raise
+    else:
+        result.append(dict(id='agent',key='agent',name='XCMate EPG Agent',rank=SOURCE_RANK,enabled=enabled()))
     return result
 
 
-def overview(portal):
+def overview(portal, items=None, *, cancel=None):
     from epg_status import read
-    stats=statistics(portal['id']);runs=history(portal['id']);state=read(portal['id']);rows=[]
-    for item in configured(portal):
-        row=dict(item);events=[s for run in runs for s in run.get('sources',[]) if s.get('id')==item['id']]
-        saved=next((s for s in stats['sources'] if s['id']==item['id']),{})
+    pid=portal['id']
+    stats=statistics(pid) if cancel is None else statistics(pid,cancel=cancel)
+    runs=history(pid);state=read(pid);rows=[]
+    stored={source['id']:source for source in stats['sources']}
+    observations={}
+    for run in runs:
+        for source in run.get('sources',[]):
+            observations.setdefault(source.get('id'),[]).append(source)
+    for item in configured(portal) if items is None else items:
+        row=dict(item);events=observations.get(item['id'],[])
+        saved=stored.get(item['id'],{})
         legacy=state.get(item['key'],{});last=events[-1] if events else legacy
         if legacy.get('at',0)>last.get('finished',last.get('at',0)):last=legacy
         refresh=state.get('refresh',{})
@@ -159,7 +177,12 @@ def overview(portal):
         if row['inventory95']!='READY':
             prior=next((s for s in reversed(events) if s.get('verified') or s.get('saved',{}).get('programmes')),None)
             if prior:
-                row['saved']=dict(prior.get('saved') or dict(programmes=prior.get('verified'),first=prior.get('verified_first'),last=prior.get('verified_last')))
+                previous=prior.get('saved',{})
+                if previous.get('programmes') is None:
+                    previous=dict(programmes=prior['verified'],first=prior.get('verified_first'),last=prior.get('verified_last'))
+                    if 'verified_channels' in prior:
+                        previous['channels']=prior['verified_channels']
+                row['saved']=dict(previous)
                 row['historical95']=True
             # A busy current inventory never revokes an older verified import.
         elif row['code'] in SUCCESS and not saved.get('programmes'):row['code']='NO_SAVED_PROGRAMMES'
@@ -188,13 +211,30 @@ def describe(run,portal):
     lines+=['','Quellen: '+str(good)+' erfolgreich, '+str(len(sources)-good)+' nicht erfolgreich']
     for s in sources:
         lines+=['','[B]'+names.get(s['id'],'Früher konfigurierte Quelle')+'[/B]',meaning(s.get('code')),
-                'Geladen: '+str(s.get('channels',0))+' Sender / '+str(s.get('stored',0))+' passende Sendungen',
                 'Dauer: '+str(s.get('seconds',0))+' Sekunden']
-        if s.get('selected_streams66'):lines.append('Zugeordnete Sender: '+str(s.get('matched_streams66',0))+' / '+str(s['selected_streams66']))
+        if 'bytes' in s:
+            lines.append('Gelesene Bytes: '+str(s['bytes']))
+        if 'programmes' in s:
+            lines.append('Gelesen: '+str(s.get('channels',0))+' XMLTV-Kanäle / '+str(s['programmes'])+' Programme')
+        elif 'channels' in s and 'stored' in s:
+            lines.append('Geladen: '+str(s['channels'])+' Sender (XMLTV) / '+str(s['stored'])+' passende Sendungen')
+        if 'selected_streams66' in s:
+            lines.append('Zugeordnete IPTV-Streams: '+str(s.get('matched_streams66',0))+' / '+str(s['selected_streams66']))
+        for channels,programmes,title in (
+            ('mapped_channels66','stored_unique66','Staging'),
+            ('committed_channels','committed','DB-Commit'),
+            ('verified_channels','verified','Readback bestätigt'),
+        ):
+            if programmes in s:
+                count=str(s[channels])+' XMLTV-Kanäle / ' if channels in s else ''
+                lines.append(title+': '+count+str(s[programmes])+' Programme')
         if s.get('revision66'):lines.append('Quellrevision: '+s['revision66'][:16])
         if s.get('min_start66') and s.get('max_end66'):lines.append('Tatsächlich gelieferte Abdeckung: '+stamp(s['min_start66'])+' bis '+stamp(s['max_end66']))
         saved=s.get('saved',{})
-        if saved:lines+=['Gespeichert: '+str(saved.get('channels',0))+' Sender / '+str(saved.get('programmes',0))+' Sendungen',stamp(saved.get('first'))+' bis '+stamp(saved.get('last'))]
+        if saved.get('programmes') is not None:
+            lines+=['Gespeichert: '+str(saved.get('channels',0))+' XMLTV-Kanäle / '+str(saved['programmes'])+' Programme',
+                    stamp(saved.get('first'))+' bis '+stamp(saved.get('last'))]
         if any(k in s for k in ('added','corrected','conflicts')):lines.append('Neu: '+str(s.get('added',0))+' · aktualisiert: '+str(s.get('corrected',0))+' · Konflikte bewahrt: '+str(s.get('conflicts',0)))
-        if s.get('code') not in SUCCESS:lines.append(advice(s.get('code')))
+        if s.get('code') not in SUCCESS:
+            lines.append(advice(s.get('code')))
     return '\n'.join(lines)

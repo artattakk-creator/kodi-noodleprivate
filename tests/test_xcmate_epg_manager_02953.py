@@ -94,13 +94,108 @@ class Manager53Tests(unittest.TestCase):
         module=importlib.import_module('epg_manager53')
         with mock.patch.object(module,'ThreadPoolExecutor',QueuedPool):
             w=module.Manager53('XCMateEPGManager53.xml',str(ADDON),'Default','720p');w.configure(self.portal)
-        self.addCleanup(w.close);w.show();self.assertEqual(w.rows,[]);w._pool.drain();w.pump()
-        self.assertEqual(len(w.rows),2);self.assertIn('24 Stunden',w.getControl(102).label)
+        self.addCleanup(w.close);w.show();self.assertEqual([row['key'] for row in w.rows][:2],['provider','one']);w._pool.drain();w.pump()
+        self.assertIn('24 Stunden',w.getControl(102).label)
         self.report.store('p',self.run_record());self.m.dialog.select.return_value=0
         w.onClick(403);w._pool.drain();w.pump()
         self.assertEqual(w.mode,'report');self.assertTrue(w.getControl(300).visible)
         self.assertIn('Dauer:',w.getControl(300).text);w.onClick(409);self.assertEqual(w.getControl(300).scroll_position,12)
         w.onAction(types.SimpleNamespace(getId=lambda:92));w._pool.drain();w.pump();self.assertEqual(w.mode,'sources')
+    def test_pending_inventory_does_not_block_job_or_replace_source_selection(self):
+        module=importlib.import_module('epg_manager53')
+        with mock.patch.object(module,'ThreadPoolExecutor',QueuedPool):
+            w=module.Manager53('XCMateEPGManager53.xml',str(ADDON),'Default','720p');w.configure(self.portal)
+        self.addCleanup(w.close)
+        with mock.patch.object(self.report,'statistics',return_value=dict(code='DB_BUSY',sources=[])):
+            w.show()
+            control=w.getControl(200)
+            self.assertGreaterEqual(control.size(),2)
+            control.selectItem(1);item=control.getListItem(1)
+            job=dict(id='12345678',state='RUNNING',source='one',sources={'one':dict(phase='STAGING',source_index=2,sources=2,programmes=21,staged=13)})
+            w._job_loaded94(job)
+            w._pool.drain();w.pump()
+            self.assertFalse(w._inventory_future.done())
+            self.assertIn('2 von 2',w.getControl(102).label)
+            w._inventory_pool.drain();w.pump()
+            self.assertEqual(w.rows[1]['inventory95'],'DB_BUSY')
+            self.assertEqual(control.getSelectedPosition(),1)
+            self.assertIs(control.getListItem(1),item)
+            self.assertIn('2 von 2',w.getControl(102).label)
+
+    def test_configured_agent_row_is_available_before_saved_counts(self):
+        module=importlib.import_module('epg_manager53')
+        agent=types.SimpleNamespace(SOURCE_RANK=1000,enabled=lambda:False)
+        with mock.patch.object(module,'ThreadPoolExecutor',QueuedPool),mock.patch.dict(sys.modules,epg_agent100=agent):
+            w=module.Manager53('XCMateEPGManager53.xml',str(ADDON),'Default','720p');w.configure(self.portal)
+            w.show()
+            self.addCleanup(w.close)
+            self.assertEqual([source['key'] for source in w.rows],['provider','one','agent'])
+            self.assertFalse(w.rows[-1]['enabled'])
+            self.assertEqual(w.rows[-1]['inventory95'],'PENDING')
+            w._pool.drain();w.pump()
+            w.getControl(200).selectItem(2)
+            w.onClick(200)
+            self.assertEqual(w.next_action,'epg_agent100')
+
+    def test_agent_manifest_check_shows_status_before_a_durable_import_job(self):
+        module=importlib.import_module('epg_manager53')
+        agent=types.SimpleNamespace(SOURCE_RANK=1000,enabled=lambda:True,state=lambda:{'code':'CHECKING'})
+        with mock.patch.object(module,'ThreadPoolExecutor',QueuedPool),mock.patch.dict(sys.modules,epg_agent100=agent):
+            w=module.Manager53('XCMateEPGManager53.xml',str(ADDON),'Default','720p');w.configure(self.portal)
+            self.addCleanup(w.close);w.show();w._pool.drain();w.pump()
+            w._pool.drain();w.pump()
+            item=w.getControl(200).getListItem(2)
+            self.assertIn('Manifest wird geprüft',item.label2)
+            self.assertEqual(item.getProperty('Busy94'),'')
+            self.assertFalse(w._job94)
+
+    def test_inventory_result_after_four_seconds_is_still_accepted(self):
+        module=importlib.import_module('epg_manager53')
+        with mock.patch.object(module,'ThreadPoolExecutor',QueuedPool):
+            w=module.Manager53('XCMateEPGManager53.xml',str(ADDON),'Default','720p');w.configure(self.portal)
+        self.addCleanup(w.close);w.show();w._pool.drain();w.pump()
+        test_clock=[100]
+        def slow_statistics(pid,*,cancel):
+            test_clock[0]+=7
+            self.assertFalse(cancel())
+            return dict(code='READY',sources=[dict(id=self.identity,channels=2,programmes=21)])
+        with mock.patch.object(self.report,'statistics',side_effect=slow_statistics),mock.patch('time.monotonic',side_effect=lambda:test_clock[0]):
+            w._inventory_pool.drain();w.pump()
+        self.assertEqual(w.rows[1]['saved']['programmes'],21)
+
+    def test_report_with_empty_history_shows_active_job_and_preserves_scroll(self):
+        module=importlib.import_module('epg_manager53')
+        with mock.patch.object(module,'ThreadPoolExecutor',QueuedPool):
+            w=module.Manager53('XCMateEPGManager53.xml',str(ADDON),'Default','720p');w.configure(self.portal)
+        self.addCleanup(w.close);w.show();w._pool.drain();w.pump()
+        job=dict(id='12345678',state='RUNNING',source='one',sources={'one':dict(phase='STAGING',source_index=2,sources=2,programmes=21,staged=13)})
+        with mock.patch('epg_jobs94.snapshot',return_value=job):
+            w.onClick(403);w._pool.drain();w.pump()
+        self.assertEqual(w.mode,'report')
+        self.assertIn('RUNNING',w.getControl(300).text)
+        self.assertIn('21',w.getControl(300).text)
+        self.assertEqual(w.getFocusId(),409)
+        for control in (401,402,403,405,407,410,411,412):
+            self.assertFalse(w.getControl(control).isVisible())
+        w.onClick(409)
+        progress=dict(job['sources']['one'],staged=15)
+        w._job_loaded94(dict(job,sources={'one':progress}))
+        self.assertIn('15',w.getControl(300).text)
+        self.assertEqual(w.getControl(300).scroll_position,12)
+        w.onAction(types.SimpleNamespace(getId=lambda:92))
+        self.assertEqual(w.mode,'sources')
+        self.assertTrue(w.getControl(200).isVisible())
+        self.assertEqual(w.getFocusId(),403)
+
+    def test_report_avoids_both_button_rows(self):
+        import xml.etree.ElementTree as ET
+        root=ET.parse(ADDON/'resources/skins/Default/720p/XCMateEPGManager53.xml').getroot()
+        control=lambda key:root.find(f".//control[@id='{key}']")
+        top=lambda key:int(control(key).findtext('top'))
+        bottom=lambda key:top(key)+int(control(key).findtext('height'))
+        self.assertGreaterEqual(top(300),max(bottom(key) for key in (410,411,412,413)))
+        self.assertLessEqual(bottom(300),min(top(key) for key in (404,406,408,409)))
+
     def test_explicit_intervals_only_written_after_user_selection(self):
         module=importlib.import_module('epg_manager53')
         with mock.patch.object(module,'ThreadPoolExecutor',QueuedPool):
