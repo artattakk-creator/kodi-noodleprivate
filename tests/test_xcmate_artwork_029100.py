@@ -232,3 +232,25 @@ class Artwork100(Fixture, unittest.TestCase):
         self.assertIsNone(first.get('id'))
         self.assertIsNone(dimmer.get('id'))
         self.assertEqual(tree.findtext('defaultcontrol'), '314')
+
+    def test_preview_explicitly_uses_transparent_button_textures_over_colour_sample(self):
+        import appearance
+        import sys
+        from PIL import Image
+
+        class NativeWindow:
+            def addControls(self, controls): pass
+            def setFocus(self, control): pass
+            def doModal(self): pass
+            def close(self): pass
+
+        gui = sys.modules['xbmcgui']
+        with mock.patch.object(gui, 'WindowDialog', NativeWindow, create=True), \
+             mock.patch.object(gui, 'ControlImage', create=True), \
+             mock.patch.object(gui, 'ControlLabel', create=True), \
+             mock.patch.object(gui, 'ControlButton', create=True) as button:
+            appearance.preview(appearance.read())
+        for field in ('focusTexture', 'noFocusTexture'):
+            self.assertIn(field, button.call_args.kwargs)
+            with Image.open(button.call_args.kwargs[field]) as image:
+                self.assertEqual(image.convert('RGBA').getpixel((0, 0))[3], 0)

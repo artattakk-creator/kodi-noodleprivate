@@ -224,6 +224,7 @@ def preview(values):
             super().__init__()
             media=os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources/media')
             flat=os.path.join(media,'appearance-solid.png')
+            clear=os.path.join(media,'appearance-clear.png')
             def colors(key,alpha=100):return '0x'+argb(values[key],alpha)
             font=fonts()[values['font']]
             self.controls=[
@@ -234,6 +235,7 @@ def preview(values):
                 xbmcgui.ControlImage(140,150,1000,420,flat,colorDiffuse=colors('panel',values['panel_opacity'])),
                 xbmcgui.ControlImage(168,247,944,75,flat,colorDiffuse=colors('focus')),
                 xbmcgui.ControlButton(168,247,944,75,tr(32641),font=font,
+                                     focusTexture=clear,noFocusTexture=clear,
                                      textColor=colors('text'),focusedColor=colors('active_text')),
                 xbmcgui.ControlLabel(180,177,910,60,tr(32626),font=font,textColor=colors('heading')),
                 xbmcgui.ControlLabel(180,350,910,48,tr(32634),font=font,textColor=colors('secondary')),
