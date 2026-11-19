@@ -94,6 +94,8 @@ def _open(path, token, opener=None):
         if exc.code in (429, 500, 502, 503, 504):
             raise DeliveryError("PRIVATE_ENDPOINT_TEMPORARILY_UNAVAILABLE") from None
         raise DeliveryError("PRIVATE_ENDPOINT_HTTP_ERROR") from None
+    except DeliveryError:
+        raise
     except (OSError, ValueError, TimeoutError):
         raise DeliveryError("PRIVATE_ENDPOINT_NETWORK_ERROR") from None
 
@@ -114,8 +116,7 @@ def _consume(response, max_bytes, sink):
 
 def _read_manifest(token, opener=None):
     pieces = []
-    with _open("manifest.json", token, opener) as result:
-        _consume(result, MAX_MANIFEST_BYTES, pieces.append)
+    _consume(_open("manifest.json", token, opener), MAX_MANIFEST_BYTES, pieces.append)
     try:
         obj = json.loads(b"".join(pieces))
     except (ValueError, UnicodeError):
@@ -225,13 +226,19 @@ def _check_xmltv(path, manifest):
 
 def _check_artwork(path, expected_records):
     count = 0
+    total = 0
     try:
         with gzip.open(str(path), "rt", encoding="utf-8") as source:
             for line in source:
+                total += len(line.encode("utf-8"))
+                if total > MAX_ARTWORK_UNCOMPRESSED:
+                    raise DeliveryError("UNCOMPRESSED_SIZE_LIMIT")
                 if len(line) > 131072:
                     raise DeliveryError("ARTWORK_RECORD_TOO_LARGE")
                 item = json.loads(line)
-                if not isinstance(item, dict) or item.get("type") not in ROLE_SET:
+                if (not isinstance(item, dict) or item.get("type") not in ROLE_SET or
+                        not isinstance(item.get("url"), str) or
+                        not item["url"].startswith("https://")):
                     raise DeliveryError("ARTWORK_RECORD_INVALID")
                 count += 1
                 if count > MAX_SIDE_RECORDS:
