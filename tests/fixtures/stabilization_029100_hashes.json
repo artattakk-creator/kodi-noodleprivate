@@ -17,7 +17,7 @@
     "src/plugin.video.xtreammate/resources/language/resource.language.de_de/strings.po": "0151c599b1afc8e62c9def327be7fed933a334828afcfaee05ab1b553a8b4b49",
     "src/plugin.video.xtreammate/resources/language/resource.language.en_gb/strings.po": "be0dacda4780bfccf91180118149b6a7684a5e8235835437be2d0b173aec7d79",
     "src/plugin.video.xtreammate/resources/lib/app_routes.py": "2c80b1119164ba3a36f021694418d98b8001abfacdc8f30769f7880081707e41",
-    "src/plugin.video.xtreammate/resources/lib/appearance.py": "f585f0ee6e3dd1fab624ee7e875b4be0ba464a774f015c810e6b458b7f1ed369",
+    "src/plugin.video.xtreammate/resources/lib/appearance.py": "385f193118ed7e97eab3c17cd4ea9eafeab56962ff5bc3ee91a493f1e0196f65",
     "src/plugin.video.xtreammate/resources/lib/artwork_hub96.py": "4371259f9fb962193b5a65b5b9d21e4c38ecd40daf09627517a5a3404e038dc3",
     "src/plugin.video.xtreammate/resources/lib/artwork_sources96.py": "e3837df277241ad546d6d7eae2d6ea71e12c39869ac5236b8c22a403410eb6d2",
     "src/plugin.video.xtreammate/resources/lib/decoded_assets88.py": "ab321ecaebfc2bce435d7d6eeb98cc889b2627f88227269e7dfa05a5ea80ec47",

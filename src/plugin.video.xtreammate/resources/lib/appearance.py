@@ -164,7 +164,7 @@ def window_source(xml_filename, kind='vod'):
     names = fonts()
     flat = str(Path(original)/'resources/media/appearance-solid.png')
     is_guide = xml_filename == 'XCMateGuideGrid.xml'
-    render_colours = not is_guide or bool(preferences['custom_colours']) or bool(theme)
+    render_colours = not is_guide or bool(preferences['custom_colours'])
     for control in tree.iter('control'):
         font = control.find('font')
         if font is not None:
