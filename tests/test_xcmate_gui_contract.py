@@ -60,7 +60,8 @@ LIST_ITEM = {
     'addContextMenuItems': lambda items, replaceItems=False: None,
     'getVideoInfoTag': lambda: None, 'getPath': lambda: None,
     'setSubtitles': lambda subtitleFiles: None,
-    'setLabel': lambda label: None, 'setPath': lambda path: None,
+    'setLabel': lambda label: None, 'setLabel2': lambda label: None,
+    'setPath': lambda path: None,
 }
 VIDEO_TAG = {
     # xbmc/xbmc 21.0-Omega InfoTagVideo.h:1730; values is named uniqueIDs
