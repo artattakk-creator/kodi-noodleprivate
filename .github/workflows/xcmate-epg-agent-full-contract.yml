@@ -3,12 +3,14 @@ on:
   push:
     paths:
       - 'src/plugin.video.xtreammate/resources/lib/epg_agent_github.py'
-      - 'tests/test_xcmate_epg_agent_github_full.py'
+      - 'src/plugin.video.xtreammate/resources/lib/epg_agent100*.py'
+      - 'tests/test_xcmate_epg_agent*.py'
       - '.github/workflows/xcmate-epg-agent-full-contract.yml'
   pull_request:
     paths:
       - 'src/plugin.video.xtreammate/resources/lib/epg_agent_github.py'
-      - 'tests/test_xcmate_epg_agent_github_full.py'
+      - 'src/plugin.video.xtreammate/resources/lib/epg_agent100*.py'
+      - 'tests/test_xcmate_epg_agent*.py'
       - '.github/workflows/xcmate-epg-agent-full-contract.yml'
   workflow_dispatch:
 permissions:
@@ -27,7 +29,7 @@ jobs:
       - name: Syntax and synthetic private-EPG transport contract
         run: |
           python -m py_compile src/plugin.video.xtreammate/resources/lib/epg_agent_github.py
-          python -m unittest discover -s tests -p 'test_xcmate_epg_agent_github_full.py' -v
+          python -m unittest discover -s tests -p 'test_xcmate_epg_agent*.py' -v
       - name: Explicit gate
         run: |
           echo "SYNTHETIC_CONTRACT_ONLY: no real XMLTV or device/identity/rights/Artwork QA."

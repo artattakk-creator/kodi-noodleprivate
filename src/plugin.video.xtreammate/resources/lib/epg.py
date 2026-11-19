@@ -192,7 +192,8 @@ def poll_refresh_request():
         if str(p['id'])==hint94.get('pid') and hint94.get('nonce')!=_LAST_REFRESH_REQUEST:
             __import__('epg_jobs94').adopt(p['id'],hint94.get('nonce'),hint94.get('at'),hint94.get('force',False))
         thread94=_WARMUP_THREADS.get(p['id'])
-        if not thread94 or not thread94.is_alive():__import__('epg_jobs94').reconcile(p['id'])
+        if not _REFRESH_LOCK.locked() and (not thread94 or not thread94.is_alive()):
+            __import__('epg_jobs94').reconcile(p['id'])
         job=snapshot(p['id'])
         if job.get('state')!='QUEUED' or job.get('id')==_LAST_REFRESH_REQUEST or not p.get('epg_show',True):continue
         value=dict(p,_epg_job94=job['id'])
@@ -510,7 +511,8 @@ def _refresh_portal_epg(portal_id, p, force=False):
         import epg_jobs94 as jobs94
         identity94=p.get('_epg_job94')
         if not identity94:
-            job94=jobs94.request(portal_id,force)
+            job94=jobs94.request(portal_id,force,exclusive=bool(p.get('_epg_auto53')))
+            if job94 is None:return None
             identity94=job94['id'];p=dict(p,_epg_job94=identity94)
         if not jobs94.acknowledge(portal_id,identity94):return None
         diagnostic('RUNNING',running=True)
@@ -562,7 +564,11 @@ def _refresh_portal_epg_inner(portal_id, p, force=False):
         cancel = xbmc.Monitor().abortRequested if hasattr(xbmc,'Monitor') else lambda: False
         identity94=p.get('_epg_job94')
         agent_cancel = p.get('_agent_cancel', lambda: False)
-        return refresh(p,force=force,cancel=lambda:cancel() or agent_cancel() or bool(identity94 and __import__('epg_jobs94').cancelled(portal_id,identity94)))
+        job_cancel = __import__('epg_jobs94').cancel_reader(portal_id,identity94) if identity94 else None
+        def cancelled(force=False):
+            return cancel() or agent_cancel() or bool(job_cancel and job_cancel(force=force))
+        cancelled.fresh = lambda: cancelled(force=True)
+        return refresh(p,force=force,cancel=cancelled)
     from guide_store import path
     from epg_gate46 import access
     state=access(path())

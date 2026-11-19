@@ -43,6 +43,8 @@ def _candidate(row, hosts):
     except ValueError:
         return None
     provider = row.get("provider")
+    if provider == "manual" and row.get("confidence") == "confirmed":
+        provider = {"image.tmdb.org": "tmdb", "static.tvmaze.com": "tvmaze"}.get(target.hostname, "xmltv")
     if provider in ("feed", "source_declared"):
         provider = "xmltv"
     if provider not in PRIORITY or row.get("verified") is not True:
@@ -99,9 +101,11 @@ def build(folder, cancel):
                             timestamp(record.get("start")), timestamp(record.get("stop")))
                         if role != "channel_logo" and stop <= start:
                             raise DeliveryError("ARTWORK_BINDING_INVALID")
+                        if role == "fanart":
+                            role = "backdrop"
+                        priority = -1 if record.get("provider") == "manual" else PRIORITY[value["provider"]]
                         db.execute("INSERT OR IGNORE INTO artwork VALUES(?,?,?,?,?,?,?)",
-                                   (cid, start, stop, role, value["url"],
-                                    PRIORITY[value["provider"]], json.dumps(value)))
+                                   (cid, start, stop, role, value["url"], priority, json.dumps(value)))
         finally:
             db.close()
         os.replace(staged, output)
