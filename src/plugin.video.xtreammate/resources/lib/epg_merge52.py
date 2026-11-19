@@ -106,7 +106,7 @@ def publish_aliases(pid,source,aliases,streams,mappings,guide=None,proofs=None):
 
 def window(pid,sid,cid,start,stop,primary=(),limit=256,manual=False,guide=None):
     """Read retained facts and source aliases using bounded indexed queries."""
-    from programme_index46 import connect,ranks
+    from programme_index46 import connect,ranks,read_fact
     db=None;donors=[]
     try:
         db=connect(False,guide)
@@ -124,7 +124,7 @@ def window(pid,sid,cid,start,stop,primary=(),limit=256,manual=False,guide=None):
             sql+=' ORDER BY start,stop LIMIT ?';args.append(min(1024,max(128,limit*4)))
             for identity,fingerprint,data,updated in db.execute(sql,args):
                 if identity not in allowed or len(data)>24576:continue
-                value=json.loads(data)
+                value=read_fact(data)
                 if identity=='compatibility' and primary:
                     # Legacy facts still require exact authoritative text and
                     # one unambiguous archived origin. This also preserves

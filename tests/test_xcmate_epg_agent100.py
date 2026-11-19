@@ -128,6 +128,18 @@ class AgentImportTests(unittest.TestCase):
         self.assertEqual(match(stations, streams, mappings),
                          {"2": "s1:ZDF.de", "4": "s2:ARD.de"})
 
+    def test_compact_role_alternatives_survive_metadata_staging(self):
+        from epg_agent100_art import event_art, validator
+        from programme_store46 import metadata
+        images = [dict(type="poster", url="https://image.tmdb.org/t/p/w500/"+name+".jpg",
+                       system="tmdb", orient="P", size=str(size))
+                  for name, size in (("best", 3), ("second", 2), ("third", 1), ("fourth", 1))]
+        refs = event_art(dict(images=images), validator())
+        poster = metadata(dict(agent_art=refs))["agent_art"]["poster"]
+        self.assertTrue(poster["url"].endswith("/best.jpg"))
+        self.assertEqual([r["url"].rsplit("/", 1)[-1] for r in poster["alternatives"]],
+                         ["second.jpg", "third.jpg"])
+
     def test_typed_artwork_is_scoped_to_the_parsed_event(self):
         from epg_agent100_art import event_art, validator
         poster = "https://image.tmdb.org/t/p/w500/test.jpg"
@@ -200,7 +212,56 @@ class AgentGuideTests(Fixture, unittest.TestCase):
             facts = programme_index46.window("p", cid, *events, source48="agent")
         self.assertEqual(facts[0]["agent_art"]["poster"]["url"], url)
         self.assertEqual(facts[0]["agent_art"]["legacy_icon"]["url"], url)
+        db = programme_index46.connect(False)
+        try:
+            payload = db.execute("SELECT data FROM facts WHERE pid=? AND source_id=?", ("p", "agent")).fetchone()[0]
+        finally:
+            db.close()
+        self.assertIsInstance(payload, bytes)
+        self.assertEqual(programme_index46.read_fact(payload)["agent_art"]["poster"]["url"], url)
 
+
+    def test_large_single_payload_import_verifies_185001_dense_artwork_events(self):
+        import time
+        import json
+        from epg_agent100 import SOURCE_RANK
+        from epg_agent100_art import build
+        from epg_binding48 import Mappings
+        from epg_variant53 import channel_name_key
+        from guide_store import path
+        from stream_epg import import_source, publish_stages44
+        count = 185001
+        begin = int(time.time()) - 60
+        stamp = lambda when: time.strftime("%Y%m%d%H%M%S +0000", time.gmtime(when))
+        folder = Path(path()).parent / "synthetic"
+        folder.mkdir()
+        xml = folder / "xcmate-epg.xml.gz"
+        roles = ("poster", "backdrop", "still")
+        art = "".join(f'<image type="{role}" system="tmdb">https://image.tmdb.org/t/p/w500/synthetic-{role}.jpg</image>' for role in roles)
+        with gzip.open(xml, "wt", encoding="utf-8") as stream:
+            stream.write("<tv>")
+            for idx in range(3):
+                stream.write(f'<channel id="s{idx}:id{idx}"><display-name>Fixture {idx}</display-name></channel>')
+            for idx in range(count):
+                time_start = begin + idx//3*10
+                channel = idx % 3
+                stream.write(f'<programme channel="s{channel}:id{channel}" start="{stamp(time_start)}" stop="{stamp(time_start+10)}"><title>Programme {idx}</title>{art}</programme>')
+            stream.write("</tv>")
+        streams = [dict(sid=str(i), name=f"Fixture {i}", epg_channel_id=f"id{i}") for i in range(3)]
+        index = build(folder, lambda: False)
+        source = dict(id="agent", uri=str(xml), local=True, _agent_artwork=str(index))
+        started = time.monotonic()
+        with mock.patch("epg_sources._channel_name_key", channel_name_key, create=True):
+            stage = import_source("p", source, SOURCE_RANK, streams, Mappings(), stage_only=True)
+        publish_stages44("p", [stage])
+        from contextlib import closing
+        with closing(sqlite3.connect(path())) as db:
+            retained = db.execute("SELECT count(*) FROM guide44_inputs WHERE pid='p' AND source_id='agent'").fetchone()[0]
+        result = dict(read=stage["counts"]["programmes"], imported=retained, readback=stage["verified94"]["rows"],
+                      channels=stage["verified94"]["channels"], xml_gzip_bytes=xml.stat().st_size,
+                      seconds=round(time.monotonic()-started,2))
+        print(json.dumps(result),flush=True)
+        self.assertEqual((result["read"],result["imported"],result["readback"]), (count,count,count))
 
 if __name__ == "__main__":
     unittest.main()

@@ -70,8 +70,7 @@ def validator(hosts=None):
 
 def event_art(event, admit):
     """Only references on this exact parsed programme enter its local record."""
-    result = {}
-    rank = {}
+    by_role = {}
     for image in event.get("images", ()):
         role = TYPE_MAP.get(image["type"])
         candidate = admit(image["url"], image["system"])
@@ -81,9 +80,30 @@ def event_art(event, admit):
         priority = (PRIORITY[candidate["provider"]],
                     int(image["orient"] not in ("", orientation)),
                     -int(image["size"] or 0))
-        if role not in rank or priority < rank[role]:
-            rank[role] = priority
-            result[role] = dict(candidate, orient=image["orient"], size=image["size"])
+        typed = dict(candidate, orient=image["orient"], size=image["size"])
+        by_role.setdefault(role, []).append((priority, typed))
+    result = {}
+    alternative_budget = 4096
+    for role, candidates in by_role.items():
+        ordered = sorted(candidates, key=lambda value: value[0])
+        selected = dict(ordered[0][1])
+        if role in ("poster", "backdrop", "episode_still"):
+            seen = {selected["url"]}
+            alternatives = []
+            for _, candidate in ordered[1:]:
+                if candidate["url"] in seen:
+                    continue
+                cost = len(candidate["url"]) + 160
+                if cost > alternative_budget:
+                    continue
+                seen.add(candidate["url"])
+                alternatives.append(candidate)
+                alternative_budget -= cost
+                if len(alternatives) == 2:
+                    break
+            if alternatives:
+                selected["alternatives"] = alternatives
+        result[role] = selected
     for url in event.get("icons", ()):
         if candidate := admit(url):
             result["legacy_icon"] = candidate

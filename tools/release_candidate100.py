@@ -36,12 +36,13 @@ def stage(output, original):
     data = asset.read_bytes()
     if sha256(data).hexdigest() != ASSET_SHA:
         raise ValueError("CANDIDATE_ORIGINAL_HASH")
+    commit = git("rev-parse", "HEAD").decode().strip()
     if (git("diff", "--name-only", BASE, "--", *PROTECTED)
             or git("diff", "--cached", "--name-only", "--", "src/" + ADDON)
             or git("diff", "--name-only", "--", "src/" + ADDON)):
         raise ValueError("CANDIDATE_SOURCE_OR_PUBLICATION_CHANGED")
     source = "src/" + ADDON
-    files = git("ls-tree", "-r", "-z", "HEAD", "--", source).split(b"\0")
+    files = git("ls-tree", "-r", "-z", commit, "--", source).split(b"\0")
     expected = {}
     name = f"{ADDON}-{VERSION}.zip"
     target.mkdir(mode=0o700, parents=True, exist_ok=True)
@@ -80,7 +81,7 @@ def stage(output, original):
             file.chmod(0o600)
             file.rename(target / filename)
     return dict(proof, status="PRIVATE_DEVELOPMENT_TEST_ONLY", original_hero=ASSET_SHA,
-                commit=git("rev-parse", "HEAD").decode().strip())
+                commit=commit)
 
 
 if __name__ == "__main__":

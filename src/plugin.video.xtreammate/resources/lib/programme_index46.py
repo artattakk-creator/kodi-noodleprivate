@@ -4,7 +4,7 @@ Writers run in source/data/art workers. Readers open mode=ro, never create a
 database or fetch HTTP. Missing feeds are not deletion instructions. No image
 or published guide retention/deletion is performed by this cache.
 """
-import hashlib,json,os,sqlite3,time,tempfile
+import hashlib,json,os,sqlite3,time,tempfile,zlib
 from urllib.parse import quote
 from programme_read47 import scoped
 MAX_BYTES=128*1024*1024
@@ -108,6 +108,27 @@ def connect(write=False,guide=None):
 
 def encoded(value):return json.dumps(value,ensure_ascii=False,sort_keys=True,separators=(',',':'))
 def digest(value):return hashlib.sha256(encoded(value).encode()).hexdigest()
+
+
+def fact_payload(value, source):
+    raw = encoded(value)
+    return zlib.compress(raw.encode(), 1) if source == 'agent' else raw
+
+
+def fact_hash(raw):
+    return hashlib.sha256(raw if isinstance(raw,bytes) else raw.encode()).hexdigest()
+
+
+def read_fact(raw):
+    if isinstance(raw,bytes):
+        try:
+            decoder=zlib.decompressobj()
+            raw=decoder.decompress(raw,32769)
+            if not decoder.eof or decoder.unused_data or len(raw)>32768:
+                raise ValueError('INVALID_AGENT_FACT')
+        except zlib.error:
+            raise ValueError('INVALID_AGENT_FACT') from None
+    return json.loads(raw)
 def base_hash(event,facts_version=0):
     from programme_store46 import path as metadata_path
     signature=[]
@@ -134,8 +155,8 @@ class Stage:
             value=dict(extra,name=title,title=title,descr=str(event.get('descr') or event.get('description') or '')[:8192],start_timestamp=start,stop_timestamp=stop,channel=str(event.get('channel') or event.get('cid') or ''),source_key46=source_id)
             value.setdefault('epg_source46',source_id);value.setdefault('epg_text46',hashlib.sha256(value['descr'][:4096].encode()).hexdigest())
             value.pop('metadata_code46',None)
-            data=encoded(value)
-            self.rows.append((self.generation,self.pid,value['channel'],start,stop,source_id,title_hash(title),hashlib.sha256(data.encode()).hexdigest(),data))
+            data=fact_payload(value,source_id)
+            self.rows.append((self.generation,self.pid,value['channel'],start,stop,source_id,title_hash(title),fact_hash(data),data))
             if len(self.rows)>=128:self.flush()
         except (ValueError,TypeError,MemoryError):self.failed=True;self.rows.clear()
     def flush(self):
@@ -143,7 +164,14 @@ class Stage:
         db=None
         try:
             db=connect(True,self.guide)
-            with db:db.executemany('INSERT OR REPLACE INTO pending46 VALUES(?,?,?,?,?,?,?,?,?)',self.rows)
+            with db:
+                if self.rows[0][5]=='agent' and all(row[5]=='agent' for row in self.rows):
+                    db.executemany('''INSERT OR REPLACE INTO pending46 SELECT ?,?,?,?,?,?,?,?,?
+                        WHERE NOT EXISTS(SELECT 1 FROM facts
+                        WHERE pid=? AND cid=? AND start=? AND stop=? AND source_id='agent' AND fingerprint=?)''',
+                        ((*row,*row[1:5],row[7]) for row in self.rows))
+                else:
+                    db.executemany('INSERT OR REPLACE INTO pending46 VALUES(?,?,?,?,?,?,?,?,?)',self.rows)
         except (OSError,sqlite3.Error,ValueError,MemoryError) as exc:self.failed=True;report('facts',exc,self.guide)
         finally:
             if db is not None:db.close()
@@ -164,14 +192,18 @@ def finish(pid,generation,publish,guide=None):
                     # A partial observation of the same event cannot erase
                     # already verified description/image/episode facts.
                     marks=','.join('(?,?,?,?)' for _ in rows)
-                    old={tuple(r[:4]):json.loads(r[4]) for r in db.execute('SELECT cid,start,stop,source_id,data FROM facts WHERE pid=? AND (cid,start,stop,source_id) IN ('+marks+')',[str(pid)]+[v for row in rows for v in row[1:5]])}
+                    old={tuple(r[:4]):read_fact(r[4]) for r in db.execute(
+                        'WITH wanted(cid,start,stop,source_id) AS (VALUES '+marks+') '
+                        'SELECT f.cid,f.start,f.stop,f.source_id,f.data FROM wanted w JOIN facts f '
+                        'ON f.pid=? AND f.cid=w.cid AND f.start=w.start AND f.stop=w.stop AND f.source_id=w.source_id',
+                        [v for row in rows for v in row[1:5]]+[str(pid)])}
                     from epg_merge52 import retained
                     merged=[]
                     for row in rows:
                         prior=old.get(tuple(row[1:5]))
                         if prior:
-                            value=retained(prior,json.loads(row[7]));data=encoded(value)
-                            row=(*row[:6],hashlib.sha256(data.encode()).hexdigest(),data)
+                            value=retained(prior,read_fact(row[7]));data=fact_payload(value,row[4])
+                            row=(*row[:6],fact_hash(data),data)
                         merged.append(row)
                     rows=merged
                     for cid in {r[1] for r in rows}:
@@ -213,7 +245,7 @@ def window(pid,cid,start,stop,primary=(),limit=256,guide=None,source48=None):
         allowed=ranks(pid);values=[]
         for source,fingerprint,data,updated in db.execute('SELECT source_id,fingerprint,data,updated FROM facts WHERE pid=? AND cid=? AND start<? AND stop>?'+(' AND source_id=?' if source48 else '')+' ORDER BY start,stop LIMIT ?',tuple([str(pid),str(cid),stop,start]+([source48] if source48 else [])+[min(512,limit*4)])):
             if source not in allowed or len(data)>24576:continue
-            value=json.loads(data);value['_source_index']=value['source']=allowed[source];value['fact_revision46']=fingerprint;value['_updated46']=updated
+            value=read_fact(data);value['_source_index']=value['source']=allowed[source];value['fact_revision46']=fingerprint;value['_updated46']=updated
             values.append(value)
         accepted=[];intervals=[(e.get('start_timestamp',e.get('start')),e.get('stop_timestamp',e.get('stop'))) for e in primary]
         for value in sorted(values,key=lambda v:(v['source'],-v['_updated46'],v['start_timestamp'],v['stop_timestamp'])):

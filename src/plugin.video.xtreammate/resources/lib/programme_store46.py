@@ -101,7 +101,7 @@ class Stage:
   value['epg_source46']=__import__('guide_publish44').source_id(self.source_records.get(source,{}),source) if self.source_records is not None else self.source_identity
   value['epg_text46']=hashlib.sha256(str(event.get('descr') or event.get('description') or '')[:4096].encode()).hexdigest()
   self.facts46.add(event,value,value['epg_source46'])
-  if self.failed or len(value)==2:return
+  if self.failed or len(value)==2 or self.source_identity=='agent':return
   try:
    self.rows.append((self.generation,self.pid,str(event.get('channel') or event.get('cid') or ''),int(event.get('start_timestamp',event.get('start',0))),int(event.get('stop_timestamp',event.get('stop',0))),title_hash(event.get('name') or event.get('title')),int(event.get('_source_index',self.source)),json.dumps(value,ensure_ascii=False)))
    if len(self.rows)>=128:self.flush()
