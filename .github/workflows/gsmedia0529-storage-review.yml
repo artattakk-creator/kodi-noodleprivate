@@ -1,0 +1,25 @@
+name: GS Media .5.29 storage opt-in review (no release)
+on:
+  pull_request:
+    branches: [main]
+    paths: ['tools/gsmedia_setup0529/**','tools/build_gsmedia_setup_0529.py','tests/test_gsmedia_setup_0529.py','.github/workflows/gsmedia0529-storage-review.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  storage-installer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s tests -p test_gsmedia_setup_0529.py -v
+      - run: |
+          python tools/build_gsmedia_setup_0529.py "$RUNNER_TEMP/installer0529"
+          cmp "$RUNNER_TEMP/installer0529/script.gsmedia.setup-0.5.29.zip" docs/XCMate/test-builds/installer0529/script.gsmedia.setup-0.5.29.zip
+          git diff --exit-code -- addons.xml addons.xml.md5 online-test script.gsmedia.setup src/script.gsmedia.setup
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gsmedia0529-storage-review
+          path: ${{ runner.temp }}/installer0529/
