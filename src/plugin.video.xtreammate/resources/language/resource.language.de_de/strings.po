@@ -6215,3 +6215,35 @@ msgstr "Die Agent-Einstellung konnte nicht gespeichert werden."
 msgctxt "#39123"
 msgid "Artwork references from the Agent follow the selected image sources."
 msgstr "Für Agent-Bildreferenzen gelten die gewählten Bildquellen."
+
+msgctxt "#38980"
+msgid "Choose movie groups"
+msgstr "Filmgruppen auswählen"
+
+msgctxt "#38981"
+msgid "Restore last saved selection"
+msgstr "Zuletzt gespeicherte Auswahl wiederherstellen"
+
+msgctxt "#38982"
+msgid "Suggest hiding adult groups on Home"
+msgstr "Vorschlag: Erotikgruppen auf Home ausblenden"
+
+msgctxt "#38983"
+msgid "The movie groups or your saved selection are currently unavailable. Try again in a moment."
+msgstr "Die Filmgruppen oder die gespeicherte Auswahl sind gerade nicht verfügbar. Bitte gleich erneut versuchen."
+
+msgctxt "#38984"
+msgid "No local movie groups are available yet."
+msgstr "Es sind noch keine lokalen Filmgruppen verfügbar."
+
+msgctxt "#38985"
+msgid "Movie groups on Home · {0} of {1} selected"
+msgstr "Filmgruppen auf Home · {0} von {1} ausgewählt"
+
+msgctxt "#38986"
+msgid "The Home selection could not be saved and verified."
+msgstr "Die Home-Auswahl konnte nicht gespeichert und überprüft werden."
+
+msgctxt "#38987"
+msgid "Home selection saved"
+msgstr "Home-Auswahl gespeichert"

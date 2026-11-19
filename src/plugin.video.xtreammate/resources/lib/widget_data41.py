@@ -13,6 +13,7 @@ _last_trace46={}
 class WidgetReader(Reader):
     def __init__(self,pid,seconds=.75):
         super().__init__(pid,timeout=.05,query_seconds=.25);self.until=time.monotonic()+seconds
+        self._home_blocked44=set()
     def _query(self,sql,args=(),kind=None):
         db=None
         self.stage46=('STATE' if 'FROM catalog' in sql else 'GROUPS' if 'FROM groups' in sql and 'EXISTS' not in sql else
@@ -29,8 +30,7 @@ class WidgetReader(Reader):
             if '/* direct44 */' not in sql and 'titles' in sql and db.execute("SELECT 1 FROM sqlite_master WHERE name='readable_titles'").fetchone():sql=sql.replace('FROM titles','FROM readable_titles')
             if kind is not None:
                 # TEMP only; the library itself is opened mode=ro.
-                db.execute('CREATE TEMP TABLE selected_categories(cid TEXT PRIMARY KEY)')
-                db.executemany('INSERT INTO selected_categories VALUES(?)',[(cid,) for cid in self._selections[kind]])
+                self._write_categories(db,kind)
             return [dict(r) for r in db.execute(sql,args)]
         except sqlite3.Error as exc:
             name=getattr(exc,'sqlite_errorname','SQLITE_UNKNOWN')
@@ -39,6 +39,17 @@ class WidgetReader(Reader):
             error=IndexReadError(code);error.code=code;error.sqlite_type=type(exc).__name__;error.stage46=self.stage46;raise error from None
         finally:
             if db is not None:db.close()
+    def _write_categories(self,db,kind):
+        # TEMP tables work on the read-only catalogue connection and avoid a
+        # bound parameter per provider category in the hot candidate query.
+        db.execute('CREATE TEMP TABLE IF NOT EXISTS selected_categories(cid TEXT PRIMARY KEY)')
+        db.execute('DELETE FROM selected_categories')
+        db.executemany('INSERT INTO selected_categories VALUES(?)',[(cid,) for cid in self._selections[kind]])
+        if kind=='vod' and self._home_blocked44:
+            db.execute('CREATE TEMP TABLE IF NOT EXISTS hidden_home_categories(cid TEXT PRIMARY KEY)')
+            db.execute('DELETE FROM hidden_home_categories')
+            db.executemany('INSERT INTO hidden_home_categories VALUES(?)',[(cid,) for cid in self._home_blocked44])
+
     def groups(self,kind):
         from widget_query44 import groups
         return groups(self,kind)
@@ -142,7 +153,9 @@ def _snapshot84(portal,kind,background=False):
             from widget_group46 import snapshot as complete_group
             rows=complete_group(portal) if cid else []
         else:rows=reader.small(kind,limit=24)
-        if old and old['rows'] and not rows and kind in ('vod','series'):
+        # Verified Home exclusions can remove the final candidate on a new
+        # catalogue revision. A generic provider/series empty still keeps LKG.
+        if old and old['rows'] and not rows and kind in ('vod','series') and not reader._home_blocked44:
             trace(kind,'UNAVAILABLE',len(old['rows']),started,True);return old['rows'],'CACHE'
         after=reader.state(kind)
         if not after or [after.get('revision'),after.get('updated')]!=revision:

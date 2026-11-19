@@ -31,7 +31,7 @@ def publish(portal,kind,rows,code='READY'):
     if code in ('READY','CACHE','READ_ONLY') and rows and __import__('artwork_display84').enabled():
         from widget_readonly56 import publish as readonly84
         return readonly84(portal,kind,rows)
-    if code=='READ_ONLY' and rows:
+    if code=='READ_ONLY' and (rows or kind in ('vod','series')):
         from widget_readonly56 import publish as readonly
         return readonly(portal,kind,rows)
     from widget_refresh45 import publish as publish_all,read,trace

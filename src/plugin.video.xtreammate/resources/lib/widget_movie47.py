@@ -57,11 +57,9 @@ class MovieReader(WidgetReader):
             deadline=started+min(.15,self._remaining47)
             db.set_progress_handler(lambda:int(time.monotonic()>=deadline),1000)
             if kind is not None:
-                selection=tuple(sorted(self._selections[kind]))
+                selection=(kind,tuple(sorted(self._selections[kind])))
                 if selection!=self._selected47:
-                    db.execute('CREATE TEMP TABLE IF NOT EXISTS selected_categories(cid TEXT PRIMARY KEY)')
-                    db.execute('DELETE FROM selected_categories')
-                    db.executemany('INSERT INTO selected_categories VALUES(?)',[(cid,) for cid in selection])
+                    self._write_categories(db,kind)
                     self._selected47=selection
             rows=[dict(r) for r in db.execute(sql,args)]
             prior=self.stats47.setdefault(self.stage46,dict(rows=0,queries=0,query_ms=0))

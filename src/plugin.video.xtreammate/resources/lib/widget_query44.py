@@ -12,27 +12,51 @@ def groups(reader,kind):
         from group_selection import enabled_ids
         rows=reader._query('SELECT * FROM groups WHERE pid=? AND kind=? ORDER BY ordinal',(reader.pid,kind))
         allowed=enabled_ids(reader.pid,kind,[dict(category_id=g['cid']) for g in rows])
-        if kind=='vod':allowed=__import__('home_filter92').allowed(reader.pid,allowed)
+        if kind=='vod':
+            from home_filter92 import selected
+            chosen=selected(reader.pid)
+            if chosen is not None:
+                allowed.intersection_update(chosen)
+                reader._home_blocked44={g['cid'] for g in rows}.difference(chosen)
         reader._selections[kind]=allowed
         reader._groups44[kind]=[g for g in rows if g['cid'] in allowed]
     return reader._groups44[kind]
 
 
+def home_membership(reader,kind,alias):
+    if kind!='vod' or not reader._home_blocked44:
+        return ''
+    # A hidden membership vetoes the title wherever else it appears on Home.
+    # Only the current v2 head or a non-replaced legacy row is evidence.
+    correlation=f'hidden.pid={alias}.pid AND hidden.kind={alias}.kind AND hidden.sid={alias}.sid'
+    return f""" AND NOT EXISTS(
+      SELECT 1 FROM items_v2 hidden INDEXED BY identity_v2
+      JOIN heads USING(pid,kind,cid,generation) JOIN hidden_home_categories USING(cid)
+      WHERE {correlation}
+    ) AND NOT EXISTS(
+      SELECT 1 FROM titles hidden JOIN hidden_home_categories USING(cid)
+      WHERE {correlation}
+        AND NOT EXISTS(SELECT 1 FROM heads h WHERE h.pid=hidden.pid AND h.kind=hidden.kind AND h.cid=hidden.cid)
+    )"""
+
+
 def get(reader,kind,sid):
     groups(reader,kind)
     sql='''/* direct44 */ SELECT i.payload FROM items_v2 i JOIN heads h USING(pid,kind,cid,generation)
-      WHERE i.pid=? AND i.kind=? AND i.sid=? AND i.cid IN(SELECT cid FROM selected_categories) LIMIT 1'''
-    rows=reader._query(sql,(reader.pid,kind,str(sid)),kind)
+      WHERE i.pid=? AND i.kind=? AND i.sid=? AND i.cid IN(SELECT cid FROM selected_categories)'''
+    rows=reader._query(sql+home_membership(reader,kind,'i')+' LIMIT 1',(reader.pid,kind,str(sid)),kind)
     if not rows:
-        rows=reader._query('''/* direct44 */ SELECT t.payload FROM titles t WHERE t.pid=? AND t.kind=? AND t.sid=?
-          AND t.cid IN(SELECT cid FROM selected_categories) AND NOT EXISTS(SELECT 1 FROM heads h WHERE h.pid=t.pid AND h.kind=t.kind AND h.cid=t.cid) LIMIT 1''',(reader.pid,kind,str(sid)),kind)
+        sql='''/* direct44 */ SELECT t.payload FROM titles t WHERE t.pid=? AND t.kind=? AND t.sid=?
+          AND t.cid IN(SELECT cid FROM selected_categories)
+          AND NOT EXISTS(SELECT 1 FROM heads h WHERE h.pid=t.pid AND h.kind=t.kind AND h.cid=t.cid)'''
+        rows=reader._query(sql+home_membership(reader,kind,'t')+' LIMIT 1',(reader.pid,kind,str(sid)),kind)
     return json.loads(rows[0]['payload']) if rows else None
 
 
 def small(reader,kind,category=None,limit=24,pin=None):
     groups(reader,kind);limit=min(24,max(1,int(limit)))
     allowed=reader._selections[kind]
-    if category is not None and str(category) not in allowed:return []
+    if not allowed or category is not None and str(category) not in allowed:return []
     # A title can be in many enabled groups. Bound thin candidates by that
     # multiplicity, not a fixed 4x payload limit which can yield only 2 titles.
     points=kind=='vod' or kind=='series' and getattr(reader,'kind47','')=='series'
@@ -43,7 +67,7 @@ def small(reader,kind,category=None,limit=24,pin=None):
     order='i.ordinal' if kind=='live' else 'i.added DESC'
     heads=reader._query('SELECT cid FROM heads WHERE pid=? AND kind=?',(reader.pid,kind))
     headed={r['cid'] for r in heads}
-    v2sql='''/* direct44 */ SELECT i.sid,i.cid,i.generation,i.added,i.ordinal FROM items_v2 i INDEXED BY '''+v2index+''' JOIN heads h USING(pid,kind,cid,generation) WHERE '''+where+' ORDER BY '+order+' LIMIT ?'
+    v2sql='''/* direct44 */ SELECT i.sid,i.cid,i.generation,i.added,i.ordinal FROM items_v2 i INDEXED BY '''+v2index+''' JOIN heads h USING(pid,kind,cid,generation) WHERE '''+where+home_membership(reader,kind,'i')+' ORDER BY '+order+' LIMIT ?'
     def fetch_v2(wanted):return reader._query(v2sql,args+[wanted],kind) if headed.intersection(allowed) else []
     v2=fetch_v2(cap)
     legacy_where=where.replace('i.','t.')
@@ -69,7 +93,7 @@ def small(reader,kind,category=None,limit=24,pin=None):
     if legacy_groups:
         index='category_titles' if kind=='live' and category is not None else 'recent_titles'
         legacy_where+=' AND t.cid NOT IN(SELECT cid FROM heads WHERE pid=? AND kind=?)'
-        oldsql='''/* direct44 */ SELECT t.sid,t.cid,t.added,t.ordinal FROM titles t INDEXED BY '''+index+' WHERE '+legacy_where+' ORDER BY '+order+' LIMIT ?'
+        oldsql='''/* direct44 */ SELECT t.sid,t.cid,t.added,t.ordinal FROM titles t INDEXED BY '''+index+' WHERE '+legacy_where+home_membership(reader,kind,'t')+' ORDER BY '+order+' LIMIT ?'
         old=reader._query(oldsql,args+[reader.pid,kind,cap],kind)
     if points:
         from widget_sql47 import expand_keys

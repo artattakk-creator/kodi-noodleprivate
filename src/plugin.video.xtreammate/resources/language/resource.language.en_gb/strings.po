@@ -6215,3 +6215,35 @@ msgstr ""
 msgctxt "#39123"
 msgid "Artwork references from the Agent follow the selected image sources."
 msgstr ""
+
+msgctxt "#38980"
+msgid "Choose movie groups"
+msgstr "Choose movie groups"
+
+msgctxt "#38981"
+msgid "Restore last saved selection"
+msgstr "Restore last saved selection"
+
+msgctxt "#38982"
+msgid "Suggest hiding adult groups on Home"
+msgstr "Suggest hiding adult groups on Home"
+
+msgctxt "#38983"
+msgid "The movie groups or your saved selection are currently unavailable. Try again in a moment."
+msgstr "The movie groups or your saved selection are currently unavailable. Try again in a moment."
+
+msgctxt "#38984"
+msgid "No local movie groups are available yet."
+msgstr "No local movie groups are available yet."
+
+msgctxt "#38985"
+msgid "Movie groups on Home · {0} of {1} selected"
+msgstr "Movie groups on Home · {0} of {1} selected"
+
+msgctxt "#38986"
+msgid "The Home selection could not be saved and verified."
+msgstr "The Home selection could not be saved and verified."
+
+msgctxt "#38987"
+msgid "Home selection saved"
+msgstr "Home selection saved"

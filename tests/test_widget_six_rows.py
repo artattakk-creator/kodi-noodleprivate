@@ -40,6 +40,28 @@ class SixRows(Fixture50,unittest.TestCase):
   self.assertEqual(plan['sources']['mp3']['uri'],'plugin://plugin.audio.m3sr2019/')
   self.assertEqual(before,{p.name:p.read_bytes() for p in self.native.iterdir()})
   self.assertNotIn('plugin://',json.dumps(public_summary(plan)))
+ def test_verified_audio_version_resolves_only_the_runtime_categories_root_to_new_albums(self):
+  from widget_six_sources import discover
+  self.source_records()
+  before = self.menu.read_bytes(), self.prop.read_bytes()
+  versions = {'plugin.audio.m3sr2019': '2026.1.0'}
+  row = discover(self.profile, 'p', lambda addon: True, version=versions.get)['sources']['mp3']
+  self.assertEqual(row['uri'], 'plugin://plugin.audio.m3sr2019/musicmp3/main_albums/main/0/new/0/dir')
+  self.assertEqual(row['target'], 'music')
+  self.assertEqual(before, (self.menu.read_bytes(), self.prop.read_bytes()))
+
+ def test_verified_audio_version_preserves_an_explicit_saved_album_deeplink(self):
+  from widget_six_sources import discover
+  source = 'plugin://plugin.audio.m3sr2019/musicmp3/main_albums/main/97/top/50/dir'
+  rows = self.source_records()
+  rows.append(['mainmenu', 'personal', 'widgetPath', source])
+  self.prop.write_text(repr(rows))
+  before = self.prop.read_bytes()
+  versions = {'plugin.audio.m3sr2019': '2026.1.0'}
+  row = discover(self.profile, 'p', lambda addon: True, version=versions.get)['sources']['mp3']
+  self.assertEqual(row['uri'], source)
+  self.assertEqual(self.prop.read_bytes(), before)
+
  def test_xcmate_token_does_not_enable_a_separate_foreign_addon(self):
   from widget_six_sources import discover
   self.source_records();plan=discover(self.profile,'p',lambda addon:False)
