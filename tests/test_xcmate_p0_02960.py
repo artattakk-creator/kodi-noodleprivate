@@ -8,6 +8,7 @@ from pathlib import Path
 from unittest import mock
 from xcmate027_fixture import Fixture
 from xcmate050_fixture import Fixture50
+from artwork_request100_fixture import isolated_metadata
 
 
 class TMDB60(Fixture, unittest.TestCase):
@@ -116,26 +117,28 @@ class TMDB60(Fixture, unittest.TestCase):
     def test_movie_requires_unique_complete_search_and_independent_title_year_details(self):
         match = importlib.import_module('programme_match46')
         details = dict(self.row(), backdrop_path='/exact.jpg')
-        with mock.patch('media_sources43.get', side_effect=[self.search([self.row()]), details]) as get:
+        with isolated_metadata(), mock.patch('media_sources43.get', side_effect=[self.search([self.row()]), details]) as get:
             value = match.candidate(self.movie())
         self.assertEqual(value['match'], 'EXACT_TITLE_YEAR')
         self.assertEqual(value['url'], 'https://image.tmdb.org/t/p/w500/exact.jpg')
         self.assertEqual(get.call_count, 2)
         for payload in (self.search([self.row(), self.row(43)]), dict(self.search([self.row()]), total_pages=2), self.search([self.row(year='2023')])):
-            with mock.patch('media_sources43.get', return_value=payload):
+            with isolated_metadata(), mock.patch('media_sources43.get', return_value=payload) as get:
                 self.assertIsNone(match.candidate(self.movie()))
-        with mock.patch('media_sources43.get', side_effect=[self.search([self.row()]), dict(details, title='Wrong film')]):
+            self.assertEqual(get.call_count, 1)
+        with isolated_metadata(), mock.patch('media_sources43.get', side_effect=[self.search([self.row()]), dict(details, title='Wrong film')]) as get:
             self.assertIsNone(match.candidate(self.movie()))
+        self.assertEqual(get.call_count, 2)
 
     def test_episode_requires_exact_parent_and_season_episode_subtitle(self):
         match = importlib.import_module('programme_match46')
         event = dict(title='Exact synthetic series', season=2, episode=3, subtitle='Exact episode')
         search = self.search([dict(id=12, name=event['title'], first_air_date='2020-01-01')])
         episode = dict(id=15, season_number=2, episode_number=3, name='Exact episode', still_path='/episode.png')
-        with mock.patch('media_sources43.get', side_effect=[search, episode]):
+        with isolated_metadata(), mock.patch('media_sources43.get', side_effect=[search, episode]):
             self.assertEqual(match.candidate(event)['match'], 'EXACT_SEASON_EPISODE')
         for changed in (dict(episode, episode_number=4), dict(episode, name='Wrong episode'), dict(episode, still_path='/../wrong.jpg')):
-            with mock.patch('media_sources43.get', side_effect=[search, changed]) as get:
+            with isolated_metadata(), mock.patch('media_sources43.get', side_effect=[search, changed]) as get:
                 self.assertIsNone(match.candidate(event))
             self.assertEqual(get.call_count, 2)  # mismatch/unsafe path never starts a work fallback
 
