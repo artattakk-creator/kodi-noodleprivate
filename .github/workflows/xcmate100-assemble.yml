@@ -1,0 +1,33 @@
+name: One-time verified XCMate 0.1.29.100 Pilot and NeoDark3 assembly
+on:
+  push:
+    branches: ["release/xcmate100-pilot-neodark3-20261119"]
+    paths:
+      - ".release-staging/xcmate100/**"
+permissions:
+  contents: write
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Reassemble and independently validate 6MB XCMate ZIP from staged verified shards
+        run: python3 .release-staging/xcmate100/assemble.py
+      - name: Verify Pilot/NeoDark3 package hashes and catalogs, while keeping regular channel unchanged
+        run: |
+          python3 tools/verify_neodark3_latest_only.py
+          git diff --exit-code -- addons.xml addons.xml.md5
+      - name: Publish two identical verified GitHub ZIPs on the release branch
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add online-test tools/verify_neodark3_latest_only.py
+          git rm -r .release-staging/xcmate100 .github/workflows/xcmate100-assemble.yml
+          git diff --cached --stat
+          git commit -m "release: publish verified XCMate .100 to Pilot and NeoDark3 only"
+          git push origin HEAD:release/xcmate100-pilot-neodark3-20261119
