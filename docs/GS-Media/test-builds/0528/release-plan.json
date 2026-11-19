@@ -1,0 +1,56 @@
+{
+  "addon": "script.gsmedia.setup",
+  "base_package_sha256": "1d74c566edfc20a122bb8767c17bed915d90966fb5e33e47298aa257500e2872",
+  "channels": {
+    "neodark3": {
+      "catalog": "online-test/addons.xml",
+      "catalog_md5": "online-test/addons.xml.md5",
+      "catalog_version": "0.5.28",
+      "href": "script.gsmedia.setup-0.5.28.zip",
+      "index": "online-test/index.html",
+      "sha256_file": "online-test/script.gsmedia.setup-0.5.28.zip.sha256",
+      "zip": "online-test/script.gsmedia.setup-0.5.28.zip"
+    },
+    "pilot": {
+      "catalog": "online-test/addons.xml",
+      "catalog_md5": "online-test/addons.xml.md5",
+      "catalog_version": "0.5.28",
+      "sha256_file": "online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.28.zip.sha256",
+      "zip": "online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.28.zip"
+    },
+    "regular": {
+      "catalog": "addons.xml",
+      "catalog_md5": "addons.xml.md5",
+      "catalog_version": "0.5.28",
+      "href": "script.gsmedia.setup/script.gsmedia.setup-0.5.28.zip",
+      "index": "index.html",
+      "sha256_file": "script.gsmedia.setup/script.gsmedia.setup-0.5.28.zip.sha256",
+      "zip": "script.gsmedia.setup/script.gsmedia.setup-0.5.28.zip"
+    }
+  },
+  "device_acceptance_confirmed": false,
+  "displaced_draft": 428,
+  "files": {
+    "addons.xml": "2c5904da88cfb102e363d90ced2a36ceecdc0c3935b7c83e695e0e8c1309d4d8",
+    "addons.xml.md5": "66552d7f38012deb7e64fda130a8a8b745ce17309422231136f55bf00ca160f3",
+    "index.html": "ca14c8f10003575f9c9a00d28945bd9adabb4a4b73a43d7770f98f290a3afcfc",
+    "online-test/addons.xml": "91a5e81fc4c3bea02529f49e7f09743b0b1eb9d6ae9750a88b45ede4d8def06f",
+    "online-test/addons.xml.md5": "cf8e267f30cecf19dc417402b15e5b0b21981e2dbcec6d38471010aaa396d01e",
+    "online-test/index.html": "0b063d5355db9c3dfa88257a4965cbb767380d7195706cedec420e40196b6078",
+    "online-test/manifest.json": "7021f91bb4d3d9a6258d3517b2a05909c7e605cedd02fc50263d7917099ce0b2",
+    "online-test/script.gsmedia.setup-0.5.28.zip": "bbe7e87e384b1336d94cd79eae7332384d9a079d340769c1217c87d7d799133e",
+    "online-test/script.gsmedia.setup-0.5.28.zip.sha256": "174761e5705b110355cd3615593716d29ba3289277ba8d38db12c8b35402d9b0",
+    "online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.28.zip": "bbe7e87e384b1336d94cd79eae7332384d9a079d340769c1217c87d7d799133e",
+    "online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.28.zip.sha256": "174761e5705b110355cd3615593716d29ba3289277ba8d38db12c8b35402d9b0",
+    "script.gsmedia.setup/script.gsmedia.setup-0.5.28.zip": "bbe7e87e384b1336d94cd79eae7332384d9a079d340769c1217c87d7d799133e",
+    "script.gsmedia.setup/script.gsmedia.setup-0.5.28.zip.sha256": "174761e5705b110355cd3615593716d29ba3289277ba8d38db12c8b35402d9b0"
+  },
+  "live_base_version": "0.5.26",
+  "package_bytes": 134735,
+  "package_members": 41,
+  "package_sha256": "bbe7e87e384b1336d94cd79eae7332384d9a079d340769c1217c87d7d799133e",
+  "published": false,
+  "release_identity": "gsmedia-setup-0528-catalog-496",
+  "source_base": "8f8569294f29a50ba99a23e2de58ecae846bcfed",
+  "version": "0.5.28"
+}
