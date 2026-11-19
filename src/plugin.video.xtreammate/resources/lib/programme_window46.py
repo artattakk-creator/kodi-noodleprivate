@@ -79,7 +79,10 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
      value['_detail93']=True
      if self.selected and self.selected.get('_no_art_request68'):value['_no_art_request68']=True
      logos88=__import__('logo_manifest86').read(self.portal,[self.channel])
-     value['logo']=logos88.get(str(self.channel.get('sid')),local_art(self.channel)['thumb']);request_logos([self.channel])
+     verified_logo=logos88.get(str(self.channel.get('sid')),'')
+     value['logo']=verified_logo or local_art(self.channel)['thumb'];request_logos([self.channel])
+     if __import__('agent_programme100').typed(value):
+      value['_fallback499']=verified_logo or __import__('standard_hero100').image()
      from programme_art46 import cached
      from programme_requests68 import request
      value['_art68']=__import__('programme_preview67').shared(value) or cached(value)
@@ -149,10 +152,12 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
    if art.get('source') in (None,'','placeholder'):
     from programme_requests68 import request
     request(self.event,priority=True)
-   signature=(art.get('image'),art.get('code'),art.get('source'),art.get('match'))
+   ready499=__import__('programme_image69').eligible(art,self.event)
+   image499=art.get('image') if ready499 else self.event.get('_fallback499','')
+   signature=(image499,art.get('code'),art.get('source'),art.get('match'))
    if signature!=self._art_signature:
-    self._art_signature=signature;self.getControl(110).setImage(art.get('image') if __import__('programme_image69').eligible(art,self.event) else '')
-    self.getControl(110).setVisible(__import__('programme_image69').eligible(art,self.event))
+    self._art_signature=signature;self.getControl(110).setImage(image499)
+    self.getControl(110).setVisible(bool(image499))
     from programme_pipeline77 import note
     note(self.event,'RENDER_CONTROL','IMAGE_REQUESTED' if __import__('programme_image69').eligible(art,self.event) else 'SOURCE_MISSING',control=110,visible=__import__('programme_image69').eligible(art,self.event))
     from programme_flow48 import trace
