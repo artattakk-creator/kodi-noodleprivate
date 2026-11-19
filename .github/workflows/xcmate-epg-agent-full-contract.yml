@@ -1,0 +1,34 @@
+name: XCMate EPG Agent full private transport contract
+on:
+  push:
+    paths:
+      - 'src/plugin.video.xtreammate/resources/lib/epg_agent_github.py'
+      - 'tests/test_xcmate_epg_agent_github_full.py'
+      - '.github/workflows/xcmate-epg-agent-full-contract.yml'
+  pull_request:
+    paths:
+      - 'src/plugin.video.xtreammate/resources/lib/epg_agent_github.py'
+      - 'tests/test_xcmate_epg_agent_github_full.py'
+      - '.github/workflows/xcmate-epg-agent-full-contract.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  synthetic-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Syntax and synthetic private-EPG transport contract
+        run: |
+          python -m py_compile src/plugin.video.xtreammate/resources/lib/epg_agent_github.py
+          python -m unittest discover -s tests -p 'test_xcmate_epg_agent_github_full.py' -v
+      - name: Explicit gate
+        run: |
+          echo "SYNTHETIC_CONTRACT_ONLY: no real XMLTV or device/identity/rights/Artwork QA."
+          echo "NO_RELEASE: only full private backed XMLTV + typed artwork + provider mappings may receive V1 approval."
