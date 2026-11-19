@@ -1,0 +1,37 @@
+name: GS Media Setup 0.5.28 cloud token import review
+on:
+  push:
+    branches: ['feat/gsmedia-0528-cloud-tmdb-token-import']
+  pull_request:
+    branches: [main]
+    paths:
+      - 'tools/gsmedia_setup0528/**'
+      - 'tools/build_gsmedia_setup_0528.py'
+      - 'tests/test_gsmedia_cloud_import_0528.py'
+      - '.github/workflows/gsmedia528-cloud-import-review.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  cloud-import528:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Security, no-overwrite, package integrity tests
+        run: python -m unittest discover -s tests -p test_gsmedia_cloud_import_0528.py -v
+      - name: Build review ZIP and SHA256 without publishing
+        run: python tools/build_gsmedia_setup_0528.py --out "$RUNNER_TEMP/installer528"
+      - name: Verify no production catalog / installed package changes
+        run: |
+          git diff --exit-code -- addons.xml addons.xml.md5 online-test/addons.xml online-test/addons.xml.md5 online-test/manifest.json script.gsmedia.setup/script.gsmedia.setup-0.5.26.zip
+          test -f "$RUNNER_TEMP/installer528/script.gsmedia.setup-0.5.28.zip"
+          test -f "$RUNNER_TEMP/installer528/script.gsmedia.setup-0.5.28.zip.sha256"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gsmedia0528-cloud-token-import-review-only
+          path: ${{ runner.temp }}/installer528/
+          retention-days: 14
