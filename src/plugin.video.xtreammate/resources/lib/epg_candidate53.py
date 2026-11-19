@@ -92,8 +92,11 @@ class Candidates:
     def channels(self,portal,identity,query,offset,cancel):
         if self.catalogue is None or self.catalogue[0]!=identity:
             self.catalogue=(identity,scan(portal,identity,cancel=cancel))
-        from mapping_search482 import matches
+        from mapping_search482 import matches,rank
         rows=[r for r in self.catalogue[1] if matches(r,query)]
+        if query:
+            score=rank(query)
+            rows.sort(key=lambda row:(score(row['id'],row['name']),row['id']))
         return rows[offset:offset+100]
     def programmes(self,portal,identity,cid,cancel):
         if self.events is None or self.events[:2]!=(identity,cid):

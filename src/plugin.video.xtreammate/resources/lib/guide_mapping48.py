@@ -140,6 +140,7 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
         self.rows=[];self.getControl(200).reset()
         self.getControl(405).setEnabled(False);self.getControl(404).setEnabled(False)
         from epg_binding48 import channels
+        from mapping_search482 import variant
         def ready(rows):
             self.getControl(900).setVisible(True)
             if not rows and self.offset:
@@ -147,7 +148,13 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
             self.rows=rows;self.candidate=None;self.previewed=False
             self.getControl(405).setEnabled(False);self.getControl(404).setEnabled(False)
             control=self.getControl(200);control.reset()
-            control.addItems([xbmcgui.ListItem(r['name'],label2='EPG-ID: '+r['id']) for r in rows])
+            items=[]
+            for row in rows:
+                item=xbmcgui.ListItem(row['name'])
+                quality,region=variant(row['name'],row['id'])
+                item.setLabel2(' · '.join(value for value in (quality,region,'EPG-ID '+row['id']) if value))
+                items.append(item)
+            control.addItems(items)
             self._status482('CHANNELS_READY',str(len(rows))+' lokale Treffer. OK zeigt die Vorschau.') if rows else self._status482('NO_MATCH')
             self.setFocusId(200 if rows else 401)
         source=self.source['id'];query=self.query;offset=self.offset;stop=threading.Event()

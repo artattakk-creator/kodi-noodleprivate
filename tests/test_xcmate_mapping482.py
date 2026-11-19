@@ -63,6 +63,42 @@ class Mapping482(unittest.TestCase):
                 self.assertEqual({r['id'] for r in local},{r['id'] for r in cold})
                 self.assertTrue(local)
 
+    def test_source_catalogues_rank_core_station_before_other_families_and_regions(self):
+        names=[('a-zdfneo.de','ZDFneo'),('b-zdfinfo.de','ZDFinfo'),
+               ('c-zdf.at','AT | ZDF HD'),('d-zdf.de','ZDF SD'),
+               ('y-zdf.de','ZDF HD'),('z-zdf.de','ZDF HD (Joyn)')]
+        self.f.binding.stage_channels('p','variant100',self.f.bid,names)
+        self.f.binding.finish_channels('p','variant100',True)
+        self.d.cold53.catalogue=(self.f.bid,[dict(id=cid,name=name) for cid,name in sorted(names)])
+        for query in ('DE | Joyn ZDF HD','DE | ZDF HEVC'):
+            local=self.f.binding.channels('p',self.f.bid,query,strict482=True)
+            ram=self.d.cold53.channels(self.f.portal,self.f.bid,query,0,lambda:False)
+            self.assertEqual([r['id'] for r in local],[r['id'] for r in ram])
+            self.assertEqual({r['id'] for r in local[:3]},{'d-zdf.de','y-zdf.de','z-zdf.de'})
+            if query.endswith('HD'):
+                self.assertEqual({r['id'] for r in local[:2]},{'y-zdf.de','z-zdf.de'})
+            self.assertEqual({r['id'] for r in local[-2:]},{'a-zdfneo.de','b-zdfinfo.de'})
+
+    def test_existing_guide_archive_without_named_catalogue_can_find_exact_region_channel(self):
+        db=self.f.store.connect(write=True)
+        try:
+            with db:
+                for cid in ('ATV2.at','ATV.at'):
+                    db.execute('INSERT INTO guide44_inputs VALUES(?,?,?,?,?,?,?,?)',
+                               ('p',self.f.bid,cid,self.f.now-60,self.f.now+600,'Show','',2))
+        finally:db.close()
+        rows=self.f.binding.channels('p',self.f.bid,'AUS | ATV 2 HD',strict482=True)
+        self.assertEqual([row['id'] for row in rows],['ATV2.at'])
+
+    def test_candidate_rows_display_only_real_quality_and_region_evidence(self):
+        self.f.binding.stage_channels('p','labels100',self.f.bid,[('british.de','Kabel Eins HD')])
+        self.f.binding.finish_channels('p','labels100',True)
+        self.d.query='Kabel Eins';self.d._channels();self.pump()
+        label=getattr(self.d.getControl(200).getListItem(0),'label2','')
+        self.assertIn('british.de',label)
+        self.assertIn('HD',label)
+        self.assertIn('DE',label)
+
     def test_explicit_cold_load_can_be_retried_after_source_timeout(self):
         self.d.candidate=None;self.d.query='unindexed482';self.d._channels();self.pump()
         self.assertIn('NO_LOCAL_INDEX',self.d.getControl(103).text)
