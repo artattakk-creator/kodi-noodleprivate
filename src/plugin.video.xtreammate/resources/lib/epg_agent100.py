@@ -96,6 +96,8 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
                 current.update(remote="AVAILABLE", generation=payload["generation"],
                                channels=payload["channels"], programmes=payload["programmes"],
                                artwork_records=payload["artwork_records"], etag=payload["etag"])
+            elif status == "NOT_MODIFIED":
+                current.update(remote="AVAILABLE", etag=payload["etag"])
             elif status == "PRIVATE_PENDING":
                 current.update(remote=status, code=status, etag="")
         _save(directory, current)
@@ -150,6 +152,24 @@ def _prune(directory, current):
         if candidate_path(directory, generation) != folder:
             continue
         shutil.rmtree(folder, ignore_errors=True)
+
+
+def installed_source(pid):
+    """Resolve the last locally verified Agent generation for an explicit preview."""
+    if not enabled():
+        return None
+    from epg_agent100_art import INDEX
+    from epg_agent_github import XMLTV_FILE
+    directory = profile()
+    receipt = state(directory).get("portals", {}).get(str(pid), {})
+    folder = candidate_path(directory, receipt.get("generation"))
+    if folder is None:
+        return None
+    index = folder / INDEX
+    if index.is_symlink() or not index.is_file():
+        return None
+    return dict(id=SOURCE_ID, name=SOURCE_NAME, local=True, enabled=True,
+                uri=str(folder / XMLTV_FILE), _agent_artwork=str(index))
 
 
 def run(portals, cancel):

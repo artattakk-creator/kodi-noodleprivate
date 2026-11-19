@@ -80,6 +80,22 @@ class AgentCycleTests(unittest.TestCase):
         self.assertEqual(state["portals"]["synthetic"]["generation"], "b" * 64)
         self.assertEqual(len(self.fetch_calls), 2)
 
+    def test_offline_then_304_restores_current_status_without_import(self):
+        from epg_agent_github import DeliveryError
+        self.run_at(100_000)
+        fetch = self.fetch
+        def offline(*args, **options):
+            raise DeliveryError("PRIVATE_ENDPOINT_NETWORK_ERROR")
+        self.fetch = offline
+        failed = self.run_at(186_400)
+        self.assertEqual(failed["code"], "PRIVATE_ENDPOINT_NETWORK_ERROR")
+        self.assertEqual(failed["portals"]["synthetic"]["verified"], 29)
+        self.fetch = fetch
+        self.status = "NOT_MODIFIED"
+        restored = self.run_at(272_800)
+        self.assertEqual(restored["code"], "CURRENT")
+        self.assertEqual(len(self.installs), 1)
+
     def test_manual_check_is_consumed_once_without_dropping_existing_data(self):
         self.run_at(100_000)
         self.status = "UNCHANGED"
