@@ -42,7 +42,8 @@ class Release96(unittest.TestCase):
         import stabilization_contract96 as contract
         delta = contract.delta96()
         name, change = next(iter(delta['modules'].items()))
-        source = (ROOT/name).read_bytes()
+        from stabilization_contract100 import without100
+        source = without100((ROOT/name).read_bytes(), name)
         with mock.patch('subprocess.check_output', side_effect=AssertionError('NO_HISTORY_FOR_NORMALIZER')):
             self.assertEqual(contract.without96(source, name), change['old'].encode())
         corrupt = json.loads(json.dumps(delta)); corrupt['modules'][name]['old'] += '\nCORRUPTED\n'

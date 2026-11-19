@@ -48,7 +48,8 @@ class Inventory95(Fixture,unittest.TestCase):
  def setUp(self):
   super().setUp();self.g=importlib.import_module('guide_store');self.g.connect().close();self.m=importlib.import_module('epg_inventory95')
  def seed(self,sources=2,each=3):
-  with sqlite3.connect(self.g.path()) as db:
+  from contextlib import closing
+  with closing(sqlite3.connect(self.g.path())) as db, db:
    for s in range(sources):db.executemany('INSERT INTO guide44_inputs VALUES(?,?,?,?,?,?,?,?)',(('p',str(s),'c'+str(i//1000),self.now+i*10,self.now+i*10+60,'SYNTHETIC','',s) for i in range(each)))
  def test_120000_stored_rows_are_read_in_indexed_source_pages(self):
   self.seed(each=60000);r=self.m.collect('p',self.g.path())
