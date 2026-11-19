@@ -1,0 +1,94 @@
+name: TMDB read-token and poster smoke test (manual, no release)
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  tmdb:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - name: Check real TMDB API authentication and image CDN (no repository checkout)
+        shell: bash
+        env:
+          TMDB_TOKEN: ${{ secrets.TMDB_READ_ACCESS_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          import sys
+          import urllib.error
+          import urllib.request
+
+          class BlockRedirect(urllib.request.HTTPRedirectHandler):
+              def redirect_request(self, request, fp, code, msg, headers, newurl):
+                  return None
+
+          opener = urllib.request.build_opener(BlockRedirect)
+          token = os.environ.get('TMDB_TOKEN', '')
+          if not token:
+              print('TMDB_SECRET_MISSING')
+              sys.exit(1)
+          if (len(token) > 4096 or token.count('.') != 2 or
+                  re.fullmatch(r'[A-Za-z0-9_.-]+', token) is None):
+              print('TMDB_TOKEN_FORMAT_INVALID')
+              sys.exit(1)
+
+          def fetch(url, *, authenticated=False, byte_limit=250000):
+              headers = {'User-Agent': 'GS-Media-TMDB-smoke/1.0',
+                         'Accept': 'application/json' if authenticated else 'image/jpeg,image/png,image/webp'}
+              if authenticated:
+                  if not url.startswith('https://api.themoviedb.org/3/'):
+                      raise ValueError('AUTH_HOST_MISMATCH')
+                  headers['Authorization'] = 'Bearer ' + token
+              request = urllib.request.Request(url, headers=headers, method='GET')
+              with opener.open(request, timeout=12) as response:
+                  if response.status != 200:
+                      raise ValueError('UNEXPECTED_STATUS')
+                  raw = response.read(byte_limit + 1)
+                  if len(raw) > byte_limit:
+                      raise ValueError('RESPONSE_LIMIT')
+                  return raw, response.headers.get('Content-Type', '').split(';', 1)[0].lower()
+
+          try:
+              raw, content_type = fetch('https://api.themoviedb.org/3/configuration', authenticated=True)
+              config = json.loads(raw)
+              if not isinstance(config.get('images'), dict):
+                  raise ValueError('CONFIGURATION_INVALID')
+              print('TMDB_AUTH_CONFIGURATION_OK')
+
+              raw, content_type = fetch('https://api.themoviedb.org/3/movie/550?language=de-DE',
+                                        authenticated=True)
+              item = json.loads(raw)
+              path = item.get('poster_path')
+              if not isinstance(path, str) or not re.fullmatch(r'/[A-Za-z0-9_/-]+[.]((jpg)|(png)|(webp))', path):
+                  raise ValueError('POSTER_PATH_INVALID')
+              print('TMDB_MOVIE_METADATA_OK')
+
+              url = 'https://image.tmdb.org/t/p/w185' + path
+              raw, mime = fetch(url, byte_limit=2000000)
+              if mime not in ('image/jpeg', 'image/png', 'image/webp'):
+                  raise ValueError('POSTER_MIME_INVALID')
+              signature_ok = (raw.startswith(bytes.fromhex('ffd8ff')) or
+                              raw.startswith(bytes.fromhex('89504e470d0a1a0a')) or
+                              (raw.startswith(b'RIFF') and raw[8:12] == b'WEBP'))
+              if not signature_ok or len(raw) < 100:
+                  raise ValueError('POSTER_BYTES_INVALID')
+              print('TMDB_POSTER_CDN_OK')
+              print('TMDB_SMOKE_PASS; KODI_ANDROID_NOT_TESTED')
+          except urllib.error.HTTPError as error:
+              print('TMDB_HTTP_' + str(error.code))
+              sys.exit(1)
+          except Exception as error:
+              # Error classes/codes only. Never print URL, request, response or token.
+              code = str(error) if isinstance(error, ValueError) else type(error).__name__
+              if code not in ('AUTH_HOST_MISMATCH', 'UNEXPECTED_STATUS', 'RESPONSE_LIMIT',
+                              'CONFIGURATION_INVALID', 'POSTER_PATH_INVALID',
+                              'POSTER_MIME_INVALID', 'POSTER_BYTES_INVALID'):
+                  code = type(error).__name__
+              print('TMDB_SMOKE_FAILED_' + code)
+              sys.exit(1)
+          PY
