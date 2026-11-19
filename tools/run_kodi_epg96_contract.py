@@ -9,6 +9,7 @@ def main(package_inspector=None):
     parser.add_argument('--report-dir',type=Path,required=True)
     parser.add_argument('--resolution',default='1280x720',choices=['1280x720','1920x1080']);parser.add_argument('--addon-zip',type=Path,required=True)
     parser.add_argument('--mapping482',action='store_true')
+    parser.add_argument('--manager100',action='store_true')
     parser.add_argument('--ca-bundle',type=Path,default=Path('/etc/ssl/certs/ca-certificates.crt'))
     args=parser.parse_args();report=args.report_dir.resolve();report.mkdir(parents=True,exist_ok=True)
     root=Path(__file__).resolve().parents[1];context=root/'tools/kodi_epg94_host'
@@ -35,7 +36,9 @@ def main(package_inspector=None):
         run('run','-d','--name',name,'--mount','type=bind,src='+str(context)+',dst=/work,readonly',
             '--mount','type=bind,src='+str(unpacked/'plugin.video.xtreammate')+',dst=/xcmate,readonly',
             '--mount','type=bind,src='+str(args.ca_bundle.resolve())+',dst=/run/system-ca.pem,readonly',
-            '-e','XCMATE_RES94='+args.resolution,'-e','XCMATE_MAPPING482='+('1' if args.mapping482 else '0'),'-e','SSL_CERT_FILE=/run/system-ca.pem','-e','REQUESTS_CA_BUNDLE=/run/system-ca.pem',image,'sh','/work/start.sh',stdout=subprocess.DEVNULL)
+            '-e','XCMATE_RES94='+args.resolution,'-e','XCMATE_MAPPING482='+('1' if args.mapping482 else '0'),
+            '-e','XCMATE_MANAGER100='+('1' if args.manager100 else '0'),
+            '-e','SSL_CERT_FILE=/run/system-ca.pem','-e','REQUESTS_CA_BUNDLE=/run/system-ca.pem',image,'sh','/work/start.sh',stdout=subprocess.DEVNULL)
         created=True
         with (report/'epg94.json').open('w') as output:
             run('exec',name,'python3','/work/probe.py',stdout=output)
@@ -50,7 +53,11 @@ def main(package_inspector=None):
                     raw482=(report/filename).read_bytes()
                     if len(raw482)<=2*1024*1024:
                         print('PNG482 '+filename+' '+hashlib.sha256(raw482).hexdigest()+' '+base64.b64encode(raw482).decode(),flush=True)
-        for name94 in ('epg94-downloading.png','epg94-completed.png'):
+        screenshots=['epg94-downloading.png','epg94-completed.png']
+        if args.manager100:
+            assert result['running_report_screenshot']=='epg94-running-report.png'
+            screenshots.append(result['running_report_screenshot'])
+        for name94 in screenshots:
             run('cp',name+':/root/'+name94,str(report/name94))
             print('EPG94_SCREENSHOT '+name94+' '+base64.b64encode((report/name94).read_bytes()).decode(),flush=True)
         print(json.dumps(result))

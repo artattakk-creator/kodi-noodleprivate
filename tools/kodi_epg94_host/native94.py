@@ -1,5 +1,5 @@
 """Actual Kodi WindowXML/progress/readback. Synthetic loopback XMLTV only."""
-import gzip,json,sys,threading,time,traceback,hashlib,faulthandler
+import gzip,json,os,sys,threading,time,traceback,hashlib,faulthandler
 from pathlib import Path
 from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 import xbmc,xbmcgui,xbmcaddon
@@ -52,7 +52,8 @@ try:
  optional_before=epg_sources.configuration('epg94')['sources']
  assert len(optional_before)==1 and optional_before[0]['enabled'] is False
  manager._load();wait(lambda:manager._pending_future is None,'OPTIONAL_SOURCE_LIST_NOT_READY')
- assert len(manager.rows)==2 and manager.rows[1]['enabled'] is False
+ assert [row['id'] for row in manager.rows[:2]]==['provider',__import__('guide_publish44').source_id(optional,1)]
+ assert manager.rows[1]['enabled'] is False
  portal=saved
  original=utils.http_stream
  def worker_only(*a,**kw):
@@ -73,6 +74,25 @@ try:
  # Native RPC drives focus concurrently while this owner pumps.
  wait(lambda:Path('/root/epg94-input-complete').exists(),'NATIVE_INPUT_NOT_COMPLETED',10)
  report['list_identity_before']=len(manager.rows)
+ if os.environ.get('XCMATE_MANAGER100')=='1':
+  manager.setFocusId(403);xbmc.executebuiltin('Action(Select)',wait=False)
+  wait(lambda:manager.mode=='report','ACTIVE_REPORT_NOT_VISIBLE')
+  assert manager._report_text.startswith('RUNNING')
+  assert not xbmc.getCondVisibility('Control.IsVisible(410)')
+  assert not xbmc.getCondVisibility('Control.IsVisible(412)')
+  wait(lambda:xbmc.getCondVisibility('Control.IsVisible(300)'),'REPORT_TEXT_NOT_VISIBLE')
+  from PIL import ImageGrab
+  def report_pixels_visible():
+   frame=ImageGrab.grab(xdisplay=':99')
+   width,height=frame.size
+   box=tuple(round(value*scale) for value,scale in zip((52,180,1200,564),(width/1280,height/720,width/1280,height/720)))
+   return sum(frame.crop(box).convert('L').histogram()[160:])>150
+  wait(report_pixels_visible,'REPORT_TEXT_PIXELS_MISSING',8)
+  report['running_report_screenshot']=shot('epg94-running-report')
+  assert manager.getFocusId()==409
+  xbmc.executebuiltin('Action(Back)',wait=False)
+  wait(lambda:manager.mode=='sources','REPORT_BACK_DID_NOT_RESTORE_LIST')
+  assert manager.getFocusId()==403
  wait(lambda:epg_jobs94.read('epg94').get('state') in epg_jobs94.TERMINAL,'IMPORT_NOT_COMPLETED',60)
  job=epg_jobs94.read('epg94');assert job['state']=='DONE',job
  wait(lambda:manager._job94.get('state')=='DONE','TERMINAL_UI_NOT_UPDATED')

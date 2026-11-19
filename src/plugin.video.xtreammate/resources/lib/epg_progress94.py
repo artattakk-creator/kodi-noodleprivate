@@ -56,7 +56,7 @@ def summary(job):
 
 def report(job, names):
     from epg_report53 import stamp
-    lines=[job['state']+' · '+summary(job)]
+    lines=[job['state']]
     if job.get('ack'):
         lines.append('Dienstübernahme bestätigt (SERVICE_ACK) · '+stamp(job['ack']))
     if job['state'] in ('QUEUED','RUNNING','CANCELLING'):
