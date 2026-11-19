@@ -15,7 +15,8 @@ XML = b'<tv><channel id="abc"><display-name>ABC</display-name></channel><program
 GZIP = gzip.compress(XML, mtime=0)
 DIGEST = hashlib.sha256(GZIP).hexdigest()
 READY = {'schema_version': 1, 'status': 'PRIVATE_READY', 'file': 'xcmate-epg.xml.gz',
-         'bytes': len(GZIP), 'sha256': DIGEST, 'channel_count': 1, 'programme_count': 1}
+         'bytes': len(GZIP), 'sha256': DIGEST, 'channel_count': 1, 'programme_count': 1,
+         'generated_at_utc': '2026-11-19T07:00:00Z'}
 TOKEN = 'finegrained_readonly_example_token'
 
 
@@ -96,6 +97,11 @@ class GitHubClientTest(unittest.TestCase):
 
     def test_legacy_ready_schema_rejected(self):
         self.manifest['schema_version'] = 2
+        b = v1.sync_once(self.t.name, TOKEN, self.fetch)
+        self.assertEqual(b['status'], 'MANIFEST_INVALID')
+
+    def test_missing_timestamp_rejected(self):
+        self.manifest.pop('generated_at_utc')
         b = v1.sync_once(self.t.name, TOKEN, self.fetch)
         self.assertEqual(b['status'], 'MANIFEST_INVALID')
 
