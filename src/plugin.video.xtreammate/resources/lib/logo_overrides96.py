@@ -144,8 +144,10 @@ def save(portal, row, body, *, confirmed=False):
     if confirmed is not True:raise ValueError('LOGO_CONFIRMATION_REQUIRED')
     width, height = validated(body)
     from profile_transaction import writing
-    from logo_store89 import atomic, capacity
+    from logo_store89 import atomic, capacity, thumbnail, MAX_ASSET
     from artwork_backend import LocalArtworkStorage
+    if len(body)>MAX_ASSET or width>512 or height>256:
+        body, width, height = thumbnail(body)
     tag = identity(portal, row);digest = hashlib.sha256(body).hexdigest()
     name = digest + ('.png' if body.startswith(b'\x89PNG') else '.jpg')
     with writing(timeout=.2):

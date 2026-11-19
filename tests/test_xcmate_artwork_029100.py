@@ -254,3 +254,17 @@ class Artwork100(Fixture, unittest.TestCase):
             self.assertIn(field, button.call_args.kwargs)
             with Image.open(button.call_args.kwargs[field]) as image:
                 self.assertEqual(image.convert('RGBA').getpixel((0, 0))[3], 0)
+
+    def test_new_manual_logo_is_compact_without_distorting_aspect_or_alpha(self):
+        from io import BytesIO
+        from PIL import Image
+        from logo_overrides96 import save, read
+
+        stream = BytesIO()
+        Image.new('RGBA', (1000, 500), (80, 130, 180, 110)).save(stream, format='PNG')
+        row = {'sid':'1'}
+        saved = save(self.portal, row, stream.getvalue(), confirmed=True)
+        self.assertEqual(read(self.portal, [row])['1'], saved)
+        with Image.open(saved) as stored:
+            self.assertEqual(stored.size, (512,256))
+            self.assertEqual(stored.convert('RGBA').getpixel((45,20))[3], 110)
