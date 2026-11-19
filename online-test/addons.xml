@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons><addon id="plugin.video.xtreammate"
        name="XCMate"
-       version="0.1.29.99"
+       version="0.1.29.100"
        provider-name="GS Media">
 
   <requires>
@@ -38,7 +38,7 @@
     <forum>https://forum.kodi.tv</forum>
     <website>https://kodi.tv</website>
     <source>https://github.com/artattakk-creator/kodi-noodleprivate</source>
-    <news>0.1.29.99: Einmaliger, bestätigter Wiederaufbau der Kodi-Einstellungen mit Originaldateisicherung und Prüfung nach Neustart. Bildfallback auf bereits zugeordnete Backdrops und lokal auf Poster wiederhergestellt. Separater Reparaturkandidat.</news>
+    <news>0.1.29.100: Entwicklungskandidat mit optionalem XCMate EPG Agent, überarbeiteter EPG-Navigation und Home-Widgets. Geräteabnahme und Freigabe des privaten Feeds stehen aus.</news>
     <assets>
       <icon>icon-81da1003a2753ec6.png</icon>
       <fanart>resources/media/lightweight_splash.jpg</fanart>
