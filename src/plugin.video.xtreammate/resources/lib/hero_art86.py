@@ -12,7 +12,7 @@ def classify(value):
   return None
  if role=='thumb' or width<960 or height<540 or not 1.3<=width/height<=2.5:return None
  if source in ('tmdb_movie','tmdb_series','agent_tmdb') and role=='backdrop':return ('hero_backdrop',-1 if manual else 0)
- if source in ('agent_tmdb','agent_tvmaze','agent_xmltv') and role in ('backdrop','episode_still'):
+ if source in ('agent_tmdb','agent_tvmaze','agent_xmltv') and role in ('backdrop','legacy_icon'):
   return ('hero_backdrop',1)
  if source in ('tmdb_episode','tvmaze_episode','xmltv_event','provider_event','user_local86') and role!='poster':
   return ('hero_backdrop',-1 if manual else 1)

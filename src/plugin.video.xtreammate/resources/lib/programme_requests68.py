@@ -53,7 +53,8 @@ def request(event,priority=False):
   tag=identity(value);slot=str(int(tag[:8],16)%SLOTS)
   from programme_status70 import since
   prior70=_read('request.'+slot)
-  record=dict(event=value,tag=tag,scope=scope(),at=int(time.time()//5)*5,priority=bool(priority),since70=since(prior70,tag),detail93=bool(event.get('_detail93')))
+  record=dict(event=value,tag=tag,scope=scope(),at=int(time.time()//5)*5,priority=bool(priority),since70=since(prior70,tag),detail93=bool(event.get('_detail93')),
+              view499=__import__('agent_programme100').view(event))
   __import__('programme_deadline80').retry_window(record,prior70)
   raw=json.dumps(record,separators=(',',':'),allow_nan=False)
   if len(raw.encode())>MAX_BYTES:return False
@@ -96,7 +97,9 @@ def status(event,code,art=None):
     for field69 in fields69:payload.pop(field69,None)
   for tag in set(tags):
    adjusted=dict(payload,scope69=tag) if payload.get('url_verified69') else dict(payload)
-   value=dict(tag=tag,scope=scope(),at=time.time(),code=code,art=adjusted,detail93=bool(event.get('_detail93')))
+   import agent_programme100 as roles499
+   value=dict(tag=tag,scope=scope(),at=time.time(),code=code,art=adjusted,detail93=bool(event.get('_detail93')),
+              view499=roles499.view(event),typed499=roles499.typed(event))
    raw=json.dumps(value,separators=(',',':'),allow_nan=False)
    if len(raw.encode())<=MAX_BYTES:_window().setProperty(PREFIX+'status.'+str(int(tag[:8],16)%SLOTS),raw)
  except (ImportError,AttributeError,RuntimeError,ValueError,TypeError,KeyError):pass
@@ -104,14 +107,22 @@ def status(event,code,art=None):
 def result(event,previous=None):
  """UI-safe status/art, bound to exact profile, event and source revision."""
  try:
+  import agent_programme100 as roles499
+  requested=roles499.view(event)
   locked89=__import__('programme_lock89').current(event)
-  if locked89:return locked89
+  if locked89 and roles499.manual(locked89):return locked89
+  from utils import setting_bool
+  role499=roles499.read(event,requested) if setting_bool('epg_agent_enabled',False) else None
+  if role499:return role499
+  if locked89 and roles499.fits(locked89,requested):return locked89
   pinned88=__import__('sticky_art88').read(event)
-  if pinned88:return pinned88
+  if pinned88 and roles499.fits(pinned88,requested):return pinned88
+  if not roles499.fits(previous,requested):previous=None
   tag=identity(event);value=_read('status.'+str(int(tag[:8],16)%SLOTS))
   from programme_status70 import valid,waiting
   if value.get('tag')!=tag or value.get('scope')!=scope() or not valid(value):return waiting(event,previous)
   art=value.get('art') or {}
+  if not roles499.fits(art,requested):return waiting(event,previous)
   terminal80=__import__('programme_deadline80').code(event,value.get('code'))
   if terminal80=='IMAGE_LOOKUP_TIMEOUT' and not __import__('programme_lastgood80').positive(event,previous):return dict(code=terminal80,source='placeholder')
   if value.get('code') in ('QUEUED','RUNNING') and __import__('programme_image69').eligible(previous,event):return previous
@@ -170,6 +181,8 @@ def drain(cancel=lambda:False):
    value=_read('request.'+str(slot));event=value.get('event')
    if not isinstance(event,dict) or value.get('scope')!=scope() or value.get('tag')!=identity(event):continue
    if not 0<=time.time()-float(value.get('at',0))<20:continue
+   requested=value.get('view499')
+   if requested in ('hero','details','card'):event=dict(event,_art_view499=requested)
    previous69=_read('status.'+str(int(value['tag'][:8],16)%SLOTS))
    if previous69.get('tag')==value['tag'] and previous69.get('scope')==scope():
     artifact69=previous69.get('art') or {}
@@ -178,7 +191,10 @@ def drain(cancel=lambda:False):
     if artifact69.get('code') in __import__('programme_revision85').REASONS and artifact69.get('until',0)>time.time():continue
     positive77=artifact69.get('source') not in (None,'','placeholder')
     ready77=not positive77 or __import__('programme_image69').eligible(artifact69,event)
-    detail_upgrade93=bool(value.get('detail93') and not previous69.get('detail93'))
+    import agent_programme100 as roles499
+    different_role=requested in roles499.VIEW_ROLE and (previous69.get('typed499') and requested!=previous69.get('view499')
+                      or artifact69.get('source') in roles499.SOURCES and not roles499.fits(artifact69,requested))
+    detail_upgrade93=bool(value.get('detail93') and not previous69.get('detail93')) or different_role
     if not detail_upgrade93 and ready77 and valid70(previous69) and artifact69.get('until',0)>time.time() and artifact69.get('policy69')==negative_scope({}) and not retry70(event,artifact69) and not __import__('programme_status70').legacy_negative(artifact69):continue
     if previous69.get('code') in ('QUEUED','RUNNING') and 0<=time.time()-previous69.get('at',0)<60:
      if value.get('priority') and previous69.get('code')=='QUEUED':
@@ -192,7 +208,7 @@ def drain(cancel=lambda:False):
    from tmdb_token61 import effective_tmdb_read_token,TokenError
    try:effective_tmdb_read_token()
    except TokenError:pass
-   policy=fingerprint(event)+('|detail93' if value.get('detail93') else '|home93');tag=value['tag'];now=time.monotonic()
+   policy=fingerprint(event)+'|'+str(value.get('view499') or ('details' if value.get('detail93') else 'hero'));tag=value['tag'];now=time.monotonic()
    with _lock:prior=_seen.get((tag,policy),-1e9)
    if now-prior<10:continue
    reader=Reader(portal['id'])
@@ -231,6 +247,7 @@ def drain(cancel=lambda:False):
      status(current,'TMDB_LOOKUP_DISABLED')
      mark_seen(tag,policy,now)
      continue
+   if requested in ('hero','details','card'):current['_art_view499']=requested
    if value.get('detail93'):current['_detail93']=True
    accepted=enqueue(current,allow_lookup=allow,local_image63=setting_bool('programme_art_local69',False),priority68=2 if value.get('priority') else False)
    mark_seen(tag,policy,now if accepted else now-8)

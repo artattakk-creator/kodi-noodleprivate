@@ -27,11 +27,12 @@ def _work():
     from programme_art46 import cached
     complete69=event.get('pid')==str(portal['id']) and event.get('sid')==str(channel.get('sid',channel.get('stream_id',''))) and event.get('code') in ('LOCAL_EVENT','CACHED_EVENT') and event.get('key')
     value=dict(event) if complete69 else describe(portal,channel,event,event.get('canonical46',event.get('canonical','')),event.get('revision68',event.get('revision')))
-    art=cached(value)
+    value['_detail93']=True
     from programme_requests68 import request,result
-    if not eligible(art) and not event.get('_no_art_request68'):request(dict(value,_detail93=True),priority=True)
-    art=result(value,art)
-    art=dict(art) if __import__('programme_image69').eligible(art,value) else {}
+    from programme_image69 import eligible as eligible_for_event
+    art=result(value,cached(value))
+    if not eligible_for_event(art,value) and not event.get('_no_art_request68'):request(value,priority=True)
+    art=dict(art) if eligible_for_event(art,value) else {}
     if art:
      from programme_requests68 import identity
      with _lock:
@@ -81,6 +82,10 @@ class Preview:
   if signature67==self._painted67:return
   self._painted67=signature67;self._hidden67=not real;self._source_hidden67=not real
   if real:self.image.setImage(art['image'])
-  self.image.setVisible(real);self.logo.setVisible(real and str(art.get('source','')).startswith('tmdb'))
-  self.source.setLabel(('TMDB' if str(art.get('source','')).startswith('tmdb') else 'TVmaze' if str(art.get('source','')).startswith('tvmaze') else 'XMLTV' if art.get('source')=='xmltv_event' else 'Provider')+(' · Serienbild' if art.get('image_scope57')=='series_fallback' else '') if real else '')
+  origin=str(art.get('source',''))
+  tmdb=origin.startswith('tmdb') or origin=='agent_tmdb'
+  self.image.setVisible(real);self.logo.setVisible(real and tmdb)
+  source='TMDB' if tmdb else 'TVmaze' if origin.startswith('tvmaze') or origin=='agent_tvmaze' else 'XMLTV' if origin in ('xmltv_event','agent_xmltv') else 'Provider'
+  if origin.startswith('agent_'):source='XCMate EPG Agent · '+source
+  self.source.setLabel(source+(' · Serienbild' if art.get('image_scope57')=='series_fallback' else '') if real else '')
   self.source.setVisible(real)

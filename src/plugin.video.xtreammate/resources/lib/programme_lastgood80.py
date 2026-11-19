@@ -41,7 +41,11 @@ def note(event,reason):
 def choose(event,value,previous,check_file=False):
  if positive(event,value):
   if not check_file or file_valid(value):
-   if positive(event,previous) and (not check_file or file_valid(previous)):return __import__('event_art81').select(value,previous)
+   if positive(event,previous) and (not check_file or file_valid(previous)):
+    import agent_programme100 as roles499
+    if previous.get('role81')=='legacy_icon' and not roles499.manual(previous) and roles499.selected(value,roles499.view(event)):
+     return value
+    return __import__('event_art81').select(value,previous)
    return value
   note(event,'FILE_INVALID');value=__import__('programme_revision85').outcome(event,value,'FILE_INVALID')
  if positive(event,previous):
