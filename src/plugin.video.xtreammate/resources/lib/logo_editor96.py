@@ -20,11 +20,12 @@ def edit(portal, row):
     dialog = xbmcgui.Dialog()
     while True:
         choice = __import__('menu_icons45').select(dialog, row.get('name', 'Sender'),
-            ['Logo-Vorschau', 'Logo ersetzen', 'Original wiederherstellen', 'Zurück'])
+            ['Provider-Original ansehen', 'Logo ersetzen', 'Original wiederherstellen', 'Zurück', 'Aktives Logo ansehen'])
         if choice < 0 or choice == 3:return
         try:
-            if choice == 0:
-                value = job(lambda cancel, progress:__import__('logo_manifest86').read(portal, [row]))
+            if choice in (0, 4):
+                value = job(lambda cancel, progress:__import__('logo_manifest86').read(
+                    portal, [row], with_overrides=choice == 4, with_agent=choice == 4))
                 uri = value.get(str(row['sid']), '') if value else ''
                 if uri:_render(uri)
                 else:dialog.ok('Senderlogos', 'Kein verifiziertes Provider-Logo verfügbar.')

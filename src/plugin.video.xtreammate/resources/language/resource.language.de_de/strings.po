@@ -1662,16 +1662,16 @@ msgid "Standard (lightweight core)"
 msgstr "Standard (schlanke Grundinstallation)"
 
 msgctxt "#32637"
-msgid "Small / font12"
-msgstr "Klein / font12"
+msgid "Small"
+msgstr "Klein"
 
 msgctxt "#32638"
-msgid "Normal / font13"
-msgstr "Normal / font13"
+msgid "Normal"
+msgstr "Normal"
 
 msgctxt "#32639"
-msgid "Large / font16"
-msgstr "Groß / font16"
+msgid "Large"
+msgstr "Groß"
 
 msgctxt "#32640"
 msgid "Invalid colour. Use six RGB hex digits."
@@ -6005,8 +6005,8 @@ msgid "Valid existing token: {}"
 msgstr "Gültiger vorhandener Token: {}"
 
 msgctxt "#39016"
-msgid "Image EPG is disabled in storage settings. Enabling a source records the same explicit permission there."
-msgstr "Bild-EPG ist in der Speicherverwaltung ausgeschaltet. Das Aktivieren einer Quelle übernimmt dort dieselbe ausdrückliche Freigabe."
+msgid "Image EPG is disabled. Change this permission under Storage → Image EPG."
+msgstr "Bild-EPG ist ausgeschaltet. Die Freigabe lässt sich unter Speicher → Bild-EPG ändern."
 
 msgctxt "#39017"
 msgid "Restore the last verified backup? The damaged file is also preserved unchanged. Restart Kodi afterwards."
@@ -6247,3 +6247,50 @@ msgstr "Die Home-Auswahl konnte nicht gespeichert und überprüft werden."
 msgctxt "#38987"
 msgid "Home selection saved"
 msgstr "Home-Auswahl gespeichert"
+msgctxt "#39200"
+msgid "Background dimmer"
+msgstr "Hintergrund-Dimmer"
+
+msgctxt "#39201"
+msgid "Panel colour"
+msgstr "Panelfarbe"
+
+msgctxt "#39202"
+msgid "Heading colour"
+msgstr "Überschriftenfarbe"
+
+msgctxt "#39203"
+msgid "Selected text colour"
+msgstr "Farbe für markierten Text"
+
+msgctxt "#39204"
+msgid "Progress colour"
+msgstr "Fortschrittsfarbe"
+
+msgctxt "#39205"
+msgid "Warning colour"
+msgstr "Warnfarbe"
+
+msgctxt "#39206"
+msgid "Error colour"
+msgstr "Fehlerfarbe"
+
+msgctxt "#39207"
+msgid "Very large"
+msgstr "Sehr groß"
+
+msgctxt "#39208"
+msgid "Active design · {0}"
+msgstr "Aktives Design · {0}"
+
+msgctxt "#39209"
+msgid "Token missing or invalid"
+msgstr "Token fehlt oder ist ungültig"
+
+msgctxt "#39210"
+msgid "Saved · image EPG disabled"
+msgstr "Gespeichert · Bild-EPG aus"
+
+msgctxt "#39211"
+msgid "Installed designs"
+msgstr "Installierte Designs"

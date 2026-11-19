@@ -1662,16 +1662,16 @@ msgid "Standard (lightweight core)"
 msgstr "Standard (lightweight core)"
 
 msgctxt "#32637"
-msgid "Small / font12"
-msgstr "Small / font12"
+msgid "Small"
+msgstr "Small"
 
 msgctxt "#32638"
-msgid "Normal / font13"
-msgstr "Normal / font13"
+msgid "Normal"
+msgstr "Normal"
 
 msgctxt "#32639"
-msgid "Large / font16"
-msgstr "Large / font16"
+msgid "Large"
+msgstr "Large"
 
 msgctxt "#32640"
 msgid "Invalid colour. Use six RGB hex digits."
@@ -6005,8 +6005,8 @@ msgid "Valid existing token: {}"
 msgstr "Valid existing token: {}"
 
 msgctxt "#39016"
-msgid "Image EPG is disabled in storage settings. Enabling a source records the same explicit permission there."
-msgstr "Image EPG is disabled in storage settings. Enabling a source records the same explicit permission there."
+msgid "Image EPG is disabled. Change this permission under Storage → Image EPG."
+msgstr "Image EPG is disabled. Change this permission under Storage → Image EPG."
 
 msgctxt "#39017"
 msgid "Restore the last verified backup? The damaged file is also preserved unchanged. Restart Kodi afterwards."
@@ -6247,3 +6247,50 @@ msgstr "The Home selection could not be saved and verified."
 msgctxt "#38987"
 msgid "Home selection saved"
 msgstr "Home selection saved"
+msgctxt "#39200"
+msgid "Background dimmer"
+msgstr "Background dimmer"
+
+msgctxt "#39201"
+msgid "Panel colour"
+msgstr "Panel colour"
+
+msgctxt "#39202"
+msgid "Heading colour"
+msgstr "Heading colour"
+
+msgctxt "#39203"
+msgid "Selected text colour"
+msgstr "Selected text colour"
+
+msgctxt "#39204"
+msgid "Progress colour"
+msgstr "Progress colour"
+
+msgctxt "#39205"
+msgid "Warning colour"
+msgstr "Warning colour"
+
+msgctxt "#39206"
+msgid "Error colour"
+msgstr "Error colour"
+
+msgctxt "#39207"
+msgid "Very large"
+msgstr "Very large"
+
+msgctxt "#39208"
+msgid "Active design · {0}"
+msgstr "Active design · {0}"
+
+msgctxt "#39209"
+msgid "Token missing or invalid"
+msgstr "Token missing or invalid"
+
+msgctxt "#39210"
+msgid "Saved · image EPG disabled"
+msgstr "Saved · image EPG disabled"
+
+msgctxt "#39211"
+msgid "Installed designs"
+msgstr "Installed designs"

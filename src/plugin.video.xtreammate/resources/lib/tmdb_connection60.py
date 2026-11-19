@@ -24,8 +24,15 @@ def request(url, *, api=True, token='', cancel=lambda: False):
     from art_trace81 import request as trace81
     began81=time.monotonic()
     try:
-        result81=get(url, api=True, token=token, cancel=cancel)
-        return result81
+        load = lambda: get(url, api=True, token=token, cancel=cancel)
+        # Connection tests deliberately check the current authenticated response.
+        if parsed.path.rstrip('/') == '/3/configuration':
+            return load()
+        from artwork_request100 import metadata
+        from epg_handoff63 import profile_scope
+        from utils import setting
+        return metadata.request((profile_scope(), key, setting('tmdb_gateway_revision87', ''), url),
+                                load, cancel)
     except SourceError as error:
         trace81('SKIPPED_REASON',error.code,ms=round((time.monotonic()-began81)*1000))
         if error.code in ('HTTP_RATE_LIMIT', 'HTTP_AUTH'):

@@ -6,12 +6,12 @@ archive/metadata under the reserve. This is not current GUI pixel evidence.
 """
 import base64,hashlib,json,os,re,time
 _ram={};_due={}
-SOURCES=('tmdb_movie','tmdb_series','tmdb_episode','xmltv_event','provider_event','tvmaze_series','tvmaze_episode')
+SOURCES=('tmdb_movie','tmdb_series','tmdb_episode','xmltv_event','provider_event','tvmaze_series','tvmaze_episode','agent_tmdb','agent_tvmaze','agent_xmltv')
 def clean(value):
  if not isinstance(value,dict) or set(value)-{'source','match','role81','image_scope57','manual85','mapping_epoch85','source_hash88','dns_hash88','vote_average88','vote_count88'}:raise ValueError('CACHE88_PROOF')
  from programme_sources57 import PROOFS
  if value.get('source') not in SOURCES or value.get('match') not in ('EXACT_EVENT','EXACT_TITLE_YEAR','EXACT_SEASON_EPISODE','EXACT_UNIQUE_FILM_TITLE')+PROOFS or value.get('match')=='PROVISIONAL_TV85':raise ValueError('CACHE88_PROOF')
- if value.get('role81','') not in ('','backdrop','poster') or value.get('image_scope57','') not in ('','movie','episode','series','series_fallback'):raise ValueError('CACHE88_PROOF')
+ if value.get('role81','') not in ('','backdrop','poster','episode_still','thumb') or value.get('image_scope57','') not in ('','movie','episode','series','series_fallback'):raise ValueError('CACHE88_PROOF')
  if type(value.get('manual85',False)) is not bool or type(value.get('mapping_epoch85',0)) is not int or not 0<=value.get('mapping_epoch85',0)<2**63 or not re.fullmatch('[a-f0-9]{64}',value.get('source_hash88','')):raise ValueError('CACHE88_PROOF')
  if not re.fullmatch('[a-f0-9]{64}',value.get('dns_hash88','')):raise ValueError('CACHE88_DNS')
  if 'vote_average88' in value and (type(value['vote_average88']) not in (int,float) or not 0<=value['vote_average88']<=10):raise ValueError('CACHE88_RATING')
@@ -77,7 +77,7 @@ def recover(event):
     if not record:continue
     result=dict(proof,key=event['key'],fingerprint=fingerprint(event),code='READY',image=record['file'],thumbnail=record['file'],sha256=record['sha256'],scope69=identity(event),profile69=scope(),policy69=negative_scope({}),until=min(time.time()+600,event['stop']),decoded77=True,image_width77=record['width'],image_height77=record['height'],persisted69=False,storage69='KODI_TEXTURE_CACHE')
     result.pop('source_hash88',None);result.pop('dns_hash88',None)
-    result['attribution']='TMDB · '+__import__('tmdb_connection60').ATTRIBUTION if result['source'].startswith('tmdb') else 'TVmaze · Daten CC BY-SA; Bildrechte beim Rechteinhaber' if result['source'].startswith('tvmaze') else 'XMLTV' if result['source']=='xmltv_event' else 'Provider'
+    result['attribution']='XCMate EPG Agent · TMDB · '+__import__('tmdb_connection60').ATTRIBUTION if result['source']=='agent_tmdb' else 'XCMate EPG Agent · TVmaze' if result['source']=='agent_tvmaze' else 'XCMate EPG Agent · XMLTV' if result['source']=='agent_xmltv' else 'TMDB · '+__import__('tmdb_connection60').ATTRIBUTION if result['source'].startswith('tmdb') else 'TVmaze · Daten CC BY-SA; Bildrechte beim Rechteinhaber' if result['source'].startswith('tvmaze') else 'XMLTV' if result['source']=='xmltv_event' else 'Provider'
     if record.get('stamp'):_ram[context]=dict(value=result,proof=proof,stamp=record['stamp'])
     while len(_ram)>128:_ram.pop(next(iter(_ram)))
     return result

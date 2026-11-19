@@ -223,7 +223,7 @@ def drain(cancel=lambda:False):
    from utils import setting_bool
    own=setting_bool('programme_tmdb46',False) and setting_bool('tmdb_research43',False)
    allow=own or setting_bool('programme_tvmaze67',False) or setting_bool('programme_helper57',True) or setting_bool('programme_catalog57',True)
-   if not allow and not current.get('xmltv_image') and not current.get('provider_image'):
+   if not allow and not current.get('xmltv_image') and not current.get('provider_image') and not __import__('agent_programme100').candidates(current):
     # An explicit local XMLTV choice can refer to another active feed.
     # Admit it without granting remote search; resolve revalidates its facts.
     local96=__import__('programme_mapping85').current(current)

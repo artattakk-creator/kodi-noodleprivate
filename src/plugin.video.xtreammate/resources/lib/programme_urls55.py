@@ -67,6 +67,7 @@ def display(event,value):
     """A persisted URL is not proof that Android displayed the right picture."""
     if not isinstance(value,dict) or value.get('url_version55')!=1:return None
     from programme_art46 import fingerprint
+    if value.get('source','').startswith('agent_') and not __import__('agent_programme100').allowed(value['source']):return None
     if value.get('source')=='xmltv_event' and (not __import__('event_art81').allowed(value) or not __import__('xmltv_art96').display_allowed(value,event)):return None
     if value.get('fingerprint')!=fingerprint(event):return None
     if value.get('hosts55')!=sorted(hosts()) or value.get('profile55')!=profile():return None
@@ -89,7 +90,25 @@ def probe(url,cancel=lambda:False):
     Kodi performs the actual rendering download later; a later 404 is harmless.
     """
     from programme_transport77 import verified
-    return verified(url,cancel,keep_data81=True)
+    fetch = lambda: verified(url,cancel,keep_data81=True)
+    # Exact files on the known public CDNs can share previously decoded bytes.
+    # Configured XMLTV and dynamically admitted origins retain their own probes.
+    parsed = urlsplit(url)
+    if parsed.hostname not in ('image.tmdb.org','static.tvmaze.com') or not safe(url):
+        return fetch()
+    from widget_refs74 import revoked
+    if revoked(url):
+        return fetch()
+    from artwork_request100 import images
+    from epg_handoff63 import profile_scope
+    from portals import get_active
+    import hashlib, json
+    from programme_policy68 import negative_scope
+    credentials = [(p.get('xc_user'),p.get('xc_pass')) for p in get_active()[:16]]
+    profile = hashlib.sha256(json.dumps(credentials).encode()).hexdigest()
+    value = images.request((profile_scope(),profile,negative_scope({}),url),fetch,cancel,ttl=120)
+    final = value.get('url',url)
+    return fetch() if final!=url and (not safe(final) or revoked(final)) else value
 
 
 def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,local_image63=False,url_mode69=False):
@@ -194,6 +213,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
                 for field,source,credit in (('xmltv_image','xmltv_event','XMLTV – konfigurierte Eventquelle'),
                     ('provider_image','provider_event','Anbieter – konfigurierte Eventquelle')) if event.get(field) and (source!='xmltv_event' or __import__('artwork_sources96').enabled('xmltv'))]
     if invalid_manual96:candidates=fresh_xml96+[c for c in candidates if c.get('source')=='provider_event']
+    agent100=__import__('agent_programme100').candidates(event,home=home86)
     if old and old.get('source_url') and old.get('source') in ('xmltv_event','provider_event','tmdb_movie','tmdb_episode','tmdb_series','tmdb_helper','xcmate_catalog','kodi_library'):
         source=old.get('source')
         enabled=source!='tmdb_helper' or policy()[0]
@@ -218,10 +238,14 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
                 if manual85:yield manual85
             # Optional remote permission and local exact-event XMLTV fallback
             # are separate. A disabled/failed TMDB mapping cannot erase it.
+            yield from agent100
             yield from (c for c in candidates if c.get('source') in ('xmltv_event','provider_event') and c.get('match')=='EXACT_EVENT')
             return
         home86=__import__('home_schedule75').applicable() and not event.get('_detail93')
-        if not home86:yield from candidates  # EPG detail legacy event ordering.
+        # Typed validated feed images are bound to this event without another
+        # title search. Narrow artwork is offered after broader match attempts.
+        yield from (v for v in agent100 if v['source']=='agent_tmdb' and v['role81'] in ('backdrop','episode_still'))
+        if not home86 and not agent100:yield from candidates  # EPG detail legacy event ordering.
         reference84=__import__('programme_reference84').get(event)
         if reference84 and reference84.get('candidate'):
             if home86:candidates.append(dict(reference84['candidate']))
@@ -244,7 +268,10 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         if not own81:
             provisional85=__import__('programme_candidates85').suggestion(event)
             if provisional85:own81.append(provisional85)
-        yield from (__import__('hero_art86').ordered(__import__('hero_art86').expand(own81,event,cancel),candidates) if home86 else own81)
+        yield from (__import__('hero_art86').ordered(__import__('hero_art86').expand(own81,event,cancel),[] if agent100 else candidates) if home86 else own81)
+        if agent100:
+            yield from (v for v in agent100 if v['source'] != 'agent_tmdb' or v['role81'] not in ('backdrop','episode_still'))
+            yield from candidates
         if not allow_lookup:return
         deferred=[]
         steps=[lambda:match(event,cancel=cancel)] if match else attempts(event,cancel,critical80=not bool(event.get('helper_explicit80')))
@@ -309,7 +336,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             grant75(url)
             if isinstance(verified77,dict) and verified77.get('url'):
                 url=verified77['url'];grant75(url)
-        if local_image63 or not url_mode69 and candidate.get('source') in ('tmdb_movie','tmdb_episode','tmdb_series'):
+        if (local_image63 and not candidate.get('source','').startswith('agent_')) or (not url_mode69 and candidate.get('source') in ('tmdb_movie','tmdb_episode','tmdb_series')):
             from programme_art46 import prepare as materialize60
             return materialize60(event,cancel=cancel,resolved60=dict(candidate,_local_only63=True) if local_image63 else candidate)
         try:
@@ -345,7 +372,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             value=__import__('event_art81').commit(event,value,verified77.get('_body81'))
             value=__import__('sticky_art88').remember(event,value,verified77.get('_body81'))
         break
-    if not candidates and not allow_lookup and value['code']=='NO_IMAGE':value['code']='AWAITING_BACKGROUND_REFRESH'
+    if not candidates and not agent100 and not allow_lookup and value['code']=='NO_IMAGE':value['code']='AWAITING_BACKGROUND_REFRESH'
     if cancel():return None
     if best86 and (value.get('source')=='placeholder' or not usable86(value) or __import__('hero_art86').classify(best86)[1]<__import__('hero_art86').classify(value)[1]):
         return dict(best86,code='READY_STALE' if value.get('source')=='placeholder' else best86.get('code','READY'))

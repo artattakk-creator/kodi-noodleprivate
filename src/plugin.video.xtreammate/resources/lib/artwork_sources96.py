@@ -39,11 +39,6 @@ def choose(source,on):
  if source not in FLAGS:raise ValueError('SOURCE_UNKNOWN')
  if on and source=='tmdb' and not token_valid():raise OSError('TMDB_TOKEN_MISSING_OR_INVALID')
  result=write(changes(source,on))
- if on:
-  # This is the same explicit image decision shown by the storage dialog, not
-  # a hidden fourth switch. Never silently override it for another profile.
-  from storage_policy92 import choose as policy
-  policy('yes')
  from programme_refresh63 import request
  request();return result
 

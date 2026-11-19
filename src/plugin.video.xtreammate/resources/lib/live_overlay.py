@@ -525,6 +525,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 current96=overrides96.reference(extra96['logo_key96'])
                 if current96:return current96
                 if extra96.get('logo_base96'):return extra96['logo_base96']
+                agent100=__import__('agent_logos100').reference(extra96['logo_key96'])
+                if agent100:return agent100
                 from logo_cache import local_logo
                 current96=local_logo(extra96.get('logo_provider96',''),persistent96=extra96.get('logo_persistent96',True))
                 if current96:return current96
