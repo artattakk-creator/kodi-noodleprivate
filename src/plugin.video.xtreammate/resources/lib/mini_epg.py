@@ -3,10 +3,10 @@ import datetime,time,textwrap
 from localization import tr
 
 
-def programme_rows(events,now=None):
+def programme_rows(events,now=None,past=0):
     now=time.time() if now is None else now
-    rows=[e for e in events if isinstance(e,dict) and e.get('title') and isinstance(e.get('start'),(int,float)) and isinstance(e.get('stop'),(int,float)) and e['stop']>e['start'] and e['stop']>now]
-    rows=sorted(rows,key=lambda e:(e['start'],e['stop']))[:256]
+    ordered=sorted((e for e in events if isinstance(e,dict) and e.get('title') and isinstance(e.get('start'),(int,float)) and isinstance(e.get('stop'),(int,float)) and e['stop']>e['start']),key=lambda e:(e['start'],e['stop']))
+    rows=([e for e in ordered if e['stop']<=now][-past:] if past else [])+[e for e in ordered if e['stop']>now][:256]
     current=next((i for i,e in enumerate(rows) if e['start']<=now<e['stop']),None)
     if current is None:current=next((i for i,e in enumerate(rows) if e['start']>now),max(0,len(rows)-1))
     return rows,current
@@ -36,7 +36,11 @@ class MiniProgramme:
             title=xbmcgui.ControlTextBox(x+8,y+22,width-16,40,font='font12',textColor='0xFFF4F6F9')
             owner.addControls([highlight,stamp,title]);self.rows.append((highlight,stamp,title))
         from programme_preview67 import Preview
-        self.preview67=Preview(owner,(int(w*.70),122,int(w*.27),int(w*.27*9/16)))
+        preview_x,preview_width,preview_height=int(w*.70),int(w*.27),int(w*.27*9/16)
+        self.preview67=Preview(owner,(preview_x,122,preview_width,preview_height))
+        plot_y=122+preview_height+28
+        self.description=xbmcgui.ControlTextBox(preview_x,plot_y,preview_width,max(64,h-plot_y-90),font='font12',textColor='0xFFE8EDF2')
+        owner.addControls([self.description])
         self._preview_channel67=None;self._loading68=True
         self.column_width=width
         self.visible(False)
@@ -58,6 +62,7 @@ class MiniProgramme:
             for control in (self.heading,self.hint,self.list,*[c for row in self.rows for c in row]):
                 self._set(control,'setVisible',False)
             self._set(self.heading,'setLabel','')
+            self._set(self.description,'setText','');self._set(self.description,'setVisible',False)
             for _,stamp,title in self.rows:
                 self._set(stamp,'setLabel','');self._set(title,'setText','')
 
@@ -66,7 +71,7 @@ class MiniProgramme:
         channel=owner.visible_channels[index] if 0<=index<len(owner.visible_channels) else None
         self._preview_channel67=channel
         sid=str(channel.extra.get('stream_id','')) if channel else ''
-        info=owner._guide.get(sid);events,current=programme_rows(info.get('programme_events',info.get('events',[])))
+        info=owner._guide.get(sid);events,current=programme_rows(info.get('programme_events',info.get('events',[])),past=2)
         identity=lambda event:(event['start'],event['stop'])
         signature=(sid,tuple(identity(e) for e in events))
         self._loading68=bool(info.get('loading68',False) or channel is None and (not getattr(owner,'_catalog_ready',True) or getattr(owner,'_catalog_partial46',False)))
@@ -113,11 +118,15 @@ class MiniProgramme:
 
         selected67=self.events[self.selected] if self.selected<len(self.events) else None
         self.preview67.render(getattr(self.owner,'portal',None),self._preview_channel67,selected67)
+        from presentation80 import text
+        description=text(str((selected67 or {}).get('description') or '')[:500])
+        self._set(self.description,'setText',description)
+        self._set(self.description,'setVisible',bool(description))
 
     def focus(self):
         self.render()
         if not self.events:return
-        self.focused=True;self.selected=programme_rows(self.events)[1];self.list.selectItem(self.selected);self.owner.setFocus(self.list)
+        self.focused=True;self.selected=programme_rows(self.events,past=2)[1];self.list.selectItem(self.selected);self.owner.setFocus(self.list)
         self._set(self.hint,'setLabel',tr(35830));self._paint()
 
     def command(self,command,native=False):

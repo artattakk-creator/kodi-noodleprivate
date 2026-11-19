@@ -100,10 +100,12 @@ def parse_xmltv(content: bytes):
                         break
                     elif 'onscreen' in sys_:
                         episode = en.text or ''
-                rating = ''
+                rating, rating_system = '', ''
                 for r in element.findall('rating'):
-                    rating = r.findtext('value') or ''
-                    break
+                    rating = (r.findtext('value') or '').strip()[:32]
+                    if rating:
+                        rating_system = r.get('system','')[:32]
+                        break
                 entry = {
                     'channel': cid,
                     'start_timestamp': start,
@@ -114,6 +116,7 @@ def parse_xmltv(content: bytes):
                     'category': cat,
                     'episode': episode,
                     'rating': rating,
+                    'rating_system': rating_system,
                 }
                 programmes.setdefault(cid, []).append(entry)
                 channels.setdefault(cid, cid)

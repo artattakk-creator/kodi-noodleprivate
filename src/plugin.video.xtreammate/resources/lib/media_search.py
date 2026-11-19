@@ -163,19 +163,20 @@ class SearchMixin:
         section=value[self._search_kind];self._search_rows=section['rows']
         self._search_loading=not self._search_rows and section.get('code') in PENDING
         rows=[dict(row,kind=self._search_kind) for row in self._search_rows]
-        signature=(self._search_kind,self._search_offset,tuple((str(row.get('sid','')),row.get('name',''),row.get('_now_title',''),row.get('year',''),row.get('genre','')) for row in rows))
+        from search_results import secondary,tertiary
+        signature=(self._search_kind,self._search_offset,tuple((str(row.get('sid','')),row.get('name',''),secondary(row),tertiary(row)) for row in rows))
         previous=getattr(self,'_search_rendered',None)
         changed=signature!=previous or resume and self.getControl(710).size()!=len(rows)
         control=self.getControl(710)
         same_ids=bool(previous and previous[:2]==signature[:2] and tuple(r[0] for r in previous[2])==tuple(r[0] for r in signature[2]) and control.size()==len(rows))
         if changed:
             if same_ids and not resume:
-                from search_results import secondary
                 for pos,row in enumerate(rows):
                     if previous[2][pos]!=signature[2][pos]:
                         item=__import__('gui_guard86').item(control,pos,self,710,self._generation,len(rows),'search','global_search')
                         if item is None:continue
-                        item.setLabel(row.get('name',''));item.setProperty('XCMate.SearchSecondary',secondary(row))
+                        _,name,second,third=signature[2][pos]
+                        item.setLabel(name);item.setProperty('XCMate.SearchSecondary',second);item.setProperty('XCMate.SearchTertiary',third)
             else:
                 with self._search_profile.span('ROW_RENDER',rows=len(rows)):
                     self._fill(710,rows)

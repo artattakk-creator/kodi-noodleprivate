@@ -67,3 +67,59 @@ class MiniSnapshot41(Fixture,unittest.TestCase):
             worker=threading.Thread(target=refresh);worker.start();self.assertTrue(entered.wait(1))
             snap.request([types.SimpleNamespace(tvg_id='other',extra=dict(stream_id='2'))]);release.set();worker.join(2)
         self.assertFalse(errors);self.assertNotIn('1',snap._values);self.assertEqual(snap.generation,0)
+
+class MiniHistory100(Fixture,unittest.TestCase):
+    def setUp(self):super().setUp();self.data=importlib.import_module('tv_data');self.store=importlib.import_module('guide_store')
+
+    def test_selected_snapshot_keeps_two_latest_real_previous_events_and_future(self):
+        now=self.now
+        titles=('Older','Previous one','Previous two','Now','Next')
+        rows=[dict(name=title,descr='Description '+title,start_timestamp=now-350+i*100,
+                   stop_timestamp=now-250+i*100) for i,title in enumerate(titles)]
+        self.store.import_cache('p',{'xml':rows},revision='mini-history100',now=now)
+        channel=types.SimpleNamespace(tvg_id='xml',extra=dict(stream_id='1'),name='Channel',logo='')
+        snap=self.data.GuideSnapshot(self.portal,self.client)
+        snap.request([channel]);snap.request_programme('1');snap.refresh()
+        info=snap.get('1',now)
+        self.assertEqual(info['now'],'Now')
+        self.assertEqual([event['title'] for event in info['programme_events']],list(titles[1:]))
+        self.assertEqual(info['programme_events'][0]['description'],'Description Previous one')
+
+    def test_mini_history_honors_qualified_source_not_identical_provider_channel_id(self):
+        from test_xcmate_issue474_views import SourceViews474
+        fixture=SourceViews474(methodName='runTest');fixture.setUp();self.addCleanup(fixture.doCleanups)
+        now=fixture.now
+        for source,rank,title in ((fixture.a,1,'Wrong history'),(fixture.b,2,'Correct history')):
+            rows=[dict(channel='xml',name=title,start_timestamp=now-300,stop_timestamp=now-120,_source_index=rank),
+                  dict(channel='xml',name='Correct now' if rank==2 else 'Wrong now',
+                       start_timestamp=now-100,stop_timestamp=now+100,_source_index=rank)]
+            fixture.store.import_cache('p',{'xml':rows},revision=title,now=now,trusted_feed=True,source_records={rank:source})
+        channel=types.SimpleNamespace(tvg_id='xml',extra=dict(stream_id='2'),name='Channel',logo='')
+        snap=self.data.GuideSnapshot(fixture.portal,fixture.client)
+        snap.request([channel]);snap.request_programme('2');snap.refresh()
+        rows=snap.get('2',now)['programme_events']
+        self.assertEqual([event['title'] for event in rows if event['stop']<=now],['Correct history'])
+        self.assertEqual(rows[0]['source_key46'],fixture.bid)
+        self.assertEqual(rows[1]['title'],'Correct now')
+
+class MiniHistoryVisual100(unittest.TestCase):
+    setUp=MiniVisual41.setUp
+
+    def test_programme_column_shows_past_and_right_focuses_now_without_tuning(self):
+        now=time.time()
+        titles=('Previous','Current','Following')
+        rows=[dict(title=title,start=now-150+i*100,stop=now-50+i*100,
+                   description=title+' plot') for i,title in enumerate(titles)]
+        self.o._guide.get=lambda sid:dict(now='',next='',programme_events=rows)
+        self.o._switch('channels')
+        self.assertEqual([row[2].text for row in self.mini.rows[:3]],list(titles))
+        self.assertIn('FF55DD99',self.mini.rows[1][1].label)
+        self.o.handle_command('right')
+        self.assertIs(self.o.focus,self.mini.list)
+        self.assertEqual(self.mini.selected,1)
+        self.assertEqual(self.mini.description.text,'Current plot')
+        self.o.handle_command('up')
+        self.assertEqual(self.mini.description.text,'Previous plot')
+        self.o.handle_command('back')
+        self.assertIs(self.o.focus,self.o.control)
+        self.m.player.play.assert_not_called()

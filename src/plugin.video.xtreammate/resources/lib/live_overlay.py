@@ -679,7 +679,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
             return
         # Both mini columns share the existing panel; groups retain old geometry.
         left=int(self._width*.32) if self.mode=='channels' else self._sidebar
-        self.bg.setWidth(int(self._width*.76) if self.mode=='channels' else self._sidebar)
+        self.bg.setWidth(self._width-48 if self.mode=='channels' else self._sidebar)
         shift=92 if self.mode=='groups' else 0
         self.bg.setPosition(24+shift,24);self.heading.setPosition(48+shift,38)
         self.sub.setPosition(48+shift,78);self.control.setPosition(44+shift,116)

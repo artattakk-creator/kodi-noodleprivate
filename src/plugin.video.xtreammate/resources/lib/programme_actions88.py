@@ -6,7 +6,7 @@ def bookmark_id(event):
 def toggle(event,cancel=lambda:False):
  return __import__('reminder_bridge89').toggle(event,cancel)
 
-def _toggle88(event,cancel=lambda:False):
+def bookmark(event,cancel=lambda:False,wanted=None):
  from reminder_transaction95 import writing
  from utils import addon_data_dir
  if not event.get('sid') or not 0<int(event.get('start',0))<int(event.get('stop',0)):raise ValueError('BOOKMARK_INVALID')
@@ -17,7 +17,7 @@ def _toggle88(event,cancel=lambda:False):
   try:values=json.loads(path.read_bytes())
   except FileNotFoundError:values={}
   if not isinstance(values,dict):raise ValueError('BOOKMARK_INVALID')
-  tag=bookmark_id(event);added=tag not in values
+  tag=bookmark_id(event);added=tag not in values if wanted is None else bool(wanted)
   if added:values[tag]={k:event[k] for k in ('pid','sid','start','stop','title')}
   else:values.pop(tag)
   raw=json.dumps(values,ensure_ascii=False,separators=(',',':')).encode()

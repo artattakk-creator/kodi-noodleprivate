@@ -89,11 +89,26 @@ def summary(event,now=None):
  if event.get('subtitle'):lines.append(event['subtitle'])
  if event.get('season') and event.get('episode'):lines.append(tr(36103,event['season'],event['episode']))
  elif event.get('episode_label'):lines.append(event['episode_label'])
- for name in ('genre','year','director'):
+ for name in ('genre','year','age_rating','director'):
   if event.get(name):lines.append(str(event[name]))
  if event.get('cast'):lines.append(tr(36104)+': '+', '.join(event['cast']))
  if event.get('description'):lines+=['',event['description']]
  return __import__('presentation80').text('\n'.join(lines))
+
+def source_name(portal,event):
+ from guide_publish44 import source_id
+ from epg_sources import configuration
+ from localization import tr
+ if not event.get('title'):return ''
+ source=event.get('source_key46') or event.get('epg_source46')
+ if source=='provider':return tr(32555)
+ if isinstance(source,str) and source.startswith('external:'):
+  for rank,row in enumerate(configuration(portal['id']).get('sources',()),1):
+   if source_id(row,rank)==source:return str(row.get('name') or 'XMLTV')[:96]
+  return 'XMLTV'
+ rank=event.get('source')
+ if rank==-1 or rank==0 and event.get('canonical'):return tr(32555)
+ return 'XMLTV' if isinstance(rank,int) and rank>0 else ''
 
 
 def legacy_metadata(pid,sid,canonical,event):

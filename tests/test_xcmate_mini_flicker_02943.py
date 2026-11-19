@@ -79,8 +79,9 @@ class MiniFlicker43(unittest.TestCase):
         self.mini.command('back');self.assertIs(self.o.focus,self.o.control)
         self.assertFalse(any(h.visible for h,_,_ in self.mini.rows))
 
-    def test_empty_and_historical_only_have_no_now_or_focus(self):
+    def test_historical_only_is_browsable_without_a_false_now_marker(self):
         self.events=[dict(title='Past',start=self.now-100,stop=self.now-5)]
         self.mini.focus()
-        self.assertFalse(self.mini.focused);self.assertFalse(self.mini.events)
-        self.assertFalse(any(h.visible or '●' in s.label for h,s,_ in self.mini.rows))
+        self.assertTrue(self.mini.focused)
+        self.assertEqual([event['title'] for event in self.mini.events],['Past'])
+        self.assertFalse(any('●' in stamp.label for _,stamp,_ in self.mini.rows))

@@ -217,12 +217,16 @@ class GuideSnapshot:
             if sid==selected:
                 from epg_events import deduplicate
                 from epg_binding48 import qualified_cache
+                from infobar_epg45 import history
                 from local_epg import for_channel
                 raw=qualified_cache(for_channel(self._cache,sid),self._mappings,sid).get(info.get('epg_id',''),[])
-                info['programme_events']=[e for e in deduplicate(raw,channel=info.get('epg_id','')) if e['stop']>now][:256] if raw else info.get('events',[])
+                earlier=history(self.portal['id'],c,self._mappings,info.get('start') or now,
+                                info.get('snapshot_revision'),guide_id=info.get('epg_id') or None)
+                upcoming=[e for e in deduplicate(raw,channel=info.get('epg_id','')) if e['stop']>now][:256]
+                info['programme_events']=earlier+(upcoming or info.get('events',[]))
             if sid==getattr(self,'_infobar_sid45',''):
                 from infobar_epg45 import previous
-                info['previous']=previous(self.portal['id'],c,self._mappings,now,info.get('snapshot_revision'))
+                info['previous']=previous(self.portal['id'],c,self._mappings,info.get('start') or now,info.get('snapshot_revision'))
             info['canonical46']=getattr(local,'canonical',{}).get(info.get('epg_id',''),info.get('epg_id',''))
             from programme_snapshot47 import bind
             values[sid] = bind(self.portal['id'],c,info)
