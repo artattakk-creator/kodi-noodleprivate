@@ -16,6 +16,8 @@ API_BASE = ("https://api.github.com/repos/"
             "artattakk-creator/xcmate-epg-private/contents/")
 MANIFEST_URL = API_BASE + "manifest.json"
 XMLTV_FILE = "xcmate-epg.xml.gz"
+DEMO_MANIFEST = "demo/manifest.json"
+DEMO_XMLTV_FILE = "demo/xcmate-epg.xml.gz"
 SCHEMA_VERSION = 3
 EXPECTED_SOURCES = 3
 MAX_GZIP_BYTES = 48 * 1024 * 1024
@@ -67,14 +69,15 @@ class _LimitedGitHubRedirect(request.HTTPRedirectHandler):
                                method="GET")
 
 
-def _open(path, token, opener=None, *, etag="", payload_ref=""):
-    if path not in ("manifest.json", XMLTV_FILE):
+def _open(path, token, opener=None, *, etag="", payload_ref="", demo=False):
+    allowed = (DEMO_MANIFEST, DEMO_XMLTV_FILE) if demo else ("manifest.json", XMLTV_FILE)
+    if path not in allowed:
         raise DeliveryError("UNEXPECTED_REMOTE_PATH")
     if not token:
         raise DeliveryError("AUTH_NOT_PROVISIONED")
     url = API_BASE + path
     if payload_ref:
-        if path == "manifest.json" or not GIT_REF_RE.fullmatch(payload_ref):
+        if path.endswith("manifest.json") or not GIT_REF_RE.fullmatch(payload_ref):
             raise DeliveryError("INVALID_PAYLOAD_REF")
         url += "?ref=" + payload_ref
     req = request.Request(url, headers={
@@ -91,7 +94,7 @@ def _open(path, token, opener=None, *, etag="", payload_ref=""):
     except error.HTTPError as exc:
         code = exc.code
         exc.close()
-        if code == 304 and etag and path == "manifest.json":
+        if code == 304 and etag and path.endswith("manifest.json"):
             return None
         if code in (401, 403, 404):
             raise DeliveryError("PRIVATE_ENDPOINT_ACCESS_DENIED") from None
@@ -126,9 +129,10 @@ def _consume(response, max_bytes, sink, cancel=lambda: False):
     return total
 
 
-def _read_manifest(token, opener=None, *, etag="", cancel=lambda: False):
+def _read_manifest(token, opener=None, *, etag="", cancel=lambda: False, demo=False):
     pieces = []
-    response = _open("manifest.json", token, opener, etag=etag)
+    path = DEMO_MANIFEST if demo else "manifest.json"
+    response = _open(path, token, opener, etag=etag, demo=demo)
     if response is None:
         return {"status": "NOT_MODIFIED"}, etag
     response_etag = getattr(response, "headers", {}).get("ETag") or ""
@@ -147,9 +151,14 @@ def _read_manifest(token, opener=None, *, etag="", cancel=lambda: False):
         reason = obj.get("reason_code")
         return {"status": "PRIVATE_PENDING", "reason": (reason if reason ==
                 "PRODUCTION_DATA_NOT_APPROVED" else "PRIVATE_PENDING")}, response_etag
-    if obj.get("status") != "PRIVATE_READY" or obj.get("schema_version") != SCHEMA_VERSION:
+    if demo:
+        if obj.get("status") != "PRIVATE_DEMO_READY" or obj.get("synthetic") is not True:
+            raise DeliveryError("INVALID_DEMO_MANIFEST")
+    elif obj.get("status") != "PRIVATE_READY":
         raise DeliveryError("UNSUPPORTED_MANIFEST_VERSION")
-    _validate_manifest(obj)
+    if obj.get("schema_version") != SCHEMA_VERSION:
+        raise DeliveryError("UNSUPPORTED_MANIFEST_VERSION")
+    _validate_manifest(obj, demo=demo)
     return obj, response_etag
 
 
@@ -162,8 +171,8 @@ def _utc(value):
     return date.timestamp()
 
 
-def _validate_manifest(obj):
-    if obj.get("file") != XMLTV_FILE:
+def _validate_manifest(obj, *, demo=False):
+    if obj.get("file") != (DEMO_XMLTV_FILE if demo else XMLTV_FILE):
         raise DeliveryError("INVALID_MANIFEST")
     try:
         roles = obj["image_counts"]
@@ -191,7 +200,7 @@ def probe(token_path=None, opener=None):
 
 
 def _download_to(path, token, dest, expected_size, expected_sha, opener=None, *,
-                 payload_ref="", cancel=lambda: False):
+                 payload_ref="", cancel=lambda: False, demo=False):
     fd, name = tempfile.mkstemp(prefix=".xcmate-agent-", dir=str(dest))
     digest = hashlib.sha256()
     count = 0
@@ -202,7 +211,7 @@ def _download_to(path, token, dest, expected_size, expected_sha, opener=None, *,
                 stream.write(chunk)
                 digest.update(chunk)
                 count += len(chunk)
-            response = _open(path, token, opener, payload_ref=payload_ref)
+            response = _open(path, token, opener, payload_ref=payload_ref, demo=demo)
             _consume(response, expected_size, sink, cancel)
             stream.flush()
             os.fsync(stream.fileno())
@@ -311,15 +320,15 @@ def local_manifest(folder):
 
 
 def stage_full_candidate(directory, token_path=None, opener=None, *,
-                         known="", etag="", cancel=lambda: False):
+                         known="", etag="", cancel=lambda: False, demo=False):
     """Stage one GZIP and its manifest. Keep prior V1/V2 snapshots offline."""
     token = read_token(token_path)
     root = Path(directory)
     previous = local_manifest(candidate_path(root, known))
     manifest, response_etag = _read_manifest(token, opener,
-        etag=etag if previous.get("schema_version") == SCHEMA_VERSION else "", cancel=cancel)
+        etag=etag if previous.get("schema_version") == SCHEMA_VERSION else "", cancel=cancel, demo=demo)
     response = {"status": manifest["status"], "etag": response_etag}
-    if manifest["status"] != "PRIVATE_READY":
+    if manifest["status"] != ("PRIVATE_DEMO_READY" if demo else "PRIVATE_READY"):
         if "reason" in manifest:
             response["reason"] = manifest["reason"]
         return response
@@ -344,8 +353,9 @@ def stage_full_candidate(directory, token_path=None, opener=None, *,
     check_space(str(root / "manifest.json"), manifest["bytes"])
     stage = Path(tempfile.mkdtemp(prefix=".candidate-", dir=root))
     try:
-        item = _download_to(XMLTV_FILE, token, stage, manifest["bytes"], manifest["sha256"],
-                            opener, payload_ref=manifest["payload_ref"], cancel=cancel)
+        item = _download_to(DEMO_XMLTV_FILE if demo else XMLTV_FILE, token, stage,
+                            manifest["bytes"], manifest["sha256"], opener,
+                            payload_ref=manifest["payload_ref"], cancel=cancel, demo=demo)
         _check_xmltv(item, manifest, cancel)
         os.replace(item, stage / XMLTV_FILE)
         with (stage / "manifest.json").open("w", encoding="utf-8") as stream:
