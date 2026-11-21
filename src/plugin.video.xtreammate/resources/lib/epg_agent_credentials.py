@@ -7,7 +7,7 @@ import tempfile
 from epg_agent_github import DeliveryError, read_token
 
 NAME = "reader-token.txt"
-_PATTERN = re.compile(r"(?:github_pat_|ghp_|ghu_|ghs_)[A-Za-z0-9_]*\\Z")
+_PATTERN = re.compile(r"(?:github_pat_|ghp_|ghu_|ghs_)[A-Za-z0-9_]*\Z")
 
 
 def store_token(directory, token):
@@ -30,7 +30,7 @@ def store_token(directory, token):
     try:
         with os.fdopen(fd, "wb") as out:
             os.fchmod(out.fileno(), 0o600)
-            out.write(token.encode("ascii") + b"\\n")
+            out.write(token.encode("ascii") + b"\n")
             out.flush()
             os.fsync(out.fileno())
         os.replace(name, root / NAME)
