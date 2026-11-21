@@ -52,33 +52,87 @@ def details(portal):
 
 
 def show(portal):
+    """Interactive, per-device token provisioning plus isolated private readback."""
     import xbmcaddon
     import xbmcgui
     from menu_icons45 import select
+    from epg_agent100 import profile
+    from epg_agent_credentials import NAME, clear_token, store_token
+    from epg_agent_github import DeliveryError, stage_full_candidate
+
     addon = xbmcaddon.Addon()
     dialog = xbmcgui.Dialog()
     selected = 0
     while True:
         active = enabled()
         rows = [tr(39101) + " · " + tr(36029 if active else 36028)]
-        actions = ["check" if active else "back"]
+        actions = ["toggle"]
         if active:
             rows.append(tr(39102))
             actions.append("refresh")
-        rows.append(tr(39103) + " · " + short_status())
-        actions.append("activity")
+        rows.extend([
+            "Privates GitHub-Zugriffstoken eingeben",
+            "Geschuetzten XMLTV-Testfeed pruefen (kein Live-Import)",
+            "Lokal gespeichertes Zugriffstoken entfernen",
+            tr(39103) + " · " + short_status(),
+        ])
+        actions.extend(["token", "demo", "clear", "activity"])
         selected = select(dialog, SOURCE_NAME, rows, actions=actions,
                           preselect=min(selected, len(rows) - 1))
         if not isinstance(selected, int) or selected < 0 or selected >= len(rows):
             return
-        if selected == 0:
+        action = actions[selected]
+        if action == "toggle":
             addon.setSetting(SETTING, "false" if active else "true")
             if enabled() == active:
                 dialog.notification(SOURCE_NAME, tr(39122))
             elif not active:
                 request_check()
-        elif active and selected == 1:
+        elif action == "refresh":
             request_check()
             dialog.notification(SOURCE_NAME, tr(39119))
+        elif action == "token":
+            value = dialog.input("Privates GitHub-Read-only-Token", type=xbmcgui.INPUT_ALPHANUM,
+                                 option=xbmcgui.ALPHANUM_HIDE_INPUT)
+            if not value:
+                continue
+            try:
+                store_token(profile(), value)
+            except (DeliveryError, OSError):
+                dialog.notification(SOURCE_NAME, "Token ungueltig oder nicht speicherbar")
+            else:
+                dialog.notification(SOURCE_NAME, "Token lokal gespeichert. Rechte bitte mit Test pruefen.")
+            finally:
+                del value
+        elif action == "demo":
+            try:
+                # Separate directory; never hand synthetic data to the real guide importer.
+                result = stage_full_candidate(profile() / "demo-readback",
+                                              profile() / NAME, demo=True)
+            except (DeliveryError, OSError, InterruptedError) as exc:
+                reason = exc.code if isinstance(exc, DeliveryError) else "DEMO_READBACK_ERROR"
+                dialog.notification(SOURCE_NAME, "Privater EPG-Test fehlgeschlagen: " + reason)
+            else:
+                if result["status"] not in ("STAGED_FULL_CANDIDATE", "UNCHANGED"):
+                    dialog.notification(SOURCE_NAME, "Unerwarteter Demo-Status")
+                    continue
+                dialog.textviewer(SOURCE_NAME,
+                    "Privater GitHub-XMLTV-Abruf erfolgreich.\\n"
+                    "Ausschliesslich synthetische Testdaten; kein Live-Import.\\n\\n"
+                    "Datei: demo/xcmate-epg.xml.gz\\n"
+                    "Authentifizierung: OK\\n"
+                    "GZIP/XMLTV/SHA256: OK\\n"
+                    "Sender: {}\\nSendungen: {}\\nPruefsumme: {}".format(
+                        result["channels"], result["programmes"], result["generation"][:16]))
+        elif action == "clear":
+            if dialog.yesno(SOURCE_NAME,
+                    "Lokales Zugriffstoken entfernen? Zur vollstaendigen Sperrung "
+                    "das Token zusaetzlich bei GitHub widerrufen."):
+                try:
+                    clear_token(profile())
+                except (DeliveryError, OSError):
+                    dialog.notification(SOURCE_NAME, "Token konnte nicht entfernt werden")
+                else:
+                    dialog.notification(SOURCE_NAME, "Lokales Token entfernt")
         else:
             dialog.textviewer(SOURCE_NAME, details(portal))
