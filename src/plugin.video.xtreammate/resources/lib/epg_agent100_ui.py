@@ -52,33 +52,118 @@ def details(portal):
 
 
 def show(portal):
+    """Owner-entered private credentials; validated regular manifest only."""
     import xbmcaddon
     import xbmcgui
     from menu_icons45 import select
+    from epg_agent100 import profile
+    from epg_agent_credentials import NAME, clear_token, import_token_file, store_token
+    from epg_agent_github import DeliveryError, probe
+
     addon = xbmcaddon.Addon()
     dialog = xbmcgui.Dialog()
     selected = 0
     while True:
         active = enabled()
         rows = [tr(39101) + " · " + tr(36029 if active else 36028)]
-        actions = ["check" if active else "back"]
+        actions = ["toggle"]
         if active:
             rows.append(tr(39102))
             actions.append("refresh")
-        rows.append(tr(39103) + " · " + short_status())
-        actions.append("activity")
+        rows.extend([
+            "Privaten GitHub-Zugang eingeben",
+            "Token-Datei importieren (USB / interner Speicher / Netzwerk)",
+            "Geschuetzten EPG-Serverstatus abfragen",
+            "Gespeichertes Zugriffstoken entfernen",
+            tr(39103) + " · " + short_status(),
+        ])
+        actions.extend(["token", "import", "probe", "clear", "activity"])
         selected = select(dialog, SOURCE_NAME, rows, actions=actions,
                           preselect=min(selected, len(rows) - 1))
         if not isinstance(selected, int) or selected < 0 or selected >= len(rows):
             return
-        if selected == 0:
+        action = actions[selected]
+        if action == "toggle":
             addon.setSetting(SETTING, "false" if active else "true")
             if enabled() == active:
                 dialog.notification(SOURCE_NAME, tr(39122))
             elif not active:
                 request_check()
-        elif active and selected == 1:
+        elif action == "refresh":
             request_check()
             dialog.notification(SOURCE_NAME, tr(39119))
+        elif action == "token":
+            value = dialog.input("GitHub-Read-only-Token", type=xbmcgui.INPUT_ALPHANUM,
+                                 option=xbmcgui.ALPHANUM_HIDE_INPUT)
+            if not value:
+                continue
+            try:
+                store_token(profile(), value)
+            except (DeliveryError, OSError):
+                dialog.notification(SOURCE_NAME, "Token ungueltig oder nicht speicherbar")
+            else:
+                dialog.notification(SOURCE_NAME, "Token nur lokal gespeichert. Rechte pruefen.")
+            finally:
+                del value
+        elif action == "import":
+            # Kodi's native VFS browser traverses local, USB and configured
+            # SMB/NFS sources. This never uploads the file to GitHub.
+            try:
+                path = dialog.browseSingle(
+                    1, "Token-Datei wählen: USB / intern / Netzwerk",
+                    "", "", False, False, "")
+            except (OSError, RuntimeError, ValueError):
+                dialog.notification(SOURCE_NAME, "Dateiauswahl nicht verfügbar")
+                continue
+            if not path:
+                continue
+            try:
+                import_token_file(profile(), path)
+            except (DeliveryError, OSError) as exc:
+                reason = exc.code if isinstance(exc, DeliveryError) else "TOKEN_FILE_READ_FAILED"
+                dialog.notification(SOURCE_NAME, "Token-Import fehlgeschlagen: " + reason)
+                continue
+            # A valid syntax is not proof of GitHub permissions; probe once.
+            try:
+                result = probe(profile() / NAME)
+            except DeliveryError as exc:
+                dialog.notification(SOURCE_NAME,
+                    "Token lokal importiert; Zugriff ungeprüft: " + exc.code)
+            else:
+                dialog.textviewer(SOURCE_NAME,
+                    "Token-Datei erfolgreich lokal importiert.\n"
+                    "Privater GitHub-Zugriff bestätigt.\n"
+                    "EPG-Status: {}\n\n"
+                    "Die Quelldatei auf USB oder Netzwerk wurde nicht gelöscht. "
+                    "Bitte sicher aufbewahren oder eigenständig entfernen.".format(
+                        result["status"]))
+        elif action == "probe":
+            try:
+                status = probe(profile() / NAME)
+            except DeliveryError as exc:
+                dialog.notification(SOURCE_NAME, "EPG-Pruefung: " + exc.code)
+            else:
+                if status["status"] == "PRIVATE_PENDING":
+                    dialog.textviewer(SOURCE_NAME,
+                        "Privates Repository erreichbar, EPG aber noch nicht freigegeben.\n"
+                        "Produktionsstatus: PRIVATE_PENDING.\n"
+                        "Keine echte EPG-XMLTV-Datei vorhanden.\n"
+                        "Anbieter-EPG bleibt unveraendert.")
+                else:
+                    dialog.textviewer(SOURCE_NAME,
+                        "Geschuetzter Produktiv-EPG authentifiziert.\n"
+                        "Status: {}\nSender: {}\nSendungen: {}\nSHA256: {}".format(
+                            status["status"], status["channel_count"],
+                            status["programme_count"], status["sha256"][:16]))
+        elif action == "clear":
+            if dialog.yesno(SOURCE_NAME,
+                    "Lokales Token entfernen? Fuer vollstaendigen Widerruf "
+                    "Token zusaetzlich bei GitHub deaktivieren."):
+                try:
+                    clear_token(profile())
+                except (DeliveryError, OSError):
+                    dialog.notification(SOURCE_NAME, "Token konnte nicht entfernt werden")
+                else:
+                    dialog.notification(SOURCE_NAME, "Lokales Token entfernt")
         else:
             dialog.textviewer(SOURCE_NAME, details(portal))
