@@ -57,7 +57,7 @@ def show(portal):
     import xbmcgui
     from menu_icons45 import select
     from epg_agent100 import profile
-    from epg_agent_credentials import NAME, clear_token, store_token
+    from epg_agent_credentials import NAME, clear_token, import_token_file, store_token
     from epg_agent_github import DeliveryError, probe
 
     addon = xbmcaddon.Addon()
@@ -72,11 +72,12 @@ def show(portal):
             actions.append("refresh")
         rows.extend([
             "Privaten GitHub-Zugang eingeben",
+            "Token-Datei importieren (USB / interner Speicher / Netzwerk)",
             "Geschuetzten EPG-Serverstatus abfragen",
             "Gespeichertes Zugriffstoken entfernen",
             tr(39103) + " · " + short_status(),
         ])
-        actions.extend(["token", "probe", "clear", "activity"])
+        actions.extend(["token", "import", "probe", "clear", "activity"])
         selected = select(dialog, SOURCE_NAME, rows, actions=actions,
                           preselect=min(selected, len(rows) - 1))
         if not isinstance(selected, int) or selected < 0 or selected >= len(rows):
@@ -104,6 +105,38 @@ def show(portal):
                 dialog.notification(SOURCE_NAME, "Token nur lokal gespeichert. Rechte pruefen.")
             finally:
                 del value
+        elif action == "import":
+            # Kodi's native VFS browser traverses local, USB and configured
+            # SMB/NFS sources. This never uploads the file to GitHub.
+            try:
+                path = dialog.browseSingle(
+                    1, "Token-Datei wählen: USB / intern / Netzwerk",
+                    "", "", False, False, "")
+            except (OSError, RuntimeError, ValueError):
+                dialog.notification(SOURCE_NAME, "Dateiauswahl nicht verfügbar")
+                continue
+            if not path:
+                continue
+            try:
+                import_token_file(profile(), path)
+            except (DeliveryError, OSError) as exc:
+                reason = exc.code if isinstance(exc, DeliveryError) else "TOKEN_FILE_READ_FAILED"
+                dialog.notification(SOURCE_NAME, "Token-Import fehlgeschlagen: " + reason)
+                continue
+            # A valid syntax is not proof of GitHub permissions; probe once.
+            try:
+                result = probe(profile() / NAME)
+            except DeliveryError as exc:
+                dialog.notification(SOURCE_NAME,
+                    "Token lokal importiert; Zugriff ungeprüft: " + exc.code)
+            else:
+                dialog.textviewer(SOURCE_NAME,
+                    "Token-Datei erfolgreich lokal importiert.\n"
+                    "Privater GitHub-Zugriff bestätigt.\n"
+                    "EPG-Status: {}\n\n"
+                    "Die Quelldatei auf USB oder Netzwerk wurde nicht gelöscht. "
+                    "Bitte sicher aufbewahren oder eigenständig entfernen.".format(
+                        result["status"]))
         elif action == "probe":
             try:
                 status = probe(profile() / NAME)
