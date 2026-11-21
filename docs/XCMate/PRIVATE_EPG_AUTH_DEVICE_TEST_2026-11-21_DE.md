@@ -16,10 +16,33 @@ Status 21.11.2026: **Kodi-UI-Code im Featurebranch**, keine Produktionsfreigabe.
 3. Nach Integration des Featurebranches und geschützter Geräteinstallation in
    **XCMate → Einstellungen → EPG → XCMate EPG Agent → Privaten GitHub-Zugang eingeben**
    den PAT über die verdeckte Kodi-Eingabe einmalig hinterlegen.
-4. **Geschützten EPG-Serverstatus abfragen** ruft ausschließlich das authentifizierte
+4. **Token-Datei importieren (USB / interner Speicher / Netzwerk)** ist
+   alternativ zur manuellen Eingabe. Eine **Textdatei**, zum Beispiel
+   `xcmate-reader-token.txt`, enthält ausschließlich die eine Zeichenfolge
+   `github_pat_...` als erste und einzige Zeile (optional abschließender
+   Zeilenumbruch). Alternativ `{"token":"github_pat_..."}` als JSON.
+   Im XCMate-Dialog Dateibrowser öffnen und Datei wählen:
+   - **USB:** Android `/storage/...` bzw. das vom Kodi-Browser sichtbare Laufwerk;
+     auf LG nur, wenn USB/Kodi-Berechtigungen den Pfad erlauben.
+   - **Interner Speicher:** eine von Kodi zugängliche Datei.
+   - **Netzwerk:** zuvor unter Kodi-Dateimanager angebundene
+     SMB- oder NFS-Freigabe auswählen; SMB-Zugangsdaten nur in
+     Kodis Quellenverwaltung, niemals in der Token-Datei-URL.
+   Der Browser zeigt lokale Laufwerke und vorhandene Netzwerkquellen; es
+   werden **keine** HTTP-, FTP- oder Plugin-URLs als Tokenquelle akzeptiert.
+   Kodi liest über `xbmcvfs.File.readBytes` höchstens 1025 Byte,
+   validiert das Token, speichert es atomar nur im lokalen
+   `epg-agent/reader-token.txt` (Restriktion 0600 unter POSIX), danach
+   erfolgt eine separate authentifizierte Statusabfrage des privaten Repos.
+   Abbruch, ungültiges Format, übergroße Dateien oder Netzwerkfehler dürfen
+   einen vorhandenen Token **nicht ersetzen**. Keine Datei wird in GitHub
+   hochgeladen; der ursprüngliche Token auf USB/Netzwerk bleibt erhalten.
+   Nicht benötigte Token-Dateien anschließend aus unsicheren Freigaben
+   eigenständig entfernen; Tokens niemals weitergeben.
+5. **Geschützten EPG-Serverstatus abfragen** ruft ausschließlich das authentifizierte
    Produktionsmanifest ab. `PRIVATE_PENDING` bedeutet: Server erreichbar, noch kein vollständiger
    echter EPG. `PRIVATE_READY` mit echtem Nachweis erlaubt den nächsten Importversuch.
-5. Nur wenn Backend und Rechte-/Clientgates wirklich PASS sind, **XCMate EPG Agent aktivieren**
+6. Nur wenn Backend und Rechte-/Clientgates wirklich PASS sind, **XCMate EPG Agent aktivieren**
    und manuelle Aktualisierung auslösen. Anbieter-EPG bleibt unabhängig.
 
 ## Abnahmepfad für den angefragten vollständigen echten Lauf
