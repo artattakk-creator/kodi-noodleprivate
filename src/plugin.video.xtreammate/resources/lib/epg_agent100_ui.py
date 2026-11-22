@@ -52,33 +52,49 @@ def details(portal):
 
 
 def show(portal):
+    """One user-facing Agent panel: toggle, countries, refresh, read-only status."""
     import xbmcaddon
     import xbmcgui
     from menu_icons45 import select
+    from epg_agent_hub4 import selected as countries
     addon = xbmcaddon.Addon()
     dialog = xbmcgui.Dialog()
-    selected = 0
+    selected_row = 0
+
+    def on(key):
+        return addon.getSetting(key) == "true"
+
     while True:
         active = enabled()
-        rows = [tr(39101) + " · " + tr(36029 if active else 36028)]
-        actions = ["check" if active else "back"]
+        rows = ["EPG-Agent aktivieren · " + ("Ein" if active else "Aus")]
+        actions = ["toggle"]
         if active:
-            rows.append(tr(39102))
+            for code, label in (("de", "Deutschland"), ("at", "Österreich"),
+                                ("all", "Alle Länder (Gesamt-EPG)")):
+                rows.append(label + " · " + ("Ein" if on("epg_agent_country_" + code) else "Aus"))
+                actions.append("country_" + code)
+            rows.append("Jetzt aktualisieren")
             actions.append("refresh")
-        rows.append(tr(39103) + " · " + short_status())
-        actions.append("activity")
-        selected = select(dialog, SOURCE_NAME, rows, actions=actions,
-                          preselect=min(selected, len(rows) - 1))
-        if not isinstance(selected, int) or selected < 0 or selected >= len(rows):
+        rows.append("Status · " + short_status())
+        actions.append("status")
+        selected_row = select(dialog, "EPG-Agent", rows, actions=actions,
+                              preselect=min(selected_row, len(rows) - 1))
+        if not isinstance(selected_row, int) or selected_row < 0 or selected_row >= len(rows):
             return
-        if selected == 0:
+        action = actions[selected_row]
+        if action == "toggle":
             addon.setSetting(SETTING, "false" if active else "true")
-            if enabled() == active:
-                dialog.notification(SOURCE_NAME, tr(39122))
-            elif not active:
-                request_check()
-        elif active and selected == 1:
             request_check()
-            dialog.notification(SOURCE_NAME, tr(39119))
-        else:
-            dialog.textviewer(SOURCE_NAME, details(portal))
+        elif action.startswith("country_") and active:
+            key = "epg_agent_" + action
+            addon.setSetting(key, "false" if on(key) else "true")
+            request_check()
+        elif action == "refresh":
+            if not countries():
+                dialog.notification("EPG-Agent", "Bitte zuerst mindestens ein Land auswählen.")
+            else:
+                request_check()
+                dialog.notification("EPG-Agent", tr(39119))
+        elif action == "status":
+            dialog.textviewer("EPG-Agent", "Gewählte Länder: " +
+                              (", ".join(countries()) or "Keine") + "\n\n" + details(portal))
