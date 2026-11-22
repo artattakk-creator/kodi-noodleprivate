@@ -187,7 +187,8 @@ def _records(filename, tag, cancel):
 def _combine(files, output, cancel):
     """DE+AT is the actual union, never the unselected international 'all' file."""
     channels = {}
-    ignored = set()
+    duplicated = set()
+    seen_intervals = set()
     with gzip.open(output, "wb", compresslevel=6) as result:
         result.write(b'<?xml version="1.0" encoding="UTF-8"?>\n<tv generator-info-name="XCMate EPG Agent">\n')
         for country, file in files:
@@ -198,14 +199,19 @@ def _combine(files, output, cancel):
                     # Avoid collisions with different channel identities, without guessing.
                     if channels[key] != name:
                         _failed("HUB4_CHANNEL_CONFLICT")
-                    ignored.add((country, key))
+                    duplicated.add(key)
                     continue
                 channels[key] = name
                 result.write(ET.tostring(row, encoding="utf-8") + b"\n")
         for country, file in files:
             for row in _records(file, "programme", cancel):
-                if (country, row.get("channel")) not in ignored:
-                    result.write(ET.tostring(row, encoding="utf-8") + b"\n")
+                cid = row.get("channel")
+                if cid in duplicated:
+                    interval = (cid, row.get("start"), row.get("stop"))
+                    if interval in seen_intervals:
+                        continue  # DE wins a genuinely conflicting same-slot event.
+                    seen_intervals.add(interval)
+                result.write(ET.tostring(row, encoding="utf-8") + b"\n")
         result.write(b"</tv>\n")
     return len(channels)
 
@@ -262,9 +268,16 @@ def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: 
         if len(input_files) == 1 and (counts["channels"] != files[profiles[0]]["channels"] or
                                      counts["programmes"] != files[profiles[0]]["programmes"]):
             _failed("HUB4_COUNT_MISMATCH")
+        checksum = hashlib.sha256()
+        with final.open("rb") as source:
+            while True:
+                block = source.read(65536)
+                if not block:
+                    break
+                checksum.update(block)
         payload = dict(manifest, asset_generation=digest_items, selected_profiles=list(profiles),
                        channel_count=counts["channels"], programme_count=counts["programmes"],
-                       staged_sha256=hashlib.sha256(final.read_bytes()).hexdigest())
+                       staged_sha256=checksum.hexdigest())
         with (folder / "manifest.json").open("w", encoding="utf-8") as handle:
             json.dump(payload, handle, ensure_ascii=False, sort_keys=True)
             handle.flush()
