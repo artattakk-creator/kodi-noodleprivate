@@ -152,7 +152,7 @@ def _verify(path, record, cancel):
                 _failed("INVALID_GZIP")
             raw.seek(0)
             counts = parse_xmltv(raw, channel, programme, cancel=cancel,
-                                 max_seconds=720, progress=progress)
+                                 max_seconds=720, progress=progress, strict_images=True)
     except (OSError, ValueError, EOFError, gzip.BadGzipFile) as exc:
         from epg_agent_github import DeliveryError
         if isinstance(exc, DeliveryError):
@@ -233,8 +233,10 @@ def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: 
         if (saved.get("schema_version") != 4 or saved.get("selected_profiles") != list(profiles) or
                 saved.get("asset_generation") != digest_items):
             _failed("HUB4_STALE_CANDIDATE")
+        image_counts = saved.get("image_counts") or {}
         return dict(response, status="UNCHANGED", channels=saved["channel_count"],
-                    programmes=saved["programme_count"], artwork_records=0, image_counts={})
+                    programmes=saved["programme_count"],
+                    artwork_records=sum(image_counts.values()), image_counts=image_counts)
     root = Path(root)
     root.mkdir(mode=0o700, parents=True, exist_ok=True)
     if root.is_symlink():
@@ -256,13 +258,22 @@ def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: 
             _combine(input_files, final, cancel)
         # Check the exact combined document with the same constrained streaming parser.
         counts = {"channels": 0, "programmes": 0}
+        image_counts = {}
         def channel(cid, _name):
             counts["channels"] += 1
+        def channel_image(cid, url):
+            image_counts["channel_logo"] = image_counts.get("channel_logo", 0) + 1
         def programme(event):
             counts["programmes"] += 1
+            for picture in event.get("images", ()):
+                role = picture["type"]
+                image_counts[role] = image_counts.get(role, 0) + 1
+            image_counts["programme_icon"] = image_counts.get("programme_icon", 0) + len(event.get("icons", ()))
         from xmltv_stream import parse as parse_xmltv
         with final.open("rb") as stream:
-            result = parse_xmltv(stream, channel, programme, cancel=cancel, max_seconds=720)
+            result = parse_xmltv(stream, channel, programme, cancel=cancel, max_seconds=720,
+                                 include_icons=True, include_images=True,
+                                 channel_image=channel_image, strict_images=True)
         if result["skipped"] or not counts["channels"] or not counts["programmes"]:
             _failed("HUB4_COUNT_MISMATCH")
         if len(input_files) == 1 and (counts["channels"] != files[profiles[0]]["channels"] or
@@ -277,7 +288,7 @@ def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: 
                 checksum.update(block)
         payload = dict(manifest, asset_generation=digest_items, selected_profiles=list(profiles),
                        channel_count=counts["channels"], programme_count=counts["programmes"],
-                       staged_sha256=checksum.hexdigest())
+                       image_counts=image_counts, staged_sha256=checksum.hexdigest())
         with (folder / "manifest.json").open("w", encoding="utf-8") as handle:
             json.dump(payload, handle, ensure_ascii=False, sort_keys=True)
             handle.flush()
@@ -289,7 +300,7 @@ def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: 
         os.replace(folder, installed)
         return dict(response, status="STAGED_FULL_CANDIDATE", path=str(installed),
                     channels=counts["channels"], programmes=counts["programmes"],
-                    artwork_records=0, image_counts={})
+                    artwork_records=sum(image_counts.values()), image_counts=image_counts)
     finally:
         if folder.exists():
             shutil.rmtree(folder, ignore_errors=True)
