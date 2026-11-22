@@ -124,6 +124,12 @@ class TestHub4(unittest.TestCase):
             titles = [row.findtext("title") for row in node.findall("programme")]
             self.assertEqual(titles, ["DE wins", "AT extra", "AT local"])
 
+    def test_single_normal_epg_entry_preserves_expert_tools(self):
+        source = (LIB / "settings_sections45.py").read_text(encoding="utf-8")
+        self.assertIn("'epg':[(39100,'epg_agent100',{})]", source)
+        self.assertIn("'epg_tools':", source)
+        self.assertIn("'section':'epg_tools'", source)
+
     def test_refuses_conflicting_channel_ids(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
