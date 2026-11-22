@@ -147,6 +147,10 @@ def _read_manifest(token, opener=None, *, etag="", cancel=lambda: False):
         reason = obj.get("reason_code")
         return {"status": "PRIVATE_PENDING", "reason": (reason if reason ==
                 "PRODUCTION_DATA_NOT_APPROVED" else "PRIVATE_PENDING")}, response_etag
+    if obj.get("status") == "PRIVATE_READY" and obj.get("schema_version") == 4:
+        from epg_agent_hub4 import validate_manifest
+        validate_manifest(obj)
+        return obj, response_etag
     if obj.get("status") != "PRIVATE_READY" or obj.get("schema_version") != SCHEMA_VERSION:
         raise DeliveryError("UNSUPPORTED_MANIFEST_VERSION")
     _validate_manifest(obj)
@@ -323,6 +327,10 @@ def stage_full_candidate(directory, token_path=None, opener=None, *,
         if "reason" in manifest:
             response["reason"] = manifest["reason"]
         return response
+    if manifest.get("schema_version") == 4:
+        from epg_agent_hub4 import stage as stage_hub4
+        return stage_hub4(root, token, manifest, response_etag, opener,
+                          known=known, cancel=cancel)
     generation = manifest["revision"]
     response.update(generation=generation, channels=manifest["channel_count"],
                     programmes=manifest["programme_count"], image_counts=manifest["image_counts"],
