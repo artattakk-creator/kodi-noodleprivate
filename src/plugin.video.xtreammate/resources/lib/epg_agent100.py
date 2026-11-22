@@ -20,7 +20,7 @@ SUCCESS = {"READY", "PARTIAL_PRESERVED"}
 
 def enabled():
     from utils import setting_bool
-    return setting_bool(SETTING, False)
+    return setting_bool(SETTING, True)
 
 
 def profile():
@@ -202,5 +202,10 @@ def run(portals, cancel):
                 next_consent = tick + .1
             return not consent
 
-        cycle(directory, directory / "reader-token.txt", eligible, now=now,
+        local_token = directory / "reader-token.txt"
+        # A private install build may inject a read-only token as an owned
+        # resource. Never put its contents in public code or Kodi settings.
+        bundled_token = Path(__file__).resolve().parent.parent / "private" / "xcmate_epg_read_token.txt"
+        token_path = local_token if local_token.is_file() else bundled_token
+        cycle(directory, token_path, eligible, now=now,
               request=request, cancel=cancelled)
