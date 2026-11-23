@@ -1,0 +1,97 @@
+name: Promote verified XCMate 0.1.29.101 ZIP to Pilot
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.101.zip'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: pilot-xtreammate-029101
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - name: Verify uploaded ZIP and update only Pilot metadata
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from hashlib import sha256,md5
+          from zipfile import ZipFile
+          import json, re, xml.etree.ElementTree as ET
+          base=Path("online-test")
+          version="0.1.29.101"
+          name="plugin.video.xtreammate-"+version+".zip"
+          source=base/"plugin.video.xtreammate"/name
+          expected="174b11acaf18cdbb4b532aef56c6d28658c3574a8bac982f458ebeb02698dcb9"
+          if not source.is_file():
+              raise SystemExit("BLOCKED: corrected package not uploaded")
+          payload=source.read_bytes()
+          if sha256(payload).hexdigest()!=expected:
+              raise SystemExit("BLOCKED: package differs from reviewed corrected ZIP")
+          with ZipFile(source) as z:
+              names=z.namelist()
+              if z.testzip()!=None or len(names)!=len(set(names)):
+                  raise SystemExit("BLOCKED: invalid ZIP")
+              addon=ET.fromstring(z.read("plugin.video.xtreammate/addon.xml"))
+              if addon.get("id")!="plugin.video.xtreammate" or addon.get("version")!=version:
+                  raise SystemExit("BLOCKED: unexpected Kodi addon version")
+              needed=(
+                  "plugin.video.xtreammate/resources/lib/epg_agent_hub5.py",
+                  "plugin.video.xtreammate/resources/lib/epg_agent_token_bootstrap.py",
+                  "plugin.video.xtreammate/resources/private/xcmate_epg_read_token.txt"
+              )
+              if not all(name in names for name in needed):
+                  raise SystemExit("BLOCKED: incomplete private-EPG agent")
+          info=base/"addons.xml"
+          text=info.read_text(encoding="utf-8")
+          match=re.search(r'<addon id="plugin\\.video\\.xtreammate"\\b.*?</addon>',text,re.S)
+          if not match: raise SystemExit("BLOCKED: no XCMate in Pilot catalog")
+          old=match.group(0)
+          if 'version="0.1.29.100"' in old:
+              new=old.replace('version="0.1.29.100"','version="'+version+'"',1)
+          elif 'version="'+version+'"' in old:
+              new=old
+          else: raise SystemExit("BLOCKED: unexpected current Pilot version")
+          new=re.sub(r'<news>.*?</news>','<news>0.1.29.101 PILOT – GitHub EPG Schema 5: Länderprofile, Bild- und Standardvariante, privater Lesetoken für Erstinstallation. Android/LG-Test ausstehend.</news>',new,count=1,flags=re.S)
+          result=text[:match.start()]+new+text[match.end():]
+          ET.fromstring(result)
+          info.write_text(result,encoding="utf-8")
+          (base/"addons.xml.md5").write_text(md5(result.encode("utf-8")).hexdigest()+"\\n",encoding="ascii")
+          for out in (source,base/name):
+              if out != source: out.write_bytes(payload)
+              (out.parent/(out.name+".sha256")).write_text(expected+"  "+name+"\\n",encoding="ascii")
+          page=base/"index.html"
+          html=page.read_text(encoding="utf-8")
+          if "plugin.video.xtreammate-0.1.29.100.zip" in html:
+              html=html.replace("plugin.video.xtreammate-0.1.29.100.zip",name)
+              html=html.replace("0.1.29.100","0.1.29.101")
+          elif name not in html: raise SystemExit("BLOCKED: NeoDark3 index mismatch")
+          page.write_text(html,encoding="utf-8")
+          manifest=base/"manifest.json"
+          data=json.loads(manifest.read_text(encoding="utf-8"))
+          data["xcmate101_pilot"]={"id":"plugin.video.xtreammate","version":version,"schema":5,
+              "channel":"PILOT_ONLY","device_test":"NOT_TESTED",
+              "public_zip_read_token_extractable":True,"sha256":expected,
+              "bytes":len(payload),"source":"user-approved owner upload"}
+          manifest.write_text(json.dumps(data,ensure_ascii=False,indent=2,sort_keys=True)+"\\n",encoding="utf-8")
+          assert md5(info.read_bytes()).hexdigest()==(base/"addons.xml.md5").read_text().strip()
+          print("PILOT_UPDATE_READY; package verified against pinned SHA256")
+          PY
+      - name: Publish Pilot index and checksum
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- online-test/addons.xml online-test/addons.xml.md5 online-test/manifest.json online-test/index.html online-test/plugin.video.xtreammate-0.1.29.101.zip online-test/plugin.video.xtreammate-0.1.29.101.zip.sha256 online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.101.zip.sha256
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "release(pilot): verified XCMate 0.1.29.101 ZIP and Kodi index"
+          git push origin HEAD:main
