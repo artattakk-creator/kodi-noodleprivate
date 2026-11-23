@@ -108,7 +108,6 @@ def _directory(directory=None):
 
 def selection(directory=None):
     """Persistent selection for future profiles, without changing addon.xml."""
-    from utils import setting_bool
     path = _directory(directory) / SELECTION_FILE
     try:
         if path.is_symlink() or path.stat().st_size > MAX_SELECTION_BYTES:
@@ -123,6 +122,7 @@ def selection(directory=None):
             fail("HUB5_SELECTION_UNSAFE")
         return tuple(selected), variant
     except FileNotFoundError:
+        from utils import setting_bool
         if setting_bool("epg_agent_country_all", False):
             return ("all",), "artwork"
         return tuple(p for p in ("de", "at") if
