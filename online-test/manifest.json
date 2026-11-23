@@ -285,6 +285,17 @@
     "user_approved_regular_release": false,
     "version": "0.1.29.100"
   },
+  "xcmate101_pilot": {
+    "bytes": 4837643,
+    "channel": "PILOT_ONLY",
+    "device_test": "NOT_TESTED",
+    "id": "plugin.video.xtreammate",
+    "public_zip_read_token_extractable": true,
+    "schema": 5,
+    "sha256": "174b11acaf18cdbb4b532aef56c6d28658c3574a8bac982f458ebeb02698dcb9",
+    "source": "user-approved owner upload",
+    "version": "0.1.29.101"
+  },
   "xcmate92": {
     "android": "ANDROID_NOT_TESTED",
     "channels": [
