@@ -85,6 +85,19 @@ class TestTokenBootstrap(unittest.TestCase):
         self.assertNotIn(self.sample, source)
         self.assertNotIn("PRIVATE_EPG_READER_TOKEN=", source)
 
+    def test_kodi_service_bootstraps_before_ordinary_refresh(self):
+        source = (LIB.parents[1] / "service.py").read_text(encoding="utf-8")
+        self.assertIn("ensure_local_token(epg_agent_profile())", source)
+        self.assertLess(source.index("ensure_local_token(epg_agent_profile())"),
+                        source.index("self._last_epg = 0"))
+
+    def test_public_release_builder_refuses_bundled_secrets(self):
+        source = (LIB.parents[3] / "tools" / "build_repository.py").read_text(
+            encoding="utf-8")
+        self.assertIn("Private XCMate credentials prohibited in public Kodi repository",
+                      source)
+        self.assertIn("private_assets = SRC / addon / 'resources' / 'private'", source)
+
 
 if __name__ == "__main__":
     unittest.main()
