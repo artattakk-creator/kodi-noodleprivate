@@ -3,12 +3,16 @@ on:
   push:
     paths:
       - 'src/plugin.video.xtreammate/resources/lib/epg_agent_github.py'
+      - 'src/plugin.video.xtreammate/resources/lib/epg_agent_credentials.py'
+      - 'src/plugin.video.xtreammate/resources/lib/epg_agent100_ui.py'
       - 'src/plugin.video.xtreammate/resources/lib/epg_agent100*.py'
       - 'tests/test_xcmate_epg_agent*.py'
       - '.github/workflows/xcmate-epg-agent-full-contract.yml'
   pull_request:
     paths:
       - 'src/plugin.video.xtreammate/resources/lib/epg_agent_github.py'
+      - 'src/plugin.video.xtreammate/resources/lib/epg_agent_credentials.py'
+      - 'src/plugin.video.xtreammate/resources/lib/epg_agent100_ui.py'
       - 'src/plugin.video.xtreammate/resources/lib/epg_agent100*.py'
       - 'tests/test_xcmate_epg_agent*.py'
       - '.github/workflows/xcmate-epg-agent-full-contract.yml'
@@ -29,6 +33,8 @@ jobs:
       - name: Syntax and synthetic private-EPG transport contract
         run: |
           python -m py_compile src/plugin.video.xtreammate/resources/lib/epg_agent_github.py
+          python -m py_compile src/plugin.video.xtreammate/resources/lib/epg_agent_credentials.py
+          python -m py_compile src/plugin.video.xtreammate/resources/lib/epg_agent100_ui.py
           python -m unittest discover -s tests -p 'test_xcmate_epg_agent*.py' -v
       - name: Explicit gate
         run: |
