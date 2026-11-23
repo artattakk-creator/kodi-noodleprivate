@@ -44,6 +44,15 @@ class IPTVMasterService(xbmc.Monitor):
         try:initialize()
         except OSError:pass  # Fail closed to internal if profile marker cannot commit.
         __import__('storage_policy92').images_enabled()
+        # Owner-only bootstrap package deposits the GitHub READ token in
+        # permanent Kodi userdata on first service start. Regular GS Media
+        # repository updates then stay token-free and preserve that credential.
+        try:
+            from epg_agent_token_bootstrap import ensure_local_token
+            from epg_agent100 import profile as epg_agent_profile
+            ensure_local_token(epg_agent_profile())
+        except (OSError, ValueError) as exc:
+            error('XCMate private EPG bootstrap: ' + type(exc).__name__)
         self._last_epg = 0
         self._epg_worker = None
         self._stopped_since = None
