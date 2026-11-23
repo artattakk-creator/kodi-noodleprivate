@@ -78,9 +78,20 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
     if manual or agent_due(current.get("last_checked", 0), now):
         current.update(last_checked=now, next_check=now + AGENT_INTERVAL, code="CHECKING")
         _save(directory, current)
+        # A region or picture-mode change needs a fresh manifest even when
+        # its HTTP ETag has not changed. Otherwise 304 masks that selection.
+        fetch_etag = current.get("etag", "")
+        if current.get("available_profiles"):
+            from epg_agent_hub5 import selection
+            desired, picture_mode = selection(directory)
+            if ("all" in desired):
+                desired = ("all",)
+            if (list(desired) != current.get("selected_profiles") or
+                    picture_mode != current.get("selected_variant", "artwork")):
+                fetch_etag = ""
         try:
             payload = fetch(directory, token_path, known=current.get("generation", ""),
-                            etag=current.get("etag", ""), cancel=cancel)
+                            etag=fetch_etag, cancel=cancel)
         except DeliveryError as exc:
             # Bounded retry after a short outage, not a one-day failure latch.
             current.update(remote="ERROR", code=exc.code,
