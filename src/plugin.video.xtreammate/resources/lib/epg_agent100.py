@@ -82,13 +82,20 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
             payload = fetch(directory, token_path, known=current.get("generation", ""),
                             etag=current.get("etag", ""), cancel=cancel)
         except DeliveryError as exc:
-            current.update(remote="ERROR", code=exc.code)
+            # Bounded retry after a short outage, not a one-day failure latch.
+            current.update(remote="ERROR", code=exc.code,
+                           last_checked=now - AGENT_INTERVAL + RETRY_INTERVAL)
         except InterruptedError:
             current.update(last_checked=0, code="CANCELLED")
         except OSError:
-            current.update(remote="ERROR", code="STORAGE_ERROR")
+            current.update(remote="ERROR", code="STORAGE_ERROR",
+                           last_checked=now - AGENT_INTERVAL + RETRY_INTERVAL)
         else:
             status = payload["status"]
+            if "available_profiles" in payload:
+                current["available_profiles"] = payload["available_profiles"]
+                current["selected_profiles"] = payload.get("selected_profiles", [])
+                current["selected_variant"] = payload.get("variant", "artwork")
             if status in ("STAGED_FULL_CANDIDATE", "UNCHANGED"):
                 old = current.get("generation", "")
                 if old and old != payload["generation"]:
