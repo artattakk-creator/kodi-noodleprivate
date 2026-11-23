@@ -147,6 +147,10 @@ def _read_manifest(token, opener=None, *, etag="", cancel=lambda: False):
         reason = obj.get("reason_code")
         return {"status": "PRIVATE_PENDING", "reason": (reason if reason ==
                 "PRODUCTION_DATA_NOT_APPROVED" else "PRIVATE_PENDING")}, response_etag
+    if obj.get("status") == "PRIVATE_READY" and obj.get("schema_version") == 5:
+        from epg_agent_hub5 import validate_manifest
+        validate_manifest(obj)
+        return obj, response_etag
     if obj.get("status") == "PRIVATE_READY" and obj.get("schema_version") == 4:
         from epg_agent_hub4 import validate_manifest
         validate_manifest(obj)
@@ -321,12 +325,17 @@ def stage_full_candidate(directory, token_path=None, opener=None, *,
     root = Path(directory)
     previous = local_manifest(candidate_path(root, known))
     manifest, response_etag = _read_manifest(token, opener,
-        etag=etag if previous.get("schema_version") == SCHEMA_VERSION else "", cancel=cancel)
+        etag=etag if previous.get("schema_version") in (SCHEMA_VERSION, 4, 5) else "",
+        cancel=cancel)
     response = {"status": manifest["status"], "etag": response_etag}
     if manifest["status"] != "PRIVATE_READY":
         if "reason" in manifest:
             response["reason"] = manifest["reason"]
         return response
+    if manifest.get("schema_version") == 5:
+        from epg_agent_hub5 import stage as stage_hub5
+        return stage_hub5(root, token, manifest, response_etag, opener,
+                          known=known, cancel=cancel)
     if manifest.get("schema_version") == 4:
         from epg_agent_hub4 import stage as stage_hub4
         return stage_hub4(root, token, manifest, response_etag, opener,
