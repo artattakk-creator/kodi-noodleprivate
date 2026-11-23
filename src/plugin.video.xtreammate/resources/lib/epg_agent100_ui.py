@@ -52,49 +52,73 @@ def details(portal):
 
 
 def show(portal):
-    """One user-facing Agent panel: toggle, countries, refresh, read-only status."""
+    """A single remote-friendly menu; countries come from the live manifest."""
     import xbmcaddon
     import xbmcgui
     from menu_icons45 import select
-    from epg_agent_hub4 import selected as countries
+    from epg_agent_hub5 import selection, save_selection
+    from epg_agent100 import profile
+
     addon = xbmcaddon.Addon()
     dialog = xbmcgui.Dialog()
-    selected_row = 0
-
-    def on(key):
-        return addon.getSetting(key) == "true"
-
+    names = {"all": "Gesamt-EPG (alle Länder)", "de": "Deutschland",
+             "at": "Österreich", "en": "Englisch",
+             "es": "Spanisch", "pl": "Polnisch",
+             "fr": "Französisch", "it": "Italienisch",
+             "tr": "Türkisch", "ar": "Arabisch"}
+    row_index = 0
     while True:
         active = enabled()
+        current, variant = selection(profile())
+        remote = state().get("available_profiles") or ["de", "at"]
+        choices = tuple(p for p in remote if isinstance(p, str))
         rows = ["EPG-Agent aktivieren · " + ("Ein" if active else "Aus")]
-        actions = ["toggle"]
+        actions = [("enable", None)]
         if active:
-            for code, label in (("de", "Deutschland"), ("at", "Österreich"),
-                                ("all", "Alle Länder (Gesamt-EPG)")):
-                rows.append(label + " · " + ("Ein" if on("epg_agent_country_" + code) else "Aus"))
-                actions.append("country_" + code)
-            rows.append("Jetzt aktualisieren")
-            actions.append("refresh")
+            for p in choices:
+                rows.append(names.get(p, p.upper()) + " · " +
+                            ("Ein" if p in current else "Aus"))
+                actions.append(("profile", p))
+            rows.append("Bildinformationen · " +
+                        ("Mit Bildern" if variant == "artwork" else "Standard"))
+            actions.append(("variant", None))
+            rows.append("Jetzt auf neue EPG-Daten prüfen")
+            actions.append(("refresh", None))
         rows.append("Status · " + short_status())
-        actions.append("status")
-        selected_row = select(dialog, "EPG-Agent", rows, actions=actions,
-                              preselect=min(selected_row, len(rows) - 1))
-        if not isinstance(selected_row, int) or selected_row < 0 or selected_row >= len(rows):
+        actions.append(("status", None))
+        row_index = select(dialog, "EPG-Agent", rows, actions=[a[0] for a in actions],
+                           preselect=min(row_index, len(rows) - 1))
+        if not isinstance(row_index, int) or not 0 <= row_index < len(rows):
             return
-        action = actions[selected_row]
-        if action == "toggle":
+        action, value = actions[row_index]
+        if action == "enable":
             addon.setSetting(SETTING, "false" if active else "true")
             request_check()
-        elif action.startswith("country_") and active:
-            key = "epg_agent_" + action
-            addon.setSetting(key, "false" if on(key) else "true")
+        elif action == "profile":
+            selected = set(current)
+            if value in selected:
+                selected.remove(value)
+            else:
+                selected.add(value)
+                if value == "all":
+                    selected = {"all"}
+                else:
+                    selected.discard("all")
+            save_selection([x for x in choices if x in selected], variant, profile())
+            request_check()
+        elif action == "variant":
+            save_selection(current,
+                           "standard" if variant == "artwork" else "artwork",
+                           profile())
             request_check()
         elif action == "refresh":
-            if not countries():
-                dialog.notification("EPG-Agent", "Bitte zuerst mindestens ein Land auswählen.")
+            if not current:
+                dialog.notification("EPG-Agent",
+                                    "Bitte zuerst mindestens ein EPG-Profil auswählen.")
             else:
                 request_check()
                 dialog.notification("EPG-Agent", tr(39119))
         elif action == "status":
-            dialog.textviewer("EPG-Agent", "Gewählte Länder: " +
-                              (", ".join(countries()) or "Keine") + "\n\n" + details(portal))
+            info = "Auswahl: " + (", ".join(current) or "Keine") + "\n"
+            info += "Variante: " + variant + "\n\n" + details(portal)
+            dialog.textviewer("EPG-Agent", info)
