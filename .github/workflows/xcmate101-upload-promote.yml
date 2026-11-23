@@ -53,7 +53,7 @@ jobs:
                   raise SystemExit("BLOCKED: incomplete private-EPG agent")
           info=base/"addons.xml"
           text=info.read_text(encoding="utf-8")
-          match=re.search(r'<addon id="plugin\\.video\\.xtreammate"\\b.*?</addon>',text,re.S)
+          match=re.search(r'<addon id="plugin\.video\.xtreammate"\b.*?</addon>',text,re.S)
           if not match: raise SystemExit("BLOCKED: no XCMate in Pilot catalog")
           old=match.group(0)
           if 'version="0.1.29.100"' in old:
@@ -65,10 +65,10 @@ jobs:
           result=text[:match.start()]+new+text[match.end():]
           ET.fromstring(result)
           info.write_text(result,encoding="utf-8")
-          (base/"addons.xml.md5").write_text(md5(result.encode("utf-8")).hexdigest()+"\\n",encoding="ascii")
+          (base/"addons.xml.md5").write_text(md5(result.encode("utf-8")).hexdigest()+"\n",encoding="ascii")
           for out in (source,base/name):
               if out != source: out.write_bytes(payload)
-              (out.parent/(out.name+".sha256")).write_text(expected+"  "+name+"\\n",encoding="ascii")
+              (out.parent/(out.name+".sha256")).write_text(expected+"  "+name+"\n",encoding="ascii")
           page=base/"index.html"
           html=page.read_text(encoding="utf-8")
           if "plugin.video.xtreammate-0.1.29.100.zip" in html:
@@ -82,7 +82,7 @@ jobs:
               "channel":"PILOT_ONLY","device_test":"NOT_TESTED",
               "public_zip_read_token_extractable":True,"sha256":expected,
               "bytes":len(payload),"source":"user-approved owner upload"}
-          manifest.write_text(json.dumps(data,ensure_ascii=False,indent=2,sort_keys=True)+"\\n",encoding="utf-8")
+          manifest.write_text(json.dumps(data,ensure_ascii=False,indent=2,sort_keys=True)+"\n",encoding="utf-8")
           assert md5(info.read_bytes()).hexdigest()==(base/"addons.xml.md5").read_text().strip()
           print("PILOT_UPDATE_READY; package verified against pinned SHA256")
           PY
