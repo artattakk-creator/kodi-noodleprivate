@@ -220,10 +220,16 @@ def run(portals, cancel):
                 next_consent = tick + .1
             return not consent
 
-        local_token = directory / "reader-token.txt"
-        # A private install build may inject a read-only token as an owned
-        # resource. Never put its contents in public code or Kodi settings.
-        bundled_token = Path(__file__).resolve().parent.parent / "private" / "xcmate_epg_read_token.txt"
-        token_path = local_token if local_token.is_file() else bundled_token
+        # A private bootstrap ZIP may contain the read-only token once. Copy
+        # it into persistent Kodi addon_data, so subsequent normal repository
+        # updates can be token-free without losing authenticated EPG access.
+        from epg_agent_token_bootstrap import ensure_local_token
+        try:
+            token_path = ensure_local_token(directory)
+        except DeliveryError as exc:
+            record.update(remote="ERROR", code=exc.code,
+                          last_checked=now - AGENT_INTERVAL + RETRY_INTERVAL)
+            _save(directory, record)
+            return
         cycle(directory, token_path, eligible, now=now,
               request=request, cancel=cancelled)
