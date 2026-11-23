@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.101.zip'
+      - '.github/workflows/xcmate101-upload-promote.yml'
   workflow_dispatch:
 permissions:
   contents: write
@@ -53,7 +54,7 @@ jobs:
                   raise SystemExit("BLOCKED: incomplete private-EPG agent")
           info=base/"addons.xml"
           text=info.read_text(encoding="utf-8")
-          match=re.search(r'<addon id="plugin\.video\.xtreammate"\b.*?</addon>',text,re.S)
+          match=re.search(r'<addon id="plugin\.video\.xtreammate".*?</addon>',text,re.S)
           if not match: raise SystemExit("BLOCKED: no XCMate in Pilot catalog")
           old=match.group(0)
           if 'version="0.1.29.100"' in old:
