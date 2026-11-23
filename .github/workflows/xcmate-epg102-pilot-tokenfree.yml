@@ -1,6 +1,12 @@
 name: XCMate Schema-5 Pilot token-free follow-up update
 on:
   workflow_dispatch:
+    inputs:
+      device_bootstrap_tested:
+        description: "Privates XCMate 0.1.29.101 auf Android installiert, Token lokal gesichert und EPG erfolgreich getestet?"
+        type: boolean
+        required: true
+        default: false
 permissions:
   contents: write
 concurrency:
@@ -8,6 +14,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   publish:
+    if: ${{ inputs.device_bootstrap_tested }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
