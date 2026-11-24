@@ -1,0 +1,144 @@
+name: Build and publish GS Media Setup 0.5.29 (XCMate 0.1.29.101 required) Pilot
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/gsmedia-0529-xcmate101-pilot.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: gsmedia-0529-pilot
+  cancel-in-progress: false
+jobs:
+  build-pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Build reviewed installer and enforce XCMate 0.1.29.101
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import ast,hashlib,io,json,re,xml.etree.ElementTree as ET,zipfile
+          root=Path('online-test')
+          old='0.5.28';new='0.5.29'
+          oldfn=f'script.gsmedia.setup-{old}.zip'
+          newfn=f'script.gsmedia.setup-{new}.zip'
+          source=root/oldfn
+          expected_source='bbe7e87e384b1336d94cd79eae7332384d9a079d340769c1217c87d7d799133e'
+          if hashlib.sha256(source.read_bytes()).hexdigest()!=expected_source:raise SystemExit('INSTALLER_SOURCE_HASH_CHANGED')
+          xcmate=root/'plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.101.zip'
+          expected_xcmate='174b11acaf18cdbb4b532aef56c6d28658c3574a8bac982f458ebeb02698dcb9'
+          if hashlib.sha256(xcmate.read_bytes()).hexdigest()!=expected_xcmate:raise SystemExit('XCMATE_101_MISSING_OR_CHANGED')
+          with zipfile.ZipFile(xcmate) as z:
+              addon=ET.fromstring(z.read('plugin.video.xtreammate/addon.xml'))
+              if addon.get('version')!='0.1.29.101':raise SystemExit('XCMATE_ADDON_VERSION_WRONG')
+              required={'plugin.video.xtreammate/resources/lib/epg_agent_hub5.py',
+                        'plugin.video.xtreammate/resources/lib/epg_agent_token_bootstrap.py',
+                        'plugin.video.xtreammate/resources/private/xcmate_epg_read_token.txt'}
+              if not required.issubset(z.namelist()):raise SystemExit('XCMATE_SCHEMA5_BOOTSTRAP_MISSING')
+              if z.testzip() is not None:raise SystemExit('XCMATE_BAD_CRC')
+          contents={}
+          with zipfile.ZipFile(source) as z:
+              if z.testzip() is not None:raise SystemExit('INSTALLER_BAD_CRC')
+              for entry in z.infolist():
+                  if entry.is_dir():continue
+                  if entry.filename in contents or '..' in Path(entry.filename).parts:raise SystemExit('INSTALLER_UNSAFE_ENTRY')
+                  contents[entry.filename]=z.read(entry)
+          prefix='script.gsmedia.setup/'
+          addonpath=prefix+'addon.xml'
+          ui=prefix+'resources/lib/setup_auto_ui50.py'
+          selection=prefix+'resources/lib/setup_auto50.py'
+          addon=contents[addonpath].decode()
+          if addon.count('version="0.5.28"')!=1:raise SystemExit('INSTALLER_ADDON_VERSION_UNEXPECTED')
+          addon=addon.replace('version="0.5.28"','version="0.5.29"')
+          ET.fromstring(addon)
+          contents[addonpath]=addon.encode()
+          screen=contents[ui].decode()
+          if screen.count('TITLE = "GS Media Setup 0.5.28"')!=1:raise SystemExit('INSTALLER_UI_VERSION_UNEXPECTED')
+          contents[ui]=screen.replace('TITLE = "GS Media Setup 0.5.28"','TITLE = "GS Media Setup 0.5.29"').encode()
+          choose=contents[selection].decode()
+          original='result.append(dict(row, repo=TEST_CHANNEL))'
+          replacement='result.append(dict(row, repo=TEST_CHANNEL, minimum="0.1.29.101"))'
+          if choose.count(original)!=1 or 'if ident == "plugin.video.xtreammate" and row["repo"] == "repository.gsmedia":' not in choose:
+              raise SystemExit('XCMATE_PLAN_UNEXPECTED')
+          contents[selection]=choose.replace(original,replacement,1).encode()
+          for path,data in contents.items():
+              if path.endswith('.py'):ast.parse(data.decode('utf-8'),filename=path)
+          # Structural behavior verification using the unchanged pure rows() implementation and manifest stub.
+          module=ast.parse(contents[selection].decode())
+          rows_fn=next(node for node in module.body if isinstance(node,ast.FunctionDef) and node.name=='rows')
+          compiled=compile(ast.Module(body=[rows_fn],type_ignores=[]),'<installer-rows>','exec')
+          context=dict(manifest=lambda:(
+              {'id':'plugin.video.xtreammate','repo':'repository.gsmedia','minimum':'0.1.29.70'},
+              {'id':'script.skinshortcuts','repo':'repository.xbmc.org','minimum':'2.0.3'}),
+              MAX_ITEMS=200, SAFE_IDS=re.compile('^[A-Za-z0-9._-]{3,100}$'),TEST_CHANNEL='repository.gsmedia.pilot')
+          exec(compiled,context)
+          computed=context['rows']()
+          assert computed[0]['repo']=='repository.gsmedia.pilot'
+          assert computed[0]['minimum']=='0.1.29.101'
+          assert computed[1]['minimum']=='2.1.0'
+          output=io.BytesIO()
+          with zipfile.ZipFile(output,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=8) as z:
+              for path,data in sorted(contents.items()):z.writestr(path,data)
+          payload=output.getvalue()
+          with zipfile.ZipFile(io.BytesIO(payload)) as z:
+              assert z.testzip() is None
+              assert z.read(selection)==contents[selection]
+              assert ET.fromstring(z.read(addonpath)).get('version')==new
+          for out in (root/newfn, root/'script.gsmedia.setup'/newfn):
+              out.parent.mkdir(parents=True,exist_ok=True)
+              out.write_bytes(payload)
+              out.with_name(out.name+'.sha256').write_text(hashlib.sha256(payload).hexdigest()+'  '+newfn+'\n')
+          catalog=root/'addons.xml'
+          xml=catalog.read_text()
+          match=re.search(r'<addon id="script\.gsmedia\.setup".*?</addon>',xml,re.S)
+          if not match:raise SystemExit('INSTALLER_CATALOG_ENTRY_MISSING')
+          fragment=match.group()
+          if 'version="0.5.27"' not in fragment and 'version="0.5.28"' not in fragment:
+              raise SystemExit('INSTALLER_CATALOG_VERSION_UNEXPECTED')
+          fragment=fragment.replace('version="0.5.27"','version="0.5.29"').replace('version="0.5.28"','version="0.5.29"')
+          xml=xml[:match.start()]+fragment+xml[match.end():]
+          ET.fromstring(xml)
+          catalog.write_text(xml)
+          (root/'addons.xml.md5').write_text(hashlib.md5(xml.encode()).hexdigest()+'\n')
+          landing=root/'index.html';html=landing.read_text()
+          if '<tr><td><a href="script.gsmedia.setup-0.5.28.zip">' not in html:
+              raise SystemExit('INSTALLER_LANDING_MISSING')
+          insert=('<tr><td><a href="script.gsmedia.setup-0.5.29.zip">script.gsmedia.setup-0.5.29.zip</a></td>'
+                  '<td><strong>2a. GS Media Installer 0.5.29 – XCMate 0.1.29.101 erforderlich</strong><br>'
+                  'Vollstaendiger 48-Komponenten-Installer mit BINGIE. Nutzt ausschliesslich das GS Media Pilot Repository '
+                  'fuer XCMate und akzeptiert XCMate erst ab 0.1.29.101 (Schema-5-Agent mit Lesetoken). '
+                  '<strong>Android-Geraeteabnahme steht noch aus; der Agent selbst zeigte zuletzt AUTH_NOT_PROVISIONED.</strong> '
+                  'Kodi vor Datenloeschung sichern; <a href="script.gsmedia.setup-0.5.29.zip.sha256">SHA-256</a>.</td></tr>\n')
+          html=html.replace('<tr><td><a href="script.gsmedia.setup-0.5.28.zip">',insert+'<tr><td><a href="script.gsmedia.setup-0.5.28.zip">',1)
+          landing.write_text(html)
+          manifest=root/'manifest.json';j=json.loads(manifest.read_text())
+          j['installer_0529']={'version':new,'channel':'PILOT_NeoDark3','xcmate_minimum':'0.1.29.101',
+                               'xcmate_source':'repository.gsmedia.pilot','xcmate_sha256':expected_xcmate,
+                               'android_test':'NOT_TESTED','installer_sha256':hashlib.sha256(payload).hexdigest(),
+                               'bytes':len(payload),'base_version':old,'package_count':48}
+          manifest.write_text(json.dumps(j,indent=2,sort_keys=True,ensure_ascii=False)+'\n')
+          assert hashlib.md5(catalog.read_bytes()).hexdigest()==(root/'addons.xml.md5').read_text().strip()
+          print('GS_MEDIA_SETUP_0529_PILOT_PASS:',len(contents),'files',len(payload),'bytes; XCMate min 0.1.29.101; Kodi device not tested')
+          PY
+      - name: Publish tested installer and Pilot metadata only
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add online-test/addons.xml online-test/addons.xml.md5 online-test/index.html online-test/manifest.json \
+            online-test/script.gsmedia.setup-0.5.29.zip online-test/script.gsmedia.setup-0.5.29.zip.sha256 \
+            online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.29.zip \
+            online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.29.zip.sha256
+          git diff --cached --quiet && exit 1
+          git commit -m 'release(pilot): GS Media Setup 0.5.29 requires XCMate 0.1.29.101'
+          git push origin HEAD:main
