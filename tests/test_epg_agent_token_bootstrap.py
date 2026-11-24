@@ -100,5 +100,31 @@ class TestTokenBootstrap(unittest.TestCase):
         self.assertIn("private_assets = SRC / addon / 'resources' / 'private'", source)
 
 
+class TestPrivatePackageAuthControl(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        sys.path.insert(0, str(LIB.parents[3] / "tools"))
+
+    def test_public_or_proxy_authorized_manifest_cannot_validate_package_token(self):
+        from unittest.mock import MagicMock
+        from package_xcmate_private import verify_auth_context
+
+        opener = MagicMock()
+        with self.assertRaisesRegex(DeliveryError, "AUTH_CONTEXT_UNVERIFIED"):
+            verify_auth_context(opener)
+        req = opener.open.call_args.args[0]
+        self.assertFalse(req.has_header("Authorization"))
+
+    def test_private_not_found_is_expected_for_the_unauthenticated_control(self):
+        from urllib.error import HTTPError
+        from unittest.mock import Mock
+        from package_xcmate_private import verify_auth_context
+
+        opener = Mock()
+        opener.open.side_effect = HTTPError("https://api.github.com", 404, "", {}, None)
+        verify_auth_context(opener)
+
+
+
 if __name__ == "__main__":
     unittest.main()

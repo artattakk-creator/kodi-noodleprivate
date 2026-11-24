@@ -6,6 +6,7 @@ from pathlib import Path
 import shutil
 import sys
 import tempfile
+from urllib import error, request
 from xml.etree import ElementTree
 from zipfile import ZipFile
 
@@ -14,9 +15,30 @@ from package_xcmate71 import ROOT, build
 ADDON = 'plugin.video.xtreammate'
 SOURCE = ROOT / 'src' / ADDON
 sys.path.insert(0, str(SOURCE / 'resources/lib'))
-from epg_agent_github import DeliveryError, probe, read_token
+from epg_agent_github import DeliveryError, MANIFEST_URL, _LimitedGitHubRedirect, probe, read_token
 from epg_agent_token_bootstrap import BUNDLED_NAME
 
+
+
+def verify_auth_context(opener=None):
+    """Reject a public, cached, or identity-injected response to the control."""
+    getter = opener or request.build_opener(_LimitedGitHubRedirect())
+    control = request.Request(MANIFEST_URL, headers={
+        'Accept': 'application/vnd.github.raw+json',
+        'Cache-Control': 'no-cache, no-store',
+        'User-Agent': 'XCMate-package-auth-control',
+    })
+    try:
+        with getter.open(control, timeout=12):
+            raise DeliveryError('AUTH_CONTEXT_UNVERIFIED', phase='manifest')
+    except error.HTTPError as exc:
+        status = exc.code
+        exc.close()
+        if status not in (401, 404):
+            raise DeliveryError('AUTH_CONTROL_UNAVAILABLE', phase='manifest',
+                                http_status=status) from None
+    except OSError:
+        raise DeliveryError('AUTH_CONTROL_UNAVAILABLE', phase='manifest') from None
 
 def build_private(output, token_file):
     """Write the ZIP only after the packaged credential reads a ready Schema-5 manifest."""
@@ -33,6 +55,7 @@ def build_private(output, token_file):
         bundled.parent.mkdir(mode=0o700)
         bundled.touch(mode=0o600)
         bundled.write_text(credential + '\n', encoding='ascii')
+        verify_auth_context()
         manifest = probe(bundled)
         if manifest.get('schema_version') != 5 or manifest.get('status') != 'PRIVATE_READY':
             raise DeliveryError('PRIVATE_SCHEMA5_NOT_READY')
