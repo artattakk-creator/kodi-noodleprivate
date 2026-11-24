@@ -55,10 +55,10 @@ def build_private(output, token_file):
         bundled.parent.mkdir(mode=0o700)
         bundled.touch(mode=0o600)
         bundled.write_text(credential + '\n', encoding='ascii')
-        verify_auth_context()
         manifest = probe(bundled)
         if manifest.get('schema_version') != 5 or manifest.get('status') != 'PRIVATE_READY':
             raise DeliveryError('PRIVATE_SCHEMA5_NOT_READY')
+        verify_auth_context()
         result = build(work, source=source)
         zip_path = work / f"{ADDON}-{result['version']}.zip"
         with ZipFile(zip_path) as archive:

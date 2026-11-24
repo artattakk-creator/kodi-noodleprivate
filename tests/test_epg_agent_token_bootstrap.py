@@ -125,6 +125,40 @@ class TestPrivatePackageAuthControl(unittest.TestCase):
         verify_auth_context(opener)
 
 
+    def test_invalid_packaged_reader_is_reported_even_if_control_is_throttled(self):
+        from unittest.mock import patch
+        from package_xcmate_private import build_private
+
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            credential = root / "reader"
+            credential.write_text("github_pat_" + "a" * 48, encoding="ascii")
+            with patch("package_xcmate_private.probe", side_effect=DeliveryError(
+                    "PRIVATE_ENDPOINT_ACCESS_DENIED", phase="manifest", http_status=401)):
+                with patch("package_xcmate_private.verify_auth_context", side_effect=DeliveryError(
+                        "AUTH_CONTROL_UNAVAILABLE", phase="manifest", http_status=403)):
+                    with self.assertRaisesRegex(DeliveryError, "PRIVATE_ENDPOINT_ACCESS_DENIED"):
+                        build_private(root / "candidate", credential)
+            self.assertFalse(list((root / "candidate").glob("*.zip")))
+
+
+    def test_ready_manifest_still_requires_unauthenticated_control_before_build(self):
+        from unittest.mock import patch
+        from package_xcmate_private import build_private
+
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            credential = root / "reader"
+            credential.write_text("github_pat_" + "a" * 48, encoding="ascii")
+            with patch("package_xcmate_private.probe", return_value={
+                    "schema_version": 5, "status": "PRIVATE_READY"}):
+                with patch("package_xcmate_private.verify_auth_context", side_effect=DeliveryError(
+                        "AUTH_CONTROL_UNAVAILABLE", phase="manifest", http_status=403)):
+                    with self.assertRaisesRegex(DeliveryError, "AUTH_CONTROL_UNAVAILABLE"):
+                        build_private(root / "candidate", credential)
+            self.assertFalse(list((root / "candidate").glob("*.zip")))
+
+
 
 if __name__ == "__main__":
     unittest.main()
