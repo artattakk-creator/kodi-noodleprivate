@@ -14,6 +14,7 @@ import re
 import shutil
 import tempfile
 import time
+import zlib
 from xml.etree import ElementTree as ET
 
 from epg_agent_github import DeliveryError, SHA_RE, XMLTV_FILE, candidate_path, local_manifest
@@ -235,7 +236,7 @@ def coverage_report(folder, aliases):
                     body = stream.read(MAX_PROFILE_REPORT_BYTES + 1)
                 if len(body) <= MAX_PROFILE_REPORT_BYTES:
                     report = json.loads(body)
-        except (OSError, ValueError, EOFError):
+        except (OSError, ValueError, EOFError, zlib.error):
             pass
         channels = report.get("channels") if isinstance(report, dict) else None
         measured = isinstance(channels, list) and len(channels) <= record["channels"]

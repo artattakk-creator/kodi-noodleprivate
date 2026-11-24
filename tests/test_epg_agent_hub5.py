@@ -160,6 +160,10 @@ class TestHub5(unittest.TestCase):
             cached = hub5.stage(Path(tmp), "not-used", obj, "", None)
             self.assertEqual(cached["status"], "UNCHANGED")
             self.assertEqual(cached["generation"], result["generation"])
+            (folder / "coverage-en.json.gz").write_bytes(bytes.fromhex("1f8b08000000000000ffffffffff"))
+            damaged = hub5.coverage_report(folder, {"7": "x.en", "9": "x.es"})
+            self.assertIsNone(damaged[0]["horizon"])
+            self.assertEqual(damaged[1]["matched"], 1)
 
     def test_variants_different_generation(self):
         with tempfile.TemporaryDirectory() as tmp:
