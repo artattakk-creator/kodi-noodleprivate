@@ -159,6 +159,7 @@ class SourceViews474(unittest.TestCase):
             result=resolve_guide(view,'xml','1',self.now,mappings=mappings)
         self.assertEqual(result['now'],'Provider programme')
         self.assertEqual(result['next'],'Agent future')
+        self.assertEqual(result['epg_id'],'xml')
         self.assertEqual(result['events'][0]['source_key46'],'provider')
         self.assertEqual(result['events'][1]['source_key46'],'agent')
 
