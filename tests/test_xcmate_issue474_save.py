@@ -65,23 +65,20 @@ class MiniSaveUI474(unittest.TestCase):
   with mock.patch.object(self.f.dialog,'notification',side_effect=notify):self.d.onClick(405)
   self.assertTrue(self.d.saved);self.assertTrue(self.d._closed)
   self.assertEqual(observed,[(dict(channel='xml',source=self.f.bid),'Source 2',False)])
- def test_failed_actual_parent_render_keeps_dialog_and_old_persistent_mapping(self):
-  before=self.f.sources._load_all()
+ def test_parent_render_failure_keeps_verified_binding_and_dialog(self):
   with mock.patch.object(self.owner.parent,'_render',side_effect=RuntimeError('SYNTHETIC_SECRET_MUST_NOT_LEAK')):self.d.onClick(405)
-  self.assertFalse(self.d.saved);self.assertFalse(self.d._closed)
-  self.assertEqual(self.f.sources._load_all(),before)
+  self.assertTrue(self.d.saved);self.assertFalse(self.d._closed)
+  self.assertEqual(self.f.sources.configuration('p')['source_mappings48']['1'],dict(channel='xml',source=self.f.bid))
   self.assertIn('MAPPING_UI_REFRESH_FAILED',self.d.getControl(103).text)
   self.assertNotIn('SYNTHETIC_SECRET',self.d.getControl(103).text)
- def test_parent_exit_rolls_back_a_completed_worker_not_yet_acknowledged_by_gui(self):
-  before=self.f.sources._load_all()
-  receipt=self.f.binding.commit_verified(self.f.portal,'1','xml',self.f.bid,
-      prepare=lambda:self.d.adapter96.prepare_saved(self.d.candidate,self.f.bid))
+ def test_parent_exit_keeps_completed_worker_binding_without_gui_ack(self):
+  receipt=self.f.binding.commit_verified(self.f.portal,'1','xml',self.f.bid)
   future=Future();future.set_running_or_notify_cancel();self.d.future=future;self.d._saving53=True
   self.owner.parent._closed=True
   with mock.patch.object(self.d,'show'):self.d.run()
   future.set_result(receipt)
   self.assertTrue(self.d._closed);self.assertFalse(self.d.saved)
-  self.assertEqual(self.f.sources._load_all(),before)
+  self.assertEqual(self.f.sources.configuration('p')['source_mappings48']['1'],dict(channel='xml',source=self.f.bid))
  def test_write_failure_reports_fixed_error_and_preserves_open_dialog(self):
   before=self.f.sources._load_all()
   with mock.patch.object(self.f.sources,'_write_all',side_effect=OSError('SYNTHETIC_PRIVATE_PATH')):self.d.onClick(405)
@@ -89,10 +86,10 @@ class MiniSaveUI474(unittest.TestCase):
   self.assertEqual(self.f.sources._load_all(),before)
   self.assertIn('MAPPING_WRITE_FAILED',self.d.getControl(103).text)
   self.assertNotIn('SYNTHETIC_PRIVATE',self.d.getControl(103).text)
- def test_unexpected_gui_type_error_rolls_back_and_keeps_open(self):
-  before=self.f.sources._load_all()
+ def test_unexpected_gui_type_error_keeps_verified_binding(self):
   with mock.patch.object(self.owner.parent,'_render',side_effect=TypeError('SYNTHETIC_SECRET')):self.d.onClick(405)
-  self.assertFalse(self.d.saved);self.assertFalse(self.d._closed);self.assertEqual(self.f.sources._load_all(),before)
+  self.assertTrue(self.d.saved);self.assertFalse(self.d._closed)
+  self.assertEqual(self.f.sources.configuration('p')['source_mappings48']['1'],dict(channel='xml',source=self.f.bid))
  def receipt(self):
   return self.f.binding.commit_verified(self.f.portal,'1','xml',self.f.bid,prepare=lambda:self.d.adapter96.prepare_saved(self.d.candidate,self.f.bid))
  def test_newer_mapping_cannot_be_acknowledged_as_old_worker_result(self):
@@ -114,8 +111,8 @@ class MiniSaveUI474(unittest.TestCase):
   self.assertTrue(self.d.previewed)
   self.assertEqual(self.owner.snapshot.get('1',self.f.now)['now'],'Source 1')
   self.d.onClick(405);self.assertTrue(self.d.saved)
- def test_sqlite_selected_source_failure_is_not_a_legitimate_empty_success(self):
-  before=self.f.sources._load_all();original=sqlite3.connect;failed=[]
+ def test_sqlite_selected_source_failure_keeps_verified_binding(self):
+  original=sqlite3.connect;failed=[]
   class Connection:
    def __init__(self,inner):object.__setattr__(self,'inner',inner)
    def __getattr__(self,name):return getattr(self.inner,name)
@@ -127,8 +124,9 @@ class MiniSaveUI474(unittest.TestCase):
      failed.append(True);raise sqlite3.OperationalError('interrupted')
     return self.inner.execute(sql,*args,**kw)
   with mock.patch('sqlite3.connect',side_effect=lambda *a,**k:Connection(original(*a,**k))):self.d.onClick(405)
-  self.assertTrue(failed);self.assertFalse(self.d.saved);self.assertFalse(self.d._closed)
-  self.assertEqual(self.f.sources._load_all(),before)
+  self.assertTrue(failed);self.assertTrue(self.d.saved);self.assertFalse(self.d._closed)
+  self.assertEqual(self.f.sources.configuration('p')['source_mappings48']['1'],dict(channel='xml',source=self.f.bid))
+  self.assertIn('MAPPING_RELOAD_FAILED',self.d.getControl(103).text)
 
 class GridSaveUI474(unittest.TestCase):
  def setUp(self):
@@ -146,8 +144,9 @@ class GridSaveUI474(unittest.TestCase):
   row=self.parent.rows[self.parent.row]
   self.assertEqual((row['mapping'],row['epg_id'],row['events'][0]['title']),('MANUAL','xml','Source 2'))
   self.assertIn('manuell',self.parent.getControl(102).label.lower())
- def test_grid_apply_failure_restores_original_mapping_and_parent_rows(self):
-  before=self.f.sources._load_all();original=self.d.adapter96.original['rows']
+ def test_grid_apply_failure_keeps_verified_binding_and_restores_parent_rows(self):
+  original=self.d.adapter96.original['rows']
   with mock.patch.object(self.parent,'_render',side_effect=RuntimeError('SYNTHETIC')):self.d.onClick(405)
-  self.assertFalse(self.d.saved);self.assertFalse(self.d._closed)
-  self.assertEqual(self.f.sources._load_all(),before);self.assertEqual(self.parent.rows,original)
+  self.assertTrue(self.d.saved);self.assertFalse(self.d._closed)
+  self.assertEqual(self.f.sources.configuration('p')['source_mappings48']['1'],dict(channel='xml',source=self.f.bid))
+  self.assertEqual(self.parent.rows,original)

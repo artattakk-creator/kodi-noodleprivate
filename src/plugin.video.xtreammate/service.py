@@ -46,6 +46,7 @@ class IPTVMasterService(xbmc.Monitor):
         __import__('storage_policy92').images_enabled()
         self._last_epg = 0
         self._epg_worker = None
+        self._agent_worker = None
         self._stopped_since = None
         info('XCMate service started')
         try:self._live_errors67=__import__('live_feedback67').monitor()
@@ -80,36 +81,39 @@ class IPTVMasterService(xbmc.Monitor):
 
     def _maybe_refresh_epg(self):
         from epg_agent100 import enabled as agent_enabled
-        provider_due = setting_bool('epg_auto_refresh', True)
-        if not provider_due and not agent_enabled():return
-        if time.time()-self._last_epg<60:return
-        if self._epg_worker and self._epg_worker.is_alive():return
-        self._last_epg=time.time()
+        now = time.monotonic()
+        if self._last_epg and now-self._last_epg<60:return
+        self._last_epg=now
+
         def refresh():
             try:
-                import portals as P
-                if provider_due:
-                    __import__('provider_baseline96').ensure()
-                    from epg_schedule53 import plan
-                    from epg import ensure_epg_loaded_for_portal
-                    for portal in P.get_active():
-                        if self.abortRequested():return
-                        selected=plan(portal)
-                        if not selected:continue
-                        # Only the short-cache age is bypassed in the existing importer.
-                        job=dict(portal,_epg_auto53=True,_epg_sources53=selected)
-                        ensure_epg_loaded_for_portal(job,force=True)
+                from portals import get_active
+                __import__('provider_baseline96').ensure()
+                from epg_schedule53 import plan
+                from epg import ensure_epg_loaded_for_portal
+                for portal in get_active():
+                    if self.abortRequested():return
+                    selected=plan(portal)
+                    if not selected:continue
+                    job=dict(portal,_epg_auto53=True,_epg_sources53=selected)
+                    ensure_epg_loaded_for_portal(job,force=True)
             except Exception as exc:
                 error('Service EPG refresh: '+type(exc).__name__)
-            if agent_enabled() and not self.abortRequested():
-                try:
-                    from portals import get_active
-                    from epg_agent100 import run
-                    run(get_active(), self.abortRequested)
-                except Exception as exc:
-                    error('Service EPG Agent: '+type(exc).__name__)
-        self._epg_worker=threading.Thread(target=refresh,name='XCMateEPG',daemon=True)
-        self._epg_worker.start()
+
+        def refresh_agent():
+            try:
+                from portals import get_active
+                from epg_agent100 import run
+                run(get_active(), self.abortRequested)
+            except Exception as exc:
+                error('Service EPG Agent: '+type(exc).__name__)
+
+        if setting_bool('epg_auto_refresh', True) and not (self._epg_worker and self._epg_worker.is_alive()):
+            self._epg_worker=threading.Thread(target=refresh,name='XCMateEPG',daemon=True)
+            self._epg_worker.start()
+        if agent_enabled() and not (self._agent_worker and self._agent_worker.is_alive()):
+            self._agent_worker=threading.Thread(target=refresh_agent,name='XCMateEPGAgent',daemon=True)
+            self._agent_worker.start()
 
     def _maybe_warm_catalogs(self):
         """Never fetch Xtream metadata on the Kodi service/remote-control thread."""

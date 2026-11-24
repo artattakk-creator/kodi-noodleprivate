@@ -20,7 +20,7 @@ SUCCESS = {"READY", "PARTIAL_PRESERVED"}
 
 def enabled():
     from utils import setting_bool
-    return setting_bool(SETTING, False)
+    return setting_bool(SETTING, True)
 
 
 def profile():
@@ -63,6 +63,24 @@ def _request_time():
         return 0
 
 
+
+def _due(record, now):
+    checked = record.get("last_checked", 0)
+    if not checked or now < checked or record.get("code") == "CHECKING":
+        return True
+    if record.get("remote_failures"):
+        return now >= record.get("next_check", checked)
+    return agent_due(checked, now)
+
+
+def _failed(record, now, code, *, phase="", http_status=None):
+    failures = (record.get("remote_failures", 0) % 3) + 1
+    delay = (RETRY_INTERVAL, 4 * RETRY_INTERVAL, AGENT_INTERVAL)[failures - 1]
+    record.update(remote="ERROR", code=code, remote_failures=failures,
+                  last_checked=now, next_check=now + delay,
+                  remote_phase=phase, remote_http_status=http_status)
+
+
 def cycle(directory, token_path, portals, *, now=None, request=0,
           fetch=stage_full_candidate, install=None, cancel=lambda: False):
     """Persist manifest outcomes and only advance a portal after verified readback."""
@@ -75,20 +93,38 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
     manual = current.get("request", 0) < request <= now
     if manual:
         current["request"] = request
-    if manual or agent_due(current.get("last_checked", 0), now):
+    if manual or _due(current, now):
         current.update(last_checked=now, next_check=now + AGENT_INTERVAL, code="CHECKING")
         _save(directory, current)
+        # A region or picture-mode change needs a fresh manifest even when
+        # its HTTP ETag has not changed. Otherwise 304 masks that selection.
+        fetch_etag = current.get("etag", "")
+        if current.get("available_profiles"):
+            from epg_agent_hub5 import selection
+            desired, picture_mode = selection(directory)
+            if ("all" in desired):
+                desired = ("all",)
+            if (list(desired) != current.get("selected_profiles") or
+                    picture_mode != current.get("selected_variant", "artwork")):
+                fetch_etag = ""
         try:
-            payload = fetch(directory, token_path, known=current.get("generation", ""),
-                            etag=current.get("etag", ""), cancel=cancel)
+            from epg_agent_token_bootstrap import fetch_with_recovery
+            payload = fetch_with_recovery(fetch, directory, token_path,
+                                          known=current.get("generation", ""),
+                                          etag=fetch_etag, cancel=cancel)
         except DeliveryError as exc:
-            current.update(remote="ERROR", code=exc.code)
+            _failed(current, now, exc.code, phase=exc.phase, http_status=exc.http_status)
         except InterruptedError:
-            current.update(last_checked=0, code="CANCELLED")
+            current.update(last_checked=0, next_check=0, code="CANCELLED")
         except OSError:
-            current.update(remote="ERROR", code="STORAGE_ERROR")
+            _failed(current, now, "STORAGE_ERROR")
         else:
+            current.update(remote_failures=0, remote_phase="", remote_http_status=None)
             status = payload["status"]
+            if "available_profiles" in payload:
+                current["available_profiles"] = payload["available_profiles"]
+                current["selected_profiles"] = payload.get("selected_profiles", [])
+                current["selected_variant"] = payload.get("variant", "artwork")
             if status in ("STAGED_FULL_CANDIDATE", "UNCHANGED"):
                 old = current.get("generation", "")
                 if old and old != payload["generation"]:
@@ -187,7 +223,7 @@ def run(portals, cancel):
     receipts = record.get("portals", {})
     pending_import = record.get("remote") == "AVAILABLE" and any(
         receipts.get(str(p["id"]), {}).get("generation") != generation for p in eligible)
-    if (agent_due(record.get("last_checked", 0), now) or request > record.get("request", 0)
+    if (_due(record, now) or request > record.get("request", 0)
             or pending_import or record.get("code") in ("IMPORTING", "CHECKING")):
         next_consent = 0
         consent = True
@@ -202,5 +238,14 @@ def run(portals, cancel):
                 next_consent = tick + .1
             return not consent
 
-        cycle(directory, directory / "reader-token.txt", eligible, now=now,
+        from epg_agent_token_bootstrap import ensure_local_token
+        try:
+            token_path = ensure_local_token(directory)
+        except (DeliveryError, OSError) as exc:
+            if record.get("request", 0) < request <= now:
+                record["request"] = request
+            _failed(record, now, getattr(exc, "code", "STORAGE_ERROR"))
+            _save(directory, record)
+            return
+        cycle(directory, token_path, eligible, now=now,
               request=request, cancel=cancelled)

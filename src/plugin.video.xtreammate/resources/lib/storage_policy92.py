@@ -1,4 +1,4 @@
-"""Explicit image-EPG preference. Missing value preserves every legacy choice."""
+"""Legacy storage preferences and source-derived image-EPG availability."""
 import json
 from pathlib import Path
 
@@ -25,12 +25,23 @@ def publish(enabled,code=None):
     except (ImportError,AttributeError,RuntimeError):pass
 
 def images_enabled():
-    # Worker/startup IO only. Focus callbacks consume just the scoped property.
+    # Worker/startup only. Focus callbacks use the scoped availability flag.
+    from artwork_sources96 import enabled, health, token_valid
+    from media_sources43 import SourceError
+
+    code = health()
     try:
-        choice=read()['image_epg'];enabled=choice in ('legacy','yes')
-        code='READY' if enabled else 'IMAGE_EPG_DEFERRED' if choice=='later' else 'IMAGE_EPG_DISABLED'
-    except (OSError,ValueError):enabled=False;code='STORAGE_POLICY_INVALID'
-    publish(enabled,code);return enabled
+        active = code in ('READY', 'NOT_CREATED') and (
+            enabled('xmltv') or enabled('tvmaze') or
+            (enabled('tmdb') and token_valid())
+        )
+    except SourceError as exc:
+        code = exc.code
+        active = False
+    if code in ('READY', 'NOT_CREATED'):
+        code = 'READY' if active else 'IMAGE_EPG_DISABLED'
+    publish(active, code)
+    return active
 
 def prepare_choice(decision):
     """Load write dependencies before any caller holds a config lock."""
@@ -49,5 +60,5 @@ def prepare_choice(decision):
 
 def choose(decision):
     value=prepare_choice(decision)()
-    publish(decision=='yes','READY' if decision=='yes' else 'IMAGE_EPG_DEFERRED' if decision=='later' else 'IMAGE_EPG_DISABLED')
+    images_enabled()
     return value

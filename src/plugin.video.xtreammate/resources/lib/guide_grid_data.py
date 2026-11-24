@@ -92,7 +92,8 @@ def initial(portal,origin,client=None,selected_sid80='',selected_group80=''):
     offset=position//ROWS*ROWS
     # Empty category is deliberately an empty selection, never category=None.
     value=page(portal,offset,origin,category,client)
-    value.update(category=category,row=position-offset)
+    value.update(category=category,row=position-offset,
+                 catalog_known=bool(groups) or reader.state('live') is not None)
     try:
         import xbmc
         xbmc.log('[XCMate][GUIDE_GROUP] stage=INITIAL groups={} saved_active={} selected_saved={} start_found={} start_in_group={} rows={} category_empty={} category_star={}'.format(

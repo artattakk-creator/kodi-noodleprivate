@@ -263,11 +263,11 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             yield from agent100
             yield from candidates
             return
-        if not home86:yield from candidates  # EPG detail legacy event ordering.
         reference84=__import__('programme_reference84').get(event)
         if reference84 and reference84.get('candidate'):
             if home86:candidates.append(dict(reference84['candidate']))
-            else:yield dict(reference84['candidate'])
+            elif reference84['candidate'].get('source') not in ('xmltv_event','provider_event'):
+                yield dict(reference84['candidate'])
         own81=[];attempted81=False
         if allow_lookup and not match and not __import__('programme_sources57').unsuitable69(event):
             from programme_match46 import candidate as own_candidate81
@@ -287,8 +287,11 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             provisional85=__import__('programme_candidates85').suggestion(event)
             if provisional85:own81.append(provisional85)
         yield from (__import__('hero_art86').ordered(__import__('hero_art86').expand(own81,event,cancel),candidates) if home86 else own81)
-        if not allow_lookup:return
-        deferred=[]
+        if not allow_lookup:
+            if not home86:yield from candidates
+            return
+        deferred=[];fallback_sources=[]
+
         steps=[lambda:match(event,cancel=cancel)] if match else attempts(event,cancel,critical80=not bool(event.get('helper_explicit80')))
         for find in steps:
             if cancel():return
@@ -296,6 +299,9 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             from programme_outcomes70 import add as outcome70
             source70=getattr(find,'source70','injected')
             if source70=='tmdb' and attempted81:continue
+            if source70 not in ('tmdb','tvmaze','injected'):
+                fallback_sources.append(find)
+                continue
             try:found=find()
             except (SourceError,HelperError) as exc:
                 outcome70(value,source70,exc.code,event);failed(exc.code);continue
@@ -311,6 +317,13 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         for found in deferred:  # generic series art never masks an exact still
             yield found
             for alternate in found.get('alternate_urls57',[])[:2]:yield dict(found,url=alternate)
+        if not home86:yield from candidates
+        for find in fallback_sources:
+            if cancel():return
+            try:found=find()
+            except (SourceError,HelperError) as exc:
+                failed(exc.code);continue
+            if found:yield found
         from programme_match46 import diagnose
         from programme_sources57 import unsuitable69
         if unsuitable69(event):failed('NO_UNIQUE_MATCH')
@@ -542,6 +555,13 @@ def _run():
                 stopped69=lambda:_stop.is_set() or aborted() or len(job)>3 and job[3]!=profile_scope()
                 cancelled=lambda:stopped69() or time.monotonic()>deadline69
                 if cancelled():continue
+                from storage_policy92 import images_enabled
+                if not images_enabled():
+                    from artwork_sources96 import health
+                    code=health()
+                    completed(event,dict(code=code if code not in ('READY','NOT_CREATED')
+                                         else 'IMAGE_EPG_DISABLED',source='placeholder'))
+                    continue
                 if len(job)>4 and job[4]:
                     __import__('programme_reference84').resolve(event,cancelled)
                     continue

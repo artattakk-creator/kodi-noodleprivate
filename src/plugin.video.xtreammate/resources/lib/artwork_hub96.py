@@ -26,7 +26,7 @@ def show():
    if not healthy:return tr(39004)
    if value.get(source):
     if source=='tmdb' and not value['token_valid']:return tr(39209)
-    return tr(39002) if value.get('images_enabled') else tr(39210)
+    return tr(39002)
    return tr(39003)
   labels=['XMLTV: '+state('xmltv'),'TMDB: '+state('tmdb'),'TVMaze: '+state('tvmaze'),tr(39005),tr(39006),tr(39007),tr(39008),tr(39009),tr(39010),tr(39011),tr(39029),tr(rebuild_label),tr(36012)]
   action=select(dialog,tr(39000),labels,default='settings')
@@ -39,7 +39,6 @@ def show():
     __import__('manual_image96').manage();continue
    if action in (0,1,2):
     source=('xmltv','tmdb','tvmaze')[action];on=not value.get(source,False)
-    if on and source!='xmltv' and not dialog.yesno(tr(39000),tr(39012,source.upper()),defaultbutton=getattr(xbmcgui,'DLG_YESNO_NO_BTN',10)):continue
     if on and source=='tmdb':
      if not onboarding(dialog):continue
      from tmdb_connection60 import launch
@@ -47,7 +46,6 @@ def show():
     choose(source,on);dialog.ok(tr(39000),tr(39013))
    elif action==3:
     text=tr(39014,value['settings'])+'\n'+'\n'.join(labels[:3])+'\n'+tr(39015,tr(39002 if value.get('token_valid') else 39003))
-    if healthy and not value.get('images_enabled'):text+='\n'+tr(39016)
     dialog.ok(tr(39000),text)
    elif action==4:
     from programme_diagnostic74 import show as diagnostic

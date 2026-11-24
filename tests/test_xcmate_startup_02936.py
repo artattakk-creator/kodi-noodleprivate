@@ -35,6 +35,15 @@ class Startup36(Fixture,unittest.TestCase):
         self.portal['start_stream_id']='foreign'
         self.assertIsNone(self.start.channel(self.portal,self.client))
 
+    def test_partial_index_can_resolve_saved_station_from_selected_group_cache(self):
+        self.portal.update(start_stream_id='42', start_group_id='a')
+        self.client.get_cached_catalog = mock.Mock(return_value=[
+            dict(stream_id='42', category_id='other', name='Wrong group'),
+            dict(stream_id='42', category_id='a', name='Welt HD'),
+        ])
+        row = self.start.channel(self.portal, self.client)
+        self.assertEqual(row['name'], 'Welt HD')
+
     def test_locked_index_does_not_start_expensive_catalog_fallback(self):
         with mock.patch.object(self.index.Reader,'state',side_effect=self.index.IndexReadError('locked')):
             self.assertIsNone(self.start.channel(self.portal,self.client))

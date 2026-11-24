@@ -36,7 +36,7 @@ def describe(portal,channel,event=None,canonical='',revision=None,guide=None):
  trace('MATCH',value,'READY' if value.get('epg_source46') else 'NO_SOURCE_FACTS')
  trace('SOURCE',value,'READY' if value.get('xmltv_image') or value.get('provider_image') else 'NO_SOURCE_FACTS')
  value['key']=key(pid,sid,value);value['placeholder']=placeholder(value)
- value['details_url']='plugin://plugin.video.xtreammate/?'+urlencode(dict(action='programme_details46',pid=pid,sid=sid,start=value['start'],stop=value['stop'],event=value['key']))
+ value['details_url']='plugin://plugin.video.xtreammate/?'+urlencode(dict(action='programme_details46',pid=pid,sid=sid,start=value['start'],stop=value['stop'],event=value['key'],source=value.get('source_key46','')))
  return value
 
 def from_info(portal,channel,info):
@@ -50,7 +50,7 @@ def load(portal,channel,selected=None,now=None):
  now=time.time() if now is None else now;mappings=configuration(portal['id']).get('mappings',{})
  moment=selected.get('start',now) if selected else now
  view=window(portal['id'],[channel],mappings,moment,moment+2*86400,limit=48,budget=.15)
- sid,ids=channel_keys(channel,mappings);event=None;canonical=''
+ sid,ids=channel_keys(channel,mappings);event=None;canonical='';following=[]
  if view is not None:
   for ident in ids:
    rows=view.get(ident,[])
@@ -59,9 +59,15 @@ def load(portal,channel,selected=None,now=None):
    for raw in rows:
     candidate=dict(raw,title=raw['name'],description=raw['descr'],start=raw['start_timestamp'],stop=raw['stop_timestamp'],source=raw.get('source',raw.get('_source_index',0)))
     if selected:
+     if selected.get('source_key46') and selected['source_key46']!=candidate.get('source_key46'):continue
      if candidate['start']==int(selected.get('start',0)) and candidate['stop']==int(selected.get('stop',0)) and (not selected.get('title') or candidate['title']==selected['title']):event=candidate;break
     elif candidate['start']<=now<candidate['stop']:event=candidate;break
-   if event is not None:break  # Expired/future aliases cannot mask a valid current provider row.
+   if event is not None:
+    source=event.get('source_key46')
+    following=[dict(start=row['start_timestamp'],title=row['name']) for row in rows
+               if row['start_timestamp']>=event['stop'] and
+               (not source or row.get('source_key46')==source) and row.get('name')][:3]
+    break  # Expired/future aliases cannot mask a valid current provider row.
  # An existing source/mapping/revision-checked Now/Next snapshot is local
  # authority during a short SQLite outage, not a guessed short-cache event.
  if event is None:
@@ -75,6 +81,7 @@ def load(portal,channel,selected=None,now=None):
  if event is None and selected and selected.get('title') and int(selected.get('stop',0))>int(selected.get('start',0)):
   event=dict(selected);canonical='';view=None
  result=describe(portal,channel,event,canonical,getattr(view,'revision',None))
+ if following:result['following46']=following
  if event and view is None:
   result['code']='CACHED_EVENT';result['read_code69']=__import__('epg_read69').last(portal['id'],sid)
  if selected and selected.get('key') and selected['key']!=result['key']:return describe(portal,channel)
