@@ -292,12 +292,12 @@
    <aspectratio>keep</aspectratio>
   </control>
   <control type="label" id="109">
-   <left>48</left><top>618</top><width>560</width><height>18</height>
+   <left>48</left><top>612</top><width>560</width><height>24</height>
    <font>font12</font>
    <textcolor>FFBBC8D6</textcolor>
   </control>
   <control type="label" id="105">
-   <left>665</left><top>618</top><width>565</width><height>18</height>
+   <left>665</left><top>612</top><width>565</width><height>24</height>
    <font>font12</font>
    <textcolor>FFBBC8D6</textcolor>
   </control>
