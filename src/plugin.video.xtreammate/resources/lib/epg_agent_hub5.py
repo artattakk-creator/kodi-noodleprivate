@@ -1,0 +1,262 @@
+"""Verified private GitHub Hub Schema-5 profiles with dynamic language selection.
+
+Schema-5 is an append-only manifest contract: read the stable manifest first,
+then use pinned GitHub Release-Asset API IDs. Never persist a release tag URL,
+nor pass a Bearer token to a CDN or another origin.
+"""
+from datetime import datetime, timezone
+import gzip
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import shutil
+import tempfile
+from xml.etree import ElementTree as ET
+
+from epg_agent_github import DeliveryError, SHA_RE, XMLTV_FILE, candidate_path, local_manifest
+from epg_agent_hub4 import REPO, BASE, _download, _verify, _combine
+
+PROFILES_RE = re.compile(r"(?:all|[a-z]{2,8})\Z")
+TAG_RE = re.compile(r"gs-hub-[A-Za-z0-9TZ-]{15,72}\Z")
+VARIANTS = ("artwork", "standard")
+MAX_PROFILES = 24
+MAX_ASSET_BYTES = 128 * 1024 * 1024
+MAX_TOTAL_BYTES = 512 * 1024 * 1024
+MAX_SELECTION_BYTES = 4096
+SELECTION_FILE = "profiles.json"
+
+
+def fail(code):
+    raise DeliveryError(code)
+
+
+def _utc(value):
+    try:
+        if not isinstance(value, str):
+            return False
+        dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        return dt.tzinfo is not None and dt.utcoffset().total_seconds() == 0
+    except (ValueError, OverflowError, AttributeError):
+        return False
+
+
+def validate_manifest(obj):
+    """Returns (profiles, two-variant-by-profile), or a safe error code."""
+    if not isinstance(obj, dict) or any((
+        obj.get("schema_version") != 5,
+        obj.get("schema") != "gsmedia-hub-github-v3",
+        obj.get("status") != "PRIVATE_READY",
+        obj.get("delivery") != "private-github-release-assets",
+        obj.get("repo") != REPO,
+        obj.get("default_profile") != "all",
+        obj.get("variants") != list(VARIANTS),
+        not _utc(obj.get("generated_utc")),
+        type(obj.get("release_id")) is not int or obj["release_id"] < 1,
+        not isinstance(obj.get("tag"), str) or not TAG_RE.fullmatch(obj["tag"]),
+        not isinstance(obj.get("fingerprint"), str) or not SHA_RE.fullmatch(obj["fingerprint"]),
+    )):
+        fail("HUB5_INVALID_MANIFEST")
+    profiles = obj.get("profiles")
+    entries = obj.get("files")
+    if (not isinstance(profiles, list) or
+            not 1 <= len(profiles) <= MAX_PROFILES or
+            any(not isinstance(p, str) or not PROFILES_RE.fullmatch(p) for p in profiles) or
+            len(profiles) != len(set(profiles)) or
+            "all" not in profiles or
+            not isinstance(entries, list) or len(entries) != 2 * len(profiles)):
+        fail("HUB5_PROFILE_SET_INVALID")
+    pairs, asset_ids, total_bytes = {}, set(), 0
+    for row in entries:
+        if not isinstance(row, dict):
+            fail("HUB5_INVALID_ASSET")
+        p, variant = row.get("profile"), row.get("variant")
+        if p not in profiles or variant not in VARIANTS or (p, variant) in pairs:
+            fail("HUB5_INVALID_ASSET")
+        aid = row.get("asset_id")
+        filename = "epg-" + p + ("-standard" if variant == "standard" else "") + ".xml.gz"
+        size = row.get("bytes")
+        if (row.get("file") != filename or
+            type(aid) is not int or aid < 1 or aid in asset_ids or
+            row.get("api_url") != BASE + str(aid) or
+            type(size) is not int or not 0 < size <= MAX_ASSET_BYTES or
+            type(row.get("channels")) is not int or not 0 < row["channels"] <= 100000 or
+            type(row.get("programmes")) is not int or not 0 < row["programmes"] <= 3000000 or
+            not isinstance(row.get("sha256"), str) or not SHA_RE.fullmatch(row["sha256"]) or
+            not _utc(row.get("generated_utc"))):
+            fail("HUB5_INVALID_ASSET")
+        total_bytes += size
+        pairs[(p, variant)] = row
+        asset_ids.add(aid)
+    if total_bytes > MAX_TOTAL_BYTES:
+        fail("HUB5_TOTAL_SIZE_LIMIT")
+    for p in profiles:
+        a, b = pairs.get((p, "artwork")), pairs.get((p, "standard"))
+        if (not a or not b or a["channels"] != b["channels"] or
+                a["programmes"] != b["programmes"]):
+            fail("HUB5_INCONSISTENT_PAIR")
+    return tuple(profiles), pairs
+
+
+def _directory(directory=None):
+    if directory is not None:
+        return Path(directory)
+    from epg_agent100 import profile
+    return profile()
+
+
+def selection(directory=None):
+    """Persistent selection for future profiles, without changing addon.xml."""
+    path = _directory(directory) / SELECTION_FILE
+    try:
+        if path.is_symlink() or path.stat().st_size > MAX_SELECTION_BYTES:
+            fail("HUB5_SELECTION_UNSAFE")
+        value = json.loads(path.read_text(encoding="utf-8"))
+        selected = value["selected"]
+        variant = value.get("variant", "artwork")
+        if (value.get("schema_version") != 1 or not isinstance(selected, list) or
+                len(selected) > MAX_PROFILES or len(set(selected)) != len(selected) or
+                any(not isinstance(x, str) or not PROFILES_RE.fullmatch(x) for x in selected) or
+                variant not in VARIANTS):
+            fail("HUB5_SELECTION_UNSAFE")
+        return tuple(selected), variant
+    except FileNotFoundError:
+        from utils import setting_bool
+        if setting_bool("epg_agent_country_all", False):
+            return ("all",), "artwork"
+        return tuple(p for p in ("de", "at") if
+                     setting_bool("epg_agent_country_" + p, True)), "artwork"
+    except (OSError, UnicodeError, ValueError, TypeError, KeyError):
+        fail("HUB5_SELECTION_UNSAFE")
+
+
+def save_selection(selected, variant="artwork", directory=None):
+    if (not isinstance(selected, (list, tuple)) or len(selected) > MAX_PROFILES or
+            len(set(selected)) != len(selected) or
+            any(not isinstance(p, str) or not PROFILES_RE.fullmatch(p) for p in selected) or
+            variant not in VARIANTS):
+        fail("HUB5_SELECTION_UNSAFE")
+    root = _directory(directory)
+    if root.is_symlink():
+        fail("HUB5_SELECTION_UNSAFE")
+    root.mkdir(mode=0o700, parents=True, exist_ok=True)
+    payload = {"schema_version": 1, "selected": list(selected), "variant": variant}
+    fd, name = tempfile.mkstemp(prefix=".selection-", dir=root)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            os.fchmod(handle.fileno(), 0o600)
+            json.dump(payload, handle, separators=(",", ":"))
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(name, root / SELECTION_FILE)
+    finally:
+        if os.path.exists(name):
+            os.unlink(name)
+
+
+def selected_for(manifest, directory=None):
+    available, pairs = validate_manifest(manifest)
+    wanted, variant = selection(directory)
+    if "all" in wanted:
+        wanted = ("all",)
+    chosen = tuple(p for p in available if p in wanted)
+    return chosen, variant, pairs, available
+
+
+def _sha256(path):
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as stream:
+        for block in iter(lambda: stream.read(65536), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: False):
+    """Download only chosen variants; stage full XMLTV before any portal install."""
+    profiles, variant, records, available = selected_for(manifest, root)
+    common = {"etag": etag, "available_profiles": list(available),
+              "selected_profiles": list(profiles), "variant": variant}
+    if not profiles:
+        return dict(common, status="PRIVATE_PENDING", reason="NO_PROFILE_SELECTED")
+    rows = [(p, records[(p, variant)]) for p in profiles]
+    signature = [[p, variant, row["sha256"], row["bytes"]] for p, row in rows]
+    generation = hashlib.sha256(json.dumps(signature, separators=(",", ":")).encode()).hexdigest()
+    response = dict(common, generation=generation)
+    previous = candidate_path(root, generation)
+    if previous is not None:
+        saved = local_manifest(previous)
+        if (saved.get("schema_version") != 5 or saved.get("asset_generation") != signature or
+                saved.get("selected_profiles") != list(profiles) or
+                saved.get("variant") != variant or
+                _sha256(previous / XMLTV_FILE) != saved.get("staged_sha256")):
+            fail("HUB5_LOCAL_LASTGOOD_MISMATCH")
+        counts = saved.get("image_counts") or {}
+        return dict(response, status="UNCHANGED", channels=saved["channel_count"],
+                    programmes=saved["programme_count"], image_counts=counts,
+                    artwork_records=sum(counts.values()))
+    root = Path(root)
+    if root.is_symlink():
+        fail("HUB5_STORAGE_UNSAFE")
+    root.mkdir(mode=0o700, parents=True, exist_ok=True)
+    from import_budget import check_space
+    total = sum(row["bytes"] for _, row in rows)
+    check_space(str(root / "manifest.json"), total * (3 if len(rows) > 1 else 2))
+    temporary = Path(tempfile.mkdtemp(prefix=".hub5-", dir=root))
+    try:
+        sources = []
+        for p, record in rows:
+            path = _download(record, token, temporary, opener, cancel)
+            _verify(path, record, cancel)
+            sources.append((p, path))
+        final = temporary / XMLTV_FILE
+        if len(sources) == 1:
+            os.replace(sources[0][1], final)
+        else:
+            _combine(sources, final, cancel)
+        counts = {"channels": 0, "programmes": 0}
+        images = {}
+        def on_channel(cid, _name):
+            counts["channels"] += 1
+        def on_logo(cid, url):
+            images["channel_logo"] = images.get("channel_logo", 0) + 1
+        def on_event(event):
+            counts["programmes"] += 1
+            for item in event.get("images", ()):
+                key = item["type"]
+                images[key] = images.get(key, 0) + 1
+            images["programme_icon"] = images.get("programme_icon", 0) + len(event.get("icons", ()))
+        from xmltv_stream import parse as parse_xmltv
+        try:
+            with final.open("rb") as stream:
+                result = parse_xmltv(stream, on_channel, on_event, cancel=cancel,
+                                     max_seconds=900, include_icons=True,
+                                     include_images=True, channel_image=on_logo,
+                                     strict_images=True)
+        except (OSError, ValueError, TimeoutError, gzip.BadGzipFile):
+            fail("HUB5_XMLTV_INVALID")
+        if result["skipped"] or not counts["channels"] or not counts["programmes"]:
+            fail("HUB5_XMLTV_INVALID")
+        if len(sources) == 1 and (counts["channels"] != rows[0][1]["channels"] or
+                                  counts["programmes"] != rows[0][1]["programmes"]):
+            fail("HUB5_COUNT_MISMATCH")
+        saved = dict(manifest, selected_profiles=list(profiles), variant=variant,
+                     asset_generation=signature, channel_count=counts["channels"],
+                     programme_count=counts["programmes"], image_counts=images,
+                     staged_sha256=_sha256(final))
+        with (temporary / "manifest.json").open("w", encoding="utf-8") as output:
+            json.dump(saved, output, sort_keys=True)
+            output.flush()
+            os.fsync(output.fileno())
+        for _, old in sources:
+            if old.exists():
+                old.unlink()
+        destination = root / ("candidate-" + generation)
+        os.replace(temporary, destination)
+        return dict(response, status="STAGED_FULL_CANDIDATE",
+                    path=str(destination), channels=counts["channels"],
+                    programmes=counts["programmes"], image_counts=images,
+                    artwork_records=sum(images.values()))
+    finally:
+        if temporary.exists():
+            shutil.rmtree(temporary, ignore_errors=True)

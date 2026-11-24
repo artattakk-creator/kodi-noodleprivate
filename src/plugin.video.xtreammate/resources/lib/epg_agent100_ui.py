@@ -52,33 +52,73 @@ def details(portal):
 
 
 def show(portal):
+    """A single remote-friendly menu; countries come from the live manifest."""
     import xbmcaddon
     import xbmcgui
     from menu_icons45 import select
+    from epg_agent_hub5 import selection, save_selection
+    from epg_agent100 import profile
+
     addon = xbmcaddon.Addon()
     dialog = xbmcgui.Dialog()
-    selected = 0
+    names = {"all": "Gesamt-EPG (alle Länder)", "de": "Deutschland",
+             "at": "Österreich", "en": "Englisch",
+             "es": "Spanisch", "pl": "Polnisch",
+             "fr": "Französisch", "it": "Italienisch",
+             "tr": "Türkisch", "ar": "Arabisch"}
+    row_index = 0
     while True:
         active = enabled()
-        rows = [tr(39101) + " · " + tr(36029 if active else 36028)]
-        actions = ["check" if active else "back"]
+        current, variant = selection(profile())
+        remote = state().get("available_profiles") or ["de", "at"]
+        choices = tuple(p for p in remote if isinstance(p, str))
+        rows = ["EPG-Agent aktivieren · " + ("Ein" if active else "Aus")]
+        actions = [("enable", None)]
         if active:
-            rows.append(tr(39102))
-            actions.append("refresh")
-        rows.append(tr(39103) + " · " + short_status())
-        actions.append("activity")
-        selected = select(dialog, SOURCE_NAME, rows, actions=actions,
-                          preselect=min(selected, len(rows) - 1))
-        if not isinstance(selected, int) or selected < 0 or selected >= len(rows):
+            for p in choices:
+                rows.append(names.get(p, p.upper()) + " · " +
+                            ("Ein" if p in current else "Aus"))
+                actions.append(("profile", p))
+            rows.append("Bildinformationen · " +
+                        ("Mit Bildern" if variant == "artwork" else "Standard"))
+            actions.append(("variant", None))
+            rows.append("Jetzt auf neue EPG-Daten prüfen")
+            actions.append(("refresh", None))
+        rows.append("Status · " + short_status())
+        actions.append(("status", None))
+        row_index = select(dialog, "EPG-Agent", rows, actions=[a[0] for a in actions],
+                           preselect=min(row_index, len(rows) - 1))
+        if not isinstance(row_index, int) or not 0 <= row_index < len(rows):
             return
-        if selected == 0:
+        action, value = actions[row_index]
+        if action == "enable":
             addon.setSetting(SETTING, "false" if active else "true")
-            if enabled() == active:
-                dialog.notification(SOURCE_NAME, tr(39122))
-            elif not active:
-                request_check()
-        elif active and selected == 1:
             request_check()
-            dialog.notification(SOURCE_NAME, tr(39119))
-        else:
-            dialog.textviewer(SOURCE_NAME, details(portal))
+        elif action == "profile":
+            selected = set(current)
+            if value in selected:
+                selected.remove(value)
+            else:
+                selected.add(value)
+                if value == "all":
+                    selected = {"all"}
+                else:
+                    selected.discard("all")
+            save_selection([x for x in choices if x in selected], variant, profile())
+            request_check()
+        elif action == "variant":
+            save_selection(current,
+                           "standard" if variant == "artwork" else "artwork",
+                           profile())
+            request_check()
+        elif action == "refresh":
+            if not current:
+                dialog.notification("EPG-Agent",
+                                    "Bitte zuerst mindestens ein EPG-Profil auswählen.")
+            else:
+                request_check()
+                dialog.notification("EPG-Agent", tr(39119))
+        elif action == "status":
+            info = "Auswahl: " + (", ".join(current) or "Keine") + "\n"
+            info += "Variante: " + variant + "\n\n" + details(portal)
+            dialog.textviewer("EPG-Agent", info)

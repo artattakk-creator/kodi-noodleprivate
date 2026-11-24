@@ -20,7 +20,7 @@ SUCCESS = {"READY", "PARTIAL_PRESERVED"}
 
 def enabled():
     from utils import setting_bool
-    return setting_bool(SETTING, False)
+    return setting_bool(SETTING, True)
 
 
 def profile():
@@ -78,17 +78,35 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
     if manual or agent_due(current.get("last_checked", 0), now):
         current.update(last_checked=now, next_check=now + AGENT_INTERVAL, code="CHECKING")
         _save(directory, current)
+        # A region or picture-mode change needs a fresh manifest even when
+        # its HTTP ETag has not changed. Otherwise 304 masks that selection.
+        fetch_etag = current.get("etag", "")
+        if current.get("available_profiles"):
+            from epg_agent_hub5 import selection
+            desired, picture_mode = selection(directory)
+            if ("all" in desired):
+                desired = ("all",)
+            if (list(desired) != current.get("selected_profiles") or
+                    picture_mode != current.get("selected_variant", "artwork")):
+                fetch_etag = ""
         try:
             payload = fetch(directory, token_path, known=current.get("generation", ""),
-                            etag=current.get("etag", ""), cancel=cancel)
+                            etag=fetch_etag, cancel=cancel)
         except DeliveryError as exc:
-            current.update(remote="ERROR", code=exc.code)
+            # Bounded retry after a short outage, not a one-day failure latch.
+            current.update(remote="ERROR", code=exc.code,
+                           last_checked=now - AGENT_INTERVAL + RETRY_INTERVAL)
         except InterruptedError:
             current.update(last_checked=0, code="CANCELLED")
         except OSError:
-            current.update(remote="ERROR", code="STORAGE_ERROR")
+            current.update(remote="ERROR", code="STORAGE_ERROR",
+                           last_checked=now - AGENT_INTERVAL + RETRY_INTERVAL)
         else:
             status = payload["status"]
+            if "available_profiles" in payload:
+                current["available_profiles"] = payload["available_profiles"]
+                current["selected_profiles"] = payload.get("selected_profiles", [])
+                current["selected_variant"] = payload.get("variant", "artwork")
             if status in ("STAGED_FULL_CANDIDATE", "UNCHANGED"):
                 old = current.get("generation", "")
                 if old and old != payload["generation"]:
@@ -202,5 +220,16 @@ def run(portals, cancel):
                 next_consent = tick + .1
             return not consent
 
-        cycle(directory, directory / "reader-token.txt", eligible, now=now,
+        # A private bootstrap ZIP may contain the read-only token once. Copy
+        # it into persistent Kodi addon_data, so subsequent normal repository
+        # updates can be token-free without losing authenticated EPG access.
+        from epg_agent_token_bootstrap import ensure_local_token
+        try:
+            token_path = ensure_local_token(directory)
+        except DeliveryError as exc:
+            record.update(remote="ERROR", code=exc.code,
+                          last_checked=now - AGENT_INTERVAL + RETRY_INTERVAL)
+            _save(directory, record)
+            return
+        cycle(directory, token_path, eligible, now=now,
               request=request, cancel=cancelled)
