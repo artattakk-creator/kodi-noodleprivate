@@ -134,7 +134,8 @@ class TestHub5(unittest.TestCase):
                 raw = fixtures[row["profile"]]
                 row["bytes"] = len(raw)
                 row["sha256"] = hashlib.sha256(raw).hexdigest()
-        def fake_download(record, token, dest, opener, cancel):
+        def fake_download(record, token, dest, opener, cancel, *, on_http):
+            on_http(200)
             dest = Path(dest) / record["file"]
             dest.write_bytes(fixtures[record["profile"]])
             return dest
@@ -147,7 +148,14 @@ class TestHub5(unittest.TestCase):
             self.assertEqual(result["programmes"], 2)
             self.assertEqual(result["image_counts"]["poster"], 2)
             self.assertEqual(result["image_counts"]["channel_logo"], 2)
-            path = Path(result["path"]) / XMLTV_FILE
+            folder = Path(result["path"])
+            profile_report = hub5.coverage_report(folder, {"7": "x.en", "9": "x.es", "10": "x.es"})
+            self.assertEqual([(r["profile"], r["matched"], r["http_status"]) for r in profile_report],
+                             [("en", 1, 200), ("es", 2, 200)])
+            for row in profile_report:
+                self.assertEqual(row["horizon"]["first"], 1795435200)
+                self.assertEqual(row["horizon"]["last"], 1795438800)
+            path = folder / XMLTV_FILE
             self.assertEqual(gzip.decompress(path.read_bytes()).count(b"<programme"), 2)
             cached = hub5.stage(Path(tmp), "not-used", obj, "", None)
             self.assertEqual(cached["status"], "UNCHANGED")

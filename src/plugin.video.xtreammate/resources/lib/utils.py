@@ -590,7 +590,9 @@ def http_stream(url, params=None, headers=None, timeout=15, max_seconds=None,
             with client.stream('GET',url,params=params) as response:
                 response.raise_for_status()
                 from network_io import wire_reader94
-                yield wire_reader94(response.iter_raw(chunk_size=65536),response.headers,deadline,cancel)
+                stream = wire_reader94(response.iter_raw(chunk_size=65536),response.headers,deadline,cancel)
+                stream.http_status = response.status_code
+                yield stream
     else:
         import urllib.request, urllib.parse
         if params: url += ('&' if '?' in url else '?')+urllib.parse.urlencode(params)
@@ -602,4 +604,6 @@ def http_stream(url, params=None, headers=None, timeout=15, max_seconds=None,
         with urllib.request.urlopen(request,timeout=timeout,context=context) as response:
             chunks = iter(lambda: response.read1(65536), b'')
             from network_io import wire_reader94
-            yield wire_reader94(chunks,response.headers,deadline,cancel)
+            stream = wire_reader94(chunks,response.headers,deadline,cancel)
+            stream.http_status = response.getcode()
+            yield stream

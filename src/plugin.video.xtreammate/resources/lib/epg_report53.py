@@ -64,11 +64,18 @@ def source_done(pid,identity,code,counts=None,outcome=None):
     if not run or run['pid']!=str(pid):return
     row=run['sources'].get(identity)
     if row is None:return
+    counts=counts or {}
     row.update(code=code,finished=time.time());row['seconds']=round(row['finished']-row['started'],3)
     for key in ('channels','programmes','stored','bytes','min_start66','max_end66','mapped_channels66','stored_unique66','selected_streams66','matched_streams66','committed','committed_channels','verified','verified_channels','verified_first','verified_last'):
-        value=(counts or {}).get(key)
+        value=counts.get(key)
         if isinstance(value,(int,float)) and value>=0:row[key]=value
-    revision66=(counts or {}).get('revision66','')
+    http_status=counts.get('http_status')
+    if type(http_status) is int and 100<=http_status<=599:
+        row['http_status']=http_status
+    for field in ('raw_horizon102','profiles102'):
+        if field in counts:
+            row[field]=counts[field]
+    revision66=counts.get('revision66','')
     if re.fullmatch(r'[0-9a-f]{64}',revision66):row['revision66']=revision66
     for key in ('added','corrected','conflicts'):
         value=(outcome or {}).get(key)
@@ -191,10 +198,60 @@ def overview(portal, items=None, *, cancel=None):
         row['last_failure']=max([s.get('finished',0) for s in events if s.get('code') not in SUCCESS]+[0])
         row['last_attempt66']=max([s.get('started',0) for s in events]+[legacy.get('at',0)])
         row['revision66']=next((s.get('revision66','') for s in reversed(events) if s.get('revision66')),'')
+        raw=next((s for s in reversed(events) if s.get('raw_horizon102')), {})
+        row['raw_horizon102']=raw.get('raw_horizon102')
+        row['raw_attempt102']=raw.get('finished')
+
         row['next_refresh66']=row['last_success']+min(__import__('epg_schedule53').interval(),86400) if row['last_success'] else 0
         rows.append(row)
     return rows
 
+
+
+def horizon_summary(title,horizon):
+    if not horizon:
+        return title+' · Abdeckung nicht ermittelt'
+    continuous=horizon.get('last_contiguous_day')
+    if horizon.get('channel_limit'):
+        coverage='Sendergrenze der Diagnose erreicht'
+    elif continuous:
+        coverage='Tägliche Starts je Sender bis höchstens '+continuous
+    else:
+        coverage='Keine tägliche Folge ab dem ersten Berichtstag'
+    return title+' · '+stamp(horizon.get('first'))+' bis '+stamp(horizon.get('last'))+' · '+coverage
+
+
+def horizon_table(horizon):
+    return ['Datum · Sender mit Start · Sendungsstarts']+[
+        day['date']+' · '+str(day['channels'] if day['channels'] is not None else 'unbekannt')
+        +' · '+str(day['programmes']) for day in horizon.get('days',[])
+    ]
+
+
+def source_report(source,previous_success):
+    lines=[]
+    if source.get('http_status') is not None:
+        lines.append('HTTP '+str(source['http_status']))
+    if source.get('finished'):
+        lines.append('Importversuch · '+stamp(source['finished'])+' · letzter Erfolg · '+stamp(previous_success))
+    raw=source.get('raw_horizon102')
+    if raw:
+        lines.append(horizon_summary('Geliefertes XMLTV vor Zuordnung und Zeitfilter',raw))
+        lines.extend(horizon_table(raw))
+    for profile in source.get('profiles102',[]):
+        lines+=['',horizon_summary('Schema-5-Profil '+profile['profile'].upper()+' / '+profile['variant'],profile.get('horizon')),
+                'Quelle erzeugt · '+stamp(profile['generated'])+' · SHA-256 geprüft · '+profile['sha256'][:16]]
+        if profile.get('http_status') is not None:
+            lines.append('HTTP '+str(profile['http_status']))
+        if profile.get('matched') is not None:
+            lines.append('IPTV-Zuordnungen zu Profilkanälen · '+str(profile['matched']))
+        if profile.get('horizon'):
+            lines.extend(horizon_table(profile['horizon']))
+    saved=source.get('saved',{}).get('horizon102')
+    lines.append(horizon_summary('Im Quellbestand gespeichert',saved))
+    if saved:
+        lines.extend(horizon_table(saved))
+    return lines
 
 def describe(run,portal):
     names={r['id']:r['name'] for r in configured(portal)}
@@ -203,12 +260,23 @@ def describe(run,portal):
     gate95=__import__('epg_gate95').latest(__import__('guide_store').path())
     if gate95:lines+=['','Letzte unabhängige Importfreigabe: '+meaning(gate95['code']),stamp(gate95.get('checked_at'))+' · '+str(gate95.get('elapsed_ms',0))+' ms']
     after=run.get('after',{});before=run.get('before',{})
-    if after.get('code')=='READY':
+    if after.get('programmes') is not None:
         lines+=['','Gespeicherte Programme: '+str(after['programmes']),'Zeitraum: '+stamp(after.get('first'))+' bis '+stamp(after.get('last'))]
+        horizon=after.get('horizon102')
+        lines.append(horizon_summary('Zusammengeführter Cache',horizon))
+        if horizon:
+            lines.extend(horizon_table(horizon))
         if before.get('programmes') is not None:lines.append('Bestand vorher / nachher: '+str(before['programmes'])+' / '+str(after['programmes']))
     else:lines+=['','Gespeicherter Zeitraum derzeit nicht sicher lesbar. Keine Aussage über fehlende Daten.']
     sources=run.get('sources',[]);good=sum(s.get('code') in SUCCESS for s in sources)
     lines+=['','Quellen: '+str(good)+' erfolgreich, '+str(len(sources)-good)+' nicht erfolgreich']
+    previous={}
+    for past in history(portal['id']):
+        if past.get('started',0)>=run.get('started',0):
+            continue
+        for row in past.get('sources',[]):
+            if row.get('code') in SUCCESS:
+                previous[row['id']]=row.get('finished')
     for s in sources:
         lines+=['','[B]'+names.get(s['id'],'Früher konfigurierte Quelle')+'[/B]',meaning(s.get('code')),
                 'Dauer: '+str(s.get('seconds',0))+' Sekunden']
@@ -229,11 +297,13 @@ def describe(run,portal):
                 count=str(s[channels])+' XMLTV-Kanäle / ' if channels in s else ''
                 lines.append(title+': '+count+str(s[programmes])+' Programme')
         if s.get('revision66'):lines.append('Quellrevision: '+s['revision66'][:16])
-        if s.get('min_start66') and s.get('max_end66'):lines.append('Tatsächlich gelieferte Abdeckung: '+stamp(s['min_start66'])+' bis '+stamp(s['max_end66']))
+        if s.get('min_start66') and s.get('max_end66'):
+            lines.append('Zuordnung und Zeitfilter · '+stamp(s['min_start66'])+' bis '+stamp(s['max_end66']))
         saved=s.get('saved',{})
         if saved.get('programmes') is not None:
             lines+=['Gespeichert: '+str(saved.get('channels',0))+' XMLTV-Kanäle / '+str(saved['programmes'])+' Programme',
                     stamp(saved.get('first'))+' bis '+stamp(saved.get('last'))]
+        lines.extend(source_report(s,s.get('finished') if s.get('code') in SUCCESS else previous.get(s['id'])))
         if any(k in s for k in ('added','corrected','conflicts')):lines.append('Neu: '+str(s.get('added',0))+' · aktualisiert: '+str(s.get('corrected',0))+' · Konflikte bewahrt: '+str(s.get('conflicts',0)))
         if s.get('code') not in SUCCESS:
             lines.append(advice(s.get('code')))

@@ -13,6 +13,7 @@ from pathlib import Path
 import re
 import shutil
 import tempfile
+import time
 from xml.etree import ElementTree as ET
 
 from epg_agent_github import DeliveryError, SHA_RE, XMLTV_FILE, candidate_path, local_manifest
@@ -26,6 +27,7 @@ MAX_ASSET_BYTES = 128 * 1024 * 1024
 MAX_TOTAL_BYTES = 512 * 1024 * 1024
 MAX_SELECTION_BYTES = 4096
 SELECTION_FILE = "profiles.json"
+MAX_PROFILE_REPORT_BYTES = 4 * 1024 * 1024
 
 
 def fail(code):
@@ -172,6 +174,86 @@ def _sha256(path):
     return digest.hexdigest()
 
 
+
+def _coverage_file(folder, profile):
+    return folder / ("coverage-" + profile + ".json.gz")
+
+
+def _channel_digest(cid):
+    return hashlib.sha256(cid.encode("utf-8")).hexdigest()[:32]
+
+
+def _verify_profile(path, record, cancel, now, http_status):
+    from epg_horizon102 import Coverage
+
+    coverage = Coverage(now)
+    event_channels = set()
+
+    def measure(event):
+        cid = event["channel"]
+        event_channels.add(cid)
+        coverage.add(cid, event["start_timestamp"], event["stop_timestamp"])
+
+    _verify(path, record, cancel, on_event=measure)
+    report = dict(horizon=coverage.result(), http_status=http_status,
+                  channels=sorted(_channel_digest(cid) for cid in event_channels))
+    target = _coverage_file(path.parent, record["profile"])
+    try:
+        with gzip.open(target, "wt", encoding="utf-8") as output:
+            json.dump(report, output, separators=(",", ":"))
+    except OSError:
+        # A diagnostic write must never invalidate an already verified feed.
+        pass
+
+
+def coverage_report(folder, aliases):
+    """Read staged per-profile evidence, matching shared channels in each profile."""
+    from collections import Counter
+
+    saved = local_manifest(folder)
+    if saved.get("schema_version") != 5:
+        return []
+    try:
+        _, records = validate_manifest(saved)
+    except DeliveryError:
+        return []
+    variant = saved.get("variant")
+    profiles = saved.get("selected_profiles")
+    if variant not in VARIANTS or not isinstance(profiles, list):
+        return []
+    streams = Counter(_channel_digest(cid) for cid in aliases.values())
+    result = []
+    for profile in profiles[:MAX_PROFILES]:
+        record = records.get((profile, variant)) if isinstance(profile, str) else None
+        if not record:
+            continue
+        file = _coverage_file(folder, profile)
+        report = {}
+        try:
+            if file.is_file() and not file.is_symlink():
+                with gzip.open(file, "rb") as stream:
+                    body = stream.read(MAX_PROFILE_REPORT_BYTES + 1)
+                if len(body) <= MAX_PROFILE_REPORT_BYTES:
+                    report = json.loads(body)
+        except (OSError, ValueError, EOFError):
+            pass
+        channels = report.get("channels") if isinstance(report, dict) else None
+        measured = isinstance(channels, list) and len(channels) <= record["channels"]
+        http_status = report.get("http_status") if measured else None
+        horizon = report.get("horizon") if measured else None
+        if not isinstance(horizon, dict) or not isinstance(horizon.get("days"), list):
+            horizon = None
+        matched = None
+        if measured:
+            profile_ids = {value for value in channels if isinstance(value, str)}
+            matched = sum(streams[channel] for channel in profile_ids)
+        result.append(dict(profile=profile, variant=variant, sha256=record["sha256"],
+                           generated=datetime.fromisoformat(record["generated_utc"].replace("Z", "+00:00")).timestamp(),
+                           horizon=horizon,
+                           http_status=http_status if type(http_status) is int and 100 <= http_status <= 599 else None,
+                           matched=matched))
+    return result
+
 def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: False):
     """Download only chosen variants; stage full XMLTV before any portal install."""
     profiles, variant, records, available = selected_for(manifest, root)
@@ -205,9 +287,11 @@ def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: 
     temporary = Path(tempfile.mkdtemp(prefix=".hub5-", dir=root))
     try:
         sources = []
+        observed = time.time()
         for p, record in rows:
-            path = _download(record, token, temporary, opener, cancel)
-            _verify(path, record, cancel)
+            status = []
+            path = _download(record, token, temporary, opener, cancel, on_http=status.append)
+            _verify_profile(path, record, cancel, observed, status[0] if status else None)
             sources.append((p, path))
         final = temporary / XMLTV_FILE
         if len(sources) == 1:

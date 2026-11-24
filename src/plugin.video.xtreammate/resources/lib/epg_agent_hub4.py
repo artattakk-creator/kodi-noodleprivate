@@ -112,7 +112,7 @@ def _open_asset(record, token, opener):
         _failed("PRIVATE_ENDPOINT_NETWORK_ERROR")
 
 
-def _download(record, token, dest, opener, cancel):
+def _download(record, token, dest, opener, cancel, *, on_http=None):
     from epg_agent_github import _consume
     target = dest / record["file"]
     # Created inside an owned temporary staging directory, no path supplied by feed.
@@ -121,7 +121,10 @@ def _download(record, token, dest, opener, cancel):
         def sink(part):
             digest.update(part)
             output.write(part)
-        _consume(_open_asset(record, token, opener), record["bytes"], sink, cancel)
+        response = _open_asset(record, token, opener)
+        if on_http is not None:
+            on_http(getattr(response, "status", None))
+        _consume(response, record["bytes"], sink, cancel)
         output.flush()
         os.fsync(output.fileno())
     if target.stat().st_size != record["bytes"] or digest.hexdigest() != record["sha256"]:
@@ -129,7 +132,7 @@ def _download(record, token, dest, opener, cancel):
     return target
 
 
-def _verify(path, record, cancel):
+def _verify(path, record, cancel, *, on_event=None):
     """Read every programme and validate gzip trailer and XMLTV channel refs."""
     from xmltv_stream import parse as parse_xmltv
     identifiers = set()
@@ -143,6 +146,8 @@ def _verify(path, record, cancel):
         items[0] += 1
         if event["channel"] not in identifiers or not event["name"]:
             _failed("HUB4_PROGRAMME_INVALID")
+        if on_event is not None:
+            on_event(event)
     def progress(counts):
         decompressed[0] = counts["bytes"]
         if counts["bytes"] > MAX_XML or counts["programmes"] > record["programmes"]:

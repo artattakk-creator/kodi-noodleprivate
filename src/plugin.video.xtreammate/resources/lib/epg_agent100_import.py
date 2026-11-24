@@ -49,7 +49,7 @@ def install(portal, folder, cancel):
     artwork = build(folder, cancel)
     result = {}
     source = dict(id=SOURCE_ID, name=SOURCE_NAME, enabled=True, local=True,
-                  uri=str(folder / XMLTV_FILE), _agent_artwork=str(artwork))
+                  uri=str(folder / XMLTV_FILE), _agent_artwork=str(artwork), _agent_folder102=folder)
     job = dict(portal, _epg_auto53=True, _epg_sources53=[SOURCE_ID],
                _agent_source=source, _agent_result=result, _agent_cancel=cancel)
     _refresh_portal_epg(portal["id"], job, force=True)
