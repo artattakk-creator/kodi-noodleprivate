@@ -255,20 +255,25 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   if cover==ready:cover=''
   primary=art if confirmed and detail_image else hero if hero_image else poster if cover and cover==poster_image and not ready else art
   source=primary.get('source','') if ready or cover else ''
-  rating_source=primary
-  if cover==poster_image and cover and not rating(primary):
-   rating_source=poster
-  score_scope={'tmdb_movie':'Film','tmdb_series':'Serie','tmdb_episode':'Folge'}.get(rating_source.get('source'))
-  score=rating(rating_source) if score_scope else ''
-  signature=(ready,cover,source,score,score_scope)
+  visible_poster=poster if cover and cover==poster_image else {}
+  score_source=source
+  score=rating(primary)
+  if not score and visible_poster:
+   score=rating(visible_poster)
+   if score:score_source=visible_poster.get('source')
+  score_scope={'tmdb_movie':'Film','tmdb_series':'Serie','tmdb_episode':'Folge'}.get(score_source)
+  if not score_scope:score=''
+  brand=tmdb_source(source) or tmdb_source(visible_poster.get('source'))
+  signature=(ready,cover,source,score,score_scope,brand)
   if signature==self._art_signature:return
   self._art_signature=signature
   for cid,uri in ((110,ready),(114,cover)):
    control=self.getControl(cid);control.setImage(uri);control.setVisible(bool(uri))
   for cid in (115,116):self.getControl(cid).setVisible(bool(ready))
   self.getControl(1130).setVisible(bool(cover))
-  self.getControl(129).setVisible(bool(score))
-  self.getControl(130).setVisible(bool(score))
+  self.getControl(129).setVisible(brand)
+  self.getControl(129).setWidth(234 if score else 85)
+  self.getControl(130).setVisible(brand)
   self.getControl(108).setLabel(score.removeprefix('TMDB ')+' · '+score_scope if score else '')
   self.getControl(108).setVisible(bool(score))
   names={'provider_event':'Anbieter','xmltv_event':'XMLTV','agent_xmltv':'XMLTV',

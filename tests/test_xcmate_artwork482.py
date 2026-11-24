@@ -164,6 +164,10 @@ class Artwork482(unittest.TestCase):
             window._paint_art({}, backdrop, poster)
         self.assertTrue(window.getControl(108).visible)
         self.assertEqual(window.getControl(108).label, '8,1/10 · Serie')
+        with mock.patch('programme_image69.eligible', side_effect=lambda value,event: bool(value)):
+            window._paint_art({}, backdrop, dict(poster, vote_count88=0))
+        self.assertTrue(window.getControl(130).visible)
+        self.assertFalse(window.getControl(108).visible)
 
     def test_healthy_explicit_lookup_decodes_correct_bytes_and_reaches_detail_consumer(self):
         self.f.folder.joinpath('settings.xml').write_text('<settings><setting id="programme_tmdb46">true</setting><setting id="tmdb_research43">true</setting></settings>')
