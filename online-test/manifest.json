@@ -126,6 +126,18 @@
     "zip_entries": 41,
     "zip_sha256": "50ecfbf74dbf06075a3ce41723b05e8046216a312b91b044ece4e2560c74fed4"
   },
+  "installer_0529": {
+    "android_test": "NOT_TESTED",
+    "base_version": "0.5.28",
+    "bytes": 134862,
+    "channel": "PILOT_NeoDark3",
+    "installer_sha256": "f69e5c5e78381fb89bcb51447b4907f7b9c18adf200cc2730246a2950ab2c0b4",
+    "package_count": 48,
+    "version": "0.5.29",
+    "xcmate_minimum": "0.1.29.101",
+    "xcmate_sha256": "174b11acaf18cdbb4b532aef56c6d28658c3574a8bac982f458ebeb02698dcb9",
+    "xcmate_source": "repository.gsmedia.pilot"
+  },
   "jurialmunkey": {
     "id": "script.module.jurialmunkey",
     "license": "GPL-3.0-or-later",
