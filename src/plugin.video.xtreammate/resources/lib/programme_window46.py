@@ -136,11 +136,11 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   left=678 if technical else 1184
   card_top=494 if synopsis else 370
   chips=[]
-  x,y=70,card_top+43
+  x,y=70,card_top+40
   for name in names[:12]:
-   width=min(196,max(64,24+len(name)*7))
+   width=min(244,max(88,26+len(name)*10))
    if x+width>48+left-22:x=70;y+=27
-   if y+24>610:break
+   if y+23>615:break
    chips.append((name,x,y,width))
    x+=width+7
   overflow=len(chips)<len(names)
@@ -167,7 +167,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   plot=self.getControl(117);plot.setWidth(left);plot.setHeight(plot_height)
   box=self.getControl(103);box.setWidth(left-44);box.setHeight(plot_height-56);box.setText(synopsis)
   card=self.getControl(119);card.setPosition(48,card_top);card.setWidth(left)
-  card.setHeight(116 if synopsis else 240)
+  card.setHeight(122 if synopsis else 240)
   self.getControl(123).setPosition(70,card_top+11)
   fact_x=742 if synopsis or names else 48
   fact_width=490 if synopsis or names else 1184
@@ -189,7 +189,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   show_images=extra and bool(backdrop or poster)
   for cid in (132,133,134):self.getControl(cid).setVisible(show_schedule)
   for cid in (135,136):self.getControl(cid).setVisible(show_images)
-  self.getControl(133).setLabel('TV-Programm um diese Ausstrahlung' if following else 'Mitwirkende')
+  self.getControl(133).setLabel('[B]TV-Programm um diese Ausstrahlung[/B]' if following else '[B]Mitwirkende[/B]')
   selected=bool(following and event.get('title') and event.get('start'))
   self.getControl(137).setVisible(show_schedule and selected)
   self.getControl(138).setVisible(show_schedule and selected)
@@ -255,9 +255,12 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   if cover==ready:cover=''
   primary=art if confirmed and detail_image else hero if hero_image else poster if cover and cover==poster_image and not ready else art
   source=primary.get('source','') if ready or cover else ''
-  score_scope={'tmdb_movie':'Film','tmdb_series':'Serie','tmdb_episode':'Folge'}.get(source)
-  score=rating(primary) if score_scope else ''
-  signature=(ready,cover,source,score)
+  rating_source=primary
+  if cover==poster_image and cover and not rating(primary):
+   rating_source=poster
+  score_scope={'tmdb_movie':'Film','tmdb_series':'Serie','tmdb_episode':'Folge'}.get(rating_source.get('source'))
+  score=rating(rating_source) if score_scope else ''
+  signature=(ready,cover,source,score,score_scope)
   if signature==self._art_signature:return
   self._art_signature=signature
   for cid,uri in ((110,ready),(114,cover)):
@@ -265,8 +268,8 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   for cid in (115,116):self.getControl(cid).setVisible(bool(ready))
   self.getControl(1130).setVisible(bool(cover))
   self.getControl(129).setVisible(bool(score))
-  self.getControl(130).setVisible(tmdb_source(source))
-  self.getControl(108).setLabel(score+' · '+score_scope if score else '')
+  self.getControl(130).setVisible(bool(score))
+  self.getControl(108).setLabel(score.removeprefix('TMDB ')+' · '+score_scope if score else '')
   self.getControl(108).setVisible(bool(score))
   names={'provider_event':'Anbieter','xmltv_event':'XMLTV','agent_xmltv':'XMLTV',
          'tvmaze_series':'TVMaze','tvmaze_episode':'TVMaze','agent_tvmaze':'TVMaze',

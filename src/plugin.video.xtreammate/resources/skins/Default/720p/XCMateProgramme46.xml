@@ -45,12 +45,12 @@
   </control>
   <control type="label" id="101">
    <left>82</left><top>117</top><width>845</width><height>62</height>
-   <font>font30</font>
+   <font>font_MainMenu</font>
    <textcolor>FFFFFFFF</textcolor>
   </control>
   <control type="label" id="102">
    <left>82</left><top>185</top><width>845</width><height>40</height>
-   <font>font16</font>
+   <font>font30_title</font>
    <textcolor>FFECE5DC</textcolor>
   </control>
   <control type="label" id="107">
@@ -95,7 +95,7 @@
   </control>
   <control type="label" id="118">
    <left>70</left><top>382</top><width>626</width><height>26</height>
-   <label>Handlung</label>
+   <label>[B]Handlung[/B]</label>
    <font>font13</font>
    <textcolor>FFEAF0F8</textcolor>
   </control>
@@ -110,7 +110,7 @@
   </control>
   <control type="label" id="123">
    <left>70</left><top>505</top><width>626</width><height>26</height>
-   <label>Mitwirkende</label>
+   <label>[B]Mitwirkende[/B]</label>
    <font>font13</font>
    <textcolor>FFEAF0F8</textcolor>
   </control>
@@ -121,7 +121,7 @@
   <control type="label" id="720">
    <left>78</left><top>535</top><width>95</width><height>26</height>
    <label />
-   <font>font12</font>
+   <font>font10</font>
    <textcolor>FFEAF0F8</textcolor>
   </control>
   <control type="image" id="701">
@@ -131,7 +131,7 @@
   <control type="label" id="721">
    <left>78</left><top>535</top><width>95</width><height>26</height>
    <label />
-   <font>font12</font>
+   <font>font10</font>
    <textcolor>FFEAF0F8</textcolor>
   </control>
   <control type="image" id="702">
@@ -141,7 +141,7 @@
   <control type="label" id="722">
    <left>78</left><top>535</top><width>95</width><height>26</height>
    <label />
-   <font>font12</font>
+   <font>font10</font>
    <textcolor>FFEAF0F8</textcolor>
   </control>
   <control type="image" id="703">
@@ -151,7 +151,7 @@
   <control type="label" id="723">
    <left>78</left><top>535</top><width>95</width><height>26</height>
    <label />
-   <font>font12</font>
+   <font>font10</font>
    <textcolor>FFEAF0F8</textcolor>
   </control>
   <control type="image" id="704">
@@ -161,7 +161,7 @@
   <control type="label" id="724">
    <left>78</left><top>535</top><width>95</width><height>26</height>
    <label />
-   <font>font12</font>
+   <font>font10</font>
    <textcolor>FFEAF0F8</textcolor>
   </control>
   <control type="image" id="705">
@@ -171,7 +171,7 @@
   <control type="label" id="725">
    <left>78</left><top>535</top><width>95</width><height>26</height>
    <label />
-   <font>font12</font>
+   <font>font10</font>
    <textcolor>FFEAF0F8</textcolor>
   </control>
   <control type="image" id="706">
@@ -181,7 +181,7 @@
   <control type="label" id="726">
    <left>78</left><top>535</top><width>95</width><height>26</height>
    <label />
-   <font>font12</font>
+   <font>font10</font>
    <textcolor>FFEAF0F8</textcolor>
   </control>
   <control type="image" id="707">
@@ -191,7 +191,7 @@
   <control type="label" id="727">
    <left>78</left><top>535</top><width>95</width><height>26</height>
    <label />
-   <font>font12</font>
+   <font>font10</font>
    <textcolor>FFEAF0F8</textcolor>
   </control>
   <control type="image" id="708">
@@ -201,7 +201,7 @@
   <control type="label" id="728">
    <left>78</left><top>535</top><width>95</width><height>26</height>
    <label />
-   <font>font12</font>
+   <font>font10</font>
    <textcolor>FFEAF0F8</textcolor>
   </control>
   <control type="image" id="709">
@@ -211,7 +211,7 @@
   <control type="label" id="729">
    <left>78</left><top>535</top><width>95</width><height>26</height>
    <label />
-   <font>font12</font>
+   <font>font10</font>
    <textcolor>FFEAF0F8</textcolor>
   </control>
   <control type="image" id="710">
@@ -221,7 +221,7 @@
   <control type="label" id="730">
    <left>78</left><top>535</top><width>95</width><height>26</height>
    <label />
-   <font>font12</font>
+   <font>font10</font>
    <textcolor>FFEAF0F8</textcolor>
   </control>
   <control type="image" id="711">
@@ -231,7 +231,7 @@
   <control type="label" id="731">
    <left>78</left><top>535</top><width>95</width><height>26</height>
    <label />
-   <font>font12</font>
+   <font>font10</font>
    <textcolor>FFEAF0F8</textcolor>
   </control>
   <control type="image" id="125">
@@ -240,7 +240,7 @@
   </control>
   <control type="label" id="126">
    <left>764</left><top>382</top><width>446</width><height>26</height>
-   <label>Technische Kerndaten</label>
+   <label>[B]Technische Kerndaten[/B]</label>
    <font>font13</font>
    <textcolor>FFEAF0F8</textcolor>
   </control>
@@ -255,7 +255,7 @@
   </control>
   <control type="label" id="133">
    <left>70</left><top>382</top><width>626</width><height>26</height>
-   <label>TV-Programm um diese Ausstrahlung</label>
+   <label>[B]TV-Programm um diese Ausstrahlung[/B]</label>
    <font>font13</font>
    <textcolor>FFEAF0F8</textcolor>
   </control>
@@ -279,7 +279,7 @@
   </control>
   <control type="label" id="136">
    <left>764</left><top>382</top><width>446</width><height>26</height>
-   <label>Bildmaterial</label>
+   <label>[B]Bildmaterial[/B]</label>
    <font>font13</font>
    <textcolor>FFEAF0F8</textcolor>
   </control>
@@ -292,12 +292,12 @@
    <aspectratio>keep</aspectratio>
   </control>
   <control type="label" id="109">
-   <left>48</left><top>612</top><width>560</width><height>24</height>
+   <left>48</left><top>618</top><width>560</width><height>18</height>
    <font>font12</font>
    <textcolor>FFBBC8D6</textcolor>
   </control>
   <control type="label" id="105">
-   <left>665</left><top>612</top><width>565</width><height>24</height>
+   <left>665</left><top>618</top><width>565</width><height>18</height>
    <font>font12</font>
    <textcolor>FFBBC8D6</textcolor>
   </control>

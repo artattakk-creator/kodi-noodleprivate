@@ -90,6 +90,27 @@ class Artwork482(unittest.TestCase):
         self.assertIn('Welt HD', window.getControl(127).text)
         self.assertFalse(window.getControl(109).visible)
 
+    def test_reference_detail_gives_full_rows_to_nine_cast_names(self):
+        from programme_window46 import ProgrammeWindow46
+        from xcmate027_fixture import ADDON
+
+        window = ProgrammeWindow46('XCMateProgramme46.xml', str(ADDON), 'Default', '720p')
+        window.configure(self.f.portal, self.f.channel)
+        self.addCleanup(window.close)
+        with mock.patch.object(window, '_start_read85'):
+            window.onInit()
+        cast = ['Rose McIver', 'Utkarsh Ambudkar', 'Brandon Scott Jones', 'Danielle Pinnock',
+                'Richie Moriarty', 'Asher Grodman', 'Rebecca Wisocky', 'Devan Chandler Long',
+                'Román Zaragoza']
+        window._paint_facts(dict(channel='Comedy Central', title='Ghosts',
+                                 description='Ein kurzer Sendungstext.', cast=cast))
+        self.assertEqual(window.getControl(101).node.findtext('font'), 'font_MainMenu')
+        self.assertEqual(window.getControl(102).node.findtext('font'), 'font30_title')
+        for index, name in enumerate(cast):
+            label = window.getControl(720 + index)
+            self.assertTrue(label.visible, name)
+            self.assertEqual(label.label, name)
+
     def test_detail_supporting_page_uses_same_event_and_keeps_back_action(self):
         from programme_window46 import ProgrammeWindow46
         from xcmate027_fixture import ADDON
@@ -127,6 +148,22 @@ class Artwork482(unittest.TestCase):
             window._paint_art({},backdrop,poster)
         self.assertEqual(window.getControl(110).image,backdrop['image'])
         self.assertEqual(window.getControl(114).image,poster['image'])
+
+    def test_verified_poster_rating_is_visible_with_non_tmdb_backdrop(self):
+        from programme_window46 import ProgrammeWindow46
+        from xcmate027_fixture import ADDON
+
+        window = ProgrammeWindow46('XCMateProgramme46.xml', str(ADDON), 'Default', '720p')
+        window.configure(self.f.portal, self.f.channel)
+        self.addCleanup(window.close)
+        window.event = dict(self.event)
+        backdrop = dict(source='provider_event', role81='backdrop', image='/verified/backdrop.png')
+        poster = dict(source='tmdb_series', role81='poster', image='/verified/poster.png',
+                      vote_average88=8.1, vote_count88=100)
+        with mock.patch('programme_image69.eligible', side_effect=lambda value,event: bool(value)):
+            window._paint_art({}, backdrop, poster)
+        self.assertTrue(window.getControl(108).visible)
+        self.assertEqual(window.getControl(108).label, '8,1/10 · Serie')
 
     def test_healthy_explicit_lookup_decodes_correct_bytes_and_reaches_detail_consumer(self):
         self.f.folder.joinpath('settings.xml').write_text('<settings><setting id="programme_tmdb46">true</setting><setting id="tmdb_research43">true</setting></settings>')
