@@ -258,7 +258,11 @@ def describe(run,portal,*,runs=()):
     lines=['Automatische Aktualisierung' if run.get('automatic') else 'Manuelle Aktualisierung',
            'Beginn: '+stamp(run.get('started')),'Dauer: '+str(run.get('seconds',0))+' Sekunden',meaning(run.get('code')),'',advice(run.get('code'))]
     gate95=__import__('epg_gate95').latest(__import__('guide_store').path())
-    if gate95:lines+=['','Letzte unabhängige Importfreigabe: '+meaning(gate95['code']),stamp(gate95.get('checked_at'))+' · '+str(gate95.get('elapsed_ms',0))+' ms']
+    if gate95:
+        code=gate95['code']
+        gate_label='Erster Import ohne vorhandene EPG-Datenbank' if code=='NOT_CREATED' else meaning(code)
+        lines+=['','Letzte unabhängige Importfreigabe: '+gate_label,
+                stamp(gate95.get('checked_at'))+' · '+str(gate95.get('elapsed_ms',0))+' ms']
     after=run.get('after',{});before=run.get('before',{})
     if after.get('programmes') is not None:
         lines+=['','Gespeicherte Programme: '+str(after['programmes']),'Zeitraum: '+stamp(after.get('first'))+' bis '+stamp(after.get('last'))]

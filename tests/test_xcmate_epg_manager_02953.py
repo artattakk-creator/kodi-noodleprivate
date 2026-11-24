@@ -60,6 +60,12 @@ class Manager53Tests(unittest.TestCase):
         text=self.report.describe(r,self.portal)
         for word in ('Gespeicherte Programme: 10','Geladen: 1 Sender','Neu: 2','aktualisiert: 1','Konflikte bewahrt: 3'):self.assertIn(word,text)
         for secret in ('https://','password=','Traceback','{"','SELECT '):self.assertNotIn(secret,text)
+    def test_initial_guide_creation_is_not_shown_as_a_failed_import(self):
+        with mock.patch('epg_gate95.latest', return_value={'code': 'NOT_CREATED', 'checked_at': self.m.now}):
+            text = self.report.describe(self.run_record(), self.portal)
+        self.assertIn('Erster Import ohne vorhandene EPG-Datenbank', text)
+        self.assertNotIn('Aktualisierung fehlgeschlagen', text)
+
     def test_source_labels_redact_addresses_and_token_fields(self):
         for name in ('https://private.invalid/token','token=secret','password=secret','person@example.invalid'):
             self.assertEqual(self.report.label(name),'XMLTV-Quelle')
