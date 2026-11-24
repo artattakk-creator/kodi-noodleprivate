@@ -77,6 +77,7 @@ class Artwork482(unittest.TestCase):
         self.assertFalse(window.getControl(110).visible)
         self.assertFalse(window.getControl(103).visible)
         self.assertFalse(window.getControl(104).visible)
+        self.assertFalse(window.getControl(504).visible)
         window._paint_facts(dict(channel='Welt HD', title='Report',
                                  subtitle='Belegte Folge', description='Belegter Text',
                                  genre='Doku', cast=['Belegter Name']))
@@ -101,9 +102,13 @@ class Artwork482(unittest.TestCase):
         event = dict(self.event, following46=[dict(start=self.event['stop'], title='Danach')])
         window._paint_facts(event)
         self.assertTrue(window.getControl(504).visible)
+        self.assertEqual(window.getControl(503).node.findtext('onright'),'504')
         window.onClick(504)
         self.assertTrue(window.getControl(132).visible)
         self.assertIn('Danach', window.getControl(134).text)
+        self.assertTrue(window.getControl(138).visible)
+        window.onClick(504)
+        self.assertFalse(window.getControl(132).visible)
         window.onClick(501)
         self.assertTrue(window._closed)
 
