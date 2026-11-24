@@ -82,8 +82,30 @@ class Artwork482(unittest.TestCase):
                                  genre='Doku', cast=['Belegter Name']))
         self.assertEqual(window.getControl(101).label, 'Report')
         self.assertEqual(window.getControl(102).label, 'Belegte Folge')
-        self.assertIn('Belegter Name', window.getControl(103).text)
+        self.assertEqual(window.getControl(103).text, 'Belegter Text')
+        self.assertTrue(window.getControl(119).visible)
+        self.assertEqual(window.getControl(720).label, 'Belegter Name')
+        self.assertTrue(window.getControl(125).visible)
+        self.assertIn('Welt HD', window.getControl(127).text)
         self.assertFalse(window.getControl(109).visible)
+
+    def test_detail_supporting_page_uses_same_event_and_keeps_back_action(self):
+        from programme_window46 import ProgrammeWindow46
+        from xcmate027_fixture import ADDON
+
+        window = ProgrammeWindow46('XCMateProgramme46.xml', str(ADDON), 'Default', '720p')
+        window.configure(self.f.portal, self.f.channel)
+        self.addCleanup(window.close)
+        with mock.patch.object(window, '_start_read85'):
+            window.onInit()
+        event = dict(self.event, following46=[dict(start=self.event['stop'], title='Danach')])
+        window._paint_facts(event)
+        self.assertTrue(window.getControl(504).visible)
+        window.onClick(504)
+        self.assertTrue(window.getControl(132).visible)
+        self.assertIn('Danach', window.getControl(134).text)
+        window.onClick(501)
+        self.assertTrue(window._closed)
 
     def test_detail_renders_each_verified_image_in_its_own_role(self):
         from programme_window46 import ProgrammeWindow46

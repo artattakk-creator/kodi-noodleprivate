@@ -52,6 +52,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   self._retries85=0;self._retry_after85=0
   self._intent88=None;self._action88=None;self._tune88=False;self._timeline88=''
   self._hero_art={};self._poster_art={};self._next_art_intent=0
+  self._detail_view_event={};self._extra_page=False;self._reference_images=('','')
   self._cancel=threading.Event();self._future=None;self.event=None;self._art_signature=None;self._next=0;self._scroll46=0;self._art68={}
  def _gui(self):
   if threading.get_ident()!=self._owner:raise RuntimeError('PROGRAMME_OWNER_THREAD')
@@ -59,7 +60,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
  def onInit(self):
   self._gui()
   if self._ready:return
-  for cid in (104,105,107,108,110,114,115,116,120,121,130):
+  for cid in (104,105,107,108,110,114,115,116,120,121,129,130,1130):
    self.getControl(cid).setVisible(False)
   self._shown=True;self._ready=True;self.getControl(501).setLabel(tr(36101));self.getControl(101).setLabel(tr(36100))
   from menu_icons45 import icon
@@ -109,29 +110,118 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   if not episode and event.get('season') and event.get('episode'):
    episode=tr(36103,event['season'],event['episode'])
   label(102,text(episode))
-  label(106,' · '.join(text(event[k]) for k in ('year','genre','age_rating') if event.get(k)))
+  facts=' · '.join(text(event[k]) for k in ('year','genre','age_rating') if event.get(k))
+  label(106,facts)
+  self.getControl(128).setVisible(bool(facts))
   source=event.get('_source_label100','')
   label(109,tr(32753)+' · '+source if source else '')
-
-  body=[]
-  if event.get('description'):body.append(text(event['description']))
-  cast=event.get('cast')
-  if isinstance(cast,list) and cast:
-   body.append(tr(36104)+' · '+', '.join(text(name) for name in cast))
-  if event.get('director'):body.append('Regie · '+text(event['director']))
-  if event.get('following46'):
-   body.append('Danach\n'+'\n'.join(
-       time.strftime('%H:%M',time.localtime(row['start']))+'  '+text(row['title'])
-       for row in event['following46']))
-  self.getControl(103).setText('\n\n'.join(body))
-  self.getControl(103).setVisible(bool(body))
-  self.getControl(117).setVisible(bool(body))
+  self._detail_view_event=event
+  self._paint_cards()
   self._paint_time(event)
+
+ def _paint_cards(self):
+  from presentation80 import text
+
+  event=self._detail_view_event
+  synopsis=text(event.get('description'))
+  cast=event.get('cast')
+  names=[text(name).strip() for name in cast if isinstance(name,str) and name.strip()] if isinstance(cast,list) else []
+  technical=[]
+  for key,label in (('channel','Sender'),('_source_label100','EPG-Quelle'),('canonical','EPG-Kanal-ID'),('director','Regie')):
+   if event.get(key):technical.append(label+'   '+text(event[key]))
+  for key,label in (('start','Beginn'),('stop','Ende')):
+   if event.get(key):technical.append(label+'   '+time.strftime('%d.%m. · %H:%M:%S',time.localtime(event[key])))
+  following=event.get('following46') or []
+  backdrop,poster=self._reference_images
+  left=678 if technical else 1184
+  card_top=494 if synopsis else 370
+  chips=[]
+  x,y=70,card_top+43
+  for name in names[:12]:
+   width=min(196,max(64,24+len(name)*7))
+   if x+width>48+left-22:x=70;y+=27
+   if y+24>610:break
+   chips.append((name,x,y,width))
+   x+=width+7
+  overflow=len(chips)<len(names)
+  more=bool(following or backdrop or poster or overflow)
+  if not more:
+   if self._extra_page:self.setFocusId(501)
+   self._extra_page=False
+  extra=self._extra_page
+  self.getControl(504).setLabel('Zur Übersicht' if extra else
+                               'Bildmaterial und Programm' if following and (backdrop or poster) else 'Weitere Details')
+  self.getControl(504).setVisible(more)
+  back,bookmark,tune,more_button=(self.getControl(cid) for cid in (501,502,503,504))
+  tune.setNavigation(tune,tune,bookmark,more_button if more else back)
+  back.setNavigation(back,back,more_button if more else tune,bookmark)
+
+  show_plot=bool(synopsis) and not extra
+  show_cast=bool(names) and not extra
+  show_technical=bool(technical) and not extra
+  for cid in (117,118,103):self.getControl(cid).setVisible(show_plot)
+  for cid in (119,123):self.getControl(cid).setVisible(show_cast)
+  for cid in (125,126,127):self.getControl(cid).setVisible(show_technical)
+
+  plot_height=113 if names else 240
+  plot=self.getControl(117);plot.setWidth(left);plot.setHeight(plot_height)
+  box=self.getControl(103);box.setWidth(left-44);box.setHeight(plot_height-56);box.setText(synopsis)
+  card=self.getControl(119);card.setPosition(48,card_top);card.setWidth(left)
+  card.setHeight(116 if synopsis else 240)
+  self.getControl(123).setPosition(70,card_top+11)
+  fact_x=742 if synopsis or names else 48
+  fact_width=490 if synopsis or names else 1184
+  for cid,dx,dy in ((125,0,0),(126,22,12),(127,22,45)):
+   control=self.getControl(cid);control.setPosition(fact_x+dx,370+dy)
+   control.setWidth(fact_width-2*dx)
+  self.getControl(127).setText('\n'.join(technical))
+
+  for i in range(12):
+   chip,label=(self.getControl(cid+i) for cid in (700,720))
+   if i<len(chips):
+    name,x,y,width=chips[i]
+    chip.setPosition(x,y);chip.setWidth(width)
+    label.setPosition(x+8,y-2);label.setWidth(width-16);label.setLabel(name)
+   chip.setVisible(show_cast and i<len(chips))
+   label.setVisible(show_cast and i<len(chips))
+
+  show_schedule=extra and bool(following or overflow)
+  show_images=extra and bool(backdrop or poster)
+  for cid in (132,133,134):self.getControl(cid).setVisible(show_schedule)
+  for cid in (135,136):self.getControl(cid).setVisible(show_images)
+  self.getControl(133).setLabel('TV-Programm um diese Ausstrahlung' if following else 'Mitwirkende')
+  selected=bool(following and event.get('title') and event.get('start'))
+  self.getControl(137).setVisible(show_schedule and selected)
+  self.getControl(138).setVisible(show_schedule and selected)
+  if selected:
+   stamp=time.strftime('%H:%M',time.localtime(event['start']))
+   self.getControl(138).setLabel(stamp+'   '+text(event['title']))
+  schedule=[time.strftime('%H:%M',time.localtime(row['start']))+'   '+text(row['title']) for row in following]
+  if overflow:
+   schedule.extend(('', 'Mitwirkende', ', '.join(names)) if following else (', '.join(names),))
+  schedule_width=678 if show_images else 1184
+  for cid,margin in ((132,0),(134,22),(137,22),(138,36)):
+   self.getControl(cid).setWidth(schedule_width-2*margin)
+  body=self.getControl(134)
+  body.setPosition(70,466 if selected else 420)
+  body.setHeight(124 if selected else 168)
+  body.setText('\n\n'.join(schedule))
+
+  image_x=742 if show_schedule else 48
+  image_width=490 if show_schedule else 1184
+  self.getControl(135).setPosition(image_x,370)
+  self.getControl(135).setWidth(image_width)
+  self.getControl(136).setPosition(image_x+22,382)
+  first=self.getControl(140);first.setPosition(image_x+22,421)
+  first.setWidth(282 if show_schedule and poster else image_width-44 if not poster else image_width-190)
+  second=self.getControl(141);second.setPosition(image_x+image_width-172 if backdrop else image_x+22,421)
+  for image,uri in ((first,backdrop),(second,poster)):
+   image.setImage(uri);image.setVisible(show_images and bool(uri))
 
  def _paint_time(self,event):
   stamp,percent=__import__('programme_actions88').timeline(event)
   if stamp:
-   stamp=time.strftime('%d.%m. · ',time.localtime(event['start']))+stamp
+   stamp=time.strftime('%d.%m.%Y · ',time.localtime(event['start']))+stamp
   if stamp!=self._timeline88:
    self.getControl(107).setLabel(stamp);self._timeline88=stamp
   self.getControl(107).setVisible(bool(stamp))
@@ -173,6 +263,8 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   for cid,uri in ((110,ready),(114,cover)):
    control=self.getControl(cid);control.setImage(uri);control.setVisible(bool(uri))
   for cid in (115,116):self.getControl(cid).setVisible(bool(ready))
+  self.getControl(1130).setVisible(bool(cover))
+  self.getControl(129).setVisible(bool(score))
   self.getControl(130).setVisible(tmdb_source(source))
   self.getControl(108).setLabel(score+' · '+score_scope if score else '')
   self.getControl(108).setVisible(bool(score))
@@ -182,10 +274,8 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   image_source='TMDB' if tmdb_source(source) else names.get(source,'')
   self.getControl(105).setLabel('Bild · '+image_source if image_source else '')
   self.getControl(105).setVisible(bool(image_source))
-  # Text can move up into the neutral area when no hero is available.
-  self.getControl(117).setPosition(58,362 if ready or cover else 351)
-  self.getControl(103).setPosition(82,381 if ready or cover else 370)
-  self.getControl(103).setHeight(184 if ready or cover else 195)
+  self._reference_images=(ready,cover)
+  self._paint_cards()
   __import__('programme_pipeline77').note(self.event,'RENDER_CONTROL',
       'IMAGE_REQUESTED' if ready or cover else 'SOURCE_MISSING',
       control=110,visible=bool(ready or cover))
@@ -265,10 +355,12 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   elif key in (9,10,92):self.close()
   elif key in (3,4,5,6):
    self._scroll46=max(0,min(512,self._scroll46+(-1 if key==3 else 1 if key==4 else -10 if key==5 else 10)))
-   self.getControl(103).scroll(self._scroll46)
+   self.getControl(134 if self._extra_page else 103).scroll(self._scroll46)
  def onClick(self,cid):
   self._gui()
   if cid==501:self.close()
+  elif cid==504:
+   self._extra_page=not self._extra_page;self._scroll46=0;self._paint_cards()
   elif cid==502 and self.event and self._action88 is None:self._intent88='bookmark'
   elif cid==503 and not self._tune88 and not __import__('station_rows88').header(self.channel):self._tune88=True;self.close()
  def close(self):
