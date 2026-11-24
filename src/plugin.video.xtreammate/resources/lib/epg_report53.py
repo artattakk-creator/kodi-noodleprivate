@@ -253,7 +253,7 @@ def source_report(source,previous_success):
         lines.extend(horizon_table(saved))
     return lines
 
-def describe(run,portal):
+def describe(run,portal,*,runs=()):
     names={r['id']:r['name'] for r in configured(portal)}
     lines=['Automatische Aktualisierung' if run.get('automatic') else 'Manuelle Aktualisierung',
            'Beginn: '+stamp(run.get('started')),'Dauer: '+str(run.get('seconds',0))+' Sekunden',meaning(run.get('code')),'',advice(run.get('code'))]
@@ -271,7 +271,7 @@ def describe(run,portal):
     sources=run.get('sources',[]);good=sum(s.get('code') in SUCCESS for s in sources)
     lines+=['','Quellen: '+str(good)+' erfolgreich, '+str(len(sources)-good)+' nicht erfolgreich']
     previous={}
-    for past in history(portal['id']):
+    for past in runs:
         if past.get('started',0)>=run.get('started',0):
             continue
         for row in past.get('sources',[]):

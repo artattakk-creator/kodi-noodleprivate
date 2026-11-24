@@ -314,7 +314,7 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
                 self._show_report(live=True)
                 self._render_live_report()
             else:
-                self._show_report(describe(runs[-1-choice+int(live)],self.portal))
+                self._show_report(describe(runs[-1-choice+int(live)],self.portal,runs=runs))
 
         self._request(lambda:(history(pid),snapshot(pid)),ready)
 
