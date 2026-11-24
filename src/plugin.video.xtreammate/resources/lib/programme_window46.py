@@ -150,17 +150,20 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   from programme_actions88 import rating,tmdb_source
   from programme_image69 import eligible
 
-  def image(value):
-   return value.get('image','') if eligible(value,self.event) else ''
+  def image(value,view=None):
+   event=dict(self.event,_art_view499=view) if view else self.event
+   return value.get('image','') if not value.get('provisional85') and eligible(value,event) else ''
 
-  hero_image=image(hero)
-  poster_image=image(poster)
-  ready=hero_image
-  if not ready and art.get('role81')!='poster':ready=image(art)
+  hero_image=image(hero,'hero')
+  poster_image=image(poster,'card')
+  detail_image=image(art)
+  confirmed=__import__('agent_programme100').manual(art)
+  ready=detail_image if confirmed and art.get('role81')!='poster' else hero_image
+  if not ready and art.get('role81')!='poster':ready=detail_image
   cover=poster_image if poster.get('role81')=='poster' else ''
-  if not cover and art.get('role81')=='poster':cover=image(art)
+  if (confirmed or not cover) and art.get('role81')=='poster':cover=detail_image
   if cover==ready:cover=''
-  primary=hero if hero_image else poster if cover and cover==poster_image and not ready else art
+  primary=art if confirmed and detail_image else hero if hero_image else poster if cover and cover==poster_image and not ready else art
   source=primary.get('source','') if ready or cover else ''
   score_scope={'tmdb_movie':'Film','tmdb_series':'Serie','tmdb_episode':'Folge'}.get(source)
   score=rating(primary) if score_scope else ''

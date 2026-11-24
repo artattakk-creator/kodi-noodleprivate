@@ -282,19 +282,29 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
         self._saving53=False
         if receipt.get('error'):
             self._save_error474(receipt['error']);return
-        from epg_binding48 import confirm_verified
+        from epg_binding48 import confirm_verified,recheck_verified
         try:
             with confirm_verified(receipt):
-                self.saved=True
-                if receipt.get('refresh_error'):
-                    self._saved_refresh_error474(receipt['refresh_error'])
-                    return
-                self.adapter96.apply_saved(receipt['prepared'])
-        except Exception as exc:
-            if self.saved:
-                self._saved_refresh_error474('MAPPING_UI_REFRESH_FAILED')
-            else:
-                self._save_error474(getattr(exc,'code','MAPPING_CONFLICT'))
+                pass
+        except (OSError,ValueError) as exc:
+            code=getattr(exc,'code','MAPPING_CONFLICT')
+            if code=='MAPPING_CONFLICT' and not receipt.get('rechecked'):
+                def recheck():
+                    try:return recheck_verified(receipt)
+                    except (OSError,ValueError) as failure:return dict(error=getattr(failure,'code','MAPPING_CONFLICT'))
+                self._saving53=True
+                if self._submit(recheck,self._committed474) is not False:return
+                self._saving53=False
+            self._save_error474(code)
+            return
+        self.saved=True
+        if receipt.get('refresh_error'):
+            self._saved_refresh_error474(receipt['refresh_error'])
+            return
+        try:
+            self.adapter96.apply_saved(receipt['prepared'])
+        except Exception:
+            self._saved_refresh_error474('MAPPING_UI_REFRESH_FAILED')
             return
         self.getControl(103).setText('EPG-Zuordnung gespeichert und geprüft.')
         try:xbmcgui.Dialog().notification('XCMate','EPG-Zuordnung gespeichert und geprüft.',time=3000)

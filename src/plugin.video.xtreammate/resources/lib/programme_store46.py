@@ -119,17 +119,17 @@ class Stage:
   finally:
    if db is not None:db.close()
    self.rows.clear()
- def finish(self,publish=False):
-  self.flush();finish(self.pid,self.generation,publish and not self.failed,self.guide,index_ok46=not self.facts46.failed,index_publish46=publish)
+ def finish(self,publish=False,*,insert_missing=False):
+  self.flush();finish(self.pid,self.generation,publish and not self.failed,self.guide,index_ok46=not self.facts46.failed,index_publish46=publish,insert_missing=insert_missing)
   if publish and not self.failed and not self.facts46.failed:
    try:__import__('programme_reference84').signal(self.pid,self.generation)
    except (ImportError,AttributeError,RuntimeError):pass
 
-def finish(pid,generation,publish,guide=None,*,index_ok46=True,index_publish46=None):
+def finish(pid,generation,publish,guide=None,*,index_ok46=True,index_publish46=None,insert_missing=False):
  from epg_binding48 import finish_channels
- finish_channels(pid,generation,publish,guide)
+ finish_channels(pid,generation,publish,guide,insert_missing=insert_missing)
  from programme_index46 import finish as finish_index46
- finish_index46(pid,generation,(publish if index_publish46 is None else index_publish46) and index_ok46,guide)
+ finish_index46(pid,generation,(publish if index_publish46 is None else index_publish46) and index_ok46,guide,insert_missing=insert_missing)
  if not os.path.isfile(path(guide)):return
  db=None
  try:
@@ -141,7 +141,9 @@ def finish(pid,generation,publish,guide=None,*,index_ok46=True,index_publish46=N
     # Free only this new unpublished stage before insertion, so promotion does
     # not require twice its disk budget. Published old metadata stays atomic.
     db.executemany('DELETE FROM pending WHERE generation=? AND pid=? AND cid=? AND start=? AND stop=? AND titlehash=? AND source=?',[(generation,str(pid),*row[:5]) for row in rows])
-    if publish:db.executemany('INSERT OR REPLACE INTO metadata VALUES(?,?,?,?,?,?,?)',[(str(pid),*row) for row in rows])
+    if publish:
+     verb='INSERT OR IGNORE' if insert_missing else 'INSERT OR REPLACE'
+     db.executemany(verb+' INTO metadata VALUES(?,?,?,?,?,?,?)',[(str(pid),*row) for row in rows])
  except (OSError,sqlite3.Error,ValueError,MemoryError):
   if db is not None:
    try:

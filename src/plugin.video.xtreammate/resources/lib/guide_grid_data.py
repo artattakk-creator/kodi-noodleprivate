@@ -18,9 +18,12 @@ def page(portal,offset,origin,category=None,client=None,mappings48=None,strict48
     from epg_sources import configuration
     from epg_events import deduplicate
     reader=Reader(portal['id']);channels,total=reader.page('live',category=category,offset=offset,limit=ROWS)
-    mappings=configuration(portal['id']).get('mappings',{}) if mappings48 is None else mappings48;result=[]
+    from epg_binding48 import view_mappings
+    mappings=view_mappings(configuration(portal['id']).get('mappings',{}) if mappings48 is None else mappings48)
+    result=[]
     from local_epg import window,channel_keys,for_channel
-    snapshot=window(portal['id'],channels,mappings,origin,origin+SPAN,limit=101,**({'strict48':True} if strict48 else {}))
+    snapshot=window(portal['id'],channels,mappings,origin,origin+SPAN,limit=101,
+                    strict48=strict48,provider_fallback=mappings48 is None)
     if snapshot is None and not strict48:
         from epg_fallback67 import window as fallback67
         snapshot=fallback67(portal['id'],channels,mappings,origin,origin+SPAN,101)
@@ -37,7 +40,8 @@ def page(portal,offset,origin,category=None,client=None,mappings48=None,strict48
                 if raw:
                     resolved=getattr(sender,'canonical',{}).get(ident,ident)
                     events=deduplicate(raw[:100],channel=resolved)
-                    if not manual:mapping='STREAM_ALIAS' if ident==sid else 'PROVIDER_ID'
+                    if ident in getattr(sender,'provider_fallback',()):mapping='MANUAL_PROVIDER_FALLBACK'
+                    elif not manual:mapping='STREAM_ALIAS' if ident==sid else 'PROVIDER_ID'
                     break
         if not events and not manual and client is not None and origin<=time.time()<origin+SPAN:
             from epg_views import cached_short_guide

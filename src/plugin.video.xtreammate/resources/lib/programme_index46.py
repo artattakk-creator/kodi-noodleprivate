@@ -178,7 +178,7 @@ class Stage:
             self.rows.clear()
 
 
-def finish(pid,generation,publish,guide=None):
+def finish(pid,generation,publish,guide=None,*,insert_missing=False):
     if not os.path.isfile(path(guide)):return
     db=None
     try:
@@ -188,7 +188,12 @@ def finish(pid,generation,publish,guide=None):
                 rows=db.execute('SELECT pid,cid,start,stop,source_id,titlehash,fingerprint,data FROM pending46 WHERE generation=? AND pid=? LIMIT 128',(generation,str(pid))).fetchall()
                 if not rows:break
                 db.executemany('DELETE FROM pending46 WHERE generation=? AND pid=? AND cid=? AND start=? AND stop=? AND source_id=?',[(generation,*r[:5]) for r in rows])
-                if publish:
+                if publish and insert_missing:
+                    for cid in {r[1] for r in rows}:
+                        count=db.executemany('INSERT OR IGNORE INTO facts VALUES(?,?,?,?,?,?,?,?,?)',
+                                             [(*r,time.time()) for r in rows if r[1]==cid]).rowcount
+                        if count:db.execute('INSERT INTO fact_versions VALUES(?,?,1) ON CONFLICT(pid,cid) DO UPDATE SET version=version+1',(str(pid),cid))
+                elif publish:
                     # A partial observation of the same event cannot erase
                     # already verified description/image/episode facts.
                     marks=','.join('(?,?,?,?)' for _ in rows)

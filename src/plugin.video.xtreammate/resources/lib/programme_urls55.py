@@ -260,9 +260,8 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         # The same verified event can have different images for different
         # views. Missing roles descend to the feed icon, then the UI fallback.
         if typed499:
-            yield from agent100
-            yield from candidates
-            return
+            exact_role=roles499.VIEW_ROLE[view499]
+            yield from (candidate for candidate in agent100 if candidate.get('role81')==exact_role)
         reference84=__import__('programme_reference84').get(event)
         if reference84 and reference84.get('candidate'):
             if home86:candidates.append(dict(reference84['candidate']))
@@ -286,9 +285,10 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         if not own81:
             provisional85=__import__('programme_candidates85').suggestion(event)
             if provisional85:own81.append(provisional85)
-        yield from (__import__('hero_art86').ordered(__import__('hero_art86').expand(own81,event,cancel),candidates) if home86 else own81)
+        yield from (__import__('hero_art86').expand(own81,event,cancel) if home86 else own81)
         if not allow_lookup:
-            if not home86:yield from candidates
+            if typed499:yield from (candidate for candidate in agent100 if candidate.get('role81')=='legacy_icon')
+            yield from candidates
             return
         deferred=[];fallback_sources=[]
 
@@ -317,7 +317,8 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         for found in deferred:  # generic series art never masks an exact still
             yield found
             for alternate in found.get('alternate_urls57',[])[:2]:yield dict(found,url=alternate)
-        if not home86:yield from candidates
+        if typed499:yield from (candidate for candidate in agent100 if candidate.get('role81')=='legacy_icon')
+        yield from candidates
         for find in fallback_sources:
             if cancel():return
             try:found=find()
@@ -378,7 +379,9 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             if isinstance(verified77,dict) and verified77.get('url'):url=verified77['url']
         except SourceError as exc:value['code']=exc.code;continue
         if cancel():return None
-        if typed_choice499 and not roles499.image_shape(candidate.get('role81'),verified77):
+        role=candidate.get('role81')
+        if typed_choice499 and (role not in (roles499.VIEW_ROLE[view499],'legacy_icon') or
+                                not roles499.image_shape(role,verified77)):
             failed('HERO_QUALITY_REJECTED');continue
         if home86:
             quality86=dict(candidate,image_width77=(verified77 or {}).get('width',0),image_height77=(verified77 or {}).get('height',0))

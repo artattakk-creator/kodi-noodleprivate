@@ -85,6 +85,22 @@ class Artwork482(unittest.TestCase):
         self.assertIn('Belegter Name', window.getControl(103).text)
         self.assertFalse(window.getControl(109).visible)
 
+    def test_detail_renders_each_verified_image_in_its_own_role(self):
+        from programme_window46 import ProgrammeWindow46
+        from xcmate027_fixture import ADDON
+        from agent_programme100 import fits, view
+
+        window = ProgrammeWindow46('XCMateProgramme46.xml', str(ADDON), 'Default', '720p')
+        window.configure(self.f.portal, self.f.channel)
+        self.addCleanup(window.close)
+        window.event = dict(self.event, _detail93=True)
+        backdrop = dict(source='agent_tmdb', role81='backdrop', image='/verified/backdrop.png')
+        poster = dict(source='agent_tmdb', role81='poster', image='/verified/poster.png')
+        with mock.patch('programme_image69.eligible', side_effect=lambda value,event: fits(value,view(event))):
+            window._paint_art({},backdrop,poster)
+        self.assertEqual(window.getControl(110).image,backdrop['image'])
+        self.assertEqual(window.getControl(114).image,poster['image'])
+
     def test_healthy_explicit_lookup_decodes_correct_bytes_and_reaches_detail_consumer(self):
         self.f.folder.joinpath('settings.xml').write_text('<settings><setting id="programme_tmdb46">true</setting><setting id="tmdb_research43">true</setting></settings>')
         png=io.BytesIO();Image.new('RGB',(1280,720),(27,89,139)).save(png,'PNG');body=png.getvalue()

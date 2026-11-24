@@ -125,6 +125,35 @@ class SourceViews474(unittest.TestCase):
             self.assertEqual(resolve(view,'xml','1',self.now,mappings=mappings)['now'],'Source 1')
             self.assertEqual(resolve(view,'xml','2',self.now,mappings=mappings)['now'],'Provider programme')
 
+    def test_missing_agent_binding_keeps_provider_visible_in_guide_and_now_next(self):
+        self.binding.save(self.portal,'1','missing-agent','agent')
+        mappings=self.sources.configuration('p')['mappings']
+        resolve=importlib.import_module('epg_views').resolve_guide
+        grid=importlib.import_module('guide_grid_data')
+        reader=types.SimpleNamespace(page=lambda *a,**k:(self.rows,3),groups=lambda *a:[])
+        for enabled in (True,False):
+            with self.subTest(enabled=enabled), mock.patch('epg_agent100.enabled',return_value=enabled):
+                view=self.local.window('p',self.rows,mappings,self.now,self.now+7200,text_only65=True)
+                self.assertEqual(resolve(view,'xml','1',self.now,mappings=mappings)['now'],'Provider programme')
+                with mock.patch('library_index.Reader',return_value=reader):
+                    result=grid.page(self.portal,0,self.origin,'a')
+                self.assertEqual(result['rows'][0]['events'][0]['title'],'Provider programme')
+                self.assertEqual(result['rows'][0]['events'][0].get('source_key46','provider'),'provider')
+        self.assertEqual(self.binding.binding(self.sources.configuration('p')['mappings'],'1'),
+                         dict(channel='missing-agent',source='agent'))
+
+    def test_saving_cold_preview_does_not_replace_newer_exact_source_slot(self):
+        from epg_candidate53 import publish
+        from programme_index46 import window
+
+        args=('p','xml',self.now-60,self.now+600)
+        before=window(*args,source48=self.aid)
+        self.assertTrue(before)
+        stale=dict(before[0],name='Stale preview title',title='Stale preview title')
+        publish(self.portal,self.aid,'xml','Fixture',[stale])
+        after=window(*args,source48=self.aid)
+        self.assertEqual(after[0]['name'],before[0]['name'])
+
     def test_grid_empty_qualified_mapping_keeps_explicit_channel_identity(self):
         mappings=self.binding.preview(self.mappings,'2','empty-channel',self.bid)
         reader=types.SimpleNamespace(page=lambda *a,**k:(self.rows,3),groups=lambda *a:[])

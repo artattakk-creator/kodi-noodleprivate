@@ -52,7 +52,7 @@ class GridAdapter:
         mappings = preview(configuration(self.portal['id'])['mappings'], self.channel['sid'], candidate['id'], source)
         value = page(self.portal, self.original['offset'], self.original['origin'], self.original['category'], None, mappings48=mappings)
         start = self.original['origin'] + offset * 3 * 3600
-        detail = window(self.portal['id'], [self.channel], mappings, start, start + 2 * 86400, limit=96)
+        detail = window(self.portal['id'], [self.channel], mappings, start, start + 2 * 86400, limit=96, provider_fallback=False)
         value['details53'] = list((detail or {}).get(candidate['id'], []))
         selected = next((r for r in value['rows'] if str(r['channel']['sid']) == str(self.channel['sid'])), None)
         if selected is not None and not selected['events'] and not value['details53']:
@@ -134,7 +134,7 @@ class MiniAdapter:
         mappings = preview(configuration(self.portal['id'])['mappings'], self.channel['sid'], candidate['id'], source)
         start = self.origin + offset * 3 * 3600
         # Always include NOW in the Mini column; the dialog can page details.
-        detail = window(self.portal['id'], [self.channel], mappings, self.origin, start + 2 * 86400, limit=256)
+        detail = window(self.portal['id'], [self.channel], mappings, self.origin, start + 2 * 86400, limit=256, provider_fallback=False)
         events = list((detail or {}).get(candidate['id'], []))
         if not events:
             events = cold.programmes(self.portal, source, candidate['id'], cancel)

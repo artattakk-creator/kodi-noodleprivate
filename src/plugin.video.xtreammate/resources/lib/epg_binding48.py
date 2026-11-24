@@ -146,6 +146,21 @@ def confirm_verified(receipt):
         yield
 
 
+
+def recheck_verified(receipt):
+    """Reconfirm the exact sender on a worker after another config write."""
+    from profile_transaction import writing
+    from epg_handoff63 import profile_scope
+    from epg_sources import configuration
+
+    with writing(timeout=.2):
+        if receipt['profile474']!=profile_scope():
+            raise MappingSaveError('MAPPING_PROFILE_CHANGED')
+        current=configuration(receipt['pid'])['mappings']
+        if binding(current,receipt['sid'])!=receipt['target']:
+            raise MappingSaveError('MAPPING_CONFLICT')
+        return dict(receipt,stamp474=_stamp474(),refresh_error='MAPPING_RELOAD_FAILED',rechecked=True)
+
 def rollback_verified(receipt):
     """Restore only this unchanged transaction's tuple, never a newer choice."""
     from profile_transaction import writing
@@ -207,7 +222,7 @@ def stage_channels(pid,generation,source,rows,guide=None):
         if db is not None:db.close()
 
 
-def finish_channels(pid,generation,publish,guide=None):
+def finish_channels(pid,generation,publish,guide=None,*,insert_missing=False):
     from programme_index46 import connect
     db=None
     try:
@@ -216,7 +231,8 @@ def finish_channels(pid,generation,publish,guide=None):
         db.close();db=connect(True,guide)
         with db:
             if publish:
-                db.execute('''INSERT OR REPLACE INTO source_channels48 SELECT pid,source_id,cid,name
+                verb='INSERT OR IGNORE' if insert_missing else 'INSERT OR REPLACE'
+                db.execute(verb+''' INTO source_channels48 SELECT pid,source_id,cid,name
                   FROM pending_channels48 WHERE pid=? AND generation=?''',(str(pid),generation))
             db.execute('DELETE FROM pending_channels48 WHERE pid=? AND generation=?',(str(pid),generation))
     except (OSError,sqlite3.Error,ValueError):pass
@@ -247,5 +263,7 @@ def qualified_cache(cache,mappings,sid):
     if not selected:return cache
     cid=selected['channel'];source=selected['source']
     rows=cache.get(cid,[]) if isinstance(cache,dict) else []
+    if cid in getattr(cache,'provider_fallback',()):
+        source='provider'
     return {cid:[row for row in rows if isinstance(row,dict) and
         (row.get('source_key46') or row.get('epg_source46'))==source]}

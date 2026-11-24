@@ -92,6 +92,12 @@ class MiniSaveUI474(unittest.TestCase):
   self.assertEqual(self.f.sources.configuration('p')['source_mappings48']['1'],dict(channel='xml',source=self.f.bid))
  def receipt(self):
   return self.f.binding.commit_verified(self.f.portal,'1','xml',self.f.bid,prepare=lambda:self.d.adapter96.prepare_saved(self.d.candidate,self.f.bid))
+ def test_unrelated_save_does_not_invalidate_exact_tuple_ack(self):
+  receipt=self.receipt();self.f.binding.save(self.f.portal,'2','xml',self.f.aid)
+  self.d._committed474(receipt)
+  self.assertTrue(self.d.saved)
+  self.assertEqual(self.f.binding.binding(self.f.sources.configuration('p')['mappings'],'1'),dict(channel='xml',source=self.f.bid))
+  self.assertNotIn('MAPPING_CONFLICT',self.d.getControl(103).text)
  def test_newer_mapping_cannot_be_acknowledged_as_old_worker_result(self):
   receipt=self.receipt();self.f.binding.save(self.f.portal,'1','xml',self.f.aid)
   self.d._committed474(receipt)
