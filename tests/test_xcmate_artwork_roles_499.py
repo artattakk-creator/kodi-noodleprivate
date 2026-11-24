@@ -159,21 +159,23 @@ class ArtworkRoles499(Fixture, unittest.TestCase):
         self.assertEqual(recovered['role81'],'episode_still')
         self.assertEqual(recovered['image'],str(file))
 
-    def test_details_keep_prepared_logo_fallback_when_requested_still_is_missing(self):
+    def test_details_keep_prepared_station_logo_under_neutral_hero_when_artwork_is_missing(self):
         from programme_window46 import ProgrammeWindow46
         from xcmate027_fixture import ADDON
 
         channel={'sid':'1','name':'Test channel'}
-        event=dict(self.event(('poster',)),_detail93=True,_fallback499='/locally-verified-logo.png')
+        event=dict(self.event(('poster',)),_detail93=True,logo='/locally-verified-logo.png')
         window=ProgrammeWindow46('XCMateProgramme46.xml',str(ADDON),'Default','720p')
         window.configure(self.portal,channel)
         window._ready=True
         window.event=event
+        window._paint_facts(event)
         self.addCleanup(window.close)
         with mock.patch('programme_requests68.result',return_value={'code':'NO_IMAGE','source':'placeholder'}):
             window.pump()
-        self.assertTrue(window.getControl(110).visible)
-        self.assertEqual(window.getControl(110).image,event['_fallback499'])
+        self.assertFalse(window.getControl(110).visible)
+        self.assertTrue(window.getControl(111).visible)
+        self.assertEqual(window.getControl(111).image,event['logo'])
         self.assertFalse(window.getControl(130).visible)
     def test_gui_intent_and_worker_preserve_concurrent_roles_and_coalesce_same_role(self):
         import importlib.util
