@@ -92,6 +92,15 @@ class MiniSaveUI474(unittest.TestCase):
   self.assertEqual(self.f.sources.configuration('p')['source_mappings48']['1'],dict(channel='xml',source=self.f.bid))
  def receipt(self):
   return self.f.binding.commit_verified(self.f.portal,'1','xml',self.f.bid,prepare=lambda:self.d.adapter96.prepare_saved(self.d.candidate,self.f.bid))
+ def test_threaded_save_after_preview_timeout_still_acknowledges_verified_write(self):
+  self.d._job_timedout482=True
+  submit=self.d.__class__._submit.__get__(self.d)
+  with mock.patch.object(self.d,'_submit',submit):
+   self.d.onClick(405)
+   self.d.future.result(timeout=2)
+   self.d.pump()
+  self.assertTrue(self.d.saved);self.assertTrue(self.d._closed)
+  self.assertEqual(self.f.sources.configuration('p')['source_mappings48']['1'],dict(channel='xml',source=self.f.bid))
  def test_unrelated_save_does_not_invalidate_exact_tuple_ack(self):
   receipt=self.receipt();self.f.binding.save(self.f.portal,'2','xml',self.f.aid)
   self.d._committed474(receipt)

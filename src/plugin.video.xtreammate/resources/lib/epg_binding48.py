@@ -263,7 +263,6 @@ def qualified_cache(cache,mappings,sid):
     if not selected:return cache
     cid=selected['channel'];source=selected['source']
     rows=cache.get(cid,[]) if isinstance(cache,dict) else []
-    if cid in getattr(cache,'provider_fallback',()):
-        source='provider'
+    allowed={source,'provider'} if cid in getattr(cache,'provider_fallback',()) else {source}
     return {cid:[row for row in rows if isinstance(row,dict) and
-        (row.get('source_key46') or row.get('epg_source46'))==source]}
+        (row.get('source_key46') or row.get('epg_source46')) in allowed]}

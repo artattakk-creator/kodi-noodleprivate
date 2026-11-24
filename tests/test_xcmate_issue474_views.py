@@ -142,6 +142,26 @@ class SourceViews474(unittest.TestCase):
         self.assertEqual(self.binding.binding(self.sources.configuration('p')['mappings'],'1'),
                          dict(channel='missing-agent',source='agent'))
 
+    def test_future_agent_slot_does_not_mask_current_provider_epg(self):
+        from epg_views import resolve_guide
+
+        self.binding.save(self.portal,'1','agent-test','agent')
+        mappings=self.sources.configuration('p')['mappings']
+        db=self.store.connect(write=True)
+        try:
+            with db:
+                db.execute("INSERT INTO guide44_inputs VALUES(?,?,?,?,?,?,?,?)",
+                           ('p','agent','agent-test',self.now+3600,self.now+5400,'Agent future','',1000))
+        finally:
+            db.close()
+        with mock.patch('epg_agent100.enabled',return_value=True):
+            view=self.local.window('p',self.rows,mappings,self.now,self.now+7200,text_only65=True)
+            result=resolve_guide(view,'xml','1',self.now,mappings=mappings)
+        self.assertEqual(result['now'],'Provider programme')
+        self.assertEqual(result['next'],'Agent future')
+        self.assertEqual(result['events'][0]['source_key46'],'provider')
+        self.assertEqual(result['events'][1]['source_key46'],'agent')
+
     def test_saving_cold_preview_does_not_replace_newer_exact_source_slot(self):
         from epg_candidate53 import publish
         from programme_index46 import window

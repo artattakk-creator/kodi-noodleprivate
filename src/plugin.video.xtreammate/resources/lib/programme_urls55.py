@@ -285,7 +285,11 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         if not own81:
             provisional85=__import__('programme_candidates85').suggestion(event)
             if provisional85:own81.append(provisional85)
-        yield from (__import__('hero_art86').expand(own81,event,cancel) if home86 else own81)
+        if home86:
+            from hero_art86 import expand,ordered
+            yield from ordered(expand(own81,event,cancel),[])
+        else:
+            yield from own81
         if not allow_lookup:
             if typed499:yield from (candidate for candidate in agent100 if candidate.get('role81')=='legacy_icon')
             yield from candidates

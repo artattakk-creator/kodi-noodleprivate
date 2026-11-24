@@ -47,12 +47,20 @@ def _read_binding(db,pid,channel,selected,start,stop,limit,*,strict=False,fallba
 
     cid=selected['channel'];source=selected['source']
     rows=read(db,pid,cid,source,start,stop,limit,strict=strict)
-    if not rows and source=='agent' and fallback and not strict:
+    instant=max(start,time.time())
+    need_now=instant<stop and not any(row['start_timestamp']<=instant<row['stop_timestamp'] for row in rows)
+    if source=='agent' and fallback and not strict and (not rows or need_now):
         for provider_id in reversed(channel_keys(channel,{})[1]):
-            rows=read(db,pid,provider_id,'provider',start,stop,limit)
-            if rows:
-                return provider_id,'provider',rows
-    return cid,source,rows
+            provider=read(db,pid,provider_id,'provider',start,stop,limit)
+            if not rows and provider:
+                return provider_id,'provider',provider,True
+            current=next((row for row in provider
+                          if row['start_timestamp']<=instant<row['stop_timestamp']),None)
+            if current:
+                current=dict(current,_canonical=provider_id,_fused52=True)
+                return cid,source,sorted([*rows,current],key=lambda row:row['start_timestamp']),True
+    return cid,source,rows,False
+
 
 def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,budget=.4,text_only65=False,strict48=False,provider_fallback=True):
     from epg_binding48 import view_mappings
@@ -95,9 +103,9 @@ def _full_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
                 from epg_binding48 import binding
                 selected48=binding(mappings,sid)
                 if selected48:
-                    cid,source48,values48=_read_binding(db,pid,channel,selected48,start,stop,limit,
+                    cid,source48,values48,used_provider=_read_binding(db,pid,channel,selected48,start,stop,limit,
                                                         strict=strict48,fallback=provider_fallback)
-                    if source48!=selected48['source']:sender.provider_fallback.add(ident)
+                    if used_provider:sender.provider_fallback.add(ident)
                     view.add(sid,ident,cid,values48)
                     tasks67.append((ident,cid,sid,source48,start,stop,limit))
                     continue
@@ -170,9 +178,9 @@ def _text_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
                 left=start;right=start+21*86400 if history and sid==focus_sid else stop
                 cap=256 if history and sid==focus_sid else min(256,limit)
                 if selected48:
-                    cid,source48,values=_read_binding(db,pid,channel,selected48,left,right,cap,
+                    cid,source48,values,used_provider=_read_binding(db,pid,channel,selected48,left,right,cap,
                                                        fallback=provider_fallback)
-                    if source48!=selected48['source']:sender.provider_fallback.add(ident)
+                    if used_provider:sender.provider_fallback.add(ident)
                 key=(str(sid),cid,source48,bool(mappings.get(sid)),right,cap)
                 if key in prepared:view.add(sid,ident,cid,prepared[key]);continue
                 if not selected48:
@@ -258,7 +266,7 @@ def _now_next89(pid,channels,mappings,now=None,client=None,display_only65=False)
         compatibility47=cache is None or getattr(cache,'code','')=='SHARED_LASTGOOD47'
         info=resolve_guide(cache if cache is not None else {},provider,sid,ts,client if compatibility47 else None,mappings)
         info['snapshot_revision']=cache.revision if cache is not None else None
-        info['canonical46']=getattr(for_channel(cache,sid),'canonical',{}).get(info.get('epg_id',''),'') if cache is not None else ''
+        info['canonical46']=getattr(for_channel(cache,sid),'canonical',{}).get(info.get('epg_id',''),info.get('epg_id','')) if cache is not None else ''
         from programme_snapshot47 import bind
         result[sid]=bind(pid,channel,info)
         if (not result[sid].get('now') and warm.get(sid) and warm[sid].get('now')

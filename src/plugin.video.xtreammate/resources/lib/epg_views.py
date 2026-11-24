@@ -80,6 +80,9 @@ def resolve_guide(cache, epg_id='', stream_id='', now=None, client=None, mapping
         result = guide_for_channel(qualified_cache(cache,mappings,sid), str(mapped), now=now)
         fallback=str(mapped) in getattr(cache,'provider_fallback',())
         result['epg_id'] = getattr(cache,'canonical',{}).get(str(mapped),str(mapped)) if fallback else str(mapped)
+        if fallback:
+            current=next((event for event in result['events'] if event['start']==result['start']),{})
+            result['epg_id']=current.get('_canonical') or result['epg_id']
         result['mapping'] = 'MANUAL_PROVIDER_FALLBACK' if fallback else 'MANUAL'
         if not result['events']: result['reason'] = 'MANUAL_ID_MISSING'
         return result

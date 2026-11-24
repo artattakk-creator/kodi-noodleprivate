@@ -267,6 +267,7 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
                     receipt['refresh_error']='MAPPING_RELOAD_FAILED'
                 return receipt
             self._saving53=True
+            self._job_timedout482=False
             accepted=self._submit(commit,self._committed474)
             if accepted is False:
                 self._saving53=False;self._save_error474('MAPPING_BUSY')

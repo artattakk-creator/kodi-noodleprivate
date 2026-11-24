@@ -63,6 +63,7 @@ def load(portal,channel,selected=None,now=None):
      if candidate['start']==int(selected.get('start',0)) and candidate['stop']==int(selected.get('stop',0)) and (not selected.get('title') or candidate['title']==selected['title']):event=candidate;break
     elif candidate['start']<=now<candidate['stop']:event=candidate;break
    if event is not None:
+    canonical=event.get('_canonical') or canonical
     source=event.get('source_key46')
     following=[dict(start=row['start_timestamp'],title=row['name']) for row in rows
                if row['start_timestamp']>=event['stop'] and
