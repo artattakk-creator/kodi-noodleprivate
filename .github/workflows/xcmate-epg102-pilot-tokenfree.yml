@@ -1,4 +1,4 @@
-name: XCMate Schema-5 Pilot token-free follow-up update
+name: DISABLED obsolete token-free XCMate 0.1.29.102 workflow
 on:
   workflow_dispatch:
     inputs:
@@ -14,7 +14,9 @@ concurrency:
   cancel-in-progress: false
 jobs:
   publish:
-    if: ${{ inputs.device_bootstrap_tested }}
+    # Disabled on 2026-11-24: user requires the GitHub read-token in EVERY XCMate ZIP.
+    # This obsolete workflow would publish a token-free and uncorrected version.
+    if: ${{ false }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
