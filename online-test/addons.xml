@@ -265,16 +265,17 @@
       <fanart>fanart.jpg</fanart>
     </assets>
   </extension>
-</addon><addon id="script.gsmedia.setup" name="XCMate Media Center Installer" version="0.5.30" provider-name="XCMate">
+</addon><addon id="script.gsmedia.setup" name="XCMate Media Center Installer" version="0.5.31" provider-name="XCMate">
   <requires><import addon="xbmc.python" version="3.0.0"/></requires>
   <extension point="xbmc.python.script" library="default.py"/>
   <extension point="xbmc.service" library="service.py" start="startup"/>
   <extension point="xbmc.addon.metadata">
-    <summary lang="de_DE">[RAW / TEST – NICHT GERÄTEGEPRÜFT] Vollständige Einrichtung für Kodi 21 Android und Kodi 22 LG webOS</summary>
-    <description lang="de_DE">48 Komponenten mit Kodi-nativer Installation und Fortsetzen nach Fehlern. Richtet BINGIE, XCMate-Widgets, Space Blue und die TMDB-Player-Kompatibilität ein.</description>
-    <summary lang="en_GB">[RAW TEST – DEVICE UNVERIFIED] Full setup for Kodi 21 Android and Kodi 22 LG webOS</summary>
-    <description lang="en_GB">48 components with Kodi-native installation and recovery. Configures BINGIE, XCMate widgets, Space Blue and TMDB player compatibility.</description>
-    <disclaimer lang="de_DE">Entwicklungskandidat. Die Geräteabnahme steht aus.</disclaimer>
+    <summary lang="de_DE">XCMate Vollautomatische Mediencenter-Einrichtung für Kodi 21 / 22 (Pilot)</summary>
+    <description lang="de_DE">Automatischer Installationskandidat für elf Pflichtprogramme und deren Abhängigkeiten. Nutzt Kodi-Repository-Installationen nach Zustimmung, gesichertes Fortschrittsjournal, BINGIE-2.2.3-Patch mit Original-Hashprüfung, Menüs/Widgets und TMDB-xVAULT-Player. Basis 0.5.26; XCMate ab 0.1.29.102 mit öffentlichem EPG. Kodi 22 und Geräteabnahme im Pilot offen.</description>
+    <summary lang="en_GB">XCMate Setup: guided eleven-addon installation candidate</summary>
+    <description lang="en_GB">Guided 11-addon installation with secure Kodi-native dependency upgrade helpers, retry recovery, repository prompts, private progress journal, pinned BINGIE patch and TMDB player configuration. Rebuilt from 0.5.26; Kodi 21/22 pilot. Native device acceptance pending.</description>
+    <disclaimer lang="de_DE">Entwicklungskandidat. Installationen und Skinänderungen erfolgen nur nach expliziter Zustimmung auf einer neuen Kodi-Box. Android-Abnahme fehlt; auf produktiven Boxen nicht ausführen.</disclaimer>
+    <news>0.5.31: Originalbasis 0.5.26, Kodi 21/22 Pilot, XCMate ab 0.1.29.102, öffentlicher EPG. Keine neue Pillow-ABI-Abschlussblockade. Physische Abnahme offen.</news>
     <platform>all</platform>
     <license>MIT (Wizard), GPL-2.0-only (bundled BINGIE source patch)</license>
   </extension>

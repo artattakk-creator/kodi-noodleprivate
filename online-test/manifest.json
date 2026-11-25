@@ -653,7 +653,7 @@
     "script.bingie.helper": "653b7391f5012a0a35867ec53e55045842efa02c4dca698ce8da0f5b39549358",
     "script.ezmaintenanceplus": "08a367b5fd1ee367ead4150b2364063a0760fe9fbf7506c20db845a0126cd2e6",
     "script.gsmedia.bingie.bootstrap": "6fa171c7d2e2071240f12302e5feb92546a206ddce88557462e274431ad14f04",
-    "script.gsmedia.setup": "5aa5d101a57adda5dbb1f5d05319da1ec185676dc784817b25dea267322ae0af",
+    "script.gsmedia.setup": "d98a7d9e7b521cb039ab5c9f7bec7094286c742eed813d2d2c3721bc9a690a2b",
     "script.gsmedia.skinshortcuts.bridge": "f84da5931a4159bbf82b78ecf6a05c0b2ce8a6e0c08ebf109d1554eb84d4f72c",
     "script.gsmedia.slyguy.bootstrap": "5c643097dad7e15728bc4c723b72cdd1c2fea67273bcf00cfec994db903d86e8",
     "script.gsmedia.upgrade.plugin.audio.m3sr2019": "d026dabe4e120c3b6b581a613db326ed6cc09458b8db536e158af4a0d753a5cb",
@@ -696,5 +696,32 @@
     "script.module.resolveurl": "28fb6b2340eccfb1337ba4421b6429aa1c8f2978834853d1229b42b2a947bc59",
     "script.module.resolveurl.xxx": "d8bceeae5d492cfa111843cdf71f8681f0c9050fbc0fdd2952f77afe49ea30d5",
     "script.skinshortcuts": "865ee5ea5bf0accee27b82539caabce1c8a9fbb8f94b2900fe5ace4f82c80b23"
+  },
+  "installer_0531": {
+    "version": "0.5.31",
+    "channel": "PILOT_NeoDark3",
+    "base_version": "0.5.26",
+    "base_commit": "dd284f5b3a43ee7406ec3cddcdb3c04cdfdb30a6",
+    "base_sha256": "5aa5d101a57adda5dbb1f5d05319da1ec185676dc784817b25dea267322ae0af",
+    "package_count": 48,
+    "files": 32,
+    "changed_members": [
+      "script.gsmedia.setup/README.md",
+      "script.gsmedia.setup/addon.xml",
+      "script.gsmedia.setup/default.py",
+      "script.gsmedia.setup/resources/lib/setup_auto50.py",
+      "script.gsmedia.setup/resources/lib/setup_auto_ui50.py",
+      "script.gsmedia.setup/resources/lib/setup_origin_guard52.py"
+    ],
+    "xcmate_minimum": "0.1.29.102",
+    "xcmate_source": "repository.gsmedia.pilot",
+    "public_epg": true,
+    "installer_sha256": "d98a7d9e7b521cb039ab5c9f7bec7094286c742eed813d2d2c3721bc9a690a2b",
+    "bytes": 158715,
+    "android_test": "NOT_TESTED",
+    "lg_webos_test": "NOT_TESTED",
+    "host_python_tests": "NOT_RUN",
+    "verification": "BASE_SHA256_AND_ALL_ENTRY_CRC_AND_ROUNDTRIP_PASS",
+    "regular_unchanged": true
   }
 }
