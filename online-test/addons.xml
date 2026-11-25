@@ -265,7 +265,7 @@
       <fanart>fanart.jpg</fanart>
     </assets>
   </extension>
-</addon><addon id="script.gsmedia.setup" name="XCMate Media Center Installer" version="0.5.29" provider-name="XCMate">
+</addon><addon id="script.gsmedia.setup" name="XCMate Media Center Installer" version="0.5.30" provider-name="XCMate">
   <requires><import addon="xbmc.python" version="3.0.0"/></requires>
   <extension point="xbmc.python.script" library="default.py"/>
   <extension point="xbmc.service" library="service.py" start="startup"/>
@@ -420,4 +420,4 @@
 		</assets>
 	</extension>
 </addon>
-</addons>
+<addon id="script.gsmedia.upgrade.plugin.video.xtreammate" name="XCMate Dependency Upgrade - plugin.video.xtreammate" version="0.1.0" provider-name="XCMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="plugin.video.xtreammate" version="0.1.29.102" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">One-time original dependency version resolver</summary><description lang="en_GB">First-party inert resolver: asks Kodi's native add-on dependency manager to select the original plugin.video.xtreammate at minimum 0.1.29.102. No user data modified.</description><platform>all</platform><license>MIT</license><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon></addons>
