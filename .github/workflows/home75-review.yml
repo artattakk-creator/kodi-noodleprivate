@@ -63,16 +63,22 @@ jobs:
           python tools/run_host94_contract.py -- python -m unittest discover -s tests -p '*02984.py' -v
       - name: Verify review ZIP exactly matches source
         run: |
-          python tools/package_xcmate71.py "${{ runner.temp }}/package75"
           candidate_version="$(python -c 'import xml.etree.ElementTree as E; print(E.parse("src/plugin.video.xtreammate/addon.xml").getroot().get("version"))')"
-          candidate_folder="media-spinner"
-          if [ "$candidate_version" = "0.1.29.91" ]; then candidate_folder="02991"; fi
-          if [ "$candidate_version" = "0.1.29.92" ]; then candidate_folder="02992"; fi
-          if [ "$candidate_version" = "0.1.29.93" ]; then candidate_folder="02993"; fi
-          if [ "$candidate_version" = "0.1.29.94" ]; then candidate_folder="02994"; fi
-          if [ "$candidate_version" = "0.1.29.95" ]; then candidate_folder="02995"; fi
-          if [ "$candidate_version" = "0.1.29.96" ]; then candidate_folder="02996"; fi
-          cmp "${{ runner.temp }}/package75/plugin.video.xtreammate-$candidate_version.zip" "docs/XCMate/test-builds/$candidate_folder/plugin.video.xtreammate-$candidate_version.zip"
+          package_dir="$RUNNER_TEMP/package75"
+          if [ "$candidate_version" = "0.1.29.102" ]; then
+            python tools/package_xcmate_public.py "$package_dir"
+            (cd "$package_dir" && sha256sum -c "plugin.video.xtreammate-$candidate_version.zip.sha256")
+          else
+            python tools/package_xcmate71.py "$package_dir"
+            candidate_folder="media-spinner"
+            if [ "$candidate_version" = "0.1.29.91" ]; then candidate_folder="02991"; fi
+            if [ "$candidate_version" = "0.1.29.92" ]; then candidate_folder="02992"; fi
+            if [ "$candidate_version" = "0.1.29.93" ]; then candidate_folder="02993"; fi
+            if [ "$candidate_version" = "0.1.29.94" ]; then candidate_folder="02994"; fi
+            if [ "$candidate_version" = "0.1.29.95" ]; then candidate_folder="02995"; fi
+            if [ "$candidate_version" = "0.1.29.96" ]; then candidate_folder="02996"; fi
+            cmp "$package_dir/plugin.video.xtreammate-$candidate_version.zip" "docs/XCMate/test-builds/$candidate_folder/plugin.video.xtreammate-$candidate_version.zip"
+          fi
           python tools/release_channel75.py
       - uses: actions/upload-artifact@v4
         if: always()
@@ -82,6 +88,7 @@ jobs:
             ${{ runner.temp }}/native75/*.json
             ${{ runner.temp }}/native75/*.png
             ${{ runner.temp }}/native75/probe.log
+            ${{ runner.temp }}/native75/container.log
             ${{ runner.temp }}/native75/restart*.log
             ${{ runner.temp }}/native75/post75-error.txt
             ${{ runner.temp }}/native75/gui-error.txt
