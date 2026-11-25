@@ -111,6 +111,73 @@ def probe(url,cancel=lambda:False,*,qualified_origin=False):
     return fetch() if final!=url and (not safe(final) or revoked(final)) else value
 
 
+def _contains_credentials(event, url):
+    from portals import get_by_id
+
+    portal = get_by_id(str(event.get('pid', ''))) or {}
+    path = unquote(urlsplit(url).path)
+    secrets = (str(portal.get(key) or '') for key in ('xc_user', 'xc_pass'))
+    return any(secret and (secret in path.split('/') or len(secret) >= 4 and secret in path)
+               for secret in secrets)
+
+
+def _resolve_person(event, requested, cancel, check):
+    import agent_programme100 as reference
+    from epg_agent100_art import validator
+    from media_sources43 import SourceError
+    from programme_mapping85 import current, epoch
+    from programme_policy68 import negative_scope
+    from sticky_art88 import publish89
+
+    if cancel():
+        return None
+    failure = dict(key=event['key'], code='NO_IMAGE', source='placeholder',
+                   until=time.time() + 300, policy69=negative_scope({}))
+    mapping = current(event)
+    if mapping and mapping.get('hidden'):
+        return failure
+    mapping_epoch = epoch(event)
+    prior = reference.read(event, requested)
+    if prior:
+        return prior
+    candidates = reference.candidates(event, requested)
+    if not candidates:
+        return failure
+    candidate = candidates[0]
+    url = candidate['url']
+    if not safe(url):
+        return dict(failure, code='BLOCKED_IMAGE_HOST_OR_URL')
+    if _contains_credentials(event, url):
+        return dict(failure, code='BLOCKED_CREDENTIAL_URL')
+    try:
+        if candidate['source'] == 'agent_xmltv' and check is None:
+            verified = probe(url, cancel=cancel, qualified_origin=True)
+        else:
+            verified = (check or probe)(url, cancel=cancel)
+    except SourceError as error:
+        return dict(failure, code=error.code)
+    if cancel():
+        return None
+    role = candidate['role81']
+    if not reference.image_shape(role, verified) or not verified.get('_body81'):
+        return dict(failure, code='NO_ARTWORK')
+    final = verified.get('url', url)
+    final_source = validator()(final)
+    if not safe(final) or not final_source or final_source['source'] != candidate['source']:
+        return dict(failure, code='BLOCKED_IMAGE_HOST_OR_URL')
+    if mapping_epoch != epoch(event) or reference.candidates(event, requested) != [candidate]:
+        return failure
+    value = dict(code='READY', source=candidate['source'], match='EXACT_EVENT', role81=role,
+                 source_url=final, attribution=candidate['attribution'],
+                 decoded77=True, image_width77=verified['width'], image_height77=verified['height'],
+                 mapping_epoch85=mapping_epoch)
+    value = publish89(event, value, verified['_body81'], shared=False)
+    if not value.get('decoded88'):
+        return dict(failure, code='FETCH_FAILED')
+    reference.remember(event, requested, value)
+    return value
+
+
 def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,local_image63=False,url_mode69=False):
     """Worker-only URL mode or explicit bounded materialization in the existing cache."""
     from programme_index46 import art,event as save_event
@@ -120,6 +187,8 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     from helper_rpc57 import Error as HelperError
     import agent_programme100 as roles499
     view499=roles499.view(event)
+    if view499 in roles499.PERSON_VIEWS:
+        return _resolve_person(event, view499, cancel, check)
     typed499=roles499.typed(event)
     home86=__import__('home_schedule75').applicable() and view499=='hero'
     def usable86(v):
@@ -350,11 +419,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         if not safe(url) and not new_origin75:
             trace77(event,'URL_SECURITY','BLOCKED');value['code']='BLOCKED_IMAGE_HOST_OR_URL';continue
         trace77(event,'URL_SECURITY','APPROVED')
-        from portals import get_by_id
-        portal=get_by_id(str(event.get('pid',''))) or {}
-        path=unquote(urlsplit(url).path)
-        secrets=[str(portal.get(k) or '') for k in ('xc_user','xc_pass')]
-        if any(secret and (secret in path.split('/') or len(secret)>=4 and secret in path) for secret in secrets):
+        if _contains_credentials(event,url):
             value['code']='BLOCKED_CREDENTIAL_URL';continue
         if home86 and not new_origin75:
             local86=__import__('hero_render86').recovered_candidate(event,candidate,url)
@@ -493,7 +558,7 @@ def enqueue(event,allow_lookup=False,local_image63=False,priority68=False,refere
         if not reference_only84 and __import__('home_schedule75').applicable():local_image63=False
         if priority68==2:_focus75=key
         from utils import setting_bool
-        if not reference_only84 and not local_image63 and not setting_bool('programme_art_local69',False):
+        if not reference_only84 and view499 not in roles499.PERSON_VIEWS and not local_image63 and not setting_bool('programme_art_local69',False):
             from programme_session69 import get as session69
             available69=session69(event)
             if available69 and (not roles499.fits(available69,view499) or roles499.typed(event)
@@ -554,6 +619,7 @@ def _run():
             except Exception:pass
             _wake.wait(.5);_wake.clear();continue
         key,job=pair;event,allow=job[:2];local63=len(job)>2 and job[2]
+        person=key[2] in __import__('agent_programme100').PERSON_VIEWS
         try:
             try:
                 from epg_handoff63 import profile_scope
@@ -577,13 +643,13 @@ def _run():
                 else:value=resolve(event,cancel=cancelled,allow_lookup=allow,url_mode69=True)
                 if not stopped69():
                     if time.monotonic()>deadline69:
-                        from programme_session69 import remember as failed69
-                        value=failed69(event,dict(key=event['key'],code='IMAGE_LOOKUP_TIMEOUT',source='placeholder',image=event['placeholder'],until=time.time()+60))
+                        value=dict(key=event['key'],code='IMAGE_LOOKUP_TIMEOUT',source='placeholder',image=event['placeholder'],until=time.time()+60)
+                        if not person:value=__import__('programme_session69').remember(event,value)
                     completed(event,value)
             except Exception as error482:
                 try:
-                    from programme_session69 import remember as failed69
-                    value=failed69(event,dict(key=event['key'],code=__import__('programme_state482').error(error482),source='placeholder',image=event['placeholder'],until=time.time()+60))
+                    value=dict(key=event['key'],code=__import__('programme_state482').error(error482),source='placeholder',image=event['placeholder'],until=time.time()+60)
+                    if not person:value=__import__('programme_session69').remember(event,value)
                     completed(event,value)
                 except (NameError,AttributeError,RuntimeError):pass
         finally:

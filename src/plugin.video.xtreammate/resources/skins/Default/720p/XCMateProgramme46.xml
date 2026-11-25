@@ -279,7 +279,7 @@
   </control>
   <control type="label" id="136">
    <left>764</left><top>382</top><width>446</width><height>26</height>
-   <label>[B]Bildmaterial[/B]</label>
+   <label>[B]Vorhandene Bildreferenzen[/B]</label>
    <font>font13</font>
    <textcolor>FFEAF0F8</textcolor>
   </control>
@@ -310,6 +310,46 @@
   </control>
   <control type="label" id="146">
    <left>957</left><top>322</top><width>215</width><height>27</height>
+   <align>center</align><font>font12</font><textcolor>FFBBC8D8</textcolor>
+  </control>
+  <control type="image" id="153">
+   <left>984</left><top>416</top><width>107</width><height>184</height>
+   <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
+  </control>
+  <control type="image" id="157">
+   <left>1097</left><top>416</top><width>107</width><height>184</height>
+   <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
+  </control>
+  <control type="image" id="150">
+   <left>984</left><top>422</top><width>107</width><height>126</height>
+   <aspectratio>keep</aspectratio>
+  </control>
+  <control type="image" id="154">
+   <left>1097</left><top>422</top><width>107</width><height>126</height>
+   <aspectratio>keep</aspectratio>
+  </control>
+  <control type="label" id="151">
+   <left>984</left><top>548</top><width>107</width><height>24</height>
+   <align>center</align><font>font12</font><textcolor>FFEAF0F8</textcolor>
+  </control>
+  <control type="label" id="155">
+   <left>1097</left><top>548</top><width>107</width><height>24</height>
+   <align>center</align><font>font12</font><textcolor>FFEAF0F8</textcolor>
+  </control>
+  <control type="label" id="152">
+   <left>984</left><top>574</top><width>107</width><height>22</height>
+   <align>center</align><font>font12</font><textcolor>FFBBC8D8</textcolor>
+  </control>
+  <control type="label" id="156">
+   <left>1097</left><top>574</top><width>107</width><height>22</height>
+   <align>center</align><font>font12</font><textcolor>FFBBC8D8</textcolor>
+  </control>
+  <control type="label" id="148">
+   <left>984</left><top>468</top><width>107</width><height>22</height>
+   <align>center</align><font>font12</font><textcolor>FFBBC8D8</textcolor>
+  </control>
+  <control type="label" id="149">
+   <left>1097</left><top>468</top><width>107</width><height>22</height>
    <align>center</align><font>font12</font><textcolor>FFBBC8D8</textcolor>
   </control>
   <control type="label" id="109">

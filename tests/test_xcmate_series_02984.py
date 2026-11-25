@@ -106,7 +106,8 @@ class Series84(Fixture,unittest.TestCase):
      window.pump();importlib.import_module('programme_widgets46').decorate(value,self.portal,channel,info)
     self.assertEqual(window.getControl(110).image,result['image']);self.assertTrue(window.getControl(110).visible)
     self.assertEqual(value['props']['XCMate.ProgrammeImage46'],result['image']);self.assertEqual(value['props']['XCMate.ProgrammeImageScope57'],'series_fallback')
-    self.assertEqual(value['art']['landscape'],result['image']);self.assertIn('Serienbild',window.getControl(105).text)
+    self.assertEqual(value['art']['landscape'],result['image'])
+    self.assertIn('Serienbild (kein Episodenbild)',window.getControl(105).label)
  def test_explicit_probe_uses_its_verified_candidate_without_a_second_metadata_search(self):
   import programme_probe84
   channel=dict(sid='1',name='Synthetic station')
