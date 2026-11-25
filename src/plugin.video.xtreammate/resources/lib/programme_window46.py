@@ -140,9 +140,17 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   synopsis=text(event.get('description'))
   cast=event.get('cast')
   names=[text(name).strip() for name in cast if isinstance(name,str) and name.strip()] if isinstance(cast,list) else []
+  channel_id=event.get('canonical')
+  if event.get('source_key46')=='agent':
+   origins=event.get('field_sources52') or {}
+   for field in ('xmltv_tmdb_id','agent_art','xmltv_title_lang','xmltv_date'):
+    origin=origins.get(field) or {}
+    if origin.get('source')=='agent' and origin.get('channel'):
+     channel_id=origin['channel'];break
   technical=[]
-  for key,label in (('channel','Sender'),('_source_label100','EPG-Quelle'),('canonical','EPG-Kanal-ID'),('xmltv_date','XMLTV-Datum'),('director','Regie')):
-   if event.get(key):technical.append(label+'   '+text(event[key]))
+  for value,label in ((event.get('channel'),'Sender'),(event.get('_source_label100'),'EPG-Quelle'),
+                      (channel_id,'EPG-Kanal-ID'),(event.get('xmltv_date'),'XMLTV-Datum'),(event.get('director'),'Regie')):
+   if value:technical.append(label+'   '+text(value))
   title_language=event.get('xmltv_title_lang')
   metadata_language=not event.get('language') and isinstance(title_language,str) and re.fullmatch(r'[a-z]{2,3}(?:-[a-z0-9]{2,8}){0,3}',title_language)
   if metadata_language:technical.append('Metadaten-Sprache   '+title_language.upper())

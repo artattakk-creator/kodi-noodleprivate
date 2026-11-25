@@ -51,3 +51,11 @@ class ProgrammeFeedFacts102(Fixture, unittest.TestCase):
         window._paint_facts(event)
         self.assertIn('Englisch', window.getControl(106).label)
         self.assertNotIn('Metadaten-Sprache', window.getControl(127).text)
+
+    def test_technical_channel_uses_the_exact_agent_source_channel(self):
+        window, event = self.window(canonical='1', source_key46='agent', field_sources52={
+            'xmltv_tmdb_id': {'source': 'external:other', 'channel': 'other.channel'},
+            'xmltv_title_lang': {'source': 'agent', 'channel': 's1.Comedy.Central.de'},
+        })
+        window._paint_facts(event)
+        self.assertIn('EPG-Kanal-ID   s1.Comedy.Central.de', window.getControl(127).text)
