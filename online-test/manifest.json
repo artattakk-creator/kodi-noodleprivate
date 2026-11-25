@@ -138,6 +138,31 @@
     "xcmate_sha256": "174b11acaf18cdbb4b532aef56c6d28658c3574a8bac982f458ebeb02698dcb9",
     "xcmate_source": "repository.gsmedia.pilot"
   },
+  "installer_0530": {
+    "android_test": "NOT_TESTED",
+    "base_version": "0.5.29",
+    "bridge_sha256": "f33ae412bcf3329457c6bb2e8a592915d2c3f16658fdb7eee21ac6f10bf70e40",
+    "bytes": 135197,
+    "changed_members": [
+      "script.gsmedia.setup/README.md",
+      "script.gsmedia.setup/addon.xml",
+      "script.gsmedia.setup/resources/lib/setup_auto50.py",
+      "script.gsmedia.setup/resources/lib/setup_auto_ui50.py",
+      "script.gsmedia.setup/resources/lib/setup_omega26.py",
+      "script.gsmedia.setup/resources/lib/setup_options27.py",
+      "script.gsmedia.setup/resources/lib/setup_origin_guard52.py"
+    ],
+    "channel": "PILOT_NeoDark3",
+    "installer_sha256": "20ff2a22ecea63d238b78c8ff478d5756c184720c8db0487159a9e317fd663b1",
+    "lg_webos_test": "NOT_TESTED",
+    "package_count": 48,
+    "public_epg": true,
+    "upgrade_bridge": "script.gsmedia.upgrade.plugin.video.xtreammate",
+    "version": "0.5.30",
+    "xcmate_minimum": "0.1.29.102",
+    "xcmate_sha256": "2c079e6c48ee027370b2a971b2ad942f12af19da0a2536ebed5e3563cdcd27ae",
+    "xcmate_source": "repository.gsmedia.pilot"
+  },
   "jurialmunkey": {
     "id": "script.module.jurialmunkey",
     "license": "GPL-3.0-or-later",
@@ -230,6 +255,7 @@
     "script.gsmedia.upgrade.plugin.program.autocompletion",
     "script.gsmedia.upgrade.plugin.video.cumination",
     "script.gsmedia.upgrade.plugin.video.themoviedb.helper",
+    "script.gsmedia.upgrade.plugin.video.xtreammate",
     "script.gsmedia.upgrade.plugin.video.youtube",
     "script.gsmedia.upgrade.repository.slyguy",
     "script.gsmedia.upgrade.resource.images.backgroundoverlays.basic",
