@@ -2,6 +2,7 @@
 from datetime import datetime, timezone
 import gzip
 import hashlib
+from http.client import HTTPException
 import json
 import os
 from pathlib import Path
@@ -105,7 +106,7 @@ def _open(path, token, opener=None, *, etag="", payload_ref=""):
         raise DeliveryError(failure, phase=phase, http_status=code) from None
     except DeliveryError:
         raise
-    except (OSError, ValueError, TimeoutError):
+    except (OSError, ValueError, HTTPException):
         raise DeliveryError("PRIVATE_ENDPOINT_NETWORK_ERROR") from None
 
 
@@ -120,7 +121,7 @@ def _consume(response, max_bytes, sink, cancel=lambda: False):
                 raise DeliveryError("PRIVATE_ENDPOINT_NETWORK_ERROR")
             try:
                 part = response.read(min(65536, max_bytes + 1 - total))
-            except (OSError, ValueError):
+            except (OSError, ValueError, HTTPException):
                 raise DeliveryError("PRIVATE_ENDPOINT_NETWORK_ERROR") from None
             if not part:
                 break

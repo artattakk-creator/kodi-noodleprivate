@@ -1,5 +1,6 @@
 """Anonymous, repository-scoped transport for the public Schema-5 EPG."""
 import hashlib
+from http.client import HTTPException
 import json
 import os
 from pathlib import Path
@@ -57,7 +58,7 @@ def _open(url, opener, phase, etag=""):
         raise DeliveryError("PUBLIC_ENDPOINT_HTTP_ERROR", phase=phase, http_status=status) from None
     except DeliveryError:
         raise
-    except OSError:
+    except (OSError, HTTPException):
         raise DeliveryError("PUBLIC_ENDPOINT_NETWORK_ERROR", phase=phase) from None
 
 

@@ -2,6 +2,7 @@
 from contextlib import contextmanager
 import gzip
 import hashlib
+from http.client import IncompleteRead
 import io
 import json
 from pathlib import Path
@@ -167,6 +168,41 @@ class PublicAgentTest(unittest.TestCase):
                     stage_public_candidate(Path(temp), opener=fixture)
                 self.assertEqual(raised.exception.code, code)
                 self.assertEqual(list(Path(temp).iterdir()), [])
+
+    def test_interrupted_response_backs_off_and_preserves_last_good(self):
+        from epg_agent100 import cycle
+        from epg_agent_public import stage_public_candidate
+
+        class InterruptedBody(io.BytesIO):
+            status = 200
+            headers = {}
+            def read(self, size=-1):
+                raise IncompleteRead(b"", size)
+
+        fixture = Transport(*public_manifest())
+        with tempfile.TemporaryDirectory() as temp, self.fresh_profile(temp):
+            root = Path(temp)
+            def fetch(path, **opts):
+                return stage_public_candidate(path, opener=fixture, **opts)
+            def run(now):
+                return cycle(root, None, [{"id": "test"}], now=now, fetch=fetch,
+                             install=lambda *_: dict(code="READY", verified=1), public=True)
+            first = run(100_000)
+            fixture.manifest, fixture.assets = public_manifest(xml=XMLTV.replace(b"Nachrichten", b"Regional"))
+            open_response = fixture.open
+            def open_interrupted(req, timeout):
+                response = open_response(req, timeout)
+                if req.full_url == MANIFEST:
+                    return response
+                response.close()
+                return InterruptedBody()
+            fixture.open = open_interrupted
+            failed = run(186_400)
+            self.assertEqual(failed["code"], "PUBLIC_ENDPOINT_NETWORK_ERROR")
+            self.assertEqual(failed["next_check"], 187_300)
+            self.assertEqual(failed["portals"], first["portals"])
+            run(186_401)
+            self.assertEqual(len(fixture.urls), 4)
 
     def test_explicit_settings_are_kept_when_updating(self):
         from epg_agent_hub5 import selection

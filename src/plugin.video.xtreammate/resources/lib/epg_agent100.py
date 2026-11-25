@@ -151,6 +151,8 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
             current.update(last_checked=0, next_check=0, code="CANCELLED")
         except OSError:
             _failed(current, now, "STORAGE_ERROR")
+        except MemoryError:
+            _failed(current, now, "MEMORY_PRESSURE")
         else:
             current.update(remote_failures=0, remote_phase="", remote_http_status=None,
                            last_successful_check=now, remote_reason="")
@@ -200,6 +202,8 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
         _save(directory, current)
         try:
             result = install(portal, folder, cancel)
+        except MemoryError:
+            result = dict(code="MEMORY_PRESSURE")
         except (DeliveryError, OSError, ValueError, sqlite3.Error) as exc:
             result = dict(code=exc.code if isinstance(exc, DeliveryError) else "IMPORT_ERROR")
         if result["code"] in SUCCESS and result.get("verified", 0) > 0:

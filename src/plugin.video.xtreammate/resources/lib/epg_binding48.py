@@ -22,10 +22,9 @@ def sources(portal):
     result=[dict(id='provider',name='Anbieter-EPG / Xtream')]
     for rank,source in enumerate(configuration(portal['id'])['sources'],1):
         if source.get('enabled',True):result.append(dict(id=source_id(source,rank),name=str(source.get('name') or 'XMLTV')[:160]))
-    from epg_agent100 import installed_source
-    agent = installed_source(portal['id'])
-    if agent:
-        result.append(dict(id=agent['id'], name=agent['name']))
+    from epg_agent100 import enabled, SOURCE_ID, SOURCE_NAME
+    if enabled():
+        result.append(dict(id=SOURCE_ID, name=SOURCE_NAME))
     return result
 
 

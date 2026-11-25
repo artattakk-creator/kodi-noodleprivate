@@ -166,4 +166,9 @@ def source_rows(portal):
     except (sqlite3.Error,OSError,ValueError) as error:code=failure(error)
     finally:
         if db is not None:db.close()
-    return [dict(row,local_count=counts.get(row['id']),local_code=code if row['id'] in counts else code if code!='READY' else 'NO_LOCAL_INDEX') for row in rows]
+    from epg_agent100 import SOURCE_ID
+    # A pending agent cannot supply a preview. Preserve the configured source
+    # for saved bindings, and offer it here whenever retained data is present.
+    return [dict(row, local_count=counts.get(row['id']),
+                 local_code=code if row['id'] in counts or code!='READY' else 'NO_LOCAL_INDEX')
+            for row in rows if row['id']!=SOURCE_ID or counts.get(SOURCE_ID, 0)>0]
