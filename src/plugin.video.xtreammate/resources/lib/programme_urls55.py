@@ -363,41 +363,47 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             if typed499:yield from (candidate for candidate in agent100 if candidate.get('role81')=='legacy_icon')
             yield from candidates
             return
-        deferred=[];fallback_sources=[]
+        from programme_outcomes70 import add as outcome70
 
+        def alternatives(found):
+            yield found
+            for alternate in found.get('alternate_urls57',[])[:2]:
+                yield dict(found,url=alternate)
+
+        def read_supplier(find,source70,deferred):
+            started=time.monotonic()
+            try:found=find()
+            except (SourceError,HelperError) as exc:
+                outcome70(value,source70,exc.code,event);failed(exc.code);return
+            outcome70(value,source70,'FOUND' if found else 'DISABLED' if source70=='tmdb' and not value['lookup70']['own'] else 'NO_CONFIRMED_IMAGE',event)
+            if not found:return
+            if found.get('source')=='tmdb_helper':source_trace(event,'HELPER_LOOKUP_OK',duration_ms=(time.monotonic()-started)*1000)
+            fallback=found.get('series_fallback57')
+            if isinstance(fallback,dict):deferred.append(fallback)
+            if event.get('season') and event.get('episode') and found.get('image_scope57')=='series_fallback':
+                deferred.append(found);return
+            yield from alternatives(found)
+
+        deferred=[];fallback_sources=[]
         steps=[lambda:match(event,cancel=cancel)] if match else attempts(event,cancel,critical80=not bool(event.get('helper_explicit80')))
         for find in steps:
             if cancel():return
-            started=time.monotonic()
-            from programme_outcomes70 import add as outcome70
             source70=getattr(find,'source70','injected')
             if source70=='tmdb' and attempted81:continue
-            if source70 not in ('tmdb','tvmaze','injected'):
-                fallback_sources.append(find)
-                continue
-            try:found=find()
-            except (SourceError,HelperError) as exc:
-                outcome70(value,source70,exc.code,event);failed(exc.code);continue
-            outcome70(value,source70,'FOUND' if found else 'DISABLED' if source70=='tmdb' and not value['lookup70']['own'] else 'NO_CONFIRMED_IMAGE',event)
-            if found:
-                if found.get('source')=='tmdb_helper':source_trace(event,'HELPER_LOOKUP_OK',duration_ms=(time.monotonic()-started)*1000)
-                fallback=found.get('series_fallback57')
-                if isinstance(fallback,dict):deferred.append(fallback)
-                if event.get('season') and event.get('episode') and found.get('image_scope57')=='series_fallback':
-                    deferred.append(found);continue
-                yield found
-                for alternate in found.get('alternate_urls57',[])[:2]:yield dict(found,url=alternate)
+            if source70 in ('tmdb','tvmaze','injected'):
+                yield from read_supplier(find,source70,deferred)
+            else:
+                fallback_sources.append((find,source70))
         for found in deferred:  # generic series art never masks an exact still
-            yield found
-            for alternate in found.get('alternate_urls57',[])[:2]:yield dict(found,url=alternate)
+            yield from alternatives(found)
         if typed499:yield from (candidate for candidate in agent100 if candidate.get('role81')=='legacy_icon')
         yield from candidates
-        for find in fallback_sources:
+        deferred=[]
+        for find,source70 in fallback_sources:
             if cancel():return
-            try:found=find()
-            except (SourceError,HelperError) as exc:
-                failed(exc.code);continue
-            if found:yield found
+            yield from read_supplier(find,source70,deferred)
+        for found in deferred:
+            yield from alternatives(found)
         from programme_match46 import diagnose
         from programme_sources57 import unsuitable69
         if unsuitable69(event):failed('NO_UNIQUE_MATCH')
