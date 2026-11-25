@@ -281,3 +281,59 @@ class PublicSQLiteImportTest(Fixture, unittest.TestCase):
             self.assertEqual(guide.execute(
                 "SELECT source_id,title FROM guide44_inputs WHERE pid='p'").fetchall(),
                 [("agent", "Public fixture")])
+
+    def test_public_refresh_verifies_a_backup_of_an_existing_current_guide(self):
+        import sqlite3
+        import time
+
+        from epg_agent100 import cycle
+        from epg_agent_public import stage_public_candidate
+        from epg_gate95 import inspect
+        from guide_store import import_cache, path
+
+        now = int(time.time())
+        def stamp(value):
+            return time.strftime("%Y%m%d%H%M%S +0000", time.gmtime(value))
+        xml = (f'<tv><channel id="xml"><display-name>House of Dragon TV</display-name></channel>'
+               f'<programme channel="xml" start="{stamp(now-60)}" stop="{stamp(now+3600)}">'
+               '<title>Public fixture</title></programme></tv>').encode()
+        self.assertTrue(import_cache('p', {'provider': [dict(channel='provider', name='Provider fixture',
+            start_timestamp=now-60, stop_timestamp=now+3600)]}, trusted_feed=True))
+        self.assertEqual(inspect(path())['code'], 'DB_AUTHORIZATION_MISSING')
+        transport = Transport(*public_manifest(xml=xml))
+        def fetch(root, **opts):
+            return stage_public_candidate(root, opener=transport, **opts)
+
+        with patch.dict(sys.modules):
+            for name in ('epg', 'epg_sources', 'epg_status'):
+                sys.modules.pop(name, None)
+            monitor = types.SimpleNamespace(abortRequested=lambda: False)
+            with patch.object(sys.modules['xbmc'], 'Monitor', return_value=monitor):
+                root = self.folder/'epg-agent'
+                first = cycle(root, None, [self.portal], fetch=fetch, public=True)
+                self.assertEqual(first['code'], 'CURRENT', first)
+                self.assertEqual(inspect(path())['code'], 'IMPORT_AUTHORIZED')
+                backups = list((self.folder/'guide_backups44').glob('*.sqlite'))
+                self.assertEqual(len(backups), 1)
+                with sqlite3.connect(backups[0]) as backup:
+                    self.assertEqual(backup.execute("SELECT title FROM programmes").fetchall(),
+                                     [('Provider fixture',)])
+
+                transport.manifest, transport.assets = public_manifest(xml=xml.replace(
+                    b'Public fixture', b'Public refresh'))
+                second = cycle(root, None, [self.portal], now=now+86401, fetch=fetch, public=True)
+                self.assertEqual(second['code'], 'CURRENT', second)
+                self.assertNotEqual(first['generation'], second['generation'])
+                self.assertEqual(list((self.folder/'guide_backups44').glob('*.sqlite')), backups)
+
+                with backups[0].open('ab') as damaged:
+                    damaged.write(b'corruption')
+                transport.manifest, transport.assets = public_manifest(xml=xml.replace(
+                    b'Public fixture', b'Unverified refresh'))
+                failed = cycle(root, None, [self.portal], now=now+172802, fetch=fetch, public=True)
+                self.assertEqual(failed['portals']['p']['code'], 'BACKUP_RECEIPT_MISMATCH')
+                self.assertEqual(failed['portals']['p']['generation'], second['generation'])
+        with sqlite3.connect(path()) as guide:
+            self.assertEqual(guide.execute("SELECT source_id,title FROM guide44_inputs WHERE pid='p'"
+                                           " ORDER BY source_id").fetchall(),
+                             [('agent', 'Public refresh'), ('provider', 'Provider fixture')])

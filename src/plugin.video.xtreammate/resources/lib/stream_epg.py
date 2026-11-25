@@ -331,7 +331,13 @@ def refresh(portal,force=False,cancel=lambda:False):
 def _refresh44(portal,force=False,cancel=lambda:False):
     from guide_store import path as guide_path46
     from epg_gate46 import access as refresh_access46
-    state46=refresh_access46(guide_path46())
+    filename=guide_path46()
+    state46=refresh_access46(filename)
+    if (state46 == 'DB_AUTHORIZATION_MISSING' and portal.get('epg_show', True)
+            and (portal.get('_agent_source') or {}).get('_agent_public102') and not cancel()):
+        from guide_backup44 import authorize
+        authorize(filename, cancel, current_schema_only=True)
+        state46=refresh_access46(filename)
     if state46 not in ('READY','NOT_CREATED'):
         from epg_status import update
         update(portal['id'],'refresh',state46,running=False)
