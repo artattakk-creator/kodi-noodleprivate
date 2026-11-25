@@ -1,0 +1,43 @@
+name: GS Media Setup 0.5.30 verified Pilot candidate
+on:
+  push:
+    branches: [release/gsmedia-setup-0530-xcmate102]
+    paths:
+      - 'tools/build_gsmedia_setup_0530.py'
+      - '.github/workflows/gsmedia-0530-candidate.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: gsmedia-0530-candidate
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: release/gsmedia-setup-0530-xcmate102
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Build and test exact packages
+        run: python tools/build_gsmedia_setup_0530.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: GS-Media-Setup-0.5.30-verified-candidate
+          path: |
+            online-test/script.gsmedia.setup-0.5.30.zip
+            online-test/script.gsmedia.setup-0.5.30.zip.sha256
+            online-test/script.gsmedia.upgrade.plugin.video.xtreammate/*.zip
+            online-test/script.gsmedia.upgrade.plugin.video.xtreammate/*.sha256
+          if-no-files-found: error
+      - name: Commit validated candidate to isolated branch only
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add online-test/addons.xml online-test/addons.xml.md5 online-test/index.html online-test/manifest.json online-test/script.gsmedia.setup-0.5.30.zip online-test/script.gsmedia.setup-0.5.30.zip.sha256 online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.30.zip online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.30.zip.sha256 online-test/script.gsmedia.upgrade.plugin.video.xtreammate/
+          git commit -m 'build(pilot): verified GS Media Setup 0.5.30 candidate'
+          git push origin HEAD:release/gsmedia-setup-0530-xcmate102
