@@ -1,4 +1,4 @@
-"""Optional GitHub Agent in the shared Kodi EPG scheduler and profile."""
+"""GitHub EPG delivery and verified import receipts in the Kodi profile."""
 import json
 import shutil
 from pathlib import Path
@@ -14,6 +14,7 @@ SOURCE_RANK = 1000
 RETRY_INTERVAL = 15 * 60
 SETTING = "epg_agent_enabled"
 REQUEST = "XCMate.EPGAgent.Request"
+FORCE = "XCMate.EPGAgent.Force"
 STATE_LIMIT = 64 * 1024
 SUCCESS = {"READY", "PARTIAL_PRESERVED"}
 
@@ -21,6 +22,11 @@ SUCCESS = {"READY", "PARTIAL_PRESERVED"}
 def enabled():
     from utils import setting_bool
     return setting_bool(SETTING, True)
+
+
+def use_private():
+    from utils import setting_bool
+    return setting_bool("epg_agent_private", False)
 
 
 def profile():
@@ -49,16 +55,20 @@ def _save(directory, record):
     atomic(directory / "status.json", record)
 
 
-def request_check():
+def request_check(*, force=False):
     """Ask the existing service to check once, without a request on the GUI."""
     import xbmcgui
-    xbmcgui.Window(10000).setProperty(REQUEST, str(time.time()))
+    window = xbmcgui.Window(10000)
+    stamp = str(time.time())
+    if force:
+        window.setProperty(FORCE, stamp)
+    window.setProperty(REQUEST, stamp)
 
 
-def _request_time():
+def _request_time(key=REQUEST):
     import xbmcgui
     try:
-        return float(xbmcgui.Window(10000).getProperty(REQUEST) or 0)
+        return float(xbmcgui.Window(10000).getProperty(key) or 0)
     except ValueError:
         return 0
 
@@ -68,7 +78,7 @@ def _due(record, now):
     checked = record.get("last_checked", 0)
     if not checked or now < checked or record.get("code") == "CHECKING":
         return True
-    if record.get("remote_failures"):
+    if record.get("remote_failures") or record.get("remote") == "PUBLIC_PENDING":
         return now >= record.get("next_check", checked)
     return agent_due(checked, now)
 
@@ -82,7 +92,7 @@ def _failed(record, now, code, *, phase="", http_status=None):
 
 
 def cycle(directory, token_path, portals, *, now=None, request=0,
-          fetch=stage_full_candidate, install=None, cancel=lambda: False):
+          fetch=None, install=None, cancel=lambda: False, public=False, force=False):
     """Persist manifest outcomes and only advance a portal after verified readback."""
     if install is None:
         from epg_agent100_import import install
@@ -90,28 +100,51 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
     current = state(directory)
     if not portals or cancel():
         return current
+    transport = "public" if public else "private"
+    if current.get("transport", "private") != transport:
+        # Cached proofs remain usable while the newly selected endpoint is checked.
+        for key in ("etag", "remote", "remote_failures", "available_profiles",
+                    "last_checked", "last_successful_check", "manifest_revision"):
+            current.pop(key, None)
+    current["transport"] = transport
     manual = current.get("request", 0) < request <= now
     if manual:
         current["request"] = request
     if manual or _due(current, now):
-        current.update(last_checked=now, next_check=now + AGENT_INTERVAL, code="CHECKING")
+        current.update(last_checked=now, next_check=now + AGENT_INTERVAL, code="CHECKING",
+                       download_bytes=0, download_total=0)
         _save(directory, current)
         # A region or picture-mode change needs a fresh manifest even when
         # its HTTP ETag has not changed. Otherwise 304 masks that selection.
-        fetch_etag = current.get("etag", "")
+        fetch_etag = "" if manual and force else current.get("etag", "")
         if current.get("available_profiles"):
             from epg_agent_hub5 import selection
-            desired, picture_mode = selection(directory)
+            desired, picture_mode = selection(directory, public=public)
             if ("all" in desired):
                 desired = ("all",)
             if (list(desired) != current.get("selected_profiles") or
                     picture_mode != current.get("selected_variant", "artwork")):
                 fetch_etag = ""
+        next_progress = 0
+        def progress(done, total):
+            nonlocal next_progress
+            tick = time.monotonic()
+            if tick >= next_progress or done == total:
+                current.update(download_bytes=done, download_total=total)
+                _save(directory, current)
+                next_progress = tick + 2
+
         try:
-            from epg_agent_token_bootstrap import fetch_with_recovery
-            payload = fetch_with_recovery(fetch, directory, token_path,
-                                          known=current.get("generation", ""),
-                                          etag=fetch_etag, cancel=cancel)
+            options = dict(known=current.get("generation", ""), etag=fetch_etag, cancel=cancel)
+            if public:
+                from epg_agent_public import stage_public_candidate
+                payload = (fetch or stage_public_candidate)(directory, progress=progress, **options)
+            else:
+                from epg_agent_token_bootstrap import ensure_local_token, fetch_with_recovery
+                if token_path is None:
+                    token_path = ensure_local_token(directory)
+                payload = fetch_with_recovery(fetch or stage_full_candidate, directory,
+                                              token_path, **options)
         except DeliveryError as exc:
             _failed(current, now, exc.code, phase=exc.phase, http_status=exc.http_status)
         except InterruptedError:
@@ -119,7 +152,10 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
         except OSError:
             _failed(current, now, "STORAGE_ERROR")
         else:
-            current.update(remote_failures=0, remote_phase="", remote_http_status=None)
+            current.update(remote_failures=0, remote_phase="", remote_http_status=None,
+                           last_successful_check=now, remote_reason="")
+            if payload.get("revision"):
+                current["manifest_revision"] = payload["revision"]
             status = payload["status"]
             if "available_profiles" in payload:
                 current["available_profiles"] = payload["available_profiles"]
@@ -135,8 +171,11 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
                                image_counts=payload.get("image_counts", {}), etag=payload["etag"])
             elif status == "NOT_MODIFIED":
                 current.update(remote="AVAILABLE", etag=payload["etag"])
-            elif status == "PRIVATE_PENDING":
-                current.update(remote=status, code=status, etag="", remote_reason=payload.get("reason", ""))
+            elif status in ("PRIVATE_PENDING", "PUBLIC_PENDING", "NO_PROFILE_SELECTED"):
+                current.update(remote=status, code=status, etag="",
+                               remote_reason=payload.get("reason", ""))
+                if status == "PUBLIC_PENDING":
+                    current["next_check"] = now + RETRY_INTERVAL
         _save(directory, current)
     if current.get("remote") != "AVAILABLE" or cancel():
         return current
@@ -210,20 +249,21 @@ def installed_source(pid):
 
 
 def run(portals, cancel):
-    from wizard_epg54 import pending
     eligible = [p for p in portals if p.get("include_live", True) and
-                p.get("epg_show", True) and not pending(p)]
+                p.get("epg_show", True)]
     if not eligible or not enabled() or cancel():
         return
     directory = profile()
     now = time.time()
     request = _request_time()
     record = state(directory)
+    public = not use_private()
     generation = record.get("generation")
     receipts = record.get("portals", {})
     pending_import = record.get("remote") == "AVAILABLE" and any(
         receipts.get(str(p["id"]), {}).get("generation") != generation for p in eligible)
     if (_due(record, now) or request > record.get("request", 0)
+            or record.get("transport", "private") != ("public" if public else "private")
             or pending_import or record.get("code") in ("IMPORTING", "CHECKING")):
         next_consent = 0
         consent = True
@@ -234,18 +274,9 @@ def run(portals, cancel):
                 return True
             tick = time.monotonic()
             if tick >= next_consent:
-                consent = enabled()
+                consent = enabled() and public != use_private()
                 next_consent = tick + .1
             return not consent
 
-        from epg_agent_token_bootstrap import ensure_local_token
-        try:
-            token_path = ensure_local_token(directory)
-        except (DeliveryError, OSError) as exc:
-            if record.get("request", 0) < request <= now:
-                record["request"] = request
-            _failed(record, now, getattr(exc, "code", "STORAGE_ERROR"))
-            _save(directory, record)
-            return
-        cycle(directory, token_path, eligible, now=now,
-              request=request, cancel=cancelled)
+        cycle(directory, None, eligible, now=now, request=request,
+              cancel=cancelled, public=public, force=bool(request and request == _request_time(FORCE)))

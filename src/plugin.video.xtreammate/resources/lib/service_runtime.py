@@ -6,8 +6,11 @@ from functools import wraps
 _stop=threading.Event();_local=threading.local();_service=False;_pressure=0
 _lock=threading.RLock();_calls=0;_reads=0;_bytes=0;_oom=0;_errors=0;_callers={}
 _last_emit=0
+_portal_ready=False
+_next_portal_probe=0
+_portal_probe_lock=threading.Lock()
 _sockets=weakref.WeakSet()
-CALLERS={'service':'SERVICE','app_services':'LIBRARY','art_store':'ART_SCAN','startup_preload':'STARTUP',
+CALLERS={'service_runtime':'SERVICE','genre_search':'GENRE','widget_fast69':'WIDGET','service':'SERVICE','app_services':'LIBRARY','art_store':'ART_SCAN','startup_preload':'STARTUP',
          'xtream':'PROVIDER','catalog_sync':'CATALOG','app_routes':'ROUTE','main':'ROUTE',
          'live_recovery':'LIVE','live_overlay':'LIVE','source_live':'LIVE','search_live':'SEARCH',
          'download_sources':'DOWNLOAD','capture_service':'RECORD','epg':'EPG'}
@@ -16,6 +19,29 @@ CALLERS={'service':'SERVICE','app_services':'LIBRARY','art_store':'ART_SCAN','st
 def install():
     global _service
     _service=True
+
+
+def portals_ready():
+    """Share a small, time-bounded portal presence probe across service workers."""
+    global _portal_ready, _next_portal_probe
+    now = time.monotonic()
+    if now < _next_portal_probe:
+        return _portal_ready
+    with _portal_probe_lock:
+        if now < _next_portal_probe:
+            return _portal_ready
+        from portals import get_active, PortalReadError
+        from startup48 import mark
+        try:
+            ready = bool(get_active())
+        except PortalReadError:
+            mark('BACKGROUND', 'UNAVAILABLE')
+            ready = False
+        if ready != _portal_ready or not _next_portal_probe:
+            mark('BACKGROUND', 'READY' if ready else 'NO_PORTAL')
+        _portal_ready = ready
+        _next_portal_probe = now + 5
+        return ready
 
 
 def portal_call():

@@ -55,9 +55,10 @@
     <setting id="programme_tmdb46" type="bool" label="36110" default="false" visible="false"/>
     <setting id="programme_image_hosts55" type="text" label="36530" default=""/>
     <setting id="epg_agent_enabled" type="bool" label="39101" default="true" visible="false" />
+    <setting id="epg_agent_private" type="bool" default="false" visible="false" />
     <setting id="epg_agent_country_all" type="bool" label="EPG-Agent: Alle Länder" default="false" visible="false" />
     <setting id="epg_agent_country_de" type="bool" label="EPG-Agent: Deutschland" default="true" visible="false" />
-    <setting id="epg_agent_country_at" type="bool" label="EPG-Agent: Österreich" default="true" visible="false" />
+    <setting id="epg_agent_country_at" type="bool" label="EPG-Agent: Österreich" default="false" visible="false" />
     <setting id="epg_agent_status" type="action" label="39100" action="RunPlugin(plugin://plugin.video.xtreammate/?action=epg_agent100)" />
     <setting id="epg_sources_manager" type="action" label="XCMate: EPG-Quellen und Senderzuordnung" action="RunPlugin(plugin://plugin.video.xtreammate/?action=epg_sources)" />
     <setting id="epg_enabled" type="bool" label="32236" default="true" />

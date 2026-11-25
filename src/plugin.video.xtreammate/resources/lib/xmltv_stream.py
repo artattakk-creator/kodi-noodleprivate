@@ -8,7 +8,7 @@ import datetime
 import gzip
 import re
 import time
-from urllib.parse import urlsplit
+from urllib.parse import parse_qsl, urlsplit
 from xml.parsers import expat
 from epg_io import XMLTVLimitError
 
@@ -45,6 +45,21 @@ def _image_attributes(attributes,strict):
             or system and not _SYSTEM.fullmatch(system)):
         return _invalid_image(strict)
     return {key:attributes.get(key,'') for key in ('type','orient','size','system')}
+
+
+def _reject_credentials(value):
+    if not value.startswith(('http://','https://')):
+        return
+    try:
+        parsed=urlsplit(value)
+        keys={re.sub(r'[^a-z0-9]', '', key.lower())
+              for key, _ in parse_qsl(parsed.query, max_num_fields=64)}
+    except ValueError:
+        raise UnsafeXMLTV('Invalid public XMLTV URL') from None
+    if (parsed.username is not None or parsed.password is not None or
+            keys & {'username','user','password','passwd','token','accesstoken',
+                    'apikey','auth','authorization','xamzcredential','xamzsignature'}):
+        raise UnsafeXMLTV('Credentials in public XMLTV URL')
 
 
 def _image_url(value,strict):
@@ -93,7 +108,7 @@ class PrefixReader:
 
 
 def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None,progress=None,include_icons=False,
-          *,include_images=False,channel_image=None,strict_images=False):
+          *,include_images=False,channel_image=None,strict_images=False,reject_credentials=False):
     stream=PrefixReader(stream)
     data=gzip.GzipFile(fileobj=stream) if stream.prefix==b'\x1f\x8b' else stream
     parser=expat.ParserCreate()
@@ -126,6 +141,9 @@ def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None,pr
         if not stack and tag!='tv': raise XMLTVSyntaxError('Expected XMLTV tv root')
         stack.append(tag)
         direct=len(stack)==3
+        if reject_credentials:
+            for value in attributes.values():
+                _reject_credentials(value)
         if strict_images and tag=='image' and not (direct and stack[1]=='programme'):
             _invalid_image(True)
         if len(stack)==2 and tag in ('channel','programme'):
@@ -162,6 +180,8 @@ def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None,pr
         nonlocal record,text,text_length,picture
         if record is not None:
             value=''.join(text).strip()[:4096]
+            if reject_credentials and tag in ('image','url'):
+                _reject_credentials(value)
             if picture is not None and len(stack)==3 and tag==picture['tag']:
                 fields=picture['fields']
                 picture=None
@@ -175,7 +195,7 @@ def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None,pr
                     else:
                         if not record.get('icon'):record['icon']=fields['url']
                         if include_icons:record.setdefault('icons',[]).append(fields['url'])
-            if tag in ('display-name','title','sub-title','date','desc','category','country') and tag not in record: record[tag]=value
+            if tag in ('display-name','title','sub-title','date','desc','category','country','language') and tag not in record: record[tag]=value
             if tag=='value' and stack[-3:]==['programme','rating','value'] and value and 'rating' not in record:
                 record['rating']=value[:32]
                 record['rating_system']=record.get('_rating_system','')
@@ -198,7 +218,9 @@ def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None,pr
                 elif tag=='programme':
                     try:
                         begin=timestamp(record.get('start'));stop=timestamp(record.get('stop'))
-                        if stop<=begin or not record.get('channel'): raise ValueError('Invalid interval')
+                        if (stop<=begin or not record.get('channel') or
+                                reject_credentials and stop-begin>72*3600):
+                            raise ValueError('Invalid interval')
                     except (ValueError,OverflowError,TypeError): counts['skipped']+=1
                     else:
                         counts['programmes']+=1
@@ -210,7 +232,8 @@ def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None,pr
                             season=record.get('season'),episode_number=record.get('episode_number'))
                         if include_icons:event['icons']=record.get('icons',[])
                         if include_images:event['images']=record.get('images',[])
-                        if record.get('country'):event['country']=record['country']
+                        for key in ('country','language'):
+                            if record.get(key):event[key]=record[key]
                         on_programme(event)
                 record=None
         stack.pop();text=[];text_length=0

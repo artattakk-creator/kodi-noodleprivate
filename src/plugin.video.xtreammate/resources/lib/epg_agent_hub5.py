@@ -1,9 +1,4 @@
-"""Verified private GitHub Hub Schema-5 profiles with dynamic language selection.
-
-Schema-5 is an append-only manifest contract: read the stable manifest first,
-then use pinned GitHub Release-Asset API IDs. Never persist a release tag URL,
-nor pass a Bearer token to a CDN or another origin.
-"""
+"""Shared validation and staging for public and private Hub Schema-5 profiles."""
 from datetime import datetime, timezone
 import gzip
 import hashlib
@@ -20,13 +15,14 @@ from xml.etree import ElementTree as ET
 from epg_agent_github import DeliveryError, SHA_RE, XMLTV_FILE, candidate_path, local_manifest
 from epg_agent_hub4 import REPO, BASE, _download, _verify, _combine
 
-PROFILES_RE = re.compile(r"(?:all|[a-z]{2,8})\Z")
+PROFILES_RE = re.compile(r"[a-z]{2,8}(?:-[a-z0-9]{2,8})?\Z")
 TAG_RE = re.compile(r"gs-hub-[A-Za-z0-9TZ-]{15,72}\Z")
 VARIANTS = ("artwork", "standard")
 MAX_PROFILES = 24
 MAX_ASSET_BYTES = 128 * 1024 * 1024
 MAX_TOTAL_BYTES = 512 * 1024 * 1024
 MAX_SELECTION_BYTES = 4096
+DEFAULT_PROFILES = ("all", "de", "at", "en", "es", "pl")
 SELECTION_FILE = "profiles.json"
 MAX_PROFILE_REPORT_BYTES = 4 * 1024 * 1024
 
@@ -47,16 +43,22 @@ def _utc(value):
 
 def validate_manifest(obj):
     """Returns (profiles, two-variant-by-profile), or a safe error code."""
+    from epg_agent_public import DELIVERY as PUBLIC_DELIVERY, REPO as PUBLIC_REPO, asset_url
+
+    public = isinstance(obj, dict) and obj.get("status") == "PUBLIC_READY"
+    expected_status = "PUBLIC_READY" if public else "PRIVATE_READY"
+    expected_delivery = PUBLIC_DELIVERY if public else "private-github-release-assets"
+    expected_repo = PUBLIC_REPO if public else REPO
     if not isinstance(obj, dict) or any((
         obj.get("schema_version") != 5,
         obj.get("schema") != "gsmedia-hub-github-v3",
-        obj.get("status") != "PRIVATE_READY",
-        obj.get("delivery") != "private-github-release-assets",
-        obj.get("repo") != REPO,
+        obj.get("status") != expected_status,
+        obj.get("delivery") != expected_delivery,
+        obj.get("repo") != expected_repo,
         obj.get("default_profile") != "all",
         obj.get("variants") != list(VARIANTS),
         not _utc(obj.get("generated_utc")),
-        type(obj.get("release_id")) is not int or obj["release_id"] < 1,
+        not public and (type(obj.get("release_id")) is not int or obj["release_id"] < 1),
         not isinstance(obj.get("tag"), str) or not TAG_RE.fullmatch(obj["tag"]),
         not isinstance(obj.get("fingerprint"), str) or not SHA_RE.fullmatch(obj["fingerprint"]),
     )):
@@ -70,7 +72,7 @@ def validate_manifest(obj):
             "all" not in profiles or
             not isinstance(entries, list) or len(entries) != 2 * len(profiles)):
         fail("HUB5_PROFILE_SET_INVALID")
-    pairs, asset_ids, total_bytes = {}, set(), 0
+    pairs, locations, total_bytes = {}, set(), 0
     for row in entries:
         if not isinstance(row, dict):
             fail("HUB5_INVALID_ASSET")
@@ -80,10 +82,14 @@ def validate_manifest(obj):
         aid = row.get("asset_id")
         filename = "epg-" + p + ("-standard" if variant == "standard" else "") + ".xml.gz"
         size = row.get("bytes")
-        if (row.get("file") != filename or
-            type(aid) is not int or aid < 1 or aid in asset_ids or
-            row.get("api_url") != BASE + str(aid) or
-            type(size) is not int or not 0 < size <= MAX_ASSET_BYTES or
+        if public:
+            location = asset_url(row, obj["tag"])
+        else:
+            if (row.get("file") != filename or type(aid) is not int or aid < 1
+                    or row.get("api_url") != BASE + str(aid)):
+                fail("HUB5_INVALID_ASSET")
+            location = aid
+        if (location in locations or type(size) is not int or not 0 < size <= MAX_ASSET_BYTES or
             type(row.get("channels")) is not int or not 0 < row["channels"] <= 100000 or
             type(row.get("programmes")) is not int or not 0 < row["programmes"] <= 3000000 or
             not isinstance(row.get("sha256"), str) or not SHA_RE.fullmatch(row["sha256"]) or
@@ -91,7 +97,7 @@ def validate_manifest(obj):
             fail("HUB5_INVALID_ASSET")
         total_bytes += size
         pairs[(p, variant)] = row
-        asset_ids.add(aid)
+        locations.add(location)
     if total_bytes > MAX_TOTAL_BYTES:
         fail("HUB5_TOTAL_SIZE_LIMIT")
     for p in profiles:
@@ -109,7 +115,7 @@ def _directory(directory=None):
     return profile()
 
 
-def selection(directory=None):
+def selection(directory=None, *, public=False):
     """Persistent selection for future profiles, without changing addon.xml."""
     path = _directory(directory) / SELECTION_FILE
     try:
@@ -126,10 +132,11 @@ def selection(directory=None):
         return tuple(selected), variant
     except FileNotFoundError:
         from utils import setting_bool
+        variant = "standard" if public and not setting_bool("programme_xmltv96", True) else "artwork"
         if setting_bool("epg_agent_country_all", False):
-            return ("all",), "artwork"
-        return tuple(p for p in ("de", "at") if
-                     setting_bool("epg_agent_country_" + p, True)), "artwork"
+            return ("all",), variant
+        return tuple(p for p in ("de", "at") if setting_bool(
+            "epg_agent_country_" + p, p == "de" or not public)), variant
     except (OSError, UnicodeError, ValueError, TypeError, KeyError):
         fail("HUB5_SELECTION_UNSAFE")
 
@@ -160,7 +167,7 @@ def save_selection(selected, variant="artwork", directory=None):
 
 def selected_for(manifest, directory=None):
     available, pairs = validate_manifest(manifest)
-    wanted, variant = selection(directory)
+    wanted, variant = selection(directory, public=manifest["status"] == "PUBLIC_READY")
     if "all" in wanted:
         wanted = ("all",)
     chosen = tuple(p for p in available if p in wanted)
@@ -184,7 +191,7 @@ def _channel_digest(cid):
     return hashlib.sha256(cid.encode("utf-8")).hexdigest()[:32]
 
 
-def _verify_profile(path, record, cancel, now, http_status):
+def _verify_profile(path, record, cancel, now, http_status, *, public=False):
     from epg_horizon102 import Coverage
 
     coverage = Coverage(now)
@@ -195,7 +202,7 @@ def _verify_profile(path, record, cancel, now, http_status):
         event_channels.add(cid)
         coverage.add(cid, event["start_timestamp"], event["stop_timestamp"])
 
-    _verify(path, record, cancel, on_event=measure)
+    _verify(path, record, cancel, on_event=measure, reject_credentials=public)
     report = dict(horizon=coverage.result(), http_status=http_status,
                   channels=sorted(_channel_digest(cid) for cid in event_channels))
     target = _coverage_file(path.parent, record["profile"])
@@ -255,16 +262,19 @@ def coverage_report(folder, aliases):
                            matched=matched))
     return result
 
-def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: False):
+def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: False, progress=None):
     """Download only chosen variants; stage full XMLTV before any portal install."""
+    public = manifest.get("status") == "PUBLIC_READY"
     profiles, variant, records, available = selected_for(manifest, root)
     common = {"etag": etag, "available_profiles": list(available),
-              "selected_profiles": list(profiles), "variant": variant}
+              "selected_profiles": list(profiles), "variant": variant,
+              "revision": manifest["fingerprint"]}
     if not profiles:
-        return dict(common, status="PRIVATE_PENDING", reason="NO_PROFILE_SELECTED")
+        return dict(common, status="NO_PROFILE_SELECTED", reason="NO_PROFILE_SELECTED")
     rows = [(p, records[(p, variant)]) for p in profiles]
     signature = [[p, variant, row["sha256"], row["bytes"]] for p, row in rows]
-    generation = hashlib.sha256(json.dumps(signature, separators=(",", ":")).encode()).hexdigest()
+    identity = ["public", signature] if public else signature
+    generation = hashlib.sha256(json.dumps(identity, separators=(",", ":")).encode()).hexdigest()
     response = dict(common, generation=generation)
     previous = candidate_path(root, generation)
     if previous is not None:
@@ -283,16 +293,45 @@ def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: 
         fail("HUB5_STORAGE_UNSAFE")
     root.mkdir(mode=0o700, parents=True, exist_ok=True)
     from import_budget import check_space
-    total = sum(row["bytes"] for _, row in rows)
+    unique_assets = {(row["sha256"], row["bytes"]) for _, row in rows}
+    total = sum(size for _, size in unique_assets)
     check_space(str(root / "manifest.json"), total * (3 if len(rows) > 1 else 2))
     temporary = Path(tempfile.mkdtemp(prefix=".hub5-", dir=root))
     try:
         sources = []
+        verified_assets = {}
         observed = time.time()
+        transferred = 0
+        if progress is not None:
+            progress(0, total)
         for p, record in rows:
+            key = (record["sha256"], record["bytes"])
+            if key in verified_assets:
+                original = verified_assets[key]
+                if any(record[field] != original[field] for field in ("channels", "programmes")):
+                    fail("HUB5_COUNT_MISMATCH")
+                evidence = _coverage_file(temporary, original["profile"])
+                if evidence.is_file():
+                    try:
+                        shutil.copyfile(evidence, _coverage_file(temporary, p))
+                    except OSError:
+                        pass  # Optional diagnostic. The same bytes were already verified.
+                continue
             status = []
-            path = _download(record, token, temporary, opener, cancel, on_http=status.append)
-            _verify_profile(path, record, cancel, observed, status[0] if status else None)
+            if public:
+                from epg_agent_public import download_asset
+                on_bytes = None
+                if progress is not None:
+                    def on_bytes(size):
+                        progress(transferred + size, total)
+                path = download_asset(record, manifest["tag"], temporary, opener, cancel,
+                                      on_http=status.append, on_bytes=on_bytes)
+                transferred += record["bytes"]
+            else:
+                path = _download(record, token, temporary, opener, cancel, on_http=status.append)
+            _verify_profile(path, record, cancel, observed, status[0] if status else None,
+                            public=public)
+            verified_assets[key] = record
             sources.append((p, path))
         final = temporary / XMLTV_FILE
         if len(sources) == 1:
@@ -325,6 +364,17 @@ def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: 
         if len(sources) == 1 and (counts["channels"] != rows[0][1]["channels"] or
                                   counts["programmes"] != rows[0][1]["programmes"]):
             fail("HUB5_COUNT_MISMATCH")
+        if public:
+            manifest = {k: manifest[k] for k in ("schema_version", "schema", "status", "repo",
+                        "delivery", "default_profile", "profiles", "variants", "tag",
+                        "generated_utc", "fingerprint", "files")}
+            from epg_agent_public import asset_url
+            manifest["files"] = [
+                dict({k: row[k] for k in ("profile", "variant", "file", "bytes", "sha256",
+                                         "generated_utc", "channels", "programmes")},
+                     download_url=asset_url(row, manifest["tag"]))
+                for row in manifest["files"]
+            ]
         saved = dict(manifest, selected_profiles=list(profiles), variant=variant,
                      asset_generation=signature, channel_count=counts["channels"],
                      programme_count=counts["programmes"], image_counts=images,

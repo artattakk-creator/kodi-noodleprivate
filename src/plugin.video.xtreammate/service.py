@@ -220,35 +220,39 @@ class IPTVMasterService(xbmc.Monitor):
             if exiting and exit_pending48():
                 self.waitForAbort(.05)
                 continue  # Pending Stop/Home only; completed latches must not starve widget refresh.
-            # Visible event artwork has its own bounded intake, independent
-            # of slow catalogue startup and the optional bulk warmup phase.
-            try:
-                __import__('programme_requests68').poll()
-                __import__('widget_fast69').poll()
-            except (ImportError,AttributeError,RuntimeError):pass
-            # Explicit visible-page/manual EPG requests are small, service-owned
-            # jobs. They are independent of opt-in bulk catalogue prefetch.
-            try:
-                from app_services import poll as poll_app_features
-                from ui_latency39 import service_poll
-                service_poll(poll_app_features)
-            except Exception as exc:
-                error('XCMate optional app service: '+type(exc).__name__)
-            try:
-                from epg_views import poll_short_guides
-                poll_short_guides()
-            except Exception:
-                diagnostic('epg','SHORT_REQUEST_FAILED')
-            try:
-                from epg import poll_refresh_request
-                poll_refresh_request()
-            except Exception:
-                diagnostic('epg','REFRESH_REQUEST_FAILED')
-            # Safe mode: heavy Xtream catalog and XMLTV downloads stay off
-            # unless explicitly enabled. The player/remote service still runs.
-            if phases48.network():self._maybe_refresh_epg()  # Own saved EPG-auto-refresh preference.
-            if setting_bool('xc_background_prefetch', False):
-                if phases48.network():self._maybe_warm_catalogs()
+            from service_runtime import emit, portals_ready
+            emit()
+            portal_ready = portals_ready()
+            if portal_ready:
+                # Visible event artwork has its own bounded intake, independent
+                # of slow catalogue startup and the optional bulk warmup phase.
+                try:
+                    __import__('programme_requests68').poll()
+                    __import__('widget_fast69').poll()
+                except (ImportError,AttributeError,RuntimeError):pass
+                # Explicit visible-page/manual EPG requests are small, service-owned
+                # jobs. They are independent of opt-in bulk catalogue prefetch.
+                try:
+                    from app_services import poll as poll_app_features
+                    from ui_latency39 import service_poll
+                    service_poll(poll_app_features)
+                except Exception as exc:
+                    error('XCMate optional app service: '+type(exc).__name__)
+                try:
+                    from epg_views import poll_short_guides
+                    poll_short_guides()
+                except Exception:
+                    diagnostic('epg','SHORT_REQUEST_FAILED')
+                try:
+                    from epg import poll_refresh_request
+                    poll_refresh_request()
+                except Exception:
+                    diagnostic('epg','REFRESH_REQUEST_FAILED')
+                # Safe mode: heavy Xtream catalog and XMLTV downloads stay off
+                # unless explicitly enabled. The player/remote service still runs.
+                if phases48.network():self._maybe_refresh_epg()  # Own saved EPG-auto-refresh preference.
+                if setting_bool('xc_background_prefetch', False):
+                    if phases48.network():self._maybe_warm_catalogs()
             if exiting:
                 self.waitForAbort(.2)
                 continue  # Background jobs above still run; live recovery stays cancelled.
@@ -417,7 +421,7 @@ class IPTVMasterService(xbmc.Monitor):
                 diagnostic('service','TV_LOOP_FAILED',running=True)
                 note(marker, LAST_ERROR, 'TV-Loop: ' + type(exc).__name__)
                 error('XCMate TV navigation unavailable: {}'.format(type(exc).__name__))
-            self.waitForAbort(0.2)
+            self.waitForAbort(.2 if portal_ready else .5)
         try:
             from app_services import shutdown as shutdown_app_features
             shutdown_app_features()

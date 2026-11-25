@@ -50,7 +50,7 @@ def load(portal,channel,selected=None,now=None):
  now=time.time() if now is None else now;mappings=configuration(portal['id']).get('mappings',{})
  moment=selected.get('start',now) if selected else now
  view=window(portal['id'],[channel],mappings,moment,moment+2*86400,limit=48,budget=.15)
- sid,ids=channel_keys(channel,mappings);event=None;canonical='';following=[]
+ sid,ids=channel_keys(channel,mappings);event=None;canonical='';following=[];preceding=None
  if view is not None:
   for ident in ids:
    rows=view.get(ident,[])
@@ -65,9 +65,18 @@ def load(portal,channel,selected=None,now=None):
    if event is not None:
     canonical=event.get('_canonical') or canonical
     source=event.get('source_key46')
-    following=[dict(start=row['start_timestamp'],title=row['name']) for row in rows
-               if row['start_timestamp']>=event['stop'] and
-               (not source or row.get('source_key46')==source) and row.get('name')][:3]
+    def same_source(row):
+     if source:return row.get('source_key46')==source
+     return row.get('source',row.get('_source_index',0))==event['source']
+    def schedule_row(row):
+     return dict(start=row['start_timestamp'],stop=row['stop_timestamp'],title=row['name'])
+    following=[schedule_row(row) for row in rows if row['start_timestamp']>=event['stop']
+               and same_source(row) and row.get('name')][:3]
+    prior=window(portal['id'],[channel],mappings,event['start']-3*3600,event['start'],limit=48,budget=.08)
+    if prior is not None and getattr(prior,'revision',None)==getattr(view,'revision',None):
+     previous=[row for row in prior.get(ident,[]) if row['stop_timestamp']<=event['start']
+               and same_source(row) and row.get('name')]
+     if previous:preceding=schedule_row(max(previous,key=lambda row:row['stop_timestamp']))
     break  # Expired/future aliases cannot mask a valid current provider row.
  # An existing source/mapping/revision-checked Now/Next snapshot is local
  # authority during a short SQLite outage, not a guessed short-cache event.
@@ -85,6 +94,7 @@ def load(portal,channel,selected=None,now=None):
   event=dict(selected);canonical='';view=None
  result=describe(portal,channel,event,canonical,getattr(view,'revision',None))
  if following:result['following46']=following
+ if preceding:result['preceding46']=preceding
  if event and view is None:
   result['code']='CACHED_EVENT';result['read_code69']=__import__('epg_read69').last(portal['id'],sid)
  if selected and selected.get('key') and selected['key']!=result['key']:return describe(portal,channel)

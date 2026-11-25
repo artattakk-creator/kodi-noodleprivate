@@ -132,7 +132,7 @@ def _download(record, token, dest, opener, cancel, *, on_http=None):
     return target
 
 
-def _verify(path, record, cancel, *, on_event=None):
+def _verify(path, record, cancel, *, on_event=None, reject_credentials=False):
     """Read every programme and validate gzip trailer and XMLTV channel refs."""
     from xmltv_stream import parse as parse_xmltv
     identifiers = set()
@@ -158,7 +158,8 @@ def _verify(path, record, cancel, *, on_event=None):
                 _failed("INVALID_GZIP")
             raw.seek(0)
             counts = parse_xmltv(raw, channel, programme, cancel=cancel,
-                                 max_seconds=720, progress=progress, strict_images=True)
+                                 max_seconds=720, progress=progress, strict_images=True,
+                                 reject_credentials=reject_credentials)
     except (OSError, ValueError, EOFError, gzip.BadGzipFile) as exc:
         from epg_agent_github import DeliveryError
         if isinstance(exc, DeliveryError):

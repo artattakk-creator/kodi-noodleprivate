@@ -1,132 +1,41 @@
-name: DISABLED obsolete token-free XCMate 0.1.29.102 workflow
+name: XCMate 0.1.29.102 public candidate
 on:
+  pull_request:
+    paths:
+      - 'src/plugin.video.xtreammate/**'
+      - 'tools/package_xcmate_public.py'
+      - 'tests/test_xcmate_epg_agent_public102.py'
+      - '.github/workflows/xcmate-epg102-pilot-tokenfree.yml'
   workflow_dispatch:
-    inputs:
-      device_bootstrap_tested:
-        description: "Privates XCMate 0.1.29.101 auf Android installiert, Token lokal gesichert und EPG erfolgreich getestet?"
-        type: boolean
-        required: true
-        default: false
 permissions:
-  contents: write
-concurrency:
-  group: xcmate-schema5-pilot-follow-up
-  cancel-in-progress: false
+  contents: read
 jobs:
-  publish:
-    # Disabled on 2026-11-24: user requires the GitHub read-token in EVERY XCMate ZIP.
-    # This obsolete workflow would publish a token-free and uncorrected version.
-    if: ${{ false }}
+  verify-candidate:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - name: Checkout reviewed XCMate source
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          ref: c3d22cce59de68139e60a82bb244f0d79f187165
-          path: source
           persist-credentials: false
-      - name: Checkout Pilot main catalogue
-        uses: actions/checkout@v4
-        with:
-          ref: main
-          path: pilot
-          persist-credentials: true
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-      - name: Verify offline Schema-5 contracts and token persistence
+          python-version: '3.12'
+      - name: Run focused client tests
+        env:
+          PYTHONPATH: src/plugin.video.xtreammate/resources/lib
         run: |
-          cd source
-          python -m unittest discover -s tests -p 'test_epg_agent_hub5.py' -q
-          python -m unittest discover -s tests -p 'test_epg_agent_token_bootstrap.py' -q
-          python -m unittest discover -s tests -p 'test_epg_agent_hub4.py' -q
-      - name: Assemble token-free XCMate 0.1.29.102 from reviewed sources
+          python -m unittest discover -s tests -p 'test_xcmate_epg_agent*.py' -v
+          python -m unittest discover -s tests -p 'test_epg_agent*.py' -v
+          python -m unittest discover -s tests -p 'test_xcmate_0293_setup_first_run.py' -v
+          python -m unittest discover -s tests -p 'test_xcmate_service_idle102.py' -v
+      - name: Verify public ZIP and SHA256
         run: |
-          python - <<'PY'
-          import hashlib,json,pathlib,re,xml.etree.ElementTree as ET,zipfile
-          src=pathlib.Path("source/src/plugin.video.xtreammate")
-          root=pathlib.Path("pilot/online-test")
-          new="0.1.29.102"
-          addon=(src/"addon.xml").read_text(encoding="utf-8")
-          if 'version="0.1.29.101"' not in addon:raise SystemExit("UNEXPECTED_SOURCE_VERSION")
-          addon=addon.replace('version="0.1.29.101"','version="'+new+'"',1)
-          addon=re.sub(r"<news>.*?</news>",
-                       "<news>0.1.29.102 PILOT TEST: dynamischer Schema-5-EPG-Agent; vorher privat provisionierter Lesetoken bleibt im Kodi-Profil; Android/LG nicht getestet.</news>",
-                       addon,count=1,flags=re.S)
-          assert ET.fromstring(addon).get("version")==new
-          if (src/"resources/private").exists():
-              raise SystemExit("PUBLIC_PILOT_MUST_NOT_INCLUDE_PRIVATE_CREDENTIALS")
-          filename="plugin.video.xtreammate-"+new+".zip"
-          path=root/"plugin.video.xtreammate"/filename
-          path.parent.mkdir(parents=True,exist_ok=True)
-          with zipfile.ZipFile(path,"w",zipfile.ZIP_DEFLATED,compresslevel=8) as z:
-              for f in sorted(src.rglob("*")):
-                  if f.is_symlink():raise SystemExit("NO_SYMLINKS")
-                  if not f.is_file() or f.suffix==".pyc" or "__pycache__" in f.parts:continue
-                  name="plugin.video.xtreammate/"+f.relative_to(src).as_posix()
-                  if name=="plugin.video.xtreammate/addon.xml":
-                      z.writestr(name,addon)
-                  else:
-                      z.write(f,name)
-          with zipfile.ZipFile(path) as z:
-              assert z.testzip() is None
-              assert z.read("plugin.video.xtreammate/addon.xml").decode()==addon
-              assert not any("/private/" in name for name in z.namelist())
-              assert "plugin.video.xtreammate/resources/lib/epg_agent_token_bootstrap.py" in z.namelist()
-          data=path.read_bytes()
-          digest=hashlib.sha256(data).hexdigest()
-          (root/filename).write_bytes(data)
-          for p in (path,root/filename):
-              p.with_name(p.name+".sha256").write_text(digest+"  "+filename+"\n",encoding="ascii")
-          index=root/"addons.xml"
-          existing=index.read_text(encoding="utf-8")
-          match=re.search(r'<addon id="plugin\.video\.xtreammate"\b.*?</addon>',existing,re.S)
-          if not match:raise SystemExit("PILOT_INDEX_MISSING")
-          segment=match.group(0)
-          if 'version="0.1.29.100"' not in segment and 'version="0.1.29.101"' not in segment:
-              raise SystemExit("PILOT_INDEX_UNEXPECTED_VERSION")
-          segment=re.sub(r'version="0\.1\.29\.10[01]"','version="'+new+'"',segment,count=1)
-          segment=re.sub(r"<news>.*?</news>",
-                         "<news>0.1.29.102 PILOT TEST: dynamisches Schema 5; privater Lesetoken bleibt in Kodi-addon_data. Kein Token in diesem oeffentlichen ZIP. Android/LG nicht getestet.</news>",
-                         segment,count=1,flags=re.S)
-          updated=existing[:match.start()]+segment+existing[match.end():]
-          ET.fromstring(updated)
-          index.write_text(updated,encoding="utf-8")
-          (root/"addons.xml.md5").write_text(hashlib.md5(updated.encode()).hexdigest()+"\n",encoding="ascii")
-          page=root/"index.html"
-          html=page.read_text(encoding="utf-8")
-          if "0.1.29.100" not in html and "0.1.29.101" not in html:
-              raise SystemExit("PILOT_INDEX_PAGE_UNEXPECTED")
-          html=html.replace("0.1.29.100",new).replace("0.1.29.101",new)
-          html=html.replace("<tbody>","<tbody>",1)
-          page.write_text(html,encoding="utf-8")
-          manifest=root/"manifest.json"
-          j=json.loads(manifest.read_text(encoding="utf-8"))
-          j["xcmate102"]={
-              "id":"plugin.video.xtreammate","version":new,"channel":"PILOT_ONLY",
-              "device_test":"NOT_TESTED","schema":5,
-              "private_epg_read_token_in_zip":False,
-              "requires_prior_private_token_provisioning":True,
-              "source_commit":"c3d22cce59de68139e60a82bb244f0d79f187165",
-              "sha256":digest,"bytes":len(data),
-              "url":"https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/plugin.video.xtreammate/"+filename
-          }
-          manifest.write_text(json.dumps(j,indent=2,ensure_ascii=False,sort_keys=True)+"\n",encoding="utf-8")
-          assert hashlib.md5(index.read_bytes()).hexdigest()==(root/"addons.xml.md5").read_text().strip()
-          print("PILOT_SCHEMA5_TOKENFREE_PACKAGE_AND_CATALOG_VERIFIED")
-          PY
-      - name: Publish Pilot-only update with no secret material
-        run: |
-          cd pilot
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- online-test/addons.xml online-test/addons.xml.md5 \
-            online-test/index.html online-test/manifest.json \
-            online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.102.zip \
-            online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.102.zip.sha256 \
-            online-test/plugin.video.xtreammate-0.1.29.102.zip \
-            online-test/plugin.video.xtreammate-0.1.29.102.zip.sha256
-          git diff --cached --quiet && exit 1
-          git commit -m "release(pilot): verified token-free XCMate 0.1.29.102 Schema5 update"
-          git push origin HEAD:main
+          python -m pip install 'Pillow>=11,<13'
+          python tools/package_xcmate_public.py "$RUNNER_TEMP/candidate"
+          cd "$RUNNER_TEMP/candidate"
+          sha256sum -c plugin.video.xtreammate-0.1.29.102.zip.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: plugin.video.xtreammate-0.1.29.102-candidate
+          path: ${{ runner.temp }}/candidate/plugin.video.xtreammate-0.1.29.102.zip*
+          if-no-files-found: error

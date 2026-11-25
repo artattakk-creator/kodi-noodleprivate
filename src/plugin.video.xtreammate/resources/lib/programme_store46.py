@@ -34,6 +34,10 @@ def metadata(event):
  if isinstance(event.get('agent_art'),dict):result['agent_art']=event['agent_art']
  rating=age_rating(event)
  if rating:result['age_rating']=rating
+ language=event.get('language')
+ if isinstance(language,str) and language.strip():result['language']=language.strip()[:32]
+ date=event.get('xmltv_date') or event.get('date')
+ if isinstance(date,str) and __import__('re').fullmatch(r'[0-9]{4,14}',date):result['xmltv_date']=date
  country=event.get('country')
  if isinstance(country,str):country={'UK':'GB','United Kingdom':'GB','Großbritannien':'GB','United States':'US','USA':'US','Deutschland':'DE'}.get(country.strip(),country)
  if isinstance(country,str) and __import__('re').fullmatch('[A-Za-z]{2}',country.strip()):result['country']=country.strip().upper()

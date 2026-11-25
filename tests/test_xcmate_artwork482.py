@@ -133,6 +133,26 @@ class Artwork482(unittest.TestCase):
         window.onClick(501)
         self.assertTrue(window._closed)
 
+    def test_detail_exposes_only_observed_gaps_and_adjacent_programmes(self):
+        from programme_window46 import ProgrammeWindow46
+        from xcmate027_fixture import ADDON
+
+        window = ProgrammeWindow46('XCMateProgramme46.xml', str(ADDON), 'Default', '720p')
+        window.configure(self.f.portal, self.f.channel)
+        self.addCleanup(window.close)
+        with mock.patch.object(window, '_start_read85'):
+            window.onInit()
+        start = self.event['start']
+        window._paint_facts(dict(self.event, director='Pat Meyer',
+                                 preceding46=dict(start=start-600, stop=start, title='Davor'),
+                                 following46=[dict(start=self.event['stop'], title='Danach')]))
+        window.onClick(504)
+        self.assertIn('Davor', window.getControl(144).label)
+        self.assertIn('Danach', window.getControl(134).text)
+        self.assertTrue(window.getControl(143).visible)
+        self.assertIn('Episodenbild', window.getControl(143).text)
+        self.assertNotIn('Regie', window.getControl(143).text)
+
     def test_detail_renders_each_verified_image_in_its_own_role(self):
         from programme_window46 import ProgrammeWindow46
         from xcmate027_fixture import ADDON

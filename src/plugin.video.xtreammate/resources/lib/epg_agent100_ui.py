@@ -1,7 +1,7 @@
-"""Skin-independent Agent opt-in and status from the last service receipt."""
+"""Skin-independent Agent settings and status from verified service receipts."""
 import time
 from localization import tr
-from epg_agent100 import SETTING, SOURCE_NAME, enabled, request_check, state
+from epg_agent100 import SETTING, enabled, request_check, state, use_private
 
 LABELS = {
     "CURRENT": 39104,
@@ -10,6 +10,9 @@ LABELS = {
     "PRIVATE_ENDPOINT_NETWORK_ERROR": 39106,
     "PRIVATE_ENDPOINT_TEMPORARILY_UNAVAILABLE": 39106,
     "PRIVATE_PENDING": 39109,
+    "PUBLIC_PENDING": 39125,
+    "PUBLIC_ENDPOINT_NETWORK_ERROR": 39106,
+    "NO_PROFILE_SELECTED": 39111,
     "AUTH_NOT_PROVISIONED": 39110,
     "IMPORT_PENDING": 39111,
 }
@@ -32,15 +35,17 @@ def details(portal):
     code = receipt.get("code", "")
     lines = [
         short_status(),
-        f"{tr(39112)}  {_when(receipt.get('last_checked'))}",
+        f"{tr(39112)}  {_when(receipt.get('last_successful_check'))}",
         f"{tr(39113)}  {_when(receipt.get('next_check'))}",
         f"{tr(39114)}  {_when(selected.get('last_success'))}",
-        f"{tr(39115)}  {selected.get('generation', '')[:16] or '–'}",
+        f"{tr(39115)}  {receipt.get('manifest_revision', '')[:16] or '–'}",
         f"{tr(39116)}  {receipt.get('channels', 0)} / {receipt.get('programmes', 0)} / {receipt.get('artwork_records', 0)}",
         f"{tr(39117)}  {selected.get('matched', 0)} / {selected.get('mapped_channels', 0)}",
         f"{tr(39118)}  {selected.get('read', 0)} / {selected.get('committed', 0)} / {selected.get('verified', 0)}",
         tr(39121), tr(39123),
     ]
+    if code == "CHECKING" and receipt.get("download_total", 0):
+        lines.append(f"Download · {receipt['download_bytes']:,} / {receipt['download_total']:,} Bytes")
     images = receipt.get("image_counts", {})
     if images:
         lines.append(f"{tr(39124)}  {images.get('poster', 0)} / {images.get('backdrop', 0)} / "
@@ -60,7 +65,7 @@ def show(portal):
     import xbmcaddon
     import xbmcgui
     from menu_icons45 import select
-    from epg_agent_hub5 import selection, save_selection
+    from epg_agent_hub5 import DEFAULT_PROFILES, selection, save_selection
     from epg_agent100 import profile
 
     addon = xbmcaddon.Addon()
@@ -73,12 +78,17 @@ def show(portal):
     row_index = 0
     while True:
         active = enabled()
-        current, variant = selection(profile())
-        remote = state().get("available_profiles") or ["de", "at"]
-        choices = tuple(p for p in remote if isinstance(p, str))
+        private = use_private()
+        current, variant = selection(profile(), public=not private)
+        receipt = state()
+        transport = "private" if private else "public"
+        remote = receipt.get("available_profiles") if receipt.get("transport") == transport else None
+        choices = tuple(dict.fromkeys((*(remote or DEFAULT_PROFILES), *current)))
         rows = ["EPG-Agent aktivieren · " + ("Ein" if active else "Aus")]
         actions = [("enable", None)]
         if active:
+            rows.append("Bezugsquelle · " + ("Privat" if private else "Öffentliches GS Media EPG"))
+            actions.append(("source", None))
             for p in choices:
                 rows.append(names.get(p, p.upper()) + " · " +
                             ("Ein" if p in current else "Aus"))
@@ -87,6 +97,8 @@ def show(portal):
                         ("Mit Bildern" if variant == "artwork" else "Standard"))
             actions.append(("variant", None))
             rows.append("Jetzt auf neue EPG-Daten prüfen")
+            actions.append(("check", None))
+            rows.append("Jetzt EPG aktualisieren")
             actions.append(("refresh", None))
         rows.append("Status · " + short_status())
         actions.append(("status", None))
@@ -98,6 +110,12 @@ def show(portal):
         if action == "enable":
             addon.setSetting(SETTING, "false" if active else "true")
             request_check()
+        elif action == "source":
+            selected = dialog.select("EPG-Bezugsquelle", ["Öffentliches GS Media EPG", "Privates GS Media EPG"],
+                                     preselect=int(private))
+            if selected in (0, 1) and bool(selected) != private:
+                addon.setSetting("epg_agent_private", "true" if selected else "false")
+                request_check()
         elif action == "profile":
             selected = set(current)
             if value in selected:
@@ -115,12 +133,12 @@ def show(portal):
                            "standard" if variant == "artwork" else "artwork",
                            profile())
             request_check()
-        elif action == "refresh":
+        elif action in ("check", "refresh"):
             if not current:
                 dialog.notification("EPG-Agent",
                                     "Bitte zuerst mindestens ein EPG-Profil auswählen.")
             else:
-                request_check()
+                request_check(force=action == "refresh")
                 dialog.notification("EPG-Agent", tr(39119))
         elif action == "status":
             info = "Auswahl: " + (", ".join(current) or "Keine") + "\n"
