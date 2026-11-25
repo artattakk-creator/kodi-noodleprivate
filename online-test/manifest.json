@@ -308,6 +308,28 @@
     "source": "user-approved owner upload",
     "version": "0.1.29.101"
   },
+  "xcmate102": {
+    "addon_id": "plugin.video.xtreammate",
+    "android_status": "NOT_TESTED",
+    "bytes": 4850327,
+    "channels": [
+      "pilot",
+      "neodark3"
+    ],
+    "epg_agent_public_manifest": "PUBLIC_READY",
+    "files": 920,
+    "lg_webos_status": "NOT_TESTED",
+    "neodark3_zip": "online-test/plugin.video.xtreammate-0.1.29.102.zip",
+    "pilot_zip": "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.102.zip",
+    "repository_released": true,
+    "sha256": "2c079e6c48ee027370b2a971b2ad942f12af19da0a2536ebed5e3563cdcd27ae",
+    "source_commit": "5703b25caade638b4404570170fe9d19957271ba",
+    "status": "PILOT_NEODARK3_TEST_ONLY_PHYSICAL_ACCEPTANCE_PENDING",
+    "user_approved_neodark3_direct_release": true,
+    "user_approved_pilot_release": true,
+    "user_approved_regular_release": false,
+    "version": "0.1.29.102"
+  },
   "xcmate92": {
     "android": "ANDROID_NOT_TESTED",
     "channels": [
@@ -597,7 +619,7 @@
     "plugin.audio.m3sr2019": "75b7c06b8637b6f2e290c8885ff7589c5d62b247357caddae32784d05445dfac",
     "plugin.video.cumination": "539073d804d6381105698eff054ea77ae1359b658e0f226c3807a7365a0d674c",
     "plugin.video.noodleprivate": "b9d0afe06d6fc956bc0191fd51f4646ae9f54c6272009e7a8819255de7460364",
-    "plugin.video.xtreammate": "9fbea224f9417193b85f8b57a390653eb4d77aeff85196973f3520d51acb26de",
+    "plugin.video.xtreammate": "2c079e6c48ee027370b2a971b2ad942f12af19da0a2536ebed5e3563cdcd27ae",
     "repository.gsmedia.pilot": "57ee7166f0caca2071e6fd36fed76e5660d9dc6f221d8c78d4e259d66a507489",
     "repository.slyguy": "079915885866a5cbb8f17191c5ee8f7d044d7a9e788e96d116c9f1bc8bb4c3c0",
     "repository.titan.bingie.mod": "dba0a2e670e2d93158cb030ea52fe3e237bb19177e0a165d99c8f72a8492ef46",
