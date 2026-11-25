@@ -113,9 +113,6 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
    episode=tr(36103,event['season'],event['episode'])
   label(102,text(episode))
   facts=' · '.join(text(event[k]) for k in ('year','genre','age_rating','language') if event.get(k))
-  title_language=event.get('xmltv_title_lang')
-  if not event.get('language') and isinstance(title_language,str) and re.fullmatch(r'[a-z]{2,3}(?:-[a-z0-9]{2,8}){0,3}',title_language):
-   facts=' · '.join(filter(None,(facts,'Metadaten · '+title_language.upper())))
   label(106,facts)
   self.getControl(128).setVisible(bool(facts))
   source=event.get('_source_label100','')
@@ -146,6 +143,9 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   technical=[]
   for key,label in (('channel','Sender'),('_source_label100','EPG-Quelle'),('canonical','EPG-Kanal-ID'),('xmltv_date','XMLTV-Datum'),('director','Regie')):
    if event.get(key):technical.append(label+'   '+text(event[key]))
+  title_language=event.get('xmltv_title_lang')
+  metadata_language=not event.get('language') and isinstance(title_language,str) and re.fullmatch(r'[a-z]{2,3}(?:-[a-z0-9]{2,8}){0,3}',title_language)
+  if metadata_language:technical.append('Metadaten-Sprache   '+title_language.upper())
   if self._detail_view_event.get('_tmdb_id'):
    technical.append('TMDB-ID   '+str(self._detail_view_event['_tmdb_id']))
   if self._detail_view_event.get('_tmdb_rating'):
@@ -213,7 +213,9 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   for cid,dx,dy in ((125,0,0),(126,22,12),(127,22,45)):
    control=self.getControl(cid);control.setPosition(fact_x+dx,370+dy)
    control.setWidth(fact_width-2*dx)
-  self.getControl(127).setText('\n'.join(technical))
+  technical_body=self.getControl(127)
+  technical_body.setHeight(190 if metadata_language else 177)
+  technical_body.setText('\n'.join(technical))
 
   for i in range(12):
    chip,label=(self.getControl(cid+i) for cid in (700,720))
@@ -295,12 +297,13 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
     for control in (image,source,assignment,card,state):control.setVisible(False)
     continue
    uri,credit,role=people[index]
-   for control,y in ((image,422),(source,546),(assignment,568),(card,416),(state,468)):
+   for control,y in ((image,422),(source,536),(card,416),(state,468)):
     control.setPosition(left,y);control.setWidth(width);control.setVisible(True)
+   image.setHeight(114)
    image.setImage(uri);image.setVisible(bool(uri))
    source.setLabel(('Foto' if role=='person' else 'Figur')+' · '+credit)
-   assignment.setPosition(left+6,568);assignment.setWidth(width-12)
-   assignment.setText('Nicht zugeordnet')
+   assignment.setPosition(left+6,558);assignment.setWidth(width-12);assignment.setHeight(48)
+   assignment.setText('Nicht zugeordnet');assignment.setVisible(True)
    state.setLabel('Lädt …');state.setVisible(not uri)
    left+=width+6
 

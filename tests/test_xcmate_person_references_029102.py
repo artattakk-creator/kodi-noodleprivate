@@ -153,6 +153,9 @@ class PersonReferences102(Fixture, unittest.TestCase):
                 assignment = window.getControl(cid + 2)
                 self.assertEqual(assignment.kind, 'textbox')
                 self.assertIn('Nicht zugeordnet', assignment.text)
+                height = getattr(assignment, 'height', int(assignment.node.findtext('height')))
+                self.assertGreaterEqual(height, 46, 'reserve both caption lines at native size')
+                self.assertLessEqual(assignment.y + height, 610, 'caption fits in the picture panel')
             self.options['programme_tmdb_optout77'] = True
             window._next = 0
             window.pump()

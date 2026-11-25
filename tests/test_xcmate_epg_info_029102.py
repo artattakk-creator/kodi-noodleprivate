@@ -30,7 +30,7 @@ class ProgrammeFeedFacts102(Fixture, unittest.TestCase):
         self.assertFalse(window.getControl(110).visible)
         self.assertTrue(window.getControl(130).visible)
         self.assertEqual(window.getControl(108).label, '8,1/10 · Serie')
-        self.assertIn('Metadaten · DE', window.getControl(106).label)
+        self.assertIn('Metadaten-Sprache   DE', window.getControl(127).text)
         self.assertIn('TMDB-ID   tv/126027', window.getControl(127).text)
         self.assertIn('TMDB 8,1/10 · Serie', window.getControl(127).text)
 
@@ -50,4 +50,4 @@ class ProgrammeFeedFacts102(Fixture, unittest.TestCase):
         window, event = self.window(language='Englisch', xmltv_title_lang='de')
         window._paint_facts(event)
         self.assertIn('Englisch', window.getControl(106).label)
-        self.assertNotIn('Metadaten · DE', window.getControl(106).label)
+        self.assertNotIn('Metadaten-Sprache', window.getControl(127).text)
