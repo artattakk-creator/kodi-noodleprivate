@@ -265,7 +265,8 @@ class PublicSQLiteImportTest(Fixture, unittest.TestCase):
             return time.strftime("%Y%m%d%H%M%S +0000", time.gmtime(value))
         xml = (f'<tv><channel id="xml"><display-name>House of Dragon TV</display-name></channel>'
                f'<programme channel="xml" start="{stamp(now-60)}" stop="{stamp(now+3600)}">'
-               '<title>Public fixture</title></programme></tv>').encode()
+               '<title lang="de">Public fixture</title><episode-num system="tmdb">tv/126027</episode-num>'
+               '<star-rating system="TMDB"><value>8.1/10</value></star-rating></programme></tv>').encode()
         transport = Transport(*public_manifest(xml=xml))
         def fetch(root, **opts):
             return stage_public_candidate(root, opener=transport, **opts)
@@ -281,6 +282,30 @@ class PublicSQLiteImportTest(Fixture, unittest.TestCase):
             self.assertEqual(guide.execute(
                 "SELECT source_id,title FROM guide44_inputs WHERE pid='p'").fetchall(),
                 [("agent", "Public fixture")])
+        from programme_events46 import load
+        event = load(self.portal, dict(sid='1', name='House of Dragon TV', epg_channel_id='xml'))
+        self.assertEqual({key: event.get(key) for key in ('xmltv_tmdb_id','xmltv_tmdb_score','xmltv_title_lang')},
+                         dict(xmltv_tmdb_id='tv/126027', xmltv_tmdb_score=8.1, xmltv_title_lang='de'))
+        self.assertNotIn('language', event)
+
+    def test_typed_xmltv_rating_rejects_wrong_source_scale_and_conflicting_ids(self):
+        from xmltv_stream import parse
+
+        for extension in (
+                '<episode-num system="TMDB">tv/126027</episode-num><star-rating><value>8.1/10</value></star-rating>',
+                '<episode-num system="tmdb">tv/126027</episode-num><star-rating system="TMDB"><value>8.1/5</value></star-rating>',
+                '<episode-num system="tmdb">tv/126027</episode-num><episode-num system="tmdb">movie/161</episode-num>'
+                '<star-rating system="TMDB"><value>8.1/10</value></star-rating>',
+                '<episode-num system="tmdb">tv/126027</episode-num><star-rating system="TMDB"><value>8.1/10</value></star-rating>'
+                '<star-rating system="TMDB"><value>8.2/10</value></star-rating>'):
+            with self.subTest(extension=extension):
+                events=[]
+                xml=XMLTV.replace(b'</programme>', extension.encode() + b'</programme>')
+                parse(io.BytesIO(xml), lambda *_: None, events.append)
+                self.assertEqual(len(events), 1)
+                self.assertNotIn('xmltv_tmdb_score', events[0])
+                id_only=extension.count('<episode-num')==1
+                self.assertEqual(events[0].get('xmltv_tmdb_id'), 'tv/126027' if id_only else None)
 
     def test_public_refresh_verifies_a_backup_of_an_existing_current_guide(self):
         import sqlite3

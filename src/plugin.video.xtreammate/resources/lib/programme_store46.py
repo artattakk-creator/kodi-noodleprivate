@@ -36,6 +36,14 @@ def metadata(event):
  if rating:result['age_rating']=rating
  language=event.get('language')
  if isinstance(language,str) and language.strip():result['language']=language.strip()[:32]
+ from xmltv_stream import TITLE_LANG, TMDB_WORK_ID
+ title_lang=event.get('xmltv_title_lang')
+ if isinstance(title_lang,str) and TITLE_LANG.fullmatch(title_lang):result['xmltv_title_lang']=title_lang
+ tmdb_id=event.get('xmltv_tmdb_id')
+ if isinstance(tmdb_id,str) and TMDB_WORK_ID.fullmatch(tmdb_id):
+  result['xmltv_tmdb_id']=tmdb_id
+  score=event.get('xmltv_tmdb_score')
+  if type(score) in (int,float) and 0<score<=10:result['xmltv_tmdb_score']=score
  date=event.get('xmltv_date') or event.get('date')
  if isinstance(date,str) and __import__('re').fullmatch(r'[0-9]{4,14}',date):result['xmltv_date']=date
  country=event.get('country')
