@@ -95,6 +95,17 @@ def build():
           "<news>0.5.30: XCMate ab 0.1.29.102 aus Pilot, öffentlicher EPG-Agent ohne GitHub-Token, bestehende Einstellungen und 48 Komponenten erhalten. Geräteabnahme offen.</news>")
     patch("resources/lib/setup_auto50.py", 'minimum="0.1.29.101"', 'minimum="0.1.29.102"')
     patch("resources/lib/setup_auto_ui50.py", 'TITLE = "GS Media Setup 0.5.29"', 'TITLE = "GS Media Setup 0.5.30"')
+    # Scope the native resolver and temporary origin exception to the single
+    # explicit, approved XCMate target. Other allowlist entries stay unchanged.
+    patch("resources/lib/setup_omega26.py", 'PILOT_BRIDGE_TARGETS = frozenset((\n',
+          'PILOT_BRIDGE_TARGETS = frozenset((\n    "plugin.video.xtreammate",\n')
+    patch("resources/lib/setup_origin_guard52.py", 'SUPPORTED_SCOPE_TARGETS = frozenset((\n',
+          'SUPPORTED_SCOPE_TARGETS = frozenset((\n    "plugin.video.xtreammate",\n')
+    # An explicit minimum-version upgrade via the pinned Pilot bridge may
+    # select a newer XCMate; all other dependency closures retain protection.
+    patch("resources/lib/setup_auto_ui50.py",
+          'prefer_candidate=True, protected=self.xcmate_version,',
+          'prefer_candidate=True, protected=("" if ident == XCMATE and pilot\n                            and version(self.xcmate_version or "0") < version(minimum)\n                            else self.xcmate_version),')
     patch("resources/lib/setup_options27.py", '"XCMate EPG Agent – noch nicht verfügbar"', '"XCMate EPG Agent – öffentlich (ohne GitHub-Token)"')
     patch("resources/lib/setup_options27.py",
           '    if choice == 3:\n        dialog.ok(title, "XCMate EPG Agent kann später in XCMate → Einstellungen → EPG "\n                         "eingerichtet werden. Der Anbieter-EPG bleibt aktiv.")\n        return\n    if choice not in (0, 1, 2):',
@@ -112,7 +123,8 @@ def build():
     ).encode() + original[P+"README.md"]
     changed = {name for name in files if files[name] != original[name]}
     require(changed == {P+x for x in ("addon.xml","README.md","resources/lib/setup_auto50.py",
-                    "resources/lib/setup_auto_ui50.py","resources/lib/setup_options27.py")}, "PATCH_SCOPE")
+                    "resources/lib/setup_auto_ui50.py","resources/lib/setup_options27.py",
+                    "resources/lib/setup_omega26.py","resources/lib/setup_origin_guard52.py")}, "PATCH_SCOPE")
     require(set(files) == set(original), "MEMBER_SCOPE")
     for name, data in files.items():
         if name.endswith(".py"):
@@ -152,8 +164,11 @@ def build():
             # Run actual _native_pilot_bridge function with its injected lookup.
             omega=ast.parse(files[P+"resources/lib/setup_omega26.py"].decode())
             fn=next(n for n in omega.body if isinstance(n,ast.FunctionDef) and n.name=="_native_pilot_bridge")
+            targets=next(n for n in omega.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=="PILOT_BRIDGE_TARGETS" for t in n.targets))
             ctx={}
-            exec(compile(ast.Module(body=[fn],type_ignores=[]),"<bridge-selector>","exec"),ctx)
+            exec(compile(ast.Module(body=[targets,fn],type_ignores=[]),"<bridge-selector>","exec"),ctx)
+            import setup_origin_guard52 as guard
+            require("plugin.video.xtreammate" in guard.SUPPORTED_SCOPE_TARGETS, "ORIGIN_SCOPE")
             select=ctx["_native_pilot_bridge"]
             for code in ("INSTALL_ADDON","INSTALL_UPGRADE"):
                 step={"id":"plugin.video.xtreammate","source":"repository.gsmedia.pilot","minimum":XC}
