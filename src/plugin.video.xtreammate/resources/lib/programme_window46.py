@@ -310,7 +310,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
    image.setHeight(114)
    image.setImage(uri);image.setVisible(bool(uri))
    source.setLabel(('Foto' if role=='person' else 'Figur')+' · '+credit)
-   assignment.setPosition(left+6,558);assignment.setWidth(width-12);assignment.setHeight(48)
+   assignment.setPosition(left+1,558);assignment.setWidth(width-2);assignment.setHeight(48)
    assignment.setText('Nicht zugeordnet');assignment.setVisible(True)
    state.setLabel('Lädt …');state.setVisible(not uri)
    left+=width+6

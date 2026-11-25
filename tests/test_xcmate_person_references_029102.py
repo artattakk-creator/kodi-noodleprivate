@@ -156,6 +156,7 @@ class PersonReferences102(Fixture, unittest.TestCase):
                 height = getattr(assignment, 'height', int(assignment.node.findtext('height')))
                 self.assertGreaterEqual(height, 46, 'reserve both caption lines at native size')
                 self.assertLessEqual(assignment.y + height, 610, 'caption fits in the picture panel')
+                self.assertGreaterEqual(assignment.width, 105, 'fit the complete second caption word')
             self.options['programme_tmdb_optout77'] = True
             window._next = 0
             window.pump()
