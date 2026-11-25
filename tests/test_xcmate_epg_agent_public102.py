@@ -346,7 +346,8 @@ class PublicSQLiteImportTest(Fixture, unittest.TestCase):
 
                 transport.manifest, transport.assets = public_manifest(xml=xml.replace(
                     b'Public fixture', b'Public refresh'))
-                second = cycle(root, None, [self.portal], now=now+86401, fetch=fetch, public=True)
+                second = cycle(root, None, [self.portal], now=first['last_checked']+86401,
+                               fetch=fetch, public=True)
                 self.assertEqual(second['code'], 'CURRENT', second)
                 self.assertNotEqual(first['generation'], second['generation'])
                 self.assertEqual(list((self.folder/'guide_backups44').glob('*.sqlite')), backups)
@@ -355,7 +356,8 @@ class PublicSQLiteImportTest(Fixture, unittest.TestCase):
                     damaged.write(b'corruption')
                 transport.manifest, transport.assets = public_manifest(xml=xml.replace(
                     b'Public fixture', b'Unverified refresh'))
-                failed = cycle(root, None, [self.portal], now=now+172802, fetch=fetch, public=True)
+                failed = cycle(root, None, [self.portal], now=second['last_checked']+86401,
+                               fetch=fetch, public=True)
                 self.assertEqual(failed['portals']['p']['code'], 'BACKUP_RECEIPT_MISMATCH')
                 self.assertEqual(failed['portals']['p']['generation'], second['generation'])
         with sqlite3.connect(path()) as guide:
