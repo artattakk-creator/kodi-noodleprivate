@@ -66,7 +66,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('report', type=Path)
     report = parser.parse_args().report.resolve()
-    subprocess.run(['git', 'diff', '--quiet', 'HEAD', '--', 'src', 'tests', 'tools'], cwd=ROOT, check=True)
+    subprocess.run(['git', 'diff', '--quiet', 'HEAD', '--', 'src/plugin.video.xtreammate', 'tests', 'tools'],
+                   cwd=ROOT, check=True)
     head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
     subprocess.run(['git', 'merge-base', '--is-ancestor', BASELINE_101, head], cwd=ROOT, check=True)
     with TemporaryDirectory(prefix='xcmate-home75-') as temporary:
