@@ -133,8 +133,13 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
    technical.append('TMDB-ID   '+str(self._detail_view_event['_tmdb_id']))
   if self._detail_view_event.get('_tmdb_rating'):
    technical.append('Bewertung   '+self._detail_view_event['_tmdb_rating'])
-  for key,label in (('start','Beginn'),('stop','Ende')):
-   if event.get(key):technical.append(label+'   '+time.strftime('%d.%m. · %H:%M:%S',time.localtime(event[key])))
+  start,stop=(time.localtime(event[key]) if event.get(key) else None
+              for key in ('start','stop'))
+  exact_day=bool(start and stop and start[:3]==stop[:3])
+  timestamp='%H:%M:%S' if exact_day else '%d.%m. %H:%M'
+  times=[label+' '+time.strftime(timestamp, value) for label,value in
+         (('Beginn',start),('Ende',stop)) if value]
+  if times:technical.insert(0,'   ·   '.join(times))
   following=event.get('following46') or []
   preceding=event.get('preceding46')
   scheduled=bool(preceding or following)
@@ -410,6 +415,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   elif key in (3,4,5,6):
    self._scroll46=max(0,min(512,self._scroll46+(-1 if key==3 else 1 if key==4 else -10 if key==5 else 10)))
    self.getControl(134 if self._extra_page else 103).scroll(self._scroll46)
+   if not self._extra_page:self.getControl(127).scroll(self._scroll46)
  def onClick(self,cid):
   self._gui()
   if cid==501:self.close()

@@ -153,6 +153,24 @@ class Artwork482(unittest.TestCase):
         self.assertIn('Episodenbild', window.getControl(143).text)
         self.assertNotIn('Regie', window.getControl(143).text)
 
+    def test_full_technical_card_keeps_both_broadcast_times_in_one_row(self):
+        from programme_window46 import ProgrammeWindow46
+        from xcmate027_fixture import ADDON
+
+        window = ProgrammeWindow46('XCMateProgramme46.xml', str(ADDON), 'Default', '720p')
+        window.configure(self.f.portal, self.f.channel)
+        self.addCleanup(window.close)
+        with mock.patch.object(window, '_start_read85'):
+            window.onInit()
+        event = dict(self.event, xmltv_date='20261024', director='Pat Meyer',
+                     channel='Test', canonical='test.id', _source_label100='XMLTV',
+                     start=1792882800, stop=1792885500)
+        window._paint_facts(event)
+        dates = [row for row in window.getControl(127).text.splitlines()
+                 if row.startswith(('Beginn', 'Ende'))]
+        self.assertEqual(len(dates), 1)
+        self.assertIn('Ende', dates[0])
+
     def test_verified_episode_picture_is_not_reported_missing(self):
         from programme_window46 import ProgrammeWindow46
         from xcmate027_fixture import ADDON
