@@ -30,6 +30,12 @@ def poll():
         raw68=next((e for e in info.get('events',[]) if e.get('start')==info.get('start') and e.get('stop')==info.get('stop') and e.get('title')==info.get('now')),None)
         if raw68:
             intent68=dict(raw68,pid=pid,sid=sid,canonical=info.get('canonical46') or info.get('epg_id',''),revision=info.get('snapshot_revision'))
+            # Keep the RAM intent aligned with the same event's cached artwork.
+            source68=raw68.get('epg_source46') or raw68.get('source_key46')
+            index68=raw68.get('source',raw68.get('_source_index'))
+            if not source68 and type(index68) is int and index68==0:
+                source68='provider'
+            if source68:intent68['epg_source46']=source68
             request(intent68,priority=True)
             ready68=result(intent68)
             status482=ready68
