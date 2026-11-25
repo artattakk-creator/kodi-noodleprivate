@@ -54,6 +54,26 @@ def settle_idle86():
 if modern80:
  source80=source80.replace('crop((120,20,250,500))','crop((110,20,145,500))')
  source80=source80.replace('((270,0),1620,480)','((130,0),1760,620)').replace('getpixel((300,150))','getpixel((1500,150))').replace('getpixel((500,300))','getpixel((1500,300))').replace('getpixel((1000,150))','getpixel((1500,150))')
+
+def detail_hero_matches102(frame, texture):
+ # The .102 detail paints two gradients over the XMLTV hero (XML control 110).
+ # Use an unobstructed point inside that control, outside text and poster.
+ point=(1200,120)
+ origin=(78,42)
+ relative=(point[0]-origin[0],point[1]-origin[1])
+ size=(1764,486)
+ media=Path(xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('path'))/'resources/media'
+ expected=Image.new('RGBA',(1,1),texture)
+ for name in ('hero88/left-gradient.png','media_detail_gradient.png'):
+  with Image.open(media/name) as gradient:
+   tint=gradient.convert('RGBA').resize(size,Image.Resampling.BILINEAR).getpixel(relative)
+  expected=Image.alpha_composite(expected,Image.new('RGBA',(1,1),tint))
+ return max(abs(a-b) for a,b in zip(frame.getpixel(point),expected.getpixel((0,0))[:3]))<=5
+
+if version80=='0.1.29.102':
+ old_detail80="max(abs(a-b) for a,b in zip(detail_rgb77.getpixel((486,395)),expected77))<=8"
+ if source80.count(old_detail80)!=1:raise RuntimeError('NATIVE102_DETAIL_PIXEL_ANCHOR_CHANGED')
+ source80=source80.replace(old_detail80,'detail_hero_matches102(detail_rgb77,expected77)')
 exec(compile(source80,'native-home80-base','exec'),globals())
 # Keep every real TLS/cache assertion from .79, including full decode.
 cache80=Path('/base_gui_cache79.py').read_text().split('import widget_cache79 as cache79',1)[1]
