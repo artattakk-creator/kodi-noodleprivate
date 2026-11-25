@@ -70,10 +70,24 @@ def detail_hero_matches102(frame, texture):
   expected=Image.alpha_composite(expected,Image.new('RGBA',(1,1),tint))
  return max(abs(a-b) for a,b in zip(frame.getpixel(point),expected.getpixel((0,0))[:3]))<=5
 
+def capture_focused_rail102(name, expected_focus):
+ # Kodi assigns focus before the native scroll/fade presents the new rail.
+ # Keep the original focus and contour checks on a fresh, presented frame.
+ deadline=time.monotonic()+4
+ while True:
+  path,frame=capture(name)
+  lines=contours(frame)
+  if home.getFocusId()==expected_focus and 1<=len(lines)<=2:return path,frame
+  if time.monotonic()>=deadline:raise RuntimeError(('NATIVE_ONE_RAIL',name,expected_focus,lines))
+  pump()
+
 if version80=='0.1.29.102':
  old_detail80="max(abs(a-b) for a,b in zip(detail_rgb77.getpixel((486,395)),expected77))<=8"
  if source80.count(old_detail80)!=1:raise RuntimeError('NATIVE102_DETAIL_PIXEL_ANCHOR_CHANGED')
  source80=source80.replace(old_detail80,'detail_hero_matches102(detail_rgb77,expected77)')
+ old_navigation80="path,rgb=capture('home75-action-'+str(i))"
+ if source80.count(old_navigation80)!=1:raise RuntimeError('NATIVE102_NAVIGATION_PIXEL_ANCHOR_CHANGED')
+ source80=source80.replace(old_navigation80,"path,rgb=capture_focused_rail102('home75-action-'+str(i),ident)")
 exec(compile(source80,'native-home80-base','exec'),globals())
 # Keep every real TLS/cache assertion from .79, including full decode.
 cache80=Path('/base_gui_cache79.py').read_text().split('import widget_cache79 as cache79',1)[1]
