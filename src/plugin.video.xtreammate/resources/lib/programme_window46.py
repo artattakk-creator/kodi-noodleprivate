@@ -3,7 +3,7 @@
 Callbacks queue intent. Only the parent's pump opens a child, with an exact
 parent dialog identity check. Never close foreign modals or use Container.Update.
 """
-import threading,time
+import re,threading,time
 from concurrent.futures import Future
 import xbmc,xbmcgui,xbmcaddon
 from localization import tr
@@ -97,6 +97,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
  def _paint_facts(self,event):
   from presentation80 import text
   from programme_assets47 import station_image
+  from programme_actions88 import xmltv_tmdb
 
   def label(cid,value):
    control=self.getControl(cid);control.setLabel(value);control.setVisible(bool(value))
@@ -112,13 +113,28 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
    episode=tr(36103,event['season'],event['episode'])
   label(102,text(episode))
   facts=' · '.join(text(event[k]) for k in ('year','genre','age_rating','language') if event.get(k))
+  title_language=event.get('xmltv_title_lang')
+  if not event.get('language') and isinstance(title_language,str) and re.fullmatch(r'[a-z]{2,3}(?:-[a-z0-9]{2,8}){0,3}',title_language):
+   facts=' · '.join(filter(None,(facts,'Metadaten · '+title_language.upper())))
   label(106,facts)
   self.getControl(128).setVisible(bool(facts))
   source=event.get('_source_label100','')
   label(109,tr(32753)+' · '+source if source else '')
   self._detail_view_event=dict(event)
+  self._art_signature=None
+  ident,score,scope=xmltv_tmdb(event)
+  self._paint_tmdb(ident,score,scope,bool(score))
   self._paint_cards()
   self._paint_time(event)
+
+ def _paint_tmdb(self,ident,score,scope,brand):
+  if score and scope:score+=' · '+scope
+  self.getControl(129).setVisible(brand)
+  self.getControl(129).setWidth(234 if score else 85)
+  self.getControl(130).setVisible(brand)
+  self.getControl(108).setLabel(score.removeprefix('TMDB '))
+  self.getControl(108).setVisible(bool(score))
+  self._detail_view_event.update(_tmdb_id=ident,_tmdb_rating=score)
 
  def _paint_cards(self):
   from presentation80 import text
@@ -278,13 +294,14 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
     image.setImage('')
     for control in (image,source,assignment,card,state):control.setVisible(False)
     continue
-   uri,credit,role,ready_state=people[index]
-   for control,y in ((image,422),(source,548),(assignment,574),(card,416),(state,468)):
+   uri,credit,role=people[index]
+   for control,y in ((image,422),(source,546),(assignment,568),(card,416),(state,468)):
     control.setPosition(left,y);control.setWidth(width);control.setVisible(True)
    image.setImage(uri);image.setVisible(bool(uri))
    source.setLabel(('Foto' if role=='person' else 'Figur')+' · '+credit)
-   assignment.setLabel('Nicht zugeordnet')
-   state.setLabel(ready_state);state.setVisible(not uri)
+   assignment.setPosition(left+6,568);assignment.setWidth(width-12)
+   assignment.setText('Nicht zugeordnet')
+   state.setLabel('Lädt …');state.setVisible(not uri)
    left+=width+6
 
  def _read_person_cards(self,result,request):
@@ -306,8 +323,8 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
    uri=reference(art,event)
    status=art.get('code')
    if not uri and offer:request(event,priority=True)
-   state='Lädt …' if not status or status in WAITING else 'Nicht verfügbar'
-   cards.append((uri,candidate['attribution'],candidate['role81'],state if not uri else ''))
+   if uri or not status or status in WAITING:
+    cards.append((uri,candidate['attribution'],candidate['role81']))
   return tuple(cards)
 
  def _paint_time(self,event):
@@ -329,7 +346,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   if art.get('poster'):request(dict(event,_art_view499='card'),priority=False)
 
  def _paint_art(self,art,hero,poster):
-  from programme_actions88 import rating,tmdb_source,tmdb_id
+  from programme_actions88 import rating,tmdb_source,tmdb_id,xmltv_tmdb
   from programme_image69 import eligible
 
   def image(value,view=None):
@@ -355,8 +372,11 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
    if score:score_source=visible_poster.get('source')
   score_scope={'tmdb_movie':'Film','tmdb_series':'Serie','tmdb_episode':'Folge'}.get(score_source)
   if not score_scope:score=''
-  brand=tmdb_source(source) or tmdb_source(visible_poster.get('source'))
-  verified_id=(tmdb_id(primary) or tmdb_id(visible_poster)) if ready or cover else None
+  feed_id,feed_score,feed_scope=xmltv_tmdb(self._detail_view_event)
+  if feed_score:score,score_scope=feed_score,feed_scope
+  brand=bool(score) or tmdb_source(source) or tmdb_source(visible_poster.get('source'))
+  art_id=(tmdb_id(primary) or tmdb_id(visible_poster)) if ready or cover else None
+  verified_id=feed_id or art_id
   poster_source=(poster if cover==poster_image else art).get('source','') if cover else ''
   episode_picture=bool(ready and ready==detail_image and (art.get('role81')=='episode_still'
                        or art.get('image_scope57')=='episode'))
@@ -369,11 +389,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
    control=self.getControl(cid);control.setImage(uri);control.setVisible(bool(uri))
   for cid in (115,116):self.getControl(cid).setVisible(bool(ready))
   self.getControl(1130).setVisible(bool(cover))
-  self.getControl(129).setVisible(brand)
-  self.getControl(129).setWidth(234 if score else 85)
-  self.getControl(130).setVisible(brand)
-  self.getControl(108).setLabel(score.removeprefix('TMDB ')+' · '+score_scope if score else '')
-  self.getControl(108).setVisible(bool(score))
+  self._paint_tmdb(verified_id,score,score_scope,brand)
   names={'provider_event':'Anbieter','xmltv_event':'XMLTV','agent_xmltv':'XMLTV',
          'tvmaze_series':'TVMaze','tvmaze_episode':'TVMaze','agent_tvmaze':'TVMaze',
          'user_local86':'Manuell'}
@@ -384,8 +400,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   poster_attribution='TMDB' if tmdb_source(poster_source) else names.get(poster_source,'')
   self.getControl(146).setLabel('Poster · '+poster_attribution if poster_attribution else '')
   self.getControl(146).setVisible(bool(poster_attribution))
-  self._detail_view_event.update(_tmdb_id=verified_id, _episode_picture=episode_picture,
-      _tmdb_rating=score+' · '+score_scope if score else '')
+  self._detail_view_event['_episode_picture']=episode_picture
   self._reference_images=(ready,cover)
   self._paint_cards()
   __import__('programme_pipeline77').note(self.event,'RENDER_CONTROL',

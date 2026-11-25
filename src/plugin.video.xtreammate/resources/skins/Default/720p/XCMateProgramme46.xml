@@ -313,36 +313,36 @@
    <align>center</align><font>font12</font><textcolor>FFBBC8D8</textcolor>
   </control>
   <control type="image" id="153">
-   <left>984</left><top>416</top><width>107</width><height>184</height>
+   <left>984</left><top>416</top><width>107</width><height>190</height>
    <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
   </control>
   <control type="image" id="157">
-   <left>1097</left><top>416</top><width>107</width><height>184</height>
+   <left>1097</left><top>416</top><width>107</width><height>190</height>
    <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
   </control>
   <control type="image" id="150">
-   <left>984</left><top>422</top><width>107</width><height>126</height>
+   <left>984</left><top>422</top><width>107</width><height>124</height>
    <aspectratio>keep</aspectratio>
   </control>
   <control type="image" id="154">
-   <left>1097</left><top>422</top><width>107</width><height>126</height>
+   <left>1097</left><top>422</top><width>107</width><height>124</height>
    <aspectratio>keep</aspectratio>
   </control>
   <control type="label" id="151">
-   <left>984</left><top>548</top><width>107</width><height>24</height>
+   <left>984</left><top>546</top><width>107</width><height>23</height>
    <align>center</align><font>font12</font><textcolor>FFEAF0F8</textcolor>
   </control>
   <control type="label" id="155">
-   <left>1097</left><top>548</top><width>107</width><height>24</height>
+   <left>1097</left><top>546</top><width>107</width><height>23</height>
    <align>center</align><font>font12</font><textcolor>FFEAF0F8</textcolor>
   </control>
-  <control type="label" id="152">
-   <left>984</left><top>574</top><width>107</width><height>22</height>
-   <align>center</align><font>font12</font><textcolor>FFBBC8D8</textcolor>
+  <control type="textbox" id="152">
+   <left>990</left><top>568</top><width>95</width><height>38</height>
+   <font>font12</font><textcolor>FFBBC8D8</textcolor>
   </control>
-  <control type="label" id="156">
-   <left>1097</left><top>574</top><width>107</width><height>22</height>
-   <align>center</align><font>font12</font><textcolor>FFBBC8D8</textcolor>
+  <control type="textbox" id="156">
+   <left>1103</left><top>568</top><width>95</width><height>38</height>
+   <font>font12</font><textcolor>FFBBC8D8</textcolor>
   </control>
   <control type="label" id="148">
    <left>984</left><top>468</top><width>107</width><height>22</height>

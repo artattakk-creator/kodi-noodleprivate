@@ -99,6 +99,26 @@ class PersonReferences102(Fixture, unittest.TestCase):
         self.assertFalse(value.get('image'))
         probe.assert_not_called()
 
+    def test_terminal_failure_removes_empty_photo_card(self):
+        from programme_requests68 import completed
+        from programme_urls55 import resolve
+        from programme_window46 import ProgrammeWindow46
+
+        event = self.imported_event()
+        window = ProgrammeWindow46('XCMateProgramme46.xml', str(ADDON), 'Default', '720p')
+        window.configure(self.portal, {'sid': '1', 'name': 'One'})
+        window._ready = True
+        window.event = event
+        self.addCleanup(window.close)
+        window._paint_facts(event)
+        first = resolve(dict(event, _art_view499='person1'), check=self.preflight)
+        completed(dict(event, _art_view499='person2'), dict(code='HTTP_NOT_FOUND', source='placeholder'))
+
+        window.onClick(504)
+        window.pump()
+        self.assertEqual(window.getControl(150).image, first['image'])
+        self.assertFalse(window.getControl(157).visible)
+
     def test_native_details_show_two_sources_and_no_name_assignment(self):
         from programme_window46 import ProgrammeWindow46
         from programme_urls55 import resolve
@@ -130,7 +150,9 @@ class PersonReferences102(Fixture, unittest.TestCase):
                 self.assertTrue(cid in window.controls and window.getControl(cid).visible)
                 self.assertEqual(window.getControl(cid).image, image)
                 self.assertIn('TMDB', window.getControl(cid + 1).label)
-                self.assertIn('Nicht zugeordnet', window.getControl(cid + 2).label)
+                assignment = window.getControl(cid + 2)
+                self.assertEqual(assignment.kind, 'textbox')
+                self.assertIn('Nicht zugeordnet', assignment.text)
             self.options['programme_tmdb_optout77'] = True
             window._next = 0
             window.pump()
