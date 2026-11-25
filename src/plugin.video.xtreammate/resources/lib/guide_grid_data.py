@@ -96,8 +96,11 @@ def initial(portal,origin,client=None,selected_sid80='',selected_group80=''):
     offset=position//ROWS*ROWS
     # Empty category is deliberately an empty selection, never category=None.
     value=page(portal,offset,origin,category,client)
-    value.update(category=category,row=position-offset,
-                 catalog_known=bool(groups) or reader.state('live') is not None)
+    catalogue=reader.state('live') if not groups else None
+    # A blank revision can be the placeholder left when Live was disabled.
+    # Once enabled, wait for the first real catalogue before resolving saved focus.
+    catalog_known=bool(groups or (catalogue and (catalogue['revision'] or not portal.get('include_live',True))))
+    value.update(category=category,row=position-offset,catalog_known=catalog_known)
     try:
         import xbmc
         xbmc.log('[XCMate][GUIDE_GROUP] stage=INITIAL groups={} saved_active={} selected_saved={} start_found={} start_in_group={} rows={} category_empty={} category_star={}'.format(
