@@ -154,6 +154,7 @@ class PublicAgentTest(unittest.TestCase):
         for code, body, rehash in (
                 ("CHECKSUM_OR_SIZE_MISMATCH", b"short", False),
                 ("HUB4_XMLTV_INVALID", gzip.compress(XMLTV)[:-8], True),
+                ("HUB4_XMLTV_INVALID", gzip.compress(XMLTV)[:10] + b"\x07" + gzip.compress(XMLTV)[11:], True),
                 ("HUB4_XMLTV_INVALID", gzip.compress(b"<html></html>"), True),
                 ("HUB4_PROGRAMME_INVALID", gzip.compress(XMLTV.replace(b'channel="welt.de"', b'channel="unknown"')), True)):
             with self.subTest(code=code), tempfile.TemporaryDirectory() as temp, self.fresh_profile(temp):
@@ -192,12 +193,26 @@ class PublicAgentTest(unittest.TestCase):
 
     def test_public_xmltv_rejects_private_image_reference(self):
         from epg_agent_public import stage_public_candidate
-        data = XMLTV.replace(b'</display-name>', b'</display-name><icon src="https://example.invalid/a.png?token=fixture"/>')
+        data = XMLTV.replace(b'</display-name>', b'</display-name><icon src="HTTPS://example.invalid/a.png?token=fixture"/>')
         fixture = Transport(*public_manifest(xml=data))
         with tempfile.TemporaryDirectory() as temp, self.fresh_profile(temp):
             with self.assertRaises(DeliveryError):
                 stage_public_candidate(Path(temp), opener=fixture)
             self.assertEqual(list(Path(temp).iterdir()), [])
+
+    def test_manifest_asset_name_cannot_collide_with_local_generation_file(self):
+        from epg_agent_public import stage_public_candidate
+        fixture = Transport(*public_manifest())
+        original = ROOT_URL + TAG + "/epg-de.xml.gz"
+        name = "xcmate-epg.xml.gz"
+        endpoint = ROOT_URL + TAG + "/" + name
+        row = next(row for row in fixture.manifest["files"] if row["download_url"] == original)
+        row.update(file=name, download_url=endpoint)
+        fixture.assets[endpoint] = fixture.assets.pop(original)
+        with tempfile.TemporaryDirectory() as temp, self.fresh_profile(temp):
+            result = stage_public_candidate(Path(temp), opener=fixture)
+            self.assertEqual(gzip.decompress((Path(result["path"])/name).read_bytes()), XMLTV)
+
 
 
 class PublicSQLiteImportTest(Fixture, unittest.TestCase):

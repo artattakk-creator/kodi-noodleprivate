@@ -3,6 +3,7 @@
 Keep the existing schema-3 reader untouched.  Never send auth to a CDN;
 read-only token is only sent to pinned api.github.com release endpoints.
 """
+from contextlib import closing
 from datetime import datetime, timezone
 import gzip
 import hashlib
@@ -11,8 +12,10 @@ import os
 from pathlib import Path
 import re
 import shutil
+import sqlite3
 import tempfile
 import time
+import zlib
 from urllib import error, parse, request
 from xml.etree import ElementTree as ET
 
@@ -160,7 +163,7 @@ def _verify(path, record, cancel, *, on_event=None, reject_credentials=False):
             counts = parse_xmltv(raw, channel, programme, cancel=cancel,
                                  max_seconds=720, progress=progress, strict_images=True,
                                  reject_credentials=reject_credentials)
-    except (OSError, ValueError, EOFError, gzip.BadGzipFile) as exc:
+    except (OSError, ValueError, EOFError, zlib.error) as exc:
         from epg_agent_github import DeliveryError
         if isinstance(exc, DeliveryError):
             raise
@@ -192,11 +195,18 @@ def _records(filename, tag, cancel):
 
 
 def _combine(files, output, cancel):
-    """DE+AT is the actual union, never the unselected international 'all' file."""
+    """Merge selected profiles with a disk-backed index for common channel slots."""
+    from xmltv_stream import timestamp
+
     channels = {}
     duplicated = set()
-    seen_intervals = set()
-    with gzip.open(output, "wb", compresslevel=6) as result:
+    with tempfile.TemporaryDirectory(prefix=".slots-", dir=output.parent) as work, \
+            closing(sqlite3.connect(Path(work) / "seen.sqlite")) as seen, \
+            gzip.open(output, "wb", compresslevel=6) as result:
+        seen.execute("PRAGMA journal_mode=OFF")
+        seen.execute("PRAGMA cache_size=-4096")
+        seen.execute("CREATE TABLE slots(cid TEXT, start INTEGER, stop INTEGER, "
+                     "PRIMARY KEY(cid,start,stop)) WITHOUT ROWID")
         result.write(b'<?xml version="1.0" encoding="UTF-8"?>\n<tv generator-info-name="XCMate EPG Agent">\n')
         for country, file in files:
             for row in _records(file, "channel", cancel):
@@ -214,10 +224,10 @@ def _combine(files, output, cancel):
             for row in _records(file, "programme", cancel):
                 cid = row.get("channel")
                 if cid in duplicated:
-                    interval = (cid, row.get("start"), row.get("stop"))
-                    if interval in seen_intervals:
-                        continue  # DE wins a genuinely conflicting same-slot event.
-                    seen_intervals.add(interval)
+                    slot = (cid, timestamp(row.get("start")), timestamp(row.get("stop")))
+                    added = seen.execute("INSERT OR IGNORE INTO slots VALUES(?,?,?)", slot)
+                    if not added.rowcount:
+                        continue  # The first configured profile supplies a common slot.
                 result.write(ET.tostring(row, encoding="utf-8") + b"\n")
         result.write(b"</tv>\n")
     return len(channels)

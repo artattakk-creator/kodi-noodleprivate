@@ -46,6 +46,16 @@ def tmdb_source(source):
  return str(source).startswith('tmdb') or source=='agent_tmdb'
 
 
+def tmdb_id(value):
+ if not tmdb_source(value.get('source')) or value.get('provisional85'):
+  return None
+ raw=value.get('provider_id')
+ if type(raw) is int or isinstance(raw,str) and len(raw)<=12 and raw.isascii() and raw.isdecimal():
+  ident=int(raw)
+  return ident if 0<ident<10**12 else None
+ return None
+
+
 def rating(value):
  score=value.get('vote_average88');votes=value.get('vote_count88')
  if not tmdb_source(value.get('source','')) or value.get('provisional85') or type(score) not in (int,float) or not math.isfinite(score) or not 0<score<=10 or type(votes) is not int or votes<=0:return ''

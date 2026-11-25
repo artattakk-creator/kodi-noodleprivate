@@ -60,7 +60,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
  def onInit(self):
   self._gui()
   if self._ready:return
-  for cid in (104,105,107,108,110,114,115,116,120,121,129,130,142,143,144,1130):
+  for cid in (104,105,107,108,110,114,115,116,120,121,129,130,142,143,144,145,146,1130):
    self.getControl(cid).setVisible(False)
   self._shown=True;self._ready=True;self.getControl(501).setLabel(tr(36101));self.getControl(101).setLabel(tr(36100))
   from menu_icons45 import icon
@@ -143,7 +143,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
    roles=event.get('agent_art') or {}
    gaps=[label for key,label in (('season','Staffel'),('episode','Folge'),('director','Regie'))
          if not event.get(key)]
-   if not roles.get('episode_still'):gaps.append('Episodenbild')
+   if not (roles.get('episode_still') or event.get('_episode_picture')):gaps.append('Episodenbild')
    if roles.get('person') or roles.get('character'):gaps.append('Zuordnung der Personenfotos')
   backdrop,poster=self._reference_images
   left=678 if technical else 1184
@@ -244,6 +244,11 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   self.getControl(135).setPosition(image_x,370)
   self.getControl(135).setWidth(image_width)
   self.getControl(136).setPosition(image_x+22,382)
+  people=event.get('agent_art') or {}
+  person_reference=self.getControl(145)
+  person_reference.setPosition(image_x+22,580)
+  person_reference.setLabel('Personenbild · nicht zugeordnet')
+  person_reference.setVisible(show_images and bool(people.get('person') or people.get('character')))
   first=self.getControl(140);first.setPosition(image_x+22,421)
   first.setWidth(282 if split_images and poster else image_width-44 if not poster else image_width-190)
   second=self.getControl(141);second.setPosition(image_x+image_width-172 if backdrop else image_x+22,421)
@@ -269,7 +274,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   if art.get('poster'):request(dict(event,_art_view499='card'),priority=False)
 
  def _paint_art(self,art,hero,poster):
-  from programme_actions88 import rating,tmdb_source
+  from programme_actions88 import rating,tmdb_source,tmdb_id
   from programme_image69 import eligible
 
   def image(value,view=None):
@@ -296,9 +301,11 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   score_scope={'tmdb_movie':'Film','tmdb_series':'Serie','tmdb_episode':'Folge'}.get(score_source)
   if not score_scope:score=''
   brand=tmdb_source(source) or tmdb_source(visible_poster.get('source'))
-  tmdb_id=next((item['id'] for item in (primary,visible_poster) if
-                tmdb_source(item.get('source')) and type(item.get('id')) is int and item['id']>0),None)
-  signature=(ready,cover,source,score,score_scope,brand,tmdb_id)
+  verified_id=(tmdb_id(primary) or tmdb_id(visible_poster)) if ready or cover else None
+  poster_source=(poster if cover==poster_image else art).get('source','') if cover else ''
+  episode_picture=bool(ready and ready==detail_image and (art.get('role81')=='episode_still'
+                       or art.get('image_scope57')=='episode'))
+  signature=(ready,cover,source,score,score_scope,brand,verified_id,poster_source,episode_picture)
   if signature==self._art_signature:return
   self._art_signature=signature
   for cid,uri in ((110,ready),(114,cover)):
@@ -316,7 +323,10 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   image_source='TMDB' if tmdb_source(source) else names.get(source,'')
   self.getControl(105).setLabel('Bild · '+image_source if image_source else '')
   self.getControl(105).setVisible(bool(image_source))
-  self._detail_view_event.update(_tmdb_id=tmdb_id,
+  poster_attribution='TMDB' if tmdb_source(poster_source) else names.get(poster_source,'')
+  self.getControl(146).setLabel('Poster · '+poster_attribution if poster_attribution else '')
+  self.getControl(146).setVisible(bool(poster_attribution))
+  self._detail_view_event.update(_tmdb_id=verified_id, _episode_picture=episode_picture,
       _tmdb_rating=score+' · '+score_scope if score else '')
   self._reference_images=(ready,cover)
   self._paint_cards()

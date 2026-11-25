@@ -153,6 +153,24 @@ class Artwork482(unittest.TestCase):
         self.assertIn('Episodenbild', window.getControl(143).text)
         self.assertNotIn('Regie', window.getControl(143).text)
 
+    def test_verified_episode_picture_is_not_reported_missing(self):
+        from programme_window46 import ProgrammeWindow46
+        from xcmate027_fixture import ADDON
+
+        window = ProgrammeWindow46('XCMateProgramme46.xml', str(ADDON), 'Default', '720p')
+        window.configure(self.f.portal, self.f.channel)
+        self.addCleanup(window.close)
+        with mock.patch.object(window, '_start_read85'):
+            window.onInit()
+        window.event = dict(self.event, team='Synthetic', director='Pat Meyer')
+        window._paint_facts(window.event)
+        image = dict(source='tvmaze_episode', image_scope57='episode', image='/verified/still.png')
+        with mock.patch('programme_image69.eligible', side_effect=lambda value,event: bool(value)):
+            window._paint_art(image, {}, {})
+        window.onClick(504)
+        self.assertEqual(window.getControl(110).image, image['image'])
+        self.assertNotIn('Episodenbild', window.getControl(143).text)
+
     def test_detail_renders_each_verified_image_in_its_own_role(self):
         from programme_window46 import ProgrammeWindow46
         from xcmate027_fixture import ADDON
@@ -179,11 +197,12 @@ class Artwork482(unittest.TestCase):
         window.event = dict(self.event)
         backdrop = dict(source='provider_event', role81='backdrop', image='/verified/backdrop.png')
         poster = dict(source='tmdb_series', role81='poster', image='/verified/poster.png',
-                      vote_average88=8.1, vote_count88=100)
+                      vote_average88=8.1, vote_count88=100, provider_id='126027')
         with mock.patch('programme_image69.eligible', side_effect=lambda value,event: bool(value)):
             window._paint_art({}, backdrop, poster)
         self.assertTrue(window.getControl(108).visible)
         self.assertEqual(window.getControl(108).label, '8,1/10 · Serie')
+        self.assertIn('126027', window.getControl(127).text)
         with mock.patch('programme_image69.eligible', side_effect=lambda value,event: bool(value)):
             window._paint_art({}, backdrop, dict(poster, vote_count88=0))
         self.assertTrue(window.getControl(130).visible)

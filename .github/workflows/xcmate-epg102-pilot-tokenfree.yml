@@ -20,6 +20,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install host dependency
+        run: python -m pip install 'Pillow>=11,<13'
       - name: Run focused client tests
         env:
           PYTHONPATH: src/plugin.video.xtreammate/resources/lib
@@ -30,7 +32,6 @@ jobs:
           python -m unittest discover -s tests -p 'test_xcmate_service_idle102.py' -v
       - name: Verify public ZIP and SHA256
         run: |
-          python -m pip install 'Pillow>=11,<13'
           python tools/package_xcmate_public.py "$RUNNER_TEMP/candidate"
           cd "$RUNNER_TEMP/candidate"
           sha256sum -c plugin.video.xtreammate-0.1.29.102.zip.sha256

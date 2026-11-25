@@ -48,7 +48,7 @@ def _image_attributes(attributes,strict):
 
 
 def _reject_credentials(value):
-    if not value.startswith(('http://','https://')):
+    if not value[:8].lower().startswith(('http://','https://')):
         return
     try:
         parsed=urlsplit(value)

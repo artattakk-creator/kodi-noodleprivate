@@ -304,6 +304,14 @@
    <left>70</left><top>412</top><width>626</width><height>28</height>
    <font>font12</font><textcolor>FFBBC8D8</textcolor>
   </control>
+  <control type="label" id="145">
+   <left>764</left><top>580</top><width>445</width><height>24</height>
+   <font>font12</font><textcolor>FFBBC8D8</textcolor>
+  </control>
+  <control type="label" id="146">
+   <left>957</left><top>322</top><width>215</width><height>27</height>
+   <align>center</align><font>font12</font><textcolor>FFBBC8D8</textcolor>
+  </control>
   <control type="label" id="109">
    <left>48</left><top>612</top><width>560</width><height>24</height>
    <font>font12</font>

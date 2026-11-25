@@ -191,7 +191,7 @@ def _channel_digest(cid):
     return hashlib.sha256(cid.encode("utf-8")).hexdigest()[:32]
 
 
-def _verify_profile(path, record, cancel, now, http_status, *, public=False):
+def _verify_profile(path, record, cancel, now, http_status, *, report_dir, public=False):
     from epg_horizon102 import Coverage
 
     coverage = Coverage(now)
@@ -205,7 +205,7 @@ def _verify_profile(path, record, cancel, now, http_status, *, public=False):
     _verify(path, record, cancel, on_event=measure, reject_credentials=public)
     report = dict(horizon=coverage.result(), http_status=http_status,
                   channels=sorted(_channel_digest(cid) for cid in event_channels))
-    target = _coverage_file(path.parent, record["profile"])
+    target = _coverage_file(report_dir, record["profile"])
     try:
         with gzip.open(target, "wt", encoding="utf-8") as output:
             json.dump(report, output, separators=(",", ":"))
@@ -298,6 +298,8 @@ def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: 
     check_space(str(root / "manifest.json"), total * (3 if len(rows) > 1 else 2))
     temporary = Path(tempfile.mkdtemp(prefix=".hub5-", dir=root))
     try:
+        downloads = temporary / "assets"
+        downloads.mkdir()
         sources = []
         verified_assets = {}
         observed = time.time()
@@ -324,13 +326,13 @@ def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: 
                 if progress is not None:
                     def on_bytes(size):
                         progress(transferred + size, total)
-                path = download_asset(record, manifest["tag"], temporary, opener, cancel,
+                path = download_asset(record, manifest["tag"], downloads, opener, cancel,
                                       on_http=status.append, on_bytes=on_bytes)
                 transferred += record["bytes"]
             else:
-                path = _download(record, token, temporary, opener, cancel, on_http=status.append)
+                path = _download(record, token, downloads, opener, cancel, on_http=status.append)
             _verify_profile(path, record, cancel, observed, status[0] if status else None,
-                            public=public)
+                            report_dir=temporary, public=public)
             verified_assets[key] = record
             sources.append((p, path))
         final = temporary / XMLTV_FILE
@@ -357,7 +359,7 @@ def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: 
                                      max_seconds=900, include_icons=True,
                                      include_images=True, channel_image=on_logo,
                                      strict_images=True)
-        except (OSError, ValueError, TimeoutError, gzip.BadGzipFile):
+        except (OSError, ValueError, EOFError, zlib.error):
             fail("HUB5_XMLTV_INVALID")
         if result["skipped"] or not counts["channels"] or not counts["programmes"]:
             fail("HUB5_XMLTV_INVALID")
@@ -386,6 +388,7 @@ def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: 
         for _, old in sources:
             if old.exists():
                 old.unlink()
+        downloads.rmdir()
         destination = root / ("candidate-" + generation)
         os.replace(temporary, destination)
         return dict(response, status="STAGED_FULL_CANDIDATE",
