@@ -111,8 +111,9 @@ def show(portal):
             addon.setSetting(SETTING, "false" if active else "true")
             request_check()
         elif action == "source":
-            selected = dialog.select("EPG-Bezugsquelle", ["Öffentliches GS Media EPG", "Privates GS Media EPG"],
-                                     preselect=int(private))
+            selected = select(dialog, "EPG-Bezugsquelle",
+                              ["Öffentliches GS Media EPG", "Privates GS Media EPG"],
+                              actions=["refresh", "status"], preselect=int(private))
             if selected in (0, 1) and bool(selected) != private:
                 addon.setSetting("epg_agent_private", "true" if selected else "false")
                 request_check()

@@ -30,11 +30,12 @@ def portals_ready():
     with _portal_probe_lock:
         if now < _next_portal_probe:
             return _portal_ready
-        from portals import get_active, PortalReadError
+        from portal_snapshot import PortalReadError
         from startup48 import mark
         try:
+            from portals import get_active
             ready = bool(get_active())
-        except PortalReadError:
+        except (ImportError, PortalReadError):
             mark('BACKGROUND', 'UNAVAILABLE')
             ready = False
         if ready != _portal_ready or not _next_portal_probe:
