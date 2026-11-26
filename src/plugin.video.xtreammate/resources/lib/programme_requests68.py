@@ -206,12 +206,12 @@ def drain(cancel=lambda:False):
    previous69=_read('status.'+str(slot))
    if previous69.get('tag')==value['tag'] and previous69.get('scope')==scope():
     artifact69=previous69.get('art') or {}
-    from programme_policy68 import negative_scope
+    from programme_image69 import policy as image_policy
     from programme_status70 import retry as retry70,valid as valid70
     if artifact69.get('code') in __import__('programme_revision85').REASONS and artifact69.get('until',0)>time.time():continue
     positive77=artifact69.get('source') not in (None,'','placeholder')
     ready77=not positive77 or __import__('programme_image69').eligible(artifact69,event)
-    if ready77 and valid70(previous69) and artifact69.get('until',0)>time.time() and artifact69.get('policy69')==negative_scope({}) and not retry70(event,artifact69) and not __import__('programme_status70').legacy_negative(artifact69):continue
+    if ready77 and valid70(previous69) and artifact69.get('until',0)>time.time() and artifact69.get('policy69')==image_policy(artifact69.get('source')) and not retry70(event,artifact69) and not __import__('programme_status70').legacy_negative(artifact69):continue
     if previous69.get('code') in ('QUEUED','RUNNING') and 0<=time.time()-previous69.get('at',0)<60:
      if value.get('priority') and previous69.get('code')=='QUEUED':
       from programme_urls55 import promote_focus75

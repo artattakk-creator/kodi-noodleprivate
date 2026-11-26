@@ -23,17 +23,21 @@ def pictures_enabled():
 
 def allowed(source):
     from epg_handoff63 import profile_scope
-    from utils import setting_bool
     import xbmcgui
 
-    if source not in SOURCES or not pictures_enabled():
-        return False
-    if xbmcgui.Window(10000).getProperty('XCMate.Storage92.Disabled.' + profile_scope()) == 'true':
-        return False
-    # Honour older explicit per-supplier opt-outs. The API enable flags and
-    # token store are independent of references that the feed already contains.
-    provider = SOURCES[source]
-    return provider == 'xmltv' or not setting_bool('programme_' + provider + '_optout77', False)
+    return (source in SOURCES and pictures_enabled() and
+            xbmcgui.Window(10000).getProperty('XCMate.Storage92.Disabled.' + profile_scope()) != 'true')
+
+
+def policy():
+    """Receipt policy for imported programme images only."""
+    import hashlib
+    import json
+    from epg_handoff63 import profile_scope
+    from utils import setting
+
+    fields = (profile_scope(), pictures_enabled(), setting('programme_image_hosts55', ''))
+    return hashlib.sha256(json.dumps(fields, separators=(',', ':')).encode()).hexdigest()
 
 
 def view(event):
@@ -105,8 +109,8 @@ def image_shape(role, checked):
 def _receipt(event, requested):
     import hashlib
     from programme_requests68 import identity
-    from programme_policy68 import negative_scope
-    tag = hashlib.sha256((identity(event) + negative_scope(event) + '|' + requested).encode()).hexdigest()
+    from programme_image69 import fingerprint
+    tag = hashlib.sha256((identity(event) + policy() + fingerprint(event, 'agent_xmltv') + '|' + requested).encode()).hexdigest()
     bucket = int(tag[:8], 16)
     slot = 192 + 8 * PERSON_VIEWS.index(requested) + bucket % 8 if requested in PERSON_VIEWS else bucket % 192
     return tag, 'XCMate.TypedArt499.' + str(slot)

@@ -67,10 +67,10 @@ def profile():
 def display(event,value):
     """A persisted URL is not proof that Android displayed the right picture."""
     if not isinstance(value,dict) or value.get('url_version55')!=1:return None
-    from programme_art46 import fingerprint
+    from programme_image69 import fingerprint
     if value.get('source','').startswith('agent_') and not __import__('agent_programme100').allowed(value['source']):return None
     if value.get('source')=='xmltv_event' and (not __import__('event_art81').allowed(value) or not __import__('xmltv_art96').display_allowed(value,event)):return None
-    if value.get('fingerprint')!=fingerprint(event):return None
+    if value.get('fingerprint')!=fingerprint(event,value.get('source')):return None
     if value.get('hosts55')!=sorted(hosts()) or value.get('profile55')!=profile():return None
     if value.get('binding55')!=binding(event) or value.get('key')!=event.get('key'):return None
     until=value.get('until',0)
@@ -491,7 +491,9 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             if candidate.get(field):value[field]=candidate[field]
         if url_mode69 or typed_choice499:
             from programme_requests68 import identity,scope
-            value.update(url_verified69=True,scope69=identity(event),profile69=scope(),policy69=negative_scope({}))
+            from programme_image69 import fingerprint as image_fingerprint,policy as image_policy
+            value.update(url_verified69=True,scope69=identity(event),profile69=scope(),
+                         policy69=image_policy(value['source']),fingerprint=image_fingerprint(event,value['source']))
         if isinstance(verified77,dict) and verified77.get('decoded77'):
             value.update(decoded77=True,image_width77=verified77['width'],image_height77=verified77['height'])
         from programme_pipeline77 import note

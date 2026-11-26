@@ -21,9 +21,9 @@ def root():
 
 def image_root87():return __import__('android_artwork87').programme_root()
 
-def fingerprint(event):
+def fingerprint(event, *, research=True):
  values=[event.get(k) for k in ('xmltv_image','provider_image','title','subtitle','year','season','episode','epg_source46')]
- if not event.get('xmltv_image') and not event.get('provider_image'):
+ if research and not event.get('xmltv_image') and not event.get('provider_image'):
   from utils import setting_bool,setting
   enabled=setting_bool('programme_tmdb46',False)
   values.append('tv-artwork66-v1')

@@ -48,16 +48,21 @@ def admitted(proof,event):
  with _lock:
   return not any(hashlib.sha256(host.encode()).hexdigest()==proof['dns_hash88'] and verdict[0]>time.monotonic() and not verdict[1] and not __import__('dns_verdict78').temporary((host,port)) for (host,port),verdict in _dns_cache.items())
 def recover(event):
- from urllib.parse import urlsplit,parse_qs,unquote
+ import agent_programme100 as roles499
  from sticky_art88 import key
+ view=roles499.view(event) if roles499.typed(event) else ''
+ if view:
+  value=_recover(event,key(event,'agent_xmltv'),view)
+  if value:return value
+ return _recover(event,key(event),view)
+
+def _recover(event,context,view499):
+ from urllib.parse import urlsplit,parse_qs,unquote
  from widget_cache82 import decoded
  from programme_requests68 import identity,scope
- from programme_art46 import fingerprint
- from programme_policy68 import negative_scope
+ from programme_image69 import fingerprint,policy
  import xbmc
  import agent_programme100 as roles499
- context=key(event)
- view499=roles499.view(event) if roles499.typed(event) else ''
  cache_key=(context,view499) if view499 else context
  if not event.get('start',0)<=time.time()<event.get('stop',0):return None
  try:
@@ -101,7 +106,7 @@ def recover(event):
    try:
     record=decoded(texture,texture.get('url',''))
     if not record:continue
-    result=dict(proof,key=event['key'],fingerprint=fingerprint(event),code='READY',image=record['file'],thumbnail=record['file'],sha256=record['sha256'],scope69=identity(event),profile69=scope(),policy69=negative_scope({}),until=min(time.time()+600,event['stop']),decoded77=True,image_width77=record['width'],image_height77=record['height'],persisted69=False,storage69='KODI_TEXTURE_CACHE')
+    result=dict(proof,key=event['key'],fingerprint=fingerprint(event,proof['source']),code='READY',image=record['file'],thumbnail=record['file'],sha256=record['sha256'],scope69=identity(event),profile69=scope(),policy69=policy(proof['source']),until=min(time.time()+600,event['stop']),decoded77=True,image_width77=record['width'],image_height77=record['height'],persisted69=False,storage69='KODI_TEXTURE_CACHE')
     if view499 and not roles499.fits(result,view499):continue
     result.pop('source_hash88',None);result.pop('dns_hash88',None)
     result['attribution']='XCMate EPG Agent · TMDB · '+__import__('tmdb_connection60').ATTRIBUTION if result['source']=='agent_tmdb' else 'XCMate EPG Agent · TVmaze' if result['source']=='agent_tvmaze' else 'XCMate EPG Agent · XMLTV' if result['source']=='agent_xmltv' else 'TMDB · '+__import__('tmdb_connection60').ATTRIBUTION if result['source'].startswith('tmdb') else 'TVmaze · Daten CC BY-SA; Bildrechte beim Rechteinhaber' if result['source'].startswith('tvmaze') else 'XMLTV' if result['source']=='xmltv_event' else 'Provider'

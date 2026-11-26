@@ -236,3 +236,29 @@ class PublicArt103(Fixture, unittest.TestCase):
             window._paint_art(poster, backdrop, {})
         self.assertEqual(window.getControl(105).label, 'Hintergrundbild · Agent/TMDB')
         self.assertEqual(window.getControl(146).label, 'Poster · TVMaze')
+
+    def test_switching_direct_api_off_keeps_already_verified_agent_artwork(self):
+        from artwork_sources96 import choose, enabled
+        from programme_image69 import eligible
+        from programme_requests68 import result
+        from programme_urls55 import resolve
+        import xml.etree.ElementTree as xml
+
+        settings = self.folder / 'settings.xml'
+        settings.write_text('<settings/>')
+        event = self.event(('backdrop',))
+
+        def set_kodi_setting(key, value):
+            self.options[key] = value == 'true'
+            root = xml.parse(settings).getroot()
+            xml.SubElement(root, 'setting', id=key).text = value
+            xml.ElementTree(root).write(settings)
+
+        with mock.patch('programme_urls55.probe', side_effect=self.preflight):
+            picture = resolve(event, url_mode69=True)
+        self.assertTrue(eligible(picture, event))
+        with mock.patch('xbmcaddon.Addon', return_value=mock.Mock(setSetting=set_kodi_setting)):
+            choose('tmdb', False)
+        self.assertFalse(enabled('tmdb'))
+        self.assertTrue(eligible(picture, event))
+        self.assertEqual(result(event)['image'], picture['image'])

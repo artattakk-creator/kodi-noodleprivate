@@ -141,14 +141,14 @@ class Artwork100(Fixture, unittest.TestCase):
         self.assertIsNone(classify({'source': 'agent_tmdb', 'role81': 'thumb',
                                     'image_width77': 1280, 'image_height77': 720}))
 
-    def test_agent_source_opt_out_invalidates_previously_eligible_local_reference(self):
+    def test_agent_policy_disables_imported_pictures_independently_of_direct_api(self):
         from programme_image69 import eligible
         self.options.update(epg_agent_enabled=True, programme_tvmaze67=True)
         art = {'code': 'READY', 'source': 'agent_tvmaze', 'image': '/verified.jpg'}
         self.assertTrue(eligible(art))
-        self.options['programme_tvmaze_optout77'] = True
-        self.assertFalse(eligible(art))
-        self.options.update(programme_tvmaze_optout77=False, epg_agent_enabled=False)
+        self.options.update(programme_tvmaze_optout77=True, programme_tvmaze67=False)
+        self.assertTrue(eligible(art))
+        self.options['epg_agent_enabled'] = False
         self.assertFalse(eligible(art))
 
     def test_feed_logo_is_decoded_on_worker_then_available_after_receipt_loss(self):
