@@ -262,3 +262,55 @@ class PublicArt103(Fixture, unittest.TestCase):
         self.assertFalse(enabled('tmdb'))
         self.assertTrue(eligible(picture, event))
         self.assertEqual(result(event)['image'], picture['image'])
+
+    def test_native_locked_agent_backdrop_remains_eligible_after_direct_optout(self):
+        import hashlib
+        import time
+
+        from decoded_assets88 import shutdown
+        from programme_image69 import eligible
+        from programme_lock89 import acknowledge, propose, window
+        from programme_requests68 import result
+        from programme_urls55 import resolve
+
+        event = self.event(('backdrop',))
+        with mock.patch('programme_urls55.probe', side_effect=self.preflight):
+            artwork = resolve(event, url_mode69=True)
+        body = self.preflight(artwork['source_url'])['_body81']
+        image = self.folder / 'native-kodi-texture.png'
+        image.write_bytes(body)
+        propose(event, artwork, dict(file=str(image), sha256=hashlib.sha256(body).hexdigest()))
+        native = window()
+        native.setProperty('XCMate.Hero63.Active', 'A')
+        native.setProperty('XCMate.Hero63.A.Image', artwork['image'])
+        with mock.patch('xbmcgui.getCurrentWindowId', return_value=10000), \
+             mock.patch('xbmc.getInfoLabel', side_effect=lambda name: 'live' if 'WidgetKind41' in name else '1'), \
+             mock.patch('xbmc.getCondVisibility', return_value=True), \
+             mock.patch('time.monotonic', return_value=time.monotonic() + 1):
+            self.assertTrue(acknowledge(event, native)['lock89'])
+        shutdown()
+        locked = result(event)
+        self.assertTrue(locked['lock89'])
+        self.assertTrue(eligible(locked, event))
+        self.options.update(programme_tmdb46=False, tmdb_research43=False, programme_tmdb_optout77=True)
+        locked = result(event)
+        self.assertTrue(locked['lock89'])
+        self.assertEqual(locked['image'], str(image))
+        self.assertTrue(eligible(locked, event))
+
+    def test_home_can_admit_a_recovered_agent_backdrop_under_its_own_image_policy(self):
+        import json
+
+        from agent_programme100 import candidates
+        from hero_render86 import recovered_candidate
+        from programme_image69 import eligible
+
+        event = self.event(('backdrop',))
+        candidate = candidates(event)[0]
+        texture = dict(file='/verified/agent.png', sha256='a'*64, width=1280, height=720)
+        rpc = json.dumps({'result': {'textures': [{'url': candidate['url']}]}})
+        with mock.patch('xbmc.executeJSONRPC', return_value=rpc, create=True), \
+             mock.patch('widget_cache82.decoded', return_value=texture):
+            artwork = recovered_candidate(event, candidate, candidate['url'])
+        self.assertIsNotNone(artwork)
+        self.assertTrue(eligible(artwork, event))

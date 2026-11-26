@@ -154,7 +154,8 @@ def recovered_candidate(event,candidate,url):
    typed=dict(candidate,image_width77=record['width'],image_height77=record['height'])
    if not __import__('hero_art86').classify(typed):continue
    from programme_requests68 import identity,scope
-   from programme_art46 import fingerprint
-   return dict(typed,code='READY',key=event['key'],fingerprint=fingerprint(event),image=record['file'],thumbnail=record['file'],sha256=record['sha256'],scope69=identity(event),profile69=scope(),policy69=__import__('programme_policy68').negative_scope({}),until=min(time.time()+86400,float(event.get('stop',0))),persisted69=False,storage69='KODI_TEXTURE_CACHE',decoded77=True,mapping_epoch85=__import__('programme_mapping85').epoch(event))
+   from programme_image69 import fingerprint,policy
+   source=typed.get('source')
+   return dict(typed,code='READY',key=event['key'],fingerprint=fingerprint(event,source),image=record['file'],thumbnail=record['file'],sha256=record['sha256'],scope69=identity(event),profile69=scope(),policy69=policy(source),until=min(time.time()+86400,float(event.get('stop',0))),persisted69=False,storage69='KODI_TEXTURE_CACHE',decoded77=True,mapping_epoch85=__import__('programme_mapping85').epoch(event))
  except (OSError,ValueError,TypeError,AttributeError,RuntimeError):return None
  return None
