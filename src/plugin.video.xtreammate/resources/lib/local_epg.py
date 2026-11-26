@@ -62,6 +62,7 @@ def _read_binding(db,pid,channel,selected,start,stop,limit,*,strict=False,fallba
     return cid,source,rows,False
 
 
+@scoped
 def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,budget=.4,text_only65=False,strict48=False,provider_fallback=True):
     from epg_binding48 import view_mappings
     mappings = view_mappings(mappings)
@@ -71,13 +72,51 @@ def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,
         return _text_window65(pid,channels,mappings,start,stop,limit,focus_sid,history,budget,True,provider_fallback)
     return _full_window65(pid,channels,mappings,start,stop,limit,focus_sid,history,budget,strict48=strict48,provider_fallback=provider_fallback)
 
+
+def _fallback_window(pid,channels,mappings,start,stop,limit,strict):
+    from epg_binding48 import agent_events,binding
+    from mapping_search482 import MappingReadError
+    from programme_snapshot47 import fallback_window
+
+    view=None;remaining=[]
+    for channel in channels[:16]:
+        sid,_=channel_keys(channel,mappings)
+        selected=binding(mappings,sid)
+        if not selected or selected['source']!='agent':
+            remaining.append(channel)
+            continue
+        cid=selected['channel']
+        try:
+            rows=agent_events(pid,cid,start,stop,limit)
+        except MappingReadError:
+            if strict:raise
+            # Once upgraded, old projection rows cannot replace a failed or
+            # missing station in the verified canonical generation.
+            rows=[]
+        if rows is None:
+            remaining.append(channel)
+            continue
+        if view is None:
+            from epg_agent_catalog103 import for_portal
+            view=View()
+            view.code='OK' if strict else 'SHARED_LASTGOOD47'
+            view.revision=('agent',for_portal(pid).name)
+        view.add(sid,cid,cid,rows)
+    if not strict and remaining:
+        retained=fallback_window(pid,remaining,mappings,start,stop,limit)
+        if view is None:return retained
+        if retained is not None:
+            for sid,sender in retained.channels.items():
+                for cid,rows in sender.items():
+                    view.add(sid,cid,sender.canonical[cid],rows)
+    return view
+
+
 def _full_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,budget=.4,strict48=False,provider_fallback=True):
     import guide_store
     filename=getattr(guide_store,'path',lambda:'')()
     if not filename or not os.path.isfile(filename):
-        if strict48:return None
-        from programme_snapshot47 import fallback_window
-        return fallback_window(pid,channels,mappings,start,stop,limit)
+        return _fallback_window(pid,channels,mappings,start,stop,limit,strict48)
     db=None
     started63=time.perf_counter()
     try:
@@ -88,9 +127,7 @@ def _full_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
         db.execute('BEGIN')
         meta=db.execute('SELECT * FROM guide_meta WHERE pid=?',(pid,)).fetchone()
         if not meta:
-            if strict48:return None
-            from programme_snapshot47 import fallback_window
-            return fallback_window(pid,channels,mappings,start,stop,limit)
+            return _fallback_window(pid,channels,mappings,start,stop,limit,strict48)
         view=View();view.code='OK';record=dict(meta)
         view.revision=(record.get('revision'),record.get('updated'))
         alias_rows89=__import__('epg_single89').aliases(db,pid,channels,mappings)
@@ -131,6 +168,8 @@ def _full_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
             for_channel(view,sid)[ident][:]=optional(pid,sid,values67,lambda:enrich(pid,cid,values67[:4],source67,sid48=sid,revision48=view.revision)+values67[4:])
         return view
     except (OSError,sqlite3.Error) as error63:
+        from mapping_search482 import MappingReadError
+        if strict48 and isinstance(error63,MappingReadError):raise
         from epg_handoff63 import note
         first63=channels[0] if channels else {}
         sid63=channel_keys(first63,mappings)[0]
@@ -148,8 +187,7 @@ def _text_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
     from programme_read47 import borrowed,retain
     filename=getattr(guide_store,'path',lambda:'')()
     if not filename or not os.path.isfile(filename):
-        from programme_snapshot47 import fallback_window
-        return fallback_window(pid,channels,mappings,start,stop,limit)
+        return _fallback_window(pid,channels,mappings,start,stop,limit,False)
     db=None;started63=time.perf_counter();deadline=time.monotonic()+budget
     try:
         db=borrowed(filename)
@@ -159,8 +197,7 @@ def _text_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
         db.set_progress_handler(lambda:int(time.monotonic()>deadline),1000)
         meta=db.execute('SELECT * FROM guide_meta WHERE pid=?',(pid,)).fetchone()
         if not meta:
-            from programme_snapshot47 import fallback_window
-            return fallback_window(pid,channels,mappings,start,stop,limit)
+            return _fallback_window(pid,channels,mappings,start,stop,limit,False)
         view=View();view.code='OK';record=dict(meta);view.revision=(record.get('revision'),record.get('updated'))
         alias_rows89=__import__('epg_single89').aliases(db,pid,channels,mappings)
         prepared={};tasks=[]

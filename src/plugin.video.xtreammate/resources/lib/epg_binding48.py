@@ -47,12 +47,33 @@ def channels(pid,source,query='',offset=0,strict482=False,*,cancel=lambda:False)
         return []
 
 
+def agent_events(pid,cid,start,stop,limit):
+    """None means the active generation still uses the legacy index."""
+    from epg_agent_catalog103 import IndexReadError, for_portal, programmes
+    from mapping_search482 import MappingReadError
+
+    folder=for_portal(pid)
+    if folder is None:return None
+    try:
+        return programmes(folder,cid,start,stop,limit)
+    except IndexReadError as error:
+        if error.code=='NO_LOCAL_INDEX':return None
+        raise MappingReadError(error.code) from None
+
+
 def read(db,pid,cid,source,start,stop,limit=48,strict=False):
     """Read exact source even when two XMLTV feeds use identical channel IDs."""
     if source == 'agent':
         from epg_agent100 import enabled
         if not enabled():
             return []
+        from mapping_search482 import MappingReadError
+        try:
+            indexed=agent_events(pid,cid,start,stop,limit)
+        except MappingReadError:
+            if strict:raise
+            return []
+        if indexed is not None:return indexed
     try:
         rows=db.execute('''SELECT title,description,start,stop,rank FROM guide44_inputs
           WHERE pid=? AND source_id=? AND cid=? AND start<? AND stop>?
@@ -118,10 +139,14 @@ def commit_verified(portal,sid,cid,source,prepare=None):
             if binding(configuration(pid)['mappings'],sid)!=receipt['target']:raise MappingSaveError('MAPPING_CONFLICT')
             receipt['stamp474']=_stamp474()
             return receipt
-        except Exception:
+        except Exception as error:
+            from mapping_search482 import failure
+            code=failure(error, writing=stage=='MAPPING_WRITE_FAILED')
+            if code not in ('DB_BUSY','SQLITE_INTERRUPT','EPG_READ_TIMEOUT','SQLITE_WRITE_TIMEOUT','EPG_READ_FAILED'):
+                code=stage
             try:rollback_verified(receipt)
             except Exception as exc:raise MappingSaveError(getattr(exc,'code','MAPPING_ROLLBACK_UNCONFIRMED')) from None
-            raise MappingSaveError(stage) from None
+            raise MappingSaveError(code) from None
 
 
 def _stamp474():

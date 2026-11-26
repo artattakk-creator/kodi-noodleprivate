@@ -11,15 +11,21 @@ class MappingReadError(OSError):
     def __init__(self,code):self.code=code;super().__init__(code)
 
 
-def failure(error):
-    code=getattr(error,'code','')
+def failure(error, *, writing=False):
+    code=getattr(error,'code','') or getattr(error,'code69','')
     allowed={'DB_BUSY','SOURCE_TIMEOUT','SOURCE_UNAVAILABLE','NO_LOCAL_INDEX','NO_PROGRAMMES',
-             'SOURCE_INVALID','SOURCE_LIMIT','MAPPING_CANCELLED','MAPPING_BUSY','SQLITE_INTERRUPT'}
+             'SOURCE_INVALID','SOURCE_LIMIT','MAPPING_CANCELLED','MAPPING_BUSY','SQLITE_INTERRUPT',
+             'EPG_READ_TIMEOUT','EPG_READ_FAILED','SQLITE_WRITE_TIMEOUT','SOURCE_CHANNEL_MISSING'}
     if code in allowed:return code
-    name=getattr(error,'sqlite_errorname','')
+    if code=='SQLITE_BUSY_LOCKED':return 'DB_BUSY'
+    name=getattr(error,'sqlite_errorname','') or ''
     if name.startswith(('SQLITE_BUSY','SQLITE_LOCKED')) or isinstance(error,sqlite3.Error) and str(error) in ('database is locked','database table is locked'):return 'DB_BUSY'
-    if name=='SQLITE_INTERRUPT':return 'SQLITE_INTERRUPT'
-    if isinstance(error,TimeoutError):return 'SOURCE_TIMEOUT'
+    if name=='SQLITE_INTERRUPT' or isinstance(error,sqlite3.Error) and str(error)=='interrupted':
+        return 'SQLITE_WRITE_TIMEOUT' if writing else 'SQLITE_INTERRUPT'
+    if isinstance(error,sqlite3.Error) and not writing:return 'EPG_READ_FAILED'
+    if isinstance(error,TimeoutError):
+        if str(error) in ('profile read busy','profile write busy'):return 'DB_BUSY'
+        return 'SQLITE_WRITE_TIMEOUT' if writing else 'SOURCE_TIMEOUT'
     if isinstance(error,InterruptedError):return 'MAPPING_CANCELLED'
     hint=str(error) if isinstance(error,ValueError) else ''
     if hint in ('PREVIEW_BYTE_BUDGET','PREVIEW_CHANNEL_BUDGET','PREVIEW_EVENT_BUDGET'):return 'SOURCE_LIMIT'
@@ -115,6 +121,56 @@ def _search_order(db,query):
     return 'mapping_rank(cid,name),cid'
 
 
+def search_grams(*keys):
+    return {key[i:i+3] for key in keys for i in range(len(key)-2)}
+
+
+def _indexed_agent_rows(db, query, offset):
+    folded, wanted = query.casefold(), normal(query)
+    args = dict(folded=folded, wanted=wanted, gram=wanted[:3], offset=offset, through=offset+100)
+    if not wanted:
+        return db.execute('SELECT cid,name,first,last FROM channels WHERE cid_fold=? '
+                          'ORDER BY cid LIMIT 100 OFFSET ?', (folded, offset))
+
+    db.create_function('mapping_rank', 2, rank(query), deterministic=True)
+    # Trigram postings are ordered by CID, so a broad fragment can stop once
+    # its page is filled. One- and two-character fragments use the same exact
+    # tiers and a bounded scan in CID order.
+    if len(wanted) >= 3:
+        fragments = 'channel_grams g CROSS JOIN channels c ON c.cid=g.cid WHERE g.gram=:gram AND'
+        fragment_order = 'g.cid'
+    else:
+        fragments = 'channels c WHERE'
+        fragment_order = 'c.cid'
+    return db.execute('''WITH exact AS (
+        SELECT cid,name,first,last,0 AS tier,0 AS empty,0 AS relevance
+        FROM channels WHERE cid_fold=:folded ORDER BY cid LIMIT :through
+      ), name_ids AS (
+        SELECT cid FROM channels WHERE name_key=:wanted
+        UNION SELECT cid FROM channel_aliases WHERE name_key=:wanted
+      ), named AS (
+        SELECT c.cid,c.name,c.first,c.last,1 AS tier,c.first IS NULL AS empty,
+               mapping_rank(c.cid,c.name) AS relevance
+        FROM name_ids n JOIN channels c ON c.cid=n.cid
+        WHERE c.cid_fold!=:folded
+          AND (instr(:wanted,'+') OR instr(c.name_key,'+')=0
+               OR substr(c.name_key,1,instr(c.name_key,'+')-1)!=:wanted)
+        ORDER BY empty,relevance,c.cid LIMIT :through
+      ), fragments AS (
+        SELECT c.cid,c.name,c.first,c.last,2 AS tier,0 AS empty,0 AS relevance
+        FROM ''' + fragments + ''' c.cid_fold!=:folded AND c.name_key!=:wanted
+          AND NOT EXISTS (SELECT 1 FROM channel_aliases a WHERE a.cid=c.cid AND a.name_key=:wanted)
+          AND (instr(c.name_key,:wanted) OR instr(c.id_key,:wanted)
+               OR EXISTS (SELECT 1 FROM channel_aliases a WHERE a.cid=c.cid AND instr(a.name_key,:wanted)))
+          AND (instr(:wanted,'+') OR instr(c.name_key,'+')=0
+               OR substr(c.name_key,1,instr(c.name_key,'+')-1)!=:wanted)
+        ORDER BY ''' + fragment_order + ''' LIMIT :through
+      )
+      SELECT cid,name,first,last FROM (
+        SELECT * FROM exact UNION ALL SELECT * FROM named UNION ALL SELECT * FROM fragments
+      ) ORDER BY tier,empty,relevance,cid LIMIT 100 OFFSET :offset''', args)
+
+
 def agent_search(pid, query, offset, cancel):
     from contextlib import closing
     from epg_agent100 import local_candidate
@@ -129,9 +185,11 @@ def agent_search(pid, query, offset, cancel):
             raise MappingReadError('MAPPING_CANCELLED')
         if not query:
             rows = db.execute('SELECT cid,name,first,last FROM channels ORDER BY cid LIMIT 100 OFFSET ?', (offset,))
+        elif db.execute("SELECT 1 FROM sqlite_master WHERE name='channel_grams'").fetchone():
+            rows = _indexed_agent_rows(db, query, offset)
         else:
-            # Normalized search keys are prepared once for the generation.
-            # Exact CID, then exact normalized station name, then fragments.
+            # Read the previous verified generation while its replacement is
+            # being indexed. This path disappears after migration.
             wanted = normal(query)
             db.create_collation('mapping_fold', lambda a, b: (a.casefold() > b.casefold()) - (a.casefold() < b.casefold()))
             rows = db.execute('''SELECT cid,name,first,last FROM channels
@@ -142,7 +200,8 @@ def agent_search(pid, query, offset, cancel):
               ORDER BY CASE WHEN cid=? COLLATE mapping_fold THEN 0
                             WHEN name_key=? THEN 1 ELSE 2 END,cid
               LIMIT 100 OFFSET ?''', (query,wanted,wanted,wanted,wanted,wanted,query,wanted,offset))
-        result = [dict(id=cid, name=name, first=first, last=last) for cid,name,first,last in rows]
+        result = [dict(id=cid, name=name, first=first, last=last, scheduled=first is not None)
+                  for cid,name,first,last in rows]
         if cancel():
             raise MappingReadError('MAPPING_CANCELLED')
         return result
@@ -154,6 +213,8 @@ def search(pid,source,query='',offset=0,cancel=lambda:False):
     db=None
     query=str(query)[:160]
     try:
+        if cancel():
+            raise MappingReadError('MAPPING_CANCELLED')
         args=(str(pid),source,max(0,int(offset)))
         if source=='agent':
             rows = agent_search(pid, query, args[2], cancel)

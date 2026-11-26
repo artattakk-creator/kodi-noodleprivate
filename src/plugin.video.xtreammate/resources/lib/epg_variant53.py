@@ -17,6 +17,7 @@ _TOKEN = r'[\s@|:._()\[\]-]'
 _QUALITY = re.compile(r'(?:^|' + _TOKEN + r')(sd|hd|fhd|uhd|4k|8k)(?=$|' + _TOKEN + r')', re.I)
 PRESENTATION_SUFFIX = r'(?:uhd|fhd|hd|sd|4k|8k|hevc|avc|h[. ]?26[45]|x26[45])'
 _NAME_SUFFIX = re.compile(r'(?:[\s|:()\[\]-]+' + PRESENTATION_SUFFIX + r')+[\s)\]]*$', re.I)
+_ID_SUFFIX = re.compile(r'(?:[\s@._|:()\[\]-]+' + PRESENTATION_SUFFIX + r')+[\s)\]]*$', re.I)
 _REGION_ID = re.compile(r'@([a-z][a-z0-9_-]*)$', re.I)
 _QUALIFIER = re.compile(r'^(?:s[0-9]+\.|[a-z0-9_-]+:)(.+)$', re.I)
 
@@ -26,15 +27,21 @@ def raw_id(cid):
     return match[1] if match else cid
 
 
+def broadcast_id(cid):
+    """Compare source-qualified IDs without explicitly delimited presentation tags."""
+    return _ID_SUFFIX.sub('', raw_id(str(cid or '').strip())).casefold()
+
+
 def _variants(name, cid):
     name, cid = str(name or ''), str(cid or '')
-    prefix, suffix = _PREFIX.match(name), _COUNTRY_ID.search(cid)
+    identity_cid = _ID_SUFFIX.sub('', cid)
+    prefix, suffix = _PREFIX.match(name), _COUNTRY_ID.search(identity_cid)
     countries = {_COUNTRIES[token[1].casefold()] for token in (prefix, suffix)
                  if token and token[1].casefold() in _COUNTRIES}
     value = name + ' ' + cid
     shifts = frozenset(int(n) for n in _SHIFT.findall(value))
     qualities = {q.casefold() == 'sd' for q in _QUALITY.findall(value)}
-    region = _REGION_ID.search(cid)
+    region = _REGION_ID.search(identity_cid)
     regional = region[1].casefold() if region and not (
         _QUALITY.search(region[0]) or _SHIFT.search(region[0]) or
         re.fullmatch(PRESENTATION_SUFFIX, region[1], re.I)) else None

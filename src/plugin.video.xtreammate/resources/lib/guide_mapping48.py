@@ -81,12 +81,15 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
         messages={'MAPPING_BUSY':'Andere EPG-Abfrage läuft. Bitte erneut versuchen.',
                   'DB_BUSY':'EPG-Datenbank belegt. Bitte erneut versuchen.',
                   'SOURCE_TIMEOUT':'Quelle antwortet zu langsam. Bitte erneut laden.',
+                  'EPG_READ_TIMEOUT':'Lokale EPG-Abfrage dauerte zu lange. Bitte erneut prüfen.',
+                  'EPG_READ_FAILED':'Lokale EPG-Daten konnten nicht gelesen werden.',
                   'SQLITE_INTERRUPT':'Lokales Lesebudget erreicht. Bitte erneut laden.',
                   'SOURCE_UNAVAILABLE':'Quelle nicht erreichbar. Bitte erneut versuchen.',
                   'SOURCE_INVALID':'Quelldaten nicht lesbar. Andere Quelle prüfen.',
                   'SOURCE_LIMIT':'Quelle überschreitet das begrenzte Lesebudget.',
                   'NO_LOCAL_INDEX':'Kein lokaler Kanalindex. „Quelle laden“ ist optional.',
                   'NO_MATCH':'Kein lokaler Treffer. Suchbegriff oder Quelle ändern.',
+                  'SOURCE_CHANNEL_MISSING':'Sender ist im aktuellen Quellenindex nicht vorhanden.',
                   'NO_PROGRAMMES':'Keine Sendungen gefunden. Quelle oder Zeitraum ändern.',
                   'MAPPING_CANCELLED':'Abfrage abgebrochen. Erneute Auswahl ist möglich.'}
         self._state482=code
@@ -101,13 +104,17 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
             else:
                 self.getControl(404).setLabel('Quelle laden')
             self.getControl(404).setEnabled(True)
-        elif self.source and code in ('DB_BUSY','SQLITE_INTERRUPT','SOURCE_TIMEOUT','SOURCE_UNAVAILABLE','SOURCE_INVALID','SOURCE_LIMIT','MAPPING_BUSY','MAPPING_CANCELLED'):
+        elif self.source and code in ('DB_BUSY','SQLITE_INTERRUPT','EPG_READ_TIMEOUT','EPG_READ_FAILED',
+                                     'SOURCE_TIMEOUT','SOURCE_UNAVAILABLE','SOURCE_INVALID','SOURCE_LIMIT',
+                                     'MAPPING_BUSY','MAPPING_CANCELLED','SOURCE_CHANNEL_MISSING'):
             self.getControl(404).setLabel('Erneut laden');self.getControl(404).setEnabled(True)
     def _launch482(self,phase,call,apply,stop=None):
         if self.future:
             self._status482('MAPPING_BUSY',busy=not self._job_timedout482);return False
         self._job_stop482=stop or threading.Event();self._job_timedout482=False
         self._job_started482=time.monotonic()
+        self._job_local482 = (phase in ('SOURCES_LOADING', 'CHANNELS_LOADING') or
+                              (self.source or {}).get('id') == 'agent')
         accepted=self._submit(call,apply)
         if accepted is False:
             self._status482('MAPPING_BUSY');return False
@@ -168,7 +175,8 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
             for row in rows:
                 item=xbmcgui.ListItem(row['name'])
                 quality,region=variant(row['name'],row['id'])
-                item.setLabel2(' · '.join(value for value in (quality,region,'EPG-ID '+row['id']) if value))
+                coverage = 'Keine Sendungen im Feed' if row.get('scheduled') is False else ''
+                item.setLabel2(' · '.join(value for value in (quality,region,'EPG-ID '+row['id'],coverage) if value))
                 items.append(item)
             control.addItems(items)
             self._status482('CHANNELS_READY',str(len(rows))+' lokale Treffer. OK zeigt die Vorschau.') if rows else self._status482('NO_MATCH')
@@ -180,7 +188,8 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
                                 cancel=lambda: self.cancel.is_set() or stop.is_set())
             if self._cold482 or self.cold53.catalogue is not None and self.cold53.catalogue[0]==source:
                 return self.cold53.channels(self.portal,source,query,offset,lambda:self.cancel.is_set() or stop.is_set())
-            return channels(self.portal['id'],source,query,offset,strict482=True)
+            return channels(self.portal['id'],source,query,offset,strict482=True,
+                            cancel=lambda: self.cancel.is_set() or stop.is_set())
         self._launch482('SOURCE_COLD_LOAD' if self._cold482 else 'CHANNELS_LOADING',load,ready,stop)
     def _preview(self):
         if not self.candidate or not self.source:return
@@ -214,10 +223,12 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
         if self._entry482:
             self._entry482=False
             if self.source is None and self.future is None:self._choose_source()
-        if self.future and not self.future.done() and not self._saving53 and time.monotonic()-self._job_started482>12:
+        if (self.future and not self.future.done() and not self._saving53 and not self._job_timedout482
+                and time.monotonic()-self._job_started482>12):
             self._job_timedout482=True
             if self._job_stop482:self._job_stop482.set()
-            self._status482('SOURCE_TIMEOUT')
+            local = getattr(self,'_job_local482',(self.source or {}).get('id')=='agent')
+            self._status482('EPG_READ_TIMEOUT' if local else 'SOURCE_TIMEOUT')
         if self.future and self.future.done():
             future,apply=self.future,self.apply;self.future=self.apply=None
             self.getControl(104).setVisible(False)
@@ -268,24 +279,32 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
             if self._proof482!=(self.source['id'],self.candidate['id']):
                 self.previewed=False;self.getControl(405).setEnabled(False);self._status482('MAPPING_CANCELLED');return
             from epg_binding48 import commit_verified
+            from mapping_search482 import failure
+            import sqlite3
             identity=self.source['id'];candidate=dict(self.candidate);portal=dict(self.portal);sid=self.channel['sid']
             events=list(self.cold53.selected(identity,candidate['id']))
             def commit():
+                def cancelled():
+                    return self.cancel.is_set() or self.parent._closed
                 try:
-                    if self.cancel.is_set() or self.parent._closed:
+                    if cancelled():
                         return dict(error='MAPPING_CANCELLED')
+                    if identity=='agent':
+                        self.cold53.verify_agent_preview(portal,candidate['id'],cancelled)
                     receipt=commit_verified(portal,sid,candidate['id'],identity)
-                except (OSError,ValueError,RuntimeError) as exc:
-                    return dict(error=getattr(exc,'code','MAPPING_WRITE_FAILED'))
-                if self.cancel.is_set() or self.parent._closed:
+                except (OSError,ValueError,RuntimeError,sqlite3.Error) as exc:
+                    return dict(error=getattr(exc,'code','') or failure(exc, writing=True))
+                if cancelled():
                     return receipt
                 try:
                     if events:
                         from epg_candidate53 import publish
                         publish(portal,identity,candidate['id'],candidate.get('name',candidate['id']),events)
                     receipt['prepared']=self.adapter96.prepare_saved(candidate,identity)
-                except Exception:
-                    receipt['refresh_error']='MAPPING_RELOAD_FAILED'
+                except Exception as exc:
+                    code = getattr(exc, 'code', '')
+                    receipt['refresh_error'] = code if code in ('DB_BUSY','EPG_READ_TIMEOUT','EPG_READ_FAILED',
+                        'SQLITE_INTERRUPT','SQLITE_WRITE_TIMEOUT','SOURCE_CHANNEL_MISSING') else 'MAPPING_RELOAD_FAILED'
                 return receipt
             self._saving53=True
             self._job_timedout482=False
@@ -295,7 +314,8 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
             elif self.future:self._status482('SAVING','Speichern und EPG-Ansicht werden geprüft …',busy=True)
     def _save_error474(self,code):
         safe={'MAPPING_BUSY','MAPPING_CANCELLED','MAPPING_WRITE_FAILED','MAPPING_READBACK_FAILED','MAPPING_RELOAD_FAILED',
-              'MAPPING_UI_REFRESH_FAILED','MAPPING_ROLLBACK_UNCONFIRMED','MAPPING_CONFLICT','MAPPING_PROFILE_CHANGED'}
+              'MAPPING_UI_REFRESH_FAILED','MAPPING_ROLLBACK_UNCONFIRMED','MAPPING_CONFLICT','MAPPING_PROFILE_CHANGED',
+              'DB_BUSY','SQLITE_WRITE_TIMEOUT','EPG_READ_TIMEOUT','EPG_READ_FAILED','SQLITE_INTERRUPT'}
         code=code if code in safe else 'MAPPING_WRITE_FAILED'
         uncertain=code in ('MAPPING_ROLLBACK_UNCONFIRMED','MAPPING_CONFLICT','MAPPING_PROFILE_CHANGED')
         text='Speicherzustand nicht bestätigt. Bitte Diagnose prüfen.' if uncertain else 'Zuordnung nicht gespeichert; vorherige Zuordnung erhalten.'
