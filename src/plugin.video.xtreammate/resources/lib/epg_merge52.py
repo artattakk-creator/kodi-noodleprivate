@@ -209,6 +209,26 @@ def proven_targets(db, pid, sid, allowed):
         return []  # Profiles without a verified source alias table.
 
 
+def _indexed_agent(pid, cid, start, stop, limit):
+    from epg_agent_catalog103 import IndexReadError, for_portal, programmes
+    from programme_read47 import memo
+
+    folder = for_portal(pid)
+    if folder is None:
+        return None
+
+    def read():
+        try:
+            return programmes(folder, cid, start, stop, limit=limit)
+        except IndexReadError as exc:
+            # During a .103 migration the verified guide projection serves
+            # until the first complete index is ready. A .104 read error
+            # cannot republish a previous generation's current event.
+            return None if exc.code == 'NO_LOCAL_INDEX' else []
+
+    return memo(('indexed_agent104', folder, cid, start, stop, limit), read)
+
+
 def window(pid,sid,cid,start,stop,primary=(),limit=256,manual=False,guide=None):
     """Read retained facts and source aliases using bounded indexed queries."""
     from programme_index46 import connect,ranks,read_fact
@@ -223,15 +243,10 @@ def window(pid,sid,cid,start,stop,primary=(),limit=256,manual=False,guide=None):
             proven = proven_targets(db, pid, sid, allowed)
             agent_cid = next((channel for source, channel in proven if source == 'agent'), None)
             if agent_cid:
-                from epg_agent_catalog103 import IndexReadError, for_portal, programmes, ready
-
-                folder = for_portal(pid)
-                indexed_agent = ready(folder)
+                events = _indexed_agent(pid, agent_cid, start, stop, limit)
+                indexed_agent = events is not None
                 if indexed_agent:
-                    try:
-                        donors.extend(programmes(folder, agent_cid, start, stop, limit=limit))
-                    except IndexReadError:
-                        pass
+                    donors.extend(events)
                     primary = [row for row in primary if row.get('source') != allowed['agent']
                                and row.get('source_key46') != 'agent']
             targets.extend((source, channel) for source, channel in proven

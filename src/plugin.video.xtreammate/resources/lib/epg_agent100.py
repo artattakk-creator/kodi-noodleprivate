@@ -307,13 +307,16 @@ def local_candidate(pid, directory=None, record=None):
     from epg_agent_catalog103 import INDEX
     directory = profile() if directory is None else directory
     record = state(directory) if record is None else record
-    receipt = record.get("portals", {}).get(str(pid), {})
-    for generation in dict.fromkeys((receipt.get("generation"), record.get("generation"))):
-        folder = candidate_path(directory, generation)
-        if folder is not None:
-            index = folder / INDEX
-            if not index.is_symlink() and index.is_file():
-                return folder
+    held = record.get("portals", {}).get(str(pid), {}).get("generation")
+    if held:
+        # A pending profile cannot inherit the portal's prior mapping proof
+        # while an installed generation needs its catalogue migrated.
+        return candidate_path(directory, held)
+    folder = candidate_path(directory, record.get("generation"))
+    if folder is not None:
+        index = folder / INDEX
+        if not index.is_symlink() and index.is_file():
+            return folder
     return None
 
 

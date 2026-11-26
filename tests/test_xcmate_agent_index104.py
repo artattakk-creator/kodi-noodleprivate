@@ -137,3 +137,19 @@ class CompleteIndex104(Fixture, unittest.TestCase):
         self.assertFalse(more)
         self.assertEqual([(row['channel'], row['title']) for row in rows], [('s4.DMAX.at', 'Fixture AT')])
         self.assertEqual(search_art(self.folder, work_id='movie/678'), ([], False))
+
+
+    def test_staged_index_cannot_inherit_a_prior_generation_mapping_proof(self):
+        import shutil
+
+        from epg_agent100 import local_candidate
+        from epg_agent_catalog103 import build, ready
+
+        new = self.folder.with_name('candidate-' + 'c' * 64)
+        shutil.copytree(self.folder, new)
+        build(new, lambda: False)
+        record = dict(generation='c' * 64, portals={'p': {'generation': 'a' * 64}})
+        held = local_candidate('p', self.folder.parent, record)
+        self.assertEqual(held, self.folder)
+        self.assertFalse(ready(held))
+        self.assertTrue(ready(local_candidate('first', self.folder.parent, record)))

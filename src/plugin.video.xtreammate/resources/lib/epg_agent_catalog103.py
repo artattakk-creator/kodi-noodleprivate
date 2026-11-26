@@ -456,8 +456,9 @@ def logos(folder, channels):
     return result
 
 
-WINDOW_SQL = ("SELECT eid,start,stop,data FROM events WHERE cid=? AND start>? AND start<? AND stop>? "
-              "ORDER BY start,stop,eid LIMIT ? OFFSET ?")
+WINDOW_SQL = ("SELECT e.eid,e.start,e.stop,e.data FROM channels c JOIN events e ON e.cid=c.cid "
+              "WHERE c.cid=? AND e.start>?-c.duration AND e.start<? AND e.stop>? "
+              "ORDER BY e.start,e.stop,e.eid LIMIT ? OFFSET ?")
 _COLUMNS = "a.url,a.source,a.provider,a.attribution,p.orient,p.size"
 _EVENT_ART = ("SELECT p.eid,p.role,p.position," + _COLUMNS + " FROM event_art p "
               "JOIN assets a ON a.aid=p.aid WHERE p.eid IN ({}) ORDER BY p.eid,p.role,p.position")
@@ -473,11 +474,10 @@ def _window(db, folder, cid, start, stop, limit, offset=0):
     from epg_merge52 import _provenance
     from programme_store46 import metadata
 
-    span = db.execute("SELECT duration FROM channels WHERE cid=?", (cid,)).fetchone()
-    if span is None:
-        raise IndexReadError("SOURCE_CHANNEL_MISSING")
-    rows = db.execute(WINDOW_SQL, (cid, start - span[0], stop, start, limit, offset)).fetchall()
+    rows = db.execute(WINDOW_SQL, (cid, start, stop, start, limit, offset)).fetchall()
     if not rows:
+        if not offset and db.execute("SELECT 1 FROM channels WHERE cid=?", (cid,)).fetchone() is None:
+            raise IndexReadError("SOURCE_CHANNEL_MISSING")
         return []
     artwork = {}
     marks = ",".join("?" for _ in rows)
