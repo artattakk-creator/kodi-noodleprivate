@@ -65,14 +65,25 @@ def _phase(receipt, job):
     return ""
 
 
-def _detail_lines(receipt, selected, current, variant, active, job):
+def _detail_lines(receipt, selected, current, variant, active, private, job):
     code = receipt.get("code", "")
     phase = _phase(receipt, job) if active else ""
+    transport = "private" if private else "public"
+    checked = receipt.get("selected_profiles")
+    selection_changed = (
+        receipt.get("transport", transport) != transport
+        or checked is not None and (set(checked) != set(current) or receipt.get("selected_variant") != variant)
+    )
+    status = phase or _status(receipt, active)
+    if active and not current:
+        status = "Bitte ein EPG-Profil auswählen."
+    elif active and selection_changed and not phase:
+        status = "Prüfung für die neue Auswahl ausstehend."
     lines = [
-        phase or _status(receipt, active),
+        status,
         f"Letzter Check  {_when(receipt.get('last_checked'))}",
         f"Letzter bestätigter Check  {_when(receipt.get('last_successful_check'))}",
-        f"{tr(39113)}  {_when(receipt.get('next_check'))}",
+        f"Nächster Check  {_when(receipt.get('next_check'))}",
         f"Letzter verifizierter Import  {_when(selected.get('last_success'))}",
         f"Auswahl  {' + '.join(p.upper() for p in current) or '–'} · {variant}",
         f"Revision  {str(receipt.get('manifest_revision') or '–')[:22]}",
@@ -111,23 +122,25 @@ def _detail_lines(receipt, selected, current, variant, active, job):
         subject = "EPG-Datei" if receipt.get("remote_phase") == "asset" else "Manifest"
         lines.append(f"{subject} · HTTP {http}")
     reason = receipt.get("remote_reason")
-    codes = " · ".join(dict.fromkeys(filter(None, (code, reason, selected.get("code")))))
+    current_code = "" if selection_changed or not active or not current else code
+    codes = " · ".join(dict.fromkeys(filter(None, (current_code, reason, selected.get("code")))))
     if codes:
-        lines.append(codes)
+        lines.append("Letzter Befund  " + codes)
     return lines
 
 
 def details(portal):
     receipt = state()
     pid = str((portal or {}).get("id", ""))
+    private = use_private()
     try:
-        current, variant = selection(profile(), public=not use_private())
+        current, variant = selection(profile(), public=not private)
     except DeliveryError as exc:
         return exc.code
     from epg_jobs94 import read
 
     return "\n".join(_detail_lines(receipt, receipt.get("portals", {}).get(pid, {}),
-                                   current, variant, enabled(), read(pid)))
+                                   current, variant, enabled(), private, read(pid)))
 
 
 def _toggle(current, option):
@@ -235,7 +248,7 @@ class AgentSettings(OwnerDispatch, xbmcgui.WindowXMLDialog):
             if first_load:
                 self.setFocusId(200)
         selected = self.receipt.get("portals", {}).get(str(self.portal.get("id", "")), {})
-        lines = _detail_lines(self.receipt, selected, current, variant, active, job)
+        lines = _detail_lines(self.receipt, selected, current, variant, active, private, job)
         body = "\n".join(lines)
         if body != self._status_text:
             self.getControl(401).setText(body)

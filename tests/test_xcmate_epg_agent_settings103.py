@@ -81,3 +81,12 @@ class AgentSettings103(Fixture, TestCase):
         start_verify = stages.index("validate")
         self.assertEqual(stages[start_verify-1][0], "bytes")
         self.assertEqual(stages[start_verify-1][1], stages[start_verify-1][2])
+
+    def test_current_receipt_for_old_profile_never_claims_new_selection_is_ready(self):
+        from epg_agent100_ui import _detail_lines
+
+        receipt = dict(code="CURRENT", transport="public", selected_profiles=["de"],
+                       selected_variant="artwork")
+        lines = _detail_lines(receipt, {}, ("at",), "artwork", True, False, {})
+        self.assertEqual(lines[0], "Prüfung für die neue Auswahl ausstehend.")
+        self.assertNotIn("CURRENT", "\n".join(lines))
