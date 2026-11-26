@@ -1,8 +1,8 @@
 """Pure bounded status admission and explicit-retry observation. No IO/network."""
 import json,math,time
-def policy():
- from programme_policy68 import negative_scope
- return negative_scope({})
+def policy(source=None):
+ from programme_image69 import policy as receipt_policy
+ return receipt_policy(source)
 def valid(record,now=None):
  now=time.time() if now is None else now
  try:
@@ -10,7 +10,7 @@ def valid(record,now=None):
   if not math.isfinite(age) or not 0<=age<86400:return False
   if age<300:return True
   until=art.get('until',0)
-  return type(until) in (int,float) and math.isfinite(until) and now<until<=now+86400 and art.get('policy69')==policy()
+  return type(until) in (int,float) and math.isfinite(until) and now<until<=now+86400 and art.get('policy69')==policy(art.get('source'))
  except (ValueError,TypeError,KeyError,OverflowError):return False
 def retry(event,previous):
  # Read-only at all queue/consumer gates. Consuming a refresh here would steal

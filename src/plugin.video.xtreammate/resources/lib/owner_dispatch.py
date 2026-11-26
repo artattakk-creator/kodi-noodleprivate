@@ -16,7 +16,7 @@ class WindowStartError(RuntimeError):
 
 def window_mark(view,stage,error=None):
     """Fixed lifecycle labels only; never exception text, URLs or account data."""
-    views=('GUIDE','MOVIES','SERIES')
+    views=('GUIDE','MOVIES','SERIES','AGENT')
     stages=('CONSTRUCT','CONFIGURE','WAIT_MODAL','MODAL_TIMEOUT','DISPOSE_UNSHOWN',
             'SHOW_BEGIN','SHOW_DONE','INIT_BEGIN','INIT_DONE',
             'INIT_FAILED','INIT_TIMEOUT','ABORT','RUN_FAILED','CLOSE_BEGIN','CLOSE_DONE',

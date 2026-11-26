@@ -1,7 +1,14 @@
 """Live-only native start-group source; saved URLs and media widgets unchanged."""
+import re
+
+GROUP_DIVIDER = re.compile(r'\s*#{3,}\s*[^#\n]+?\s*#{3,}\s*')
+
+
 def rows(portal):
     from live_home62 import rows as read
-    return read(portal)
+    stations, code = read(portal)
+    visible = [station for station in stations if not GROUP_DIVIDER.fullmatch(str(station.get('name') or ''))]
+    return visible, 'EMPTY_GROUP' if stations and not visible else code
 
 
 def values(portal):

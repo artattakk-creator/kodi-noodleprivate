@@ -39,11 +39,13 @@ def open(parent,*,source96=None):
  event=event_for(parent);query=str(event.get('title') or '')[:200];kind='movie' if event.get('media_kind86')=='vod' else 'tv';source='tmdb';page=1;changed=False
  dialog=xbmcgui.Dialog()
  if source96=='xmltv_event':source,kind='xmltv_event','event'
+ from agent_work103 import LABELS, SOURCE
+ live=event.get('media_kind86','live')=='live'
  rescan96=source96=='xmltv_event'
  while not getattr(parent,'_closed',False) and not xbmc.Monitor().abortRequested():
-  action=2 if rescan96 else icon_select(dialog,tr(37080),[tr(37081)+' · '+query,tr(37082)+' · '+source+' '+kind,tr(37083),tr(37084),tr(37085),tr(37098)]+([tr(39026)] if event.get('media_kind86','live')=='live' else []))
+  action=2 if rescan96 else icon_select(dialog,tr(37080),[tr(37081)+' · '+query,tr(37082)+' · '+('EPG Agent' if source==SOURCE else source+' '+kind),tr(37083),tr(37084),tr(37085),tr(37098)]+([tr(39026),'EPG Agent · Bilder dieser Sendung'] if live else []))
   rescan96=False
-  if action==6:source,kind='xmltv_event','event';action=2
+  if action in (6,7):source,kind=('xmltv_event' if action==6 else SOURCE),'event';action=2
   if action<0:return changed
   if action==5:
    image=dialog.browse(1,tr(37098),'files','.jpg|.jpeg|.png',False,False,'')
@@ -58,10 +60,10 @@ def open(parent,*,source96=None):
    if answer.get('code')=='SAVED':changed=True;return changed
    dialog.ok('XCMate',status(answer.get('code')));continue
   if action==1:
-   selected=icon_select(dialog,tr(37082),['TMDB · TV','TMDB · Movie','TVMaze · TV']+(['XMLTV'] if event.get('media_kind86','live')=='live' else []))
+   selected=icon_select(dialog,tr(37082),['TMDB · TV','TMDB · Movie','TVMaze · TV']+(['XMLTV','EPG Agent'] if live else []))
    if selected<0:continue
-   source,kind=(('tmdb','tv'),('tmdb','movie'),('tvmaze','tv'),('xmltv_event','event'))[selected];page=1;continue
-  if action==0 or not query:
+   source,kind=(('tmdb','tv'),('tmdb','movie'),('tvmaze','tv'),('xmltv_event','event'),(SOURCE,'event'))[selected];page=1;continue
+  if action==0 or not query and source!=SOURCE:
    edited=dialog.input(tr(37081),defaultt=query)
    if not edited.strip():continue
    query=edited.strip()[:200];page=1
@@ -69,10 +71,13 @@ def open(parent,*,source96=None):
   rows=answer.get('rows',[])
   if not rows:
    dialog.ok('XCMate',status(answer.get('code')));continue
-  items=[]
+  items=[];labels=[]
   for row in rows:
-   label=row['title']+' · '+str(row['year'] or '')+' · '+','.join(row.get('country',[]))+' · '+('XMLTV' if row['source']=='xmltv_event' else row['source']+' '+row['media_type86'])
-   item=xbmcgui.ListItem(label,label2=row.get('overview',''));items.append(item)
+   origin=('XMLTV' if row['source']=='xmltv_event' else row['source']+' '+row['media_type86'])
+   if row['source']==SOURCE:
+    origin=LABELS[row['role']]+' '+str(sum(r['role']==row['role'] for r in rows[:len(items)])+1)+' · '+row['attribution']
+   label=' · '.join(part for part in (row['title'],str(row.get('year') or ''),','.join(row.get('country',[])),origin) if part)
+   item=xbmcgui.ListItem(label,label2=row.get('overview',''));items.append(item);labels.append(label)
    if row.get('thumb86'):item.setArt(dict(thumb=row['thumb86']))
    # Candidate URLs remain references, not evidence of visible Kodi pixels.
   items.append(xbmcgui.ListItem(tr(37081)))
@@ -82,7 +87,11 @@ def open(parent,*,source96=None):
   if picked==len(rows):query=dialog.input(tr(37081),defaultt=query) or query;page=1;continue
   if picked>len(rows):page+=1;continue
   chosen=rows[picked]
-  message=chosen['title']+' ('+str(chosen['year'])+') · '+chosen['source']+' '+chosen['media_type86']+'\n'+chosen.get('overview','')+'\n'+tr(37089)
+  label=labels[picked]
+  reference=' · '.join(str(event[k]) for k in ('subtitle','year') if event.get(k))
+  message=label+'\n'+chosen.get('overview','')+'\n'
+  if reference and chosen['source']!=SOURCE:message+='EPG · '+reference+'\n'
+  message+=tr(37089)
   if not dialog.yesno('XCMate',message):continue
   answer=wait(event,'save',candidate=chosen)
   if answer.get('code')=='SAVED':
@@ -92,4 +101,7 @@ def open(parent,*,source96=None):
 
 def status(code):
  codes={'RESERVE_BLOCKED':38721,'PROFILE_BUSY':38722,'SQLITE_BUSY':38722,'WRITE_DENIED':38723,'SOURCE_DISABLED':37090,'TMDB_TOKEN_MISSING':37091,'ZERO_RESULTS':37092,'EPG_REVISION_CHANGED':37093,'CANDIDATES_REJECTED':37094,'CANCELLED':37111,'USER_CANCELLED':37111,'REQUEST_TIMEOUT':37112,'WORKER_BUSY':37113,'WORKER_STOPPED':37114,'KODI_STOPPED':37115,'NETWORK_TIMEOUT':37116,'PERSISTENCE_BLOCKED':37117,'READBACK_FAILED':37117,'SAVE_BLOCKED':37096,'UNCHANGED':37095}
+ if code in ('BLOCKED_IMAGE_HOST_OR_URL','BLOCKED_CREDENTIAL_URL','NO_ARTWORK',
+             'DNS_ERROR','TLS_ERROR','HTTP_AUTH','HTTP_NOT_FOUND','HTTP_RATE_LIMIT','HTTP_SERVER','NETWORK_ERROR'):
+  return tr(37097)+' · '+code
  return tr(codes.get(code,37097))

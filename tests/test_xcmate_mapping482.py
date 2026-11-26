@@ -269,13 +269,14 @@ class Mapping482(unittest.TestCase):
             self.f.sources._write_all({'p':dict(sources=entries,mappings={})})
             choices=source_rows(self.f.portal)
             self.assertEqual(choices[0]['id'],'provider')
-            self.assertEqual(len(choices),1+sum(s['enabled'] for s in entries))
+            self.assertEqual(len(choices),2+sum(s['enabled'] for s in entries))
+            self.assertIn('agent', {row['id'] for row in choices})
             self.assertTrue(all('local_count' in row and 'local_code' in row for row in choices))
 
     def test_source_counts_use_existing_guide_ids_when_name_catalogue_is_missing(self):
         from mapping_search482 import source_rows
         counts={row['id']:row['local_count'] for row in source_rows(self.f.portal)}
-        self.assertEqual(counts,{'provider':1,self.f.aid:1,self.f.bid:1})
+        self.assertEqual(counts,{'provider':1,self.f.aid:1,self.f.bid:1,'agent':None})
 
     def test_cancelled_source_picker_never_leaves_a_false_loading_message(self):
         self.d.source=None
@@ -288,7 +289,9 @@ class Mapping482(unittest.TestCase):
         self.d.source=None
         with mock.patch('programme_index46.connect',side_effect=sqlite3.OperationalError('database is locked')),mock.patch('menu_icons45.select',return_value=-1) as choose:
             self.d._choose_source();self.pump()
-        self.assertTrue(all('Datenbank belegt' in label for label in choose.call_args.args[2]))
+        labels = choose.call_args.args[2]
+        self.assertTrue(all('Datenbank belegt' in label for label in labels if 'Agent' not in label))
+        self.assertTrue(any('Agent' in label and 'kein Index' in label for label in labels))
 
     def test_missing_names_require_explicit_cold_load_and_keep_preview_in_ram(self):
         self.d.query='Kabel1HD';calls=[]

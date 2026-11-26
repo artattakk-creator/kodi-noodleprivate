@@ -101,6 +101,31 @@ class SetupFirstRunTests(unittest.TestCase):
         patcher.start()
         return window
 
+    def test_wizard_declares_callbacks_before_native_class_is_created(self):
+        class NativeWindowType(type):
+            def __setattr__(cls, name, value):
+                if name in ("onClick", "onAction"):
+                    raise AttributeError(name)
+                super().__setattr__(name, value)
+
+        class NativeWindow(FakeWindowXML, metaclass=NativeWindowType):
+            pass
+
+        gui = types.ModuleType("xbmcgui")
+        gui.WindowXML = NativeWindow
+        addon = types.SimpleNamespace(Addon=lambda: types.SimpleNamespace(
+            getAddonInfo=lambda _: str(ROOT / "src/plugin.video.xtreammate")))
+        with patch.dict(sys.modules, xbmcgui=gui, xbmcaddon=addon,
+                        localization=types.SimpleNamespace(tr=self.module.tr)), patch.object(
+                sys, "path", [str(SOURCE.parent)] + sys.path):
+            spec = importlib.util.spec_from_file_location("_native_setup_test", SOURCE)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            window = module.SetupWindow()
+            window.configure(FakeDraft())
+            window.onAction(types.SimpleNamespace(getId=lambda: 10))
+        self.assertTrue(window.closed)
+
     def test_discovery_has_visible_cancel_focus_not_empty_list(self):
         win = self.new_window()
         win.onInit()

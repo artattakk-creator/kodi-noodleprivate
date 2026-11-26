@@ -22,7 +22,7 @@ def channel_keys(channel, mappings):
 
 class View(dict):
     def __init__(self):
-        super().__init__();self.canonical={};self.revision=None;self.code='NOT_CREATED';self.channels={}
+        super().__init__();self.canonical={};self.revision=None;self.code='NOT_CREATED';self.channels={};self.provider_fallback=set()
 
     def channel(self,sid):
         """A sender's aliases cannot collide with another sender's source."""
@@ -41,16 +41,37 @@ def for_channel(cache,sid):
     return cache
 
 
-def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,budget=.4,text_only65=False,strict48=False):
+
+def _read_binding(db,pid,channel,selected,start,stop,limit,*,strict=False,fallback=True):
+    from epg_binding48 import read
+
+    cid=selected['channel'];source=selected['source']
+    rows=read(db,pid,cid,source,start,stop,limit,strict=strict)
+    instant=max(start,time.time())
+    need_now=instant<stop and not any(row['start_timestamp']<=instant<row['stop_timestamp'] for row in rows)
+    if source=='agent' and fallback and not strict and (not rows or need_now):
+        for provider_id in reversed(channel_keys(channel,{})[1]):
+            provider=read(db,pid,provider_id,'provider',start,stop,limit)
+            if not rows and provider:
+                return provider_id,'provider',provider,True
+            current=next((row for row in provider
+                          if row['start_timestamp']<=instant<row['stop_timestamp']),None)
+            if current:
+                current=dict(current,_canonical=provider_id,_fused52=True)
+                return cid,source,sorted([*rows,current],key=lambda row:row['start_timestamp']),True
+    return cid,source,rows,False
+
+
+def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,budget=.4,text_only65=False,strict48=False,provider_fallback=True):
     from epg_binding48 import view_mappings
     mappings = view_mappings(mappings)
     # The exact full .64 metadata path stays authoritative for matching/art.
     # Only an explicit display request uses the RAM/text latency projection.
     if text_only65 and not strict48:
-        return _text_window65(pid,channels,mappings,start,stop,limit,focus_sid,history,budget,True)
-    return _full_window65(pid,channels,mappings,start,stop,limit,focus_sid,history,budget,strict48=strict48)
+        return _text_window65(pid,channels,mappings,start,stop,limit,focus_sid,history,budget,True,provider_fallback)
+    return _full_window65(pid,channels,mappings,start,stop,limit,focus_sid,history,budget,strict48=strict48,provider_fallback=provider_fallback)
 
-def _full_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,budget=.4,strict48=False):
+def _full_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,budget=.4,strict48=False,provider_fallback=True):
     import guide_store
     filename=getattr(guide_store,'path',lambda:'')()
     if not filename or not os.path.isfile(filename):
@@ -79,13 +100,14 @@ def _full_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
             sender=view.channel(sid)
             for ident in keys:
                 if ident in sender:continue
-                from epg_binding48 import binding,read as read_source48
+                from epg_binding48 import binding
                 selected48=binding(mappings,sid)
                 if selected48:
-                    cid=selected48['channel']
-                    values48=read_source48(db,pid,cid,selected48['source'],start,stop,limit,**({'strict':True} if strict48 else {}))
+                    cid,source48,values48,used_provider=_read_binding(db,pid,channel,selected48,start,stop,limit,
+                                                        strict=strict48,fallback=provider_fallback)
+                    if used_provider:sender.provider_fallback.add(ident)
                     view.add(sid,ident,cid,values48)
-                    tasks67.append((ident,cid,sid,selected48['source'],start,stop,limit))
+                    tasks67.append((ident,cid,sid,source48,start,stop,limit))
                     continue
                 alias=alias_rows89.get(ident)
                 cid=alias[0] if alias else ident
@@ -120,7 +142,7 @@ def _full_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
 
 
 @scoped
-def _text_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,budget=.4,text_only65=False):
+def _text_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,budget=.4,text_only65=False,provider_fallback=True):
     """Pin one RO guide; core text first, bounded optional metadata second."""
     import guide_store
     from programme_read47 import borrowed,retain
@@ -148,17 +170,20 @@ def _text_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
             sender=view.channel(sid)
             for ident in keys:
                 if ident in sender:continue
-                from epg_binding48 import binding,read as read_source48
+                from epg_binding48 import binding
                 selected48=binding(mappings,sid)
                 alias=None if selected48 else alias_rows89.get(ident)
                 cid=selected48['channel'] if selected48 else alias[0] if alias else ident
                 source48=selected48['source'] if selected48 else None
                 left=start;right=start+21*86400 if history and sid==focus_sid else stop
                 cap=256 if history and sid==focus_sid else min(256,limit)
+                if selected48:
+                    cid,source48,values,used_provider=_read_binding(db,pid,channel,selected48,left,right,cap,
+                                                       fallback=provider_fallback)
+                    if used_provider:sender.provider_fallback.add(ident)
                 key=(str(sid),cid,source48,bool(mappings.get(sid)),right,cap)
                 if key in prepared:view.add(sid,ident,cid,prepared[key]);continue
-                if selected48:values=read_source48(db,pid,cid,source48,left,right,cap)
-                else:
+                if not selected48:
                     rows=db.execute('SELECT substr(title,1,512) AS title,substr(description,1,8192) AS description,start,stop,source FROM programmes WHERE pid=? AND cid=? AND stop>? AND start<? ORDER BY start,source,stop LIMIT ?',(pid,cid,left,right,cap)).fetchall()
                     values=[dict(name=row['title'],descr=row['description'],start_timestamp=row['start'],stop_timestamp=row['stop'],source=row['source'],_source_index=row['source']) for row in rows]
                 prepared[key]=values;view.add(sid,ident,cid,values);tasks.append((key,cid,sid,source48,left,right,cap))
@@ -241,7 +266,7 @@ def _now_next89(pid,channels,mappings,now=None,client=None,display_only65=False)
         compatibility47=cache is None or getattr(cache,'code','')=='SHARED_LASTGOOD47'
         info=resolve_guide(cache if cache is not None else {},provider,sid,ts,client if compatibility47 else None,mappings)
         info['snapshot_revision']=cache.revision if cache is not None else None
-        info['canonical46']=getattr(for_channel(cache,sid),'canonical',{}).get(info.get('epg_id',''),'') if cache is not None else ''
+        info['canonical46']=getattr(for_channel(cache,sid),'canonical',{}).get(info.get('epg_id',''),info.get('epg_id','')) if cache is not None else ''
         from programme_snapshot47 import bind
         result[sid]=bind(pid,channel,info)
         if (not result[sid].get('now') and warm.get(sid) and warm[sid].get('now')

@@ -7,6 +7,9 @@ import ast,hashlib,json
 from pathlib import Path
 MAX=4*1024*1024
 
+class InventoryChanged(ValueError):
+ pass
+
 def widgets(profile):
  root=Path(profile)/'addon_data/script.skinshortcuts'
  if root.is_symlink():raise ValueError('SKIN_MIGRATION_BLOCKED')
@@ -41,5 +44,5 @@ def collect(profile,skin):
 def compare(profile,receipt):
  if receipt.get('profile')!=str(Path(profile).resolve()):raise ValueError('SKIN_MIGRATION_BLOCKED')
  current=widgets(profile)
- if fingerprint(current)!=receipt.get('sha256') or current!=receipt.get('widgets'):raise ValueError('SKIN_MIGRATION_BLOCKED')
+ if fingerprint(current)!=receipt.get('sha256') or current!=receipt.get('widgets'):raise InventoryChanged('SKIN_MIGRATION_BLOCKED')
  return True

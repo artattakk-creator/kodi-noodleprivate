@@ -71,10 +71,11 @@ class MiniProgramme:
         channel=owner.visible_channels[index] if 0<=index<len(owner.visible_channels) else None
         self._preview_channel67=channel
         sid=str(channel.extra.get('stream_id','')) if channel else ''
-        info=owner._guide.get(sid);events,current=programme_rows(info.get('programme_events',info.get('events',[])),past=2)
+        snapshot=owner._guide.get(sid)
+        info=snapshot or {};events,current=programme_rows(info.get('programme_events',info.get('events',[])),past=2)
         identity=lambda event:(event['start'],event['stop'])
         signature=(sid,tuple(identity(e) for e in events))
-        self._loading68=bool(info.get('loading68',False) or channel is None and (not getattr(owner,'_catalog_ready',True) or getattr(owner,'_catalog_partial46',False)))
+        self._loading68=bool((channel is not None and snapshot is None) or info.get('loading68',False) or channel is None and (not getattr(owner,'_catalog_ready',True) or getattr(owner,'_catalog_partial46',False)))
         self._set(self.heading,'setLabel',channel.name if channel else 'Senderliste wird geladen …' if self._loading68 else tr(35611))
         self._set(self.hint,'setLabel',tr(35830) if self.focused else tr(35610))
         previous=identity(self.events[self.selected]) if self.focused and self.selected<len(self.events) else None

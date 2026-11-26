@@ -81,6 +81,7 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
         messages={'MAPPING_BUSY':'Andere EPG-Abfrage läuft. Bitte erneut versuchen.',
                   'DB_BUSY':'EPG-Datenbank belegt. Bitte erneut versuchen.',
                   'SOURCE_TIMEOUT':'Quelle antwortet zu langsam. Bitte erneut laden.',
+                  'SQLITE_INTERRUPT':'Lokales Lesebudget erreicht. Bitte erneut laden.',
                   'SOURCE_UNAVAILABLE':'Quelle nicht erreichbar. Bitte erneut versuchen.',
                   'SOURCE_INVALID':'Quelldaten nicht lesbar. Andere Quelle prüfen.',
                   'SOURCE_LIMIT':'Quelle überschreitet das begrenzte Lesebudget.',
@@ -93,8 +94,14 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
         self.getControl(104).setVisible(busy)
         self.getControl(105).setLabel(str((self.source or {}).get('name',''))[:72])
         if code=='NO_LOCAL_INDEX':
-            self.getControl(404).setLabel('Quelle laden');self.getControl(404).setEnabled(True)
-        elif self.source and code in ('DB_BUSY','SOURCE_TIMEOUT','SOURCE_UNAVAILABLE','SOURCE_INVALID','SOURCE_LIMIT','MAPPING_BUSY','MAPPING_CANCELLED'):
+            if (self.source or {}).get('id') == 'agent':
+                self.getControl(103).setText('Der Agent-Senderindex ist lokal noch nicht verfügbar. '
+                                             'Nach dem Import erneut prüfen.\n(NO_LOCAL_INDEX)')
+                self.getControl(404).setLabel('Erneut prüfen')
+            else:
+                self.getControl(404).setLabel('Quelle laden')
+            self.getControl(404).setEnabled(True)
+        elif self.source and code in ('DB_BUSY','SQLITE_INTERRUPT','SOURCE_TIMEOUT','SOURCE_UNAVAILABLE','SOURCE_INVALID','SOURCE_LIMIT','MAPPING_BUSY','MAPPING_CANCELLED'):
             self.getControl(404).setLabel('Erneut laden');self.getControl(404).setEnabled(True)
     def _launch482(self,phase,call,apply,stop=None):
         if self.future:
@@ -124,9 +131,18 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
         self._entry482=False
         def ready(rows):
             from menu_icons45 import select
-            reasons={'DB_BUSY':'Datenbank belegt','SOURCE_TIMEOUT':'Abfragezeit überschritten',
-                     'SOURCE_UNAVAILABLE':'Daten nicht erreichbar','NO_LOCAL_INDEX':'Index nicht verfügbar'}
-            labels=[r['name']+' · lokal: '+(str(r['local_count'])+' Kanäle' if r['local_count'] is not None else reasons.get(r['local_code'],'Index nicht verfügbar')) for r in rows]
+            reasons={'READY':'Bereit','IMPORTING':'Import läuft','LAST_GOOD':'Letzter Stand',
+                     'DB_BUSY':'Datenbank belegt','SOURCE_TIMEOUT':'Zeitlimit',
+                     'SQLITE_INTERRUPT':'Lesebudget','SOURCE_UNAVAILABLE':'Keine Daten',
+                     'NO_LOCAL_INDEX':'kein Index'}
+            labels=[]
+            for row in rows:
+                status = reasons.get(row['local_code'], 'kein Index')
+                count = row['local_count']
+                local = f'{count} Kanäle' if count is not None else status
+                if count is not None and (row['id'] == 'agent' or row['local_code'] != 'READY'):
+                    local += ' · ' + status
+                labels.append(row['name'] + ' · lokal: ' + local)
             choice=select(xbmcgui.Dialog(),'EPG-Anbieter wählen',labels,default='database')
             if not 0<=choice<len(rows):
                 self._status482('SOURCE_SELECT','Keine Quelle gewählt. Bitte „Quelle wählen“ verwenden.');return
@@ -159,6 +175,9 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
             self.setFocusId(200 if rows else 401)
         source=self.source['id'];query=self.query;offset=self.offset;stop=threading.Event()
         def load():
+            if source == 'agent':
+                return channels(self.portal['id'], source, query, offset, strict482=True,
+                                cancel=lambda: self.cancel.is_set() or stop.is_set())
             if self._cold482 or self.cold53.catalogue is not None and self.cold53.catalogue[0]==source:
                 return self.cold53.channels(self.portal,source,query,offset,lambda:self.cancel.is_set() or stop.is_set())
             return channels(self.portal['id'],source,query,offset,strict482=True)
@@ -240,7 +259,9 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
                 self.candidate=self.rows[pos];self.detail_offset53=0;self.previewed=False;self.getControl(405).setEnabled(False)
                 self.getControl(404).setEnabled(True);self._preview()
         elif cid==404:
-            if not self.candidate and getattr(self,'_state482','')=='NO_LOCAL_INDEX':self._cold482=True;self._channels()
+            if not self.candidate and getattr(self,'_state482','')=='NO_LOCAL_INDEX':
+                self._cold482=(self.source or {}).get('id')!='agent'
+                self._channels()
             elif not self.candidate and self.source:self._channels()
             else:self._preview()
         elif cid==405 and self.previewed:
@@ -249,23 +270,25 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
             from epg_binding48 import commit_verified
             identity=self.source['id'];candidate=dict(self.candidate);portal=dict(self.portal);sid=self.channel['sid']
             events=list(self.cold53.selected(identity,candidate['id']))
-            def prepare():
-                from epg_binding48 import MappingSaveError
-                if self.cancel.is_set() or self.parent._closed:raise MappingSaveError('MAPPING_CANCELLED')
-                value=self.adapter96.prepare_saved(candidate,identity)
-                if self.cancel.is_set() or self.parent._closed:raise MappingSaveError('MAPPING_CANCELLED')
-                return value
             def commit():
                 try:
-                    if self.cancel.is_set() or self.parent._closed:return dict(error='MAPPING_CANCELLED')
+                    if self.cancel.is_set() or self.parent._closed:
+                        return dict(error='MAPPING_CANCELLED')
+                    receipt=commit_verified(portal,sid,candidate['id'],identity)
+                except (OSError,ValueError,RuntimeError) as exc:
+                    return dict(error=getattr(exc,'code','MAPPING_WRITE_FAILED'))
+                if self.cancel.is_set() or self.parent._closed:
+                    return receipt
+                try:
                     if events:
                         from epg_candidate53 import publish
                         publish(portal,identity,candidate['id'],candidate.get('name',candidate['id']),events)
-                    return commit_verified(portal,sid,candidate['id'],identity,
-                        prepare=prepare)
-                except (OSError,ValueError,RuntimeError) as exc:
-                    return dict(error=getattr(exc,'code','MAPPING_WRITE_FAILED'))
+                    receipt['prepared']=self.adapter96.prepare_saved(candidate,identity)
+                except Exception:
+                    receipt['refresh_error']='MAPPING_RELOAD_FAILED'
+                return receipt
             self._saving53=True
+            self._job_timedout482=False
             accepted=self._submit(commit,self._committed474)
             if accepted is False:
                 self._saving53=False;self._save_error474('MAPPING_BUSY')
@@ -281,35 +304,43 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
         self._saving53=False
         if receipt.get('error'):
             self._save_error474(receipt['error']);return
-        from epg_binding48 import rollback_verified,confirm_verified
+        from epg_binding48 import confirm_verified,recheck_verified
         try:
             with confirm_verified(receipt):
-                self.adapter96.apply_saved(receipt['prepared'])
-                self.getControl(103).setText('EPG-Zuordnung gespeichert und geprüft.')
-                try:xbmcgui.Dialog().notification('XCMate','EPG-Zuordnung gespeichert und geprüft.',time=3000)
-                except RuntimeError:pass
-                self.saved=True
-        except Exception as exc:
-            self.saved=False
-            code=getattr(exc,'code','MAPPING_UI_REFRESH_FAILED')
-            try:rollback_verified(receipt)
-            except Exception as rollback:code=getattr(rollback,'code','MAPPING_ROLLBACK_UNCONFIRMED')
-            try:
-                restore=getattr(self.adapter96,'restore_saved',None)
-                if restore:restore()
-                else:self.adapter96.finish(False)
-            except Exception:pass
-            self._save_error474(code);return
+                pass
+        except (OSError,ValueError) as exc:
+            code=getattr(exc,'code','MAPPING_CONFLICT')
+            if code=='MAPPING_CONFLICT' and not receipt.get('rechecked'):
+                def recheck():
+                    try:return recheck_verified(receipt)
+                    except (OSError,ValueError) as failure:return dict(error=getattr(failure,'code','MAPPING_CONFLICT'))
+                self._saving53=True
+                if self._submit(recheck,self._committed474) is not False:return
+                self._saving53=False
+            self._save_error474(code)
+            return
+        self.saved=True
+        if receipt.get('refresh_error'):
+            self._saved_refresh_error474(receipt['refresh_error'])
+            return
+        try:
+            self.adapter96.apply_saved(receipt['prepared'])
+        except Exception:
+            self._saved_refresh_error474('MAPPING_UI_REFRESH_FAILED')
+            return
+        self.getControl(103).setText('EPG-Zuordnung gespeichert und geprüft.')
+        try:xbmcgui.Dialog().notification('XCMate','Gespeichert und geprüft.',time=3000)
+        except RuntimeError:pass
         self.close()
-    @staticmethod
-    def _retire474(future):
-        if future.cancelled():return
-        try:receipt=future.result()
-        except Exception:return
-        if not isinstance(receipt,dict) or receipt.get('error'):return
-        try:__import__('epg_binding48').rollback_verified(receipt)
-        except (OSError,ValueError,RuntimeError):
-            xbmc.log('[XCMate][MAPPING474] UNCONFIRMED_ON_EXIT',xbmc.LOGWARNING)
+
+    def _saved_refresh_error474(self,code):
+        try:
+            restore=getattr(self.adapter96,'restore_saved',None)
+            if restore:restore()
+            else:self.adapter96.finish(False)
+        except (RuntimeError,ValueError,TypeError,AttributeError):pass
+        self.getControl(103).setText('Zuordnung gespeichert und geprüft. EPG-Ansicht wird beim erneuten Öffnen aktualisiert. ('+code+')')
+
     def onAction(self,action):
         if action.getId() in (9,10,92):self.close()
     def run(self):
@@ -323,7 +354,7 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
         finally:
             if self._saving53 and self.future is not None:
                 future=self.future;self.future=self.apply=None;self._saving53=False
-                self.cancel.set();future.add_done_callback(self._retire474);future.cancel()
+                self.cancel.set();future.cancel()
             self.close()
             self.adapter96.finish(self.saved)
     def close(self):

@@ -2,15 +2,20 @@
 """Actual BINGIE Home, fixed geometry and receiver gates; disposable host only."""
 import argparse,os,subprocess,json,zipfile,hashlib,sys,uuid
 from pathlib import Path
+from xml.etree import ElementTree
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 from run_kodi_home74_contract import SKIN_SHA,SKIN_URL
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--report-dir',type=Path,required=True)
     parser.add_argument('--skin-archive',type=Path);parser.add_argument('--idle-seconds',type=int,default=180)
-    parser.add_argument('--resolution',default='1920x1080',choices=('1920x1080','1280x720'))
+    parser.add_argument('--resolution',default='1920x1080',choices=('1920x1080','1280x720','3840x2160'))
     parser.add_argument('--fault-idle-seconds',type=int,default=0);parser.add_argument('--keep-container',action='store_true');args=parser.parse_args()
-    root=Path(__file__).resolve().parents[1];version79=__import__('xml.etree.ElementTree',fromlist=['parse']).parse(root/'src/plugin.video.xtreammate/addon.xml').getroot().get('version') in ('0.1.29.82','0.1.29.83','0.1.29.84','0.1.29.85','0.1.29.86','0.1.29.87','0.1.29.88','0.1.29.89','0.1.29.90','0.1.29.91','0.1.29.92','0.1.29.93','0.1.29.94','0.1.29.95','0.1.29.96');report=args.report_dir.resolve();report.mkdir(parents=True,exist_ok=True)
+    root=Path(__file__).resolve().parents[1]
+    version=ElementTree.parse(root/'src/plugin.video.xtreammate/addon.xml').getroot().get('version')
+    current_releases=('0.1.29.101', '0.1.29.102', '0.1.29.103')
+    version79=version in ('0.1.29.82','0.1.29.83','0.1.29.84','0.1.29.85','0.1.29.86','0.1.29.87','0.1.29.88','0.1.29.89','0.1.29.90','0.1.29.91','0.1.29.92','0.1.29.93','0.1.29.94','0.1.29.95','0.1.29.96') + current_releases
+    report=args.report_dir.resolve();report.mkdir(parents=True,exist_ok=True)
     archive=args.skin_archive or report/'skin.zip'
     if not archive.exists():
         import urllib.request
@@ -33,7 +38,7 @@ def main():
     if version79:
         mounts=[(source,target) for source,target in mounts if target not in ('/work/gui66.py','/work/probe.py')]
         mounts.extend([(root/'tools/kodi_home82_host/gui82.py','/work/gui66.py'),(root/'tools/kodi_home81_host/gui81.py','/base_gui81.py'),(root/'tools/kodi_home80_host/gui80.py','/base_gui80.py'),(root/'tools/kodi_home80_host/media80.py','/media80.py'),(root/'tools/kodi_home79_host/gui79.py','/base_gui_cache79.py'),(root/'tools/kodi_home80_host/fixture80.py','/fixture75.py'),(root/'tools/kodi_home75_host/fixture75.py','/base_fixture75.py'),(root/'tools/kodi_home75_host/gui75.py','/base_gui79.py'),(root/'tools/kodi_home82_host/probe82.py','/work/probe.py'),(root/'tools/kodi_home79_host/tls79.py','/work/tls69.py')])
-    version86=__import__('xml.etree.ElementTree',fromlist=['parse']).parse(root/'src/plugin.video.xtreammate/addon.xml').getroot().get('version') in ('0.1.29.86','0.1.29.87','0.1.29.88','0.1.29.89','0.1.29.90','0.1.29.91','0.1.29.92','0.1.29.93','0.1.29.94','0.1.29.95','0.1.29.96')
+    version86=version in ('0.1.29.86','0.1.29.87','0.1.29.88','0.1.29.89','0.1.29.90','0.1.29.91','0.1.29.92','0.1.29.93','0.1.29.94','0.1.29.95','0.1.29.96') + current_releases
     if version86:
         fixture86=report/'fixture74-positive86.py'
         fixture86.write_text((root/'tools/kodi_home74_host/fixture66.py').read_text().replace("Image.new('RGB',(160,90)","Image.new('RGB',(1280,720)"))
@@ -76,6 +81,8 @@ def main():
             run('cp',name+':/root/post75.json',str(report/'post79-second.json'))
         print(json.dumps(json.loads((report/'home75.json').read_text())))
     finally:
+        with (report/'container.log').open('w') as log:
+            subprocess.run(docker+['logs',name],env=env,stdout=log,stderr=subprocess.STDOUT)
         for diagnostic92 in ('vod80-input92.json','vod80-native-kodi-tail.log'):
             subprocess.run(docker+['cp',name+':/root/'+diagnostic92,str(report/diagnostic92)],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         # Preserve every actual screenshot on failure as well as success.
@@ -103,7 +110,7 @@ def main():
         run('cp',name+':/root/gui66-error.txt',str(report/'gui-error.txt'),stderr=subprocess.DEVNULL) if subprocess.run(docker+['exec',name,'test','-f','/root/gui66-error.txt'],env=env).returncode==0 else None
         # Synthetic fixture evidence must be inspectable without downloading
         # an artifact; keep private production logs out of this disposable gate.
-        for evidence85 in ('gui-error.txt','post75-error.txt','restart.log','restart2.log','probe.log'):
+        for evidence85 in ('gui-error.txt','post75-error.txt','restart.log','restart2.log','probe.log','container.log'):
             path85=report/evidence85
             if path85.is_file():print(evidence85+'\n'+path85.read_text(errors='replace')[-12000:],flush=True)
         if not args.keep_container:subprocess.run(docker+['rm','-f',name],env=env,stdout=subprocess.DEVNULL)

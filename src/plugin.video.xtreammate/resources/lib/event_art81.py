@@ -18,9 +18,9 @@ def rank(value):
  if value.get('manual85') or value.get('match')=='MANUAL_CONFIRMED':return -1
  if source=='agent_tmdb':return 0 if value.get('role81')!='poster' else 3
  if source=='agent_tvmaze':return 1 if value.get('role81')!='poster' else 3
- if source=='agent_xmltv':return 1
+ if source=='agent_xmltv':return 2
  if source.startswith('tmdb_'):return 0 if value.get('role81')!='poster' else 3
- return {'xmltv_event':1,'provider_event':2,'tvmaze_episode':2,'tvmaze_series':3}.get(source,4)
+ return {'xmltv_event':2,'provider_event':3,'tvmaze_episode':1,'tvmaze_series':1}.get(source,4)
 
 def allowed(value):
  from utils import setting_bool

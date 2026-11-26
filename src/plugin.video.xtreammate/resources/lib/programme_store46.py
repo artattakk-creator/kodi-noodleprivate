@@ -34,6 +34,18 @@ def metadata(event):
  if isinstance(event.get('agent_art'),dict):result['agent_art']=event['agent_art']
  rating=age_rating(event)
  if rating:result['age_rating']=rating
+ language=event.get('language')
+ if isinstance(language,str) and language.strip():result['language']=language.strip()[:32]
+ from xmltv_stream import TITLE_LANG, TMDB_WORK_ID
+ title_lang=event.get('xmltv_title_lang')
+ if isinstance(title_lang,str) and TITLE_LANG.fullmatch(title_lang):result['xmltv_title_lang']=title_lang
+ tmdb_id=event.get('xmltv_tmdb_id')
+ if isinstance(tmdb_id,str) and TMDB_WORK_ID.fullmatch(tmdb_id):
+  result['xmltv_tmdb_id']=tmdb_id
+  score=event.get('xmltv_tmdb_score')
+  if type(score) in (int,float) and 0<score<=10:result['xmltv_tmdb_score']=score
+ date=event.get('xmltv_date') or event.get('date')
+ if isinstance(date,str) and __import__('re').fullmatch(r'[0-9]{4,14}',date):result['xmltv_date']=date
  country=event.get('country')
  if isinstance(country,str):country={'UK':'GB','United Kingdom':'GB','Großbritannien':'GB','United States':'US','USA':'US','Deutschland':'DE'}.get(country.strip(),country)
  if isinstance(country,str) and __import__('re').fullmatch('[A-Za-z]{2}',country.strip()):result['country']=country.strip().upper()
@@ -58,7 +70,13 @@ def metadata(event):
  if isinstance(director,str) and director.strip():result['director']=director[:512]
  elif isinstance(director,list):result['director']=' / '.join(str(v)[:120] for v in director[:8] if isinstance(v,str))
  cast=event.get('cast')
- if isinstance(cast,list) and any(isinstance(v,str) and v.strip() for v in cast):result['cast']=[v[:120] for v in cast[:24] if isinstance(v,str) and v.strip()]
+ if isinstance(cast,list) and any(isinstance(v,str) and v.strip() for v in cast):
+  result['cast']=[v[:120] for v in cast[:24] if isinstance(v,str) and v.strip()]
+  roles=event.get('cast_roles')
+  if isinstance(roles,dict):
+   known={name:roles[name].strip()[:96] for name in result['cast']
+          if isinstance(roles.get(name),str) and roles[name].strip()}
+   if known:result['cast_roles']=known
  return result
 
 def connect(write=False,guide=None):
@@ -119,17 +137,17 @@ class Stage:
   finally:
    if db is not None:db.close()
    self.rows.clear()
- def finish(self,publish=False):
-  self.flush();finish(self.pid,self.generation,publish and not self.failed,self.guide,index_ok46=not self.facts46.failed,index_publish46=publish)
+ def finish(self,publish=False,*,insert_missing=False):
+  self.flush();finish(self.pid,self.generation,publish and not self.failed,self.guide,index_ok46=not self.facts46.failed,index_publish46=publish,insert_missing=insert_missing)
   if publish and not self.failed and not self.facts46.failed:
    try:__import__('programme_reference84').signal(self.pid,self.generation)
    except (ImportError,AttributeError,RuntimeError):pass
 
-def finish(pid,generation,publish,guide=None,*,index_ok46=True,index_publish46=None):
+def finish(pid,generation,publish,guide=None,*,index_ok46=True,index_publish46=None,insert_missing=False):
  from epg_binding48 import finish_channels
- finish_channels(pid,generation,publish,guide)
+ finish_channels(pid,generation,publish,guide,insert_missing=insert_missing)
  from programme_index46 import finish as finish_index46
- finish_index46(pid,generation,(publish if index_publish46 is None else index_publish46) and index_ok46,guide)
+ finish_index46(pid,generation,(publish if index_publish46 is None else index_publish46) and index_ok46,guide,insert_missing=insert_missing)
  if not os.path.isfile(path(guide)):return
  db=None
  try:
@@ -141,7 +159,9 @@ def finish(pid,generation,publish,guide=None,*,index_ok46=True,index_publish46=N
     # Free only this new unpublished stage before insertion, so promotion does
     # not require twice its disk budget. Published old metadata stays atomic.
     db.executemany('DELETE FROM pending WHERE generation=? AND pid=? AND cid=? AND start=? AND stop=? AND titlehash=? AND source=?',[(generation,str(pid),*row[:5]) for row in rows])
-    if publish:db.executemany('INSERT OR REPLACE INTO metadata VALUES(?,?,?,?,?,?,?)',[(str(pid),*row) for row in rows])
+    if publish:
+     verb='INSERT OR IGNORE' if insert_missing else 'INSERT OR REPLACE'
+     db.executemany(verb+' INTO metadata VALUES(?,?,?,?,?,?,?)',[(str(pid),*row) for row in rows])
  except (OSError,sqlite3.Error,ValueError,MemoryError):
   if db is not None:
    try:

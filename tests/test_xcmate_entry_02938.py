@@ -17,6 +17,17 @@ class Entry38(Fixture,unittest.TestCase):
         self.assertTrue(self.entry.enter(self.router,self.portal));self.assertEqual(len(self.builtins),1)
         self.assertIn('action=play_start_direct',self.builtins[0]);self.assertTrue(self.options['autoplay_diagnostics_safe'])
 
+    def test_autoplay_lease_is_independent_of_epg_profile_writes(self):
+        from profile_transaction import writing
+        with writing():
+            import threading
+            result = []
+            thread = threading.Thread(target=lambda: result.append(self.entry.enter(self.router, self.portal)))
+            thread.start()
+            thread.join(2)
+            self.assertEqual(result, [True])
+        self.assertEqual(len(self.builtins), 1)
+
     def test_twenty_refreshes_and_more_than_old_cooldown_still_start_once(self):
         self.assertTrue(self.entry.enter(self.router,self.portal))
         for i in range(20):

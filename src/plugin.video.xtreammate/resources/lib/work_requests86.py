@@ -76,6 +76,13 @@ def save(event,options,expected,cancel=lambda:False):
   mapping90=__import__('programme_mapping85')
   return mapping_commit90(current,automatic=action=='automatic',hidden=action=='hide',cancel=cancel,alias90=mapping90.namespace(event))
  selected=options.get('candidate') or {};phase('CANDIDATE_SELECTED')
+ if selected.get('source')=='agent_event103':
+  if kind!='live':raise SourceError('CANDIDATES_REJECTED')
+  from agent_work103 import find,verify
+  verified=verify(current,selected,cancel);phase('SOURCE_REVERIFIED')
+  current=authoritative(event,expected);phase('EPG_SCOPE_REVALIDATED')
+  if not find(current,verified['role'],verified['id']):raise SourceError('EPG_REVISION_CHANGED')
+  return mapping_commit90(current,verified,cancel=cancel,operation89=_seen)
  if selected.get('source')=='xmltv_event':
   if kind!='live':raise SourceError('CANDIDATES_REJECTED')
   verified=__import__('xmltv_art96').details(current,selected,cancel)
@@ -118,7 +125,8 @@ def _drain89(cancelled_service=lambda:False):
   def stop():return cancelled_service() or cancelled(nonce) or time.monotonic()>=deadline
   __import__('work_trace87').mark(nonce,'PICKED',data.get('operation',''),options.get('source',''))
   if data.get('operation')=='search':
-   if options.get('source')=='xmltv_event':value=__import__('xmltv_art96').search(event,stop)
+   if options.get('source')=='agent_event103':value=__import__('agent_work103').search(authoritative(event,data['binding']))
+   elif options.get('source')=='xmltv_event':value=__import__('xmltv_art96').search(event,stop)
    else:value=__import__('work_search86').search(options.get('query'),options.get('kind','tv'),options.get('source','tmdb'),options.get('page',1),stop)
    phase('SEARCH_READY')
   elif data.get('operation')=='local':value=dict(code='SAVED' if local_save(event,options.get('path',''),data['binding'],stop) else 'UNCHANGED',rows=[])

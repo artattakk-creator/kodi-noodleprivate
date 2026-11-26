@@ -48,6 +48,7 @@ if old_layout78_path.exists():
     if 'Neu im Kino' not in (config78/'skin.titan.bingie.mod.properties').read_text(encoding='utf-8'):raise RuntimeError('HOME78_CINEMA_MISSING')
     if __import__('widget_skin78').runtime()['code']!='RUNTIME_READY':raise RuntimeError('HOME78_RUNTIME_NOT_VERIFIED')
     if home.getProperty(home_activation78.KEY) and json.loads(home.getProperty(home_activation78.KEY)).get('reloads')!=1:raise RuntimeError('HOME78_CACHE_HIT_RELOAD_NOT_EXERCISED')
+layout103=xbmc.getInfoLabel('$VAR[XCMate103.Contract]')=='READY'
 cases=[];traces=[]
 def check(value,detail):
     if not value:raise RuntimeError(str(detail))
@@ -68,9 +69,9 @@ def contours(rgb):
     mask=ImageChops.multiply(ImageChops.multiply(red.point(lambda v:255 if v<50 else 0),green.point(lambda v:255 if v>150 else 0)),blue.point(lambda v:255 if v>220 else 0))
     # Exclude glyphs and watermark: find long cyan lines of the focus frame.
     spans=[]
-    for y in range(600,1040):
+    for y in (range(640,1080) if layout103 else range(600,1040)):
         run=0;longest=0
-        for x in range(240,1880):
+        for x in (range(130,1890) if layout103 else range(240,1880)):
             run=run+1 if mask.getpixel((x,y)) else 0;longest=max(longest,run)
         if longest>=90:spans.append(y)
     groups=[]
@@ -78,19 +79,37 @@ def contours(rgb):
         if not groups or y>groups[-1][-1]+4:groups.append([y])
         else:groups[-1].append(y)
     return [(g[0],g[-1]) for g in groups]
+def rail_present(frames,ident):
+    if not layout103:return 1<=len(frames)<=2
+    if len(frames)!=2:return False
+    top,bottom=(640,720) if ident==2510 else (720,1080)
+    return all(top<=start<=end<bottom for start,end in frames)
+def wait_for_focus(ident,kind):
+    # SetFocus is queued in Kodi. The observer can still see a genuinely
+    # focused previous row until the GUI acknowledges this test's selection.
+    field='ListItem.Property(XCMate.WidgetKind41)'
+    deadline=time.monotonic()+4
+    while time.monotonic()<deadline:
+        if (home.getFocusId()==ident and xbmc.getInfoLabel(field)==kind
+                and xbmc.getInfoLabel('Container('+str(ident)+').'+field)==kind):
+            return
+        xbmc.sleep(50)
+    raise RuntimeError(('NATIVE_SELECTION_NOT_ACKNOWLEDGED',kind,ident,home.getFocusId()))
+
 def select(ident,index,kind):
     started=time.monotonic()
     home.setFocusId(ident);home.getControl(ident).selectItem(index)
+    if layout103 and kind in ('live','vod','series'):wait_for_focus(ident,kind)
     for _ in range(30):pump();xbmc.sleep(50)
     path,rgb=capture('home75-'+kind+'-'+str(index))
     frames=contours(rgb)
     # Both boundaries belong to one local focus rectangle; no second rail.
-    check(1<=len(frames)<=2,(kind,index,frames))
+    check(rail_present(frames,ident),(kind,index,frames))
     title=xbmc.getInfoLabel('ListItem.Label')
     check(home.getFocusId()==ident and title,(kind,index,home.getFocusId(),title))
     image=home.getControl(296751)
     box=(tuple(image.getPosition()),image.getWidth(),image.getHeight())
-    check(box==((270,20),1080,580),box)
+    check(box==(((130,0),1760,640) if layout103 else ((270,20),1080,580)),box)
     if kind=='live' and index==0:
         check(max(abs(a-b) for a,b in zip(rgb.getpixel((500,300)),(20,80,130)))<=5,'EVENT_IMAGE_PIXELS')
         check(max(abs(a-b) for a,b in zip(rgb.getpixel((330,645)),(20,90,150)))<=5,'STATION_LOGO_PIXELS')
@@ -113,7 +132,7 @@ from widget_fast69 import prepare
 prepare();xbmc.sleep(300)
 prepared_state=json.loads(home.getProperty(schedule.KEY))
 check(prepared_state['phase']==3,'NO_AUTOMATIC_PREPARATION')
-check(prepared_state['visible']==['live'],'HIDDEN_ROWS_CLAIMED_VISIBLE')
+check(prepared_state['visible']==['live'],('HIDDEN_ROWS_CLAIMED_VISIBLE',prepared_state['visible']))
 check(home.getFocusId()==2510,'PREPARATION_MOVED_FOCUS')
 select(2520,0,'vod')
 check('vod' in json.loads(home.getProperty(schedule.KEY))['visible'],'NO_NATIVE_MOVIES_READY')
@@ -178,7 +197,7 @@ for i in range(20):
     check(ident in (2510,2520,2530,2540,2550,2560),('NATIVE_DIRECTION',action,ident))
     expected_id=(2520,2530,2540,2550,2560,2550,2540,2530,2520,2510)[position]
     check(ident==expected_id,('NATIVE_DIRECTION_DID_NOT_MOVE',action,ident,expected_id))
-    check(1<=len(contours(rgb))<=2,('NATIVE_ONE_RAIL',i))
+    check(rail_present(contours(rgb),ident),('NATIVE_ONE_RAIL',i))
     actions.append(dict(action=action,focus=ident))
 home.setFocusId(2510);home.getControl(2510).selectItem(0);xbmc.sleep(200)
 xbmc.executebuiltin('Action(Left)',wait=False);xbmc.sleep(400)

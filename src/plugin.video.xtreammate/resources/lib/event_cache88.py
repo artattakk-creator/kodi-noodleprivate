@@ -11,7 +11,10 @@ def clean(value):
  if not isinstance(value,dict) or set(value)-{'source','match','role81','image_scope57','manual85','mapping_epoch85','source_hash88','dns_hash88','vote_average88','vote_count88'}:raise ValueError('CACHE88_PROOF')
  from programme_sources57 import PROOFS
  if value.get('source') not in SOURCES or value.get('match') not in ('EXACT_EVENT','EXACT_TITLE_YEAR','EXACT_SEASON_EPISODE','EXACT_UNIQUE_FILM_TITLE')+PROOFS or value.get('match')=='PROVISIONAL_TV85':raise ValueError('CACHE88_PROOF')
- if value.get('role81','') not in ('','backdrop','poster','episode_still','thumb','legacy_icon') or value.get('image_scope57','') not in ('','movie','episode','series','series_fallback'):raise ValueError('CACHE88_PROOF')
+ from agent_programme100 import PERSON_ROLES, SOURCES as AGENT_SOURCES
+ role=value.get('role81','')
+ if role not in ('','backdrop','poster','episode_still','thumb','legacy_icon',*PERSON_ROLES) or value.get('image_scope57','') not in ('','movie','episode','series','series_fallback'):raise ValueError('CACHE88_PROOF')
+ if role in PERSON_ROLES and (value['source'] not in AGENT_SOURCES or value['match']!='EXACT_EVENT'):raise ValueError('CACHE88_PROOF')
  if type(value.get('manual85',False)) is not bool or type(value.get('mapping_epoch85',0)) is not int or not 0<=value.get('mapping_epoch85',0)<2**63 or not re.fullmatch('[a-f0-9]{64}',value.get('source_hash88','')):raise ValueError('CACHE88_PROOF')
  if not re.fullmatch('[a-f0-9]{64}',value.get('dns_hash88','')):raise ValueError('CACHE88_DNS')
  if 'vote_average88' in value and (type(value['vote_average88']) not in (int,float) or not 0<=value['vote_average88']<=10):raise ValueError('CACHE88_RATING')
@@ -45,16 +48,21 @@ def admitted(proof,event):
  with _lock:
   return not any(hashlib.sha256(host.encode()).hexdigest()==proof['dns_hash88'] and verdict[0]>time.monotonic() and not verdict[1] and not __import__('dns_verdict78').temporary((host,port)) for (host,port),verdict in _dns_cache.items())
 def recover(event):
- from urllib.parse import urlsplit,parse_qs,unquote
+ import agent_programme100 as roles499
  from sticky_art88 import key
+ view=roles499.view(event) if roles499.typed(event) else ''
+ if view:
+  value=_recover(event,key(event,'agent_xmltv'),view)
+  if value:return value
+ return _recover(event,key(event),view)
+
+def _recover(event,context,view499):
+ from urllib.parse import urlsplit,parse_qs,unquote
  from widget_cache82 import decoded
  from programme_requests68 import identity,scope
- from programme_art46 import fingerprint
- from programme_policy68 import negative_scope
+ from programme_image69 import fingerprint,policy
  import xbmc
  import agent_programme100 as roles499
- context=key(event)
- view499=roles499.view(event) if roles499.typed(event) else ''
  cache_key=(context,view499) if view499 else context
  if not event.get('start',0)<=time.time()<event.get('stop',0):return None
  try:
@@ -70,6 +78,7 @@ def recover(event):
   if not isinstance(raw,str) or len(raw)>262144:return None
   textures=json.loads(raw).get('result',{}).get('textures',[])
   if not isinstance(textures,list):return None
+  admitted_textures=[]
   for texture in reversed(textures[:32]):
    try:
     if not isinstance(texture,dict):continue
@@ -88,10 +97,17 @@ def recover(event):
     if key_hash not in (hashlib.sha256((context+'.'+digest).encode()).hexdigest(),
                         hashlib.sha256(asset_key(context,digest,proof).encode()).hexdigest()):continue
     if not admitted(proof,event):continue
-    if view499 and not roles499.manual(proof) and not roles499.selected(proof,view499):continue
+    if proof.get('role81') in roles499.PERSON_ROLES:continue
+    priority=roles499.role_priority(proof,view499)
+    if view499 and priority is None and not roles499.manual(proof):continue
+    admitted_textures.append((priority or (0, not roles499.manual(proof)),texture,proof))
+   except (OSError,ValueError,TypeError,KeyError,AttributeError):continue
+  for _,texture,proof in sorted(admitted_textures,key=lambda row:row[0]):
+   try:
     record=decoded(texture,texture.get('url',''))
     if not record:continue
-    result=dict(proof,key=event['key'],fingerprint=fingerprint(event),code='READY',image=record['file'],thumbnail=record['file'],sha256=record['sha256'],scope69=identity(event),profile69=scope(),policy69=negative_scope({}),until=min(time.time()+600,event['stop']),decoded77=True,image_width77=record['width'],image_height77=record['height'],persisted69=False,storage69='KODI_TEXTURE_CACHE')
+    result=dict(proof,key=event['key'],fingerprint=fingerprint(event,proof['source']),code='READY',image=record['file'],thumbnail=record['file'],sha256=record['sha256'],scope69=identity(event),profile69=scope(),policy69=policy(proof['source']),until=min(time.time()+600,event['stop']),decoded77=True,image_width77=record['width'],image_height77=record['height'],persisted69=False,storage69='KODI_TEXTURE_CACHE')
+    if view499 and not roles499.fits(result,view499):continue
     result.pop('source_hash88',None);result.pop('dns_hash88',None)
     result['attribution']='XCMate EPG Agent · TMDB · '+__import__('tmdb_connection60').ATTRIBUTION if result['source']=='agent_tmdb' else 'XCMate EPG Agent · TVmaze' if result['source']=='agent_tvmaze' else 'XCMate EPG Agent · XMLTV' if result['source']=='agent_xmltv' else 'TMDB · '+__import__('tmdb_connection60').ATTRIBUTION if result['source'].startswith('tmdb') else 'TVmaze · Daten CC BY-SA; Bildrechte beim Rechteinhaber' if result['source'].startswith('tvmaze') else 'XMLTV' if result['source']=='xmltv_event' else 'Provider'
     if record.get('stamp'):_ram[cache_key]=dict(value=result,proof=proof,stamp=record['stamp'])

@@ -62,7 +62,9 @@ def run(router):
             # The owner pump has closed and returned. Service additionally
             # waits until Kodi reports that native window/dialog released.
             _queue('return',pid=str(portal['id']) if portal else '',closed=_home().getProperty('XCMate.SetupClosedId37'))
-        except Exception:
+        except Exception as exc:
+            from setup_trace import failure
+            failure(exc)
             _queue('return',pid='',closed=_home().getProperty('XCMate.SetupClosedId37'))
             raise
         finally:_home().clearProperty(ACTIVE)

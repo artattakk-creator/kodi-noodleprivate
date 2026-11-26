@@ -26,14 +26,6 @@ def create_window(value):
 def show(value):
     if value is not None:create_window(value).doModal()
 
-def image_choice():
-    import xbmcgui
-    from artwork_ui import job
-    choice=__import__('menu_icons45').select(xbmcgui.Dialog(),tr(38703),[tr(38704),tr(38705),tr(38706)])
-    if choice in (0,1,2):
-        decision=('yes','no','later')[choice]
-        return job(lambda cancel,progress:__import__('storage_policy92').choose(decision))
-
 def pick_usb():
     import xbmcgui
     from artwork_ui import job
@@ -49,10 +41,10 @@ def manage(setup=False):
     import artwork_migration as migration
     from storage_transfer92 import prepare
     dialog=xbmcgui.Dialog()
-    if setup:image_choice()
     labels=[tr(i) for i in (38701,38702,38703,38707,38708,38709,38710,38711,38712,38713,38714)]
     labels[8]='Artwork & Cache'
     labels[1]='Wartungsstatus (nur lesen)'
+    labels[2]=tr(39000)
     while True:
         choice=__import__('menu_icons45').select(dialog,tr(38700),labels)
         if choice<0:return
@@ -61,7 +53,7 @@ def manage(setup=False):
             elif choice==1:
                 value=job(lambda cancel,progress:__import__('storage_maintenance92').read())
                 if value is not None:dialog.textviewer(labels[1],json.dumps(value,ensure_ascii=False,indent=2))
-            elif choice==2:image_choice()
+            elif choice==2:__import__('artwork_hub96').show()
             elif choice==3:
                 target=pick_usb()
                 if not target:continue
@@ -102,12 +94,8 @@ def setup(nonce):
     import re,xbmcgui
     if not re.fullmatch('[a-f0-9]{32}',nonce or ''):raise ValueError('SETUP_NONCE_INVALID')
     from artwork_ui import job
-    from storage_policy92 import read
     dialog=xbmcgui.Dialog();state='DEFERRED'
     try:
-        policy=job(lambda cancel,progress:read())
-        # A legacy profile must not have its existing source opt-ins reset.
-        if policy:image_choice()
         target=__import__('menu_icons45').select(dialog,tr(38724),[tr(38725),tr(38707),tr(38726),tr(38706)])
         if target==0:
             # Internal is the existing default. Never undo an active migration.

@@ -6299,3 +6299,55 @@ msgstr "Installierte Designs"
 msgctxt "#39124"
 msgid "Posters / backdrops / episode images / station logos"
 msgstr "Poster / Hintergründe / Episodenbilder / Senderlogos"
+
+msgctxt "#39125"
+msgid "Public EPG data is being prepared. The provider guide remains available."
+msgstr "Öffentliche EPG-Daten werden bereitgestellt. Das Anbieter-EPG bleibt verfügbar."
+
+msgctxt "#39370"
+msgid "Full-width Hero and fixed station bar"
+msgstr "Vollflächiger Hero und feste Senderleiste"
+
+msgctxt "#39371"
+msgid "Install now"
+msgstr "Jetzt installieren"
+
+msgctxt "#39372"
+msgid "Technical details"
+msgstr "Technische Details"
+
+msgctxt "#39373"
+msgid "Verified files {0}"
+msgstr "Geprüfte Dateien {0}"
+
+msgctxt "#39374"
+msgid "The BINGIE layout could not be installed. Use the verified backup to recover an interrupted installation."
+msgstr "Das BINGIE-Layout konnte nicht installiert werden. Eine unterbrochene Installation kann über die geprüfte Sicherung wiederhergestellt werden."
+
+msgctxt "#39375"
+msgid "The saved widget sources changed while the preview was open. Open the layout check again to review the current configuration."
+msgstr "Die gespeicherten Widgetquellen haben sich während der Vorschau geändert. Öffnen Sie die Layoutprüfung erneut, um die aktuelle Konfiguration zu prüfen."
+
+msgctxt "#39376"
+msgid "Kodi could not write the patch files. Check that the skin folder and Kodi add-on data are writable."
+msgstr "Kodi konnte die Patch-Dateien nicht schreiben. Prüfen Sie die Schreibrechte des Skin-Ordners und der Kodi-Add-on-Daten."
+
+msgctxt "#39377"
+msgid "Kodi could not resolve the active profile or skin to a local folder."
+msgstr "Kodi konnte das aktive Profil oder den Skin keinem lokalen Ordner zuordnen."
+
+msgctxt "#39378"
+msgid "The verified skin files were saved. Kodi could not confirm the Skinshortcuts rebuild."
+msgstr "Die geprüften Skin-Dateien wurden gespeichert. Kodi konnte den Neuaufbau durch Skinshortcuts nicht bestätigen."
+
+msgctxt "#39379"
+msgid "Verified backup and checksums"
+msgstr "Geprüfte Sicherung und Prüfsummen"
+
+msgctxt "#39380"
+msgid "Before {0}"
+msgstr "Vorher {0}"
+
+msgctxt "#39381"
+msgid "After {0}"
+msgstr "Nachher {0}"

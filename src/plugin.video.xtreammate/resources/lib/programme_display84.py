@@ -17,11 +17,10 @@ def _account(pid):
     return hashlib.sha256(json.dumps([portal.get(k) for k in ('id','type','xc_host','xc_user','xc_pass','enabled')],sort_keys=True).encode()).hexdigest()
 
 
-def key(event):
+def key(event,source=None):
     from programme_requests68 import identity
-    from programme_art46 import fingerprint
-    from programme_policy68 import negative_scope
-    return hashlib.sha256((identity(event)+fingerprint(event)+negative_scope({})+_account(event.get('pid'))).encode()).hexdigest()
+    from programme_image69 import fingerprint,policy
+    return hashlib.sha256((identity(event)+fingerprint(event,source)+policy(source)+_account(event.get('pid'))).encode()).hexdigest()
 
 
 def _slot(tag):return PREFIX+str(int(tag[:8],16)%128)

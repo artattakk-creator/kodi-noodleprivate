@@ -74,8 +74,9 @@ class ProgrammeWindow46(Fixture,unittest.TestCase):
  def test_own_window_xml_logo_is_top_left_overlay_and_has_no_extra_focus_target(self):
   import xml.etree.ElementTree as ET
   tree=ET.parse(ADDON/'resources/skins/Default/720p/XCMateProgramme46.xml');nodes={n.get('id'):n for n in tree.iter('control') if n.get('id')}
-  # .88 explicitly adds two real actions; logo remains non-focusable.
-  self.assertEqual([n.get('id') for n in tree.iter('control') if n.get('type')=='button'],['501','502','503'])
+  # The logo stays non-focusable. The extra button opens the supporting page.
+  self.assertEqual([n.get('id') for n in tree.iter('control') if n.get('type')=='button'],['501','502','503','504'])
+  self.assertEqual(nodes['504'].findtext('onleft'),'503')
   self.assertGreater(int(nodes['111'].findtext('left')),int(nodes['110'].findtext('left')));self.assertLess(int(nodes['111'].findtext('top')),int(nodes['110'].findtext('top'))+100);self.assertEqual(nodes['111'].findtext('aspectratio'),'keep')
  def test_gui_thread_ownership_is_enforced(self):
   w=self.m.ProgrammeWindow46('XCMateProgramme46.xml',str(ADDON),'Default','720p');w.configure(self.portal,dict(sid='1',name='Station'));w._owner=-1

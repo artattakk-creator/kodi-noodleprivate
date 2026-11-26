@@ -86,5 +86,16 @@ def resumable(cls):
             else:w.onClick(16)
             return
         return original['onAction'](w,event)
-    for name,method in [('configure',configure),('work',work),('working',working),('render',render),('discovered',discovered),('scanned',scanned),('failed_work',failed),('onClick',click),('onAction',action)]:setattr(cls,name,method)
-    return cls
+    # Supply callbacks at type creation for native Kodi WindowXML bindings.
+    return type(cls)(cls.__name__, (cls,), {
+        "__module__": cls.__module__,
+        "configure": configure,
+        "work": work,
+        "working": working,
+        "render": render,
+        "discovered": discovered,
+        "scanned": scanned,
+        "failed_work": failed,
+        "onClick": click,
+        "onAction": action,
+    })

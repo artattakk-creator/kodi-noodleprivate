@@ -35,6 +35,7 @@ PRESET_FEEDS = (
 )
 
 
+@serialized
 def add_presets(portal_id, preset_keys):
     """Install selected XMLTV feeds idempotently, without touching existing ones."""
     wanted = set(preset_keys)
@@ -105,12 +106,14 @@ def configuration(portal_id):
 @serialized
 def _save(portal_id, state):
     all_data = _load_all()
-    all_data[str(portal_id)] = state
+    pid = str(portal_id)
+    all_data[pid] = dict(all_data.get(pid, {}), **state)
     _write_all(all_data)
     from epg_status import changed
     changed(portal_id)
 
 
+@serialized
 def add_source(portal_id, title, uri, local=False):
     uri = str(uri).strip()
     if not uri:
@@ -134,6 +137,7 @@ def add_source(portal_id, title, uri, local=False):
     return item
 
 
+@serialized
 def edit_source(portal_id, source_id, operation):
     state = configuration(portal_id)
     index = next((i for i, s in enumerate(state['sources'])
@@ -158,6 +162,7 @@ def edit_source(portal_id, source_id, operation):
     return True
 
 
+@serialized
 def set_mapping(portal_id, stream_id, epg_id):
     state = configuration(portal_id)
     sid = str(stream_id).strip()

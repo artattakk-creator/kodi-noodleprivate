@@ -1,4 +1,4 @@
-"""Optional GitHub Agent in the shared Kodi EPG scheduler and profile."""
+"""GitHub EPG delivery and verified import receipts in the Kodi profile."""
 import json
 import shutil
 from pathlib import Path
@@ -14,13 +14,19 @@ SOURCE_RANK = 1000
 RETRY_INTERVAL = 15 * 60
 SETTING = "epg_agent_enabled"
 REQUEST = "XCMate.EPGAgent.Request"
+FORCE = "XCMate.EPGAgent.Force"
 STATE_LIMIT = 64 * 1024
 SUCCESS = {"READY", "PARTIAL_PRESERVED"}
 
 
 def enabled():
     from utils import setting_bool
-    return setting_bool(SETTING, False)
+    return setting_bool(SETTING, True)
+
+
+def use_private():
+    from utils import setting_bool
+    return setting_bool("epg_agent_private", False)
 
 
 def profile():
@@ -49,46 +55,156 @@ def _save(directory, record):
     atomic(directory / "status.json", record)
 
 
-def request_check():
+def request_check(*, force=False):
     """Ask the existing service to check once, without a request on the GUI."""
     import xbmcgui
-    xbmcgui.Window(10000).setProperty(REQUEST, str(time.time()))
+    window = xbmcgui.Window(10000)
+    stamp = str(time.time())
+    if force:
+        window.setProperty(FORCE, stamp)
+    window.setProperty(REQUEST, stamp)
+    return float(stamp)
 
 
-def _request_time():
+def _request_time(key=REQUEST):
     import xbmcgui
     try:
-        return float(xbmcgui.Window(10000).getProperty(REQUEST) or 0)
+        return float(xbmcgui.Window(10000).getProperty(key) or 0)
     except ValueError:
         return 0
 
 
+def pending_request(record, *, seconds=80):
+    stamp = _request_time()
+    return record.get("request", 0) < stamp and 0 <= time.time() - stamp < seconds
+
+
+def publish_variant(variant):
+    """Expose the read-back profile choice to renderers without profile file I/O."""
+    import xbmcgui
+    from epg_handoff63 import profile_scope
+
+    window = xbmcgui.Window(10000)
+    key = "XCMate.Agent103.Variant." + profile_scope()
+    if window.getProperty(key) != variant:
+        window.setProperty(key, variant)
+
+
+def _publish_initial_variant(directory, public):
+    try:
+        import xbmcgui
+        from epg_handoff63 import profile_scope
+        from epg_agent_hub5 import selection
+
+        if not xbmcgui.Window(10000).getProperty("XCMate.Agent103.Variant." + profile_scope()):
+            publish_variant(selection(directory, public=public)[1])
+    except (DeliveryError, ImportError, AttributeError, RuntimeError):
+        # Leave existing pictures intact when a stored selection cannot be read.
+        pass
+
+
+
+def _due(record, now):
+    checked = record.get("last_checked", 0)
+    if not checked or now < checked or record.get("code") == "CHECKING":
+        return True
+    if record.get("remote_failures") or record.get("remote") == "PUBLIC_PENDING":
+        return now >= record.get("next_check", checked)
+    return agent_due(checked, now)
+
+
+def _failed(record, now, code, *, phase="", http_status=None):
+    failures = (record.get("remote_failures", 0) % 3) + 1
+    delay = (RETRY_INTERVAL, 4 * RETRY_INTERVAL, AGENT_INTERVAL)[failures - 1]
+    record.update(remote="ERROR", code=code, remote_failures=failures,
+                  last_checked=now, next_check=now + delay,
+                  remote_phase=phase, remote_http_status=http_status)
+
+
 def cycle(directory, token_path, portals, *, now=None, request=0,
-          fetch=stage_full_candidate, install=None, cancel=lambda: False):
+          fetch=None, install=None, cancel=lambda: False, public=False, force=False):
     """Persist manifest outcomes and only advance a portal after verified readback."""
+    from epg_agent100_import import mapping_scope
     if install is None:
         from epg_agent100_import import install
     now = time.time() if now is None else now
     current = state(directory)
     if not portals or cancel():
         return current
+    transport = "public" if public else "private"
+    if current.get("transport", "private") != transport:
+        # Cached proofs remain usable while the newly selected endpoint is checked.
+        for key in ("etag", "remote", "remote_failures", "available_profiles",
+                    "last_checked", "last_successful_check", "manifest_revision"):
+            current.pop(key, None)
+    current["transport"] = transport
     manual = current.get("request", 0) < request <= now
     if manual:
         current["request"] = request
-    if manual or agent_due(current.get("last_checked", 0), now):
-        current.update(last_checked=now, next_check=now + AGENT_INTERVAL, code="CHECKING")
+    if manual or _due(current, now):
+        current.update(last_checked=now, next_check=now + AGENT_INTERVAL, code="CHECKING",
+                       delivery_phase="manifest", download_bytes=0, download_total=0,
+                       remote_phase="", remote_http_status=None)
         _save(directory, current)
+        # A region or picture-mode change needs a fresh manifest even when
+        # its HTTP ETag has not changed. Otherwise 304 masks that selection.
+        fetch_etag = "" if manual and force else current.get("etag", "")
+        if current.get("available_profiles"):
+            from epg_agent_hub5 import selection
+            desired, picture_mode = selection(directory, public=public)
+            if ("all" in desired):
+                desired = ("all",)
+            if (list(desired) != current.get("selected_profiles") or
+                    picture_mode != current.get("selected_variant", "artwork")):
+                fetch_etag = ""
+        next_progress = 0
+        def progress(done, total):
+            nonlocal next_progress
+            tick = time.monotonic()
+            if tick >= next_progress or done == total:
+                current.update(download_bytes=done, download_total=total)
+                _save(directory, current)
+                next_progress = tick + 2
+
+        def phase(value):
+            if current["delivery_phase"] != value:
+                current["delivery_phase"] = value
+                _save(directory, current)
+
         try:
-            payload = fetch(directory, token_path, known=current.get("generation", ""),
-                            etag=current.get("etag", ""), cancel=cancel)
+            options = dict(known=current.get("generation", ""), etag=fetch_etag, cancel=cancel)
+            if fetch is None:
+                options.update(phase=phase, progress=progress)
+            if public:
+                from epg_agent_public import stage_public_candidate
+                if fetch is not None:
+                    options["progress"] = progress
+                payload = (fetch or stage_public_candidate)(directory, **options)
+            else:
+                from epg_agent_token_bootstrap import ensure_local_token, fetch_with_recovery
+                if token_path is None:
+                    token_path = ensure_local_token(directory)
+                payload = fetch_with_recovery(fetch or stage_full_candidate, directory,
+                                              token_path, **options)
         except DeliveryError as exc:
-            current.update(remote="ERROR", code=exc.code)
+            _failed(current, now, exc.code, phase=exc.phase, http_status=exc.http_status)
         except InterruptedError:
-            current.update(last_checked=0, code="CANCELLED")
+            current.update(last_checked=0, next_check=0, code="CANCELLED")
         except OSError:
-            current.update(remote="ERROR", code="STORAGE_ERROR")
+            _failed(current, now, "STORAGE_ERROR")
+        except MemoryError:
+            _failed(current, now, "MEMORY_PRESSURE")
         else:
+            current.update(remote_failures=0, remote_phase="manifest",
+                           remote_http_status=payload.get("manifest_http"),
+                           last_successful_check=now, remote_reason="")
+            if payload.get("revision"):
+                current["manifest_revision"] = payload["revision"]
             status = payload["status"]
+            if "available_profiles" in payload:
+                current["available_profiles"] = payload["available_profiles"]
+                current["selected_profiles"] = payload.get("selected_profiles", [])
+                current["selected_variant"] = payload.get("variant", "artwork")
             if status in ("STAGED_FULL_CANDIDATE", "UNCHANGED"):
                 old = current.get("generation", "")
                 if old and old != payload["generation"]:
@@ -99,14 +215,18 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
                                image_counts=payload.get("image_counts", {}), etag=payload["etag"])
             elif status == "NOT_MODIFIED":
                 current.update(remote="AVAILABLE", etag=payload["etag"])
-            elif status == "PRIVATE_PENDING":
-                current.update(remote=status, code=status, etag="", remote_reason=payload.get("reason", ""))
+            elif status in ("PRIVATE_PENDING", "PUBLIC_PENDING", "NO_PROFILE_SELECTED"):
+                current.update(remote=status, code=status, etag="",
+                               remote_reason=payload.get("reason", ""))
+                if status == "PUBLIC_PENDING":
+                    current["next_check"] = now + RETRY_INTERVAL
         _save(directory, current)
-    if current.get("remote") != "AVAILABLE" or cancel():
+    if cancel():
         return current
+    remote_ready = current.get("remote") == "AVAILABLE"
     generation = current.get("generation")
-    folder = candidate_path(directory, generation)
-    if folder is None:
+    remote_folder = candidate_path(directory, generation) if remote_ready else None
+    if remote_ready and remote_folder is None:
         current.update(last_checked=0, code="CANDIDATE_MISSING", etag="")
         _save(directory, current)
         return current
@@ -116,23 +236,42 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
             return current
         pid = str(portal["id"])
         last = receipts.get(pid, {})
-        if last.get("generation") == generation:
+        target = generation if remote_ready else last.get("generation")
+        folder = remote_folder if remote_ready else candidate_path(directory, target)
+        if folder is None:
+            continue
+        scope = mapping_scope(portal)
+        same_generation = last.get("generation") == target
+        if same_generation and (scope is None or last.get("mapping_scope") == scope):
             continue
         previous_attempt = last.get("attempt", 0)
-        if not manual and last.get("candidate") == generation and 0 <= now - previous_attempt < RETRY_INTERVAL:
+        if (not manual and last.get("candidate") == target and last.get("attempt_scope") == scope
+                and 0 <= now - previous_attempt < RETRY_INTERVAL):
             continue
+        previous_code = current.get("code")
         current["code"] = "IMPORTING"
         _save(directory, current)
         try:
-            result = install(portal, folder, cancel)
+            result = install(dict(portal, _agent_incremental103=same_generation), folder, cancel)
+        except MemoryError:
+            result = dict(code="MEMORY_PRESSURE")
+        except InterruptedError:
+            result = dict(code="CANCELLED")
         except (DeliveryError, OSError, ValueError, sqlite3.Error) as exc:
             result = dict(code=exc.code if isinstance(exc, DeliveryError) else "IMPORT_ERROR")
         if result["code"] in SUCCESS and result.get("verified", 0) > 0:
-            receipts[pid] = dict(result, generation=generation, attempt=now, last_success=now)
+            receipts[pid] = dict(result, generation=target, attempt=now, last_success=now,
+                                 mapping_scope=scope)
         else:
-            receipts[pid] = dict(last, attempt=now, candidate=generation, code=result["code"])
+            receipts[pid] = dict(last, attempt=now, candidate=target,
+                                 attempt_scope=scope, code=result["code"])
+        if not remote_ready:
+            current["code"] = previous_code
         _save(directory, current)
-    available = sum(receipts.get(str(p["id"]), {}).get("generation") == generation for p in portals)
+    if not remote_ready:
+        return current
+    available = sum(receipts.get(str(p["id"]), {}).get("generation") == generation
+                    and receipts[str(p["id"])].get("code") in SUCCESS for p in portals)
     code = "CURRENT" if available == len(portals) else "IMPORT_PENDING"
     if current["code"] != code or current.get("ready_portals") != available:
         current.update(ready_portals=available, code=code)
@@ -155,39 +294,72 @@ def _prune(directory, current):
         shutil.rmtree(folder, ignore_errors=True)
 
 
+def local_candidate(pid, directory=None, record=None):
+    """Prefer the portal's retained generation, then the verified download."""
+    from epg_agent_catalog103 import INDEX
+    directory = profile() if directory is None else directory
+    record = state(directory) if record is None else record
+    receipt = record.get("portals", {}).get(str(pid), {})
+    for generation in dict.fromkeys((receipt.get("generation"), record.get("generation"))):
+        folder = candidate_path(directory, generation)
+        if folder is not None:
+            index = folder / INDEX
+            if not index.is_symlink() and index.is_file():
+                return folder
+    return None
+
+
 def installed_source(pid):
-    """Resolve the last locally verified Agent generation for an explicit preview."""
+    """Resolve a locally retained Agent generation for an explicit preview."""
     if not enabled():
         return None
     from epg_agent100_art import INDEX
-    from epg_agent_github import XMLTV_FILE
-    directory = profile()
-    receipt = state(directory).get("portals", {}).get(str(pid), {})
-    folder = candidate_path(directory, receipt.get("generation"))
+    from epg_agent_github import XMLTV_FILE, local_manifest
+    folder = local_candidate(pid)
+    if folder is None:
+        # .102 installations may still preview their previously verified cache
+        # while the service builds its new generation catalogue.
+        directory = profile()
+        receipt = state(directory).get("portals", {}).get(str(pid), {})
+        folder = candidate_path(directory, receipt.get("generation"))
     if folder is None:
         return None
     index = folder / INDEX
     if index.is_symlink() or not index.is_file():
         return None
     return dict(id=SOURCE_ID, name=SOURCE_NAME, local=True, enabled=True,
-                uri=str(folder / XMLTV_FILE), _agent_artwork=str(index))
+                uri=str(folder / XMLTV_FILE), _agent_artwork=str(index),
+                _agent_generation103=folder.name.removeprefix("candidate-"),
+                _agent_public102=local_manifest(folder).get("status") == "PUBLIC_READY")
 
 
 def run(portals, cancel):
-    from wizard_epg54 import pending
+    directory = profile()
+    public = not use_private()
+    _publish_initial_variant(directory, public)
     eligible = [p for p in portals if p.get("include_live", True) and
-                p.get("epg_show", True) and not pending(p)]
+                p.get("epg_show", True)]
     if not eligible or not enabled() or cancel():
         return
-    directory = profile()
     now = time.time()
     request = _request_time()
     record = state(directory)
     generation = record.get("generation")
     receipts = record.get("portals", {})
-    pending_import = record.get("remote") == "AVAILABLE" and any(
-        receipts.get(str(p["id"]), {}).get("generation") != generation for p in eligible)
-    if (agent_due(record.get("last_checked", 0), now) or request > record.get("request", 0)
+    from epg_agent100_import import mapping_scope
+    pending_import = False
+    for portal in eligible:
+        last = receipts.get(str(portal["id"]), {})
+        if record.get("remote") == "AVAILABLE" and last.get("generation") != generation:
+            pending_import = True
+            break
+        if last.get("generation"):
+            scope = mapping_scope(portal)
+            if scope is not None and last.get("mapping_scope") != scope:
+                pending_import = True
+                break
+    if (_due(record, now) or request > record.get("request", 0)
+            or record.get("transport", "private") != ("public" if public else "private")
             or pending_import or record.get("code") in ("IMPORTING", "CHECKING")):
         next_consent = 0
         consent = True
@@ -198,9 +370,9 @@ def run(portals, cancel):
                 return True
             tick = time.monotonic()
             if tick >= next_consent:
-                consent = enabled()
+                consent = enabled() and public != use_private()
                 next_consent = tick + .1
             return not consent
 
-        cycle(directory, directory / "reader-token.txt", eligible, now=now,
-              request=request, cancel=cancelled)
+        cycle(directory, None, eligible, now=now, request=request,
+              cancel=cancelled, public=public, force=bool(request and request == _request_time(FORCE)))

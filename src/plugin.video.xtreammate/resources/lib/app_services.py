@@ -111,6 +111,10 @@ def _run():
     next_prepare=0
     while not cancelled():
         runtime.emit()
+        if not runtime.portals_ready():
+            if runtime.wait_abort(monitor, .5, _stop):
+                break
+            continue
         if suspended():
             if runtime.wait_abort(monitor,.1,_stop):break
             continue
