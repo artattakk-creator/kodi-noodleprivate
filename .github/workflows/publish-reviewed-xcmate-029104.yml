@@ -1,0 +1,125 @@
+name: Publish reviewed XCMate .104 to Pilot and NeoDark3 only
+on:
+  push:
+    branches: [release/pilot-xcmate-029104]
+    paths: ['.github/workflows/publish-reviewed-xcmate-029104.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: pilot-xcmate-029104
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SOURCE: ad1620b0ebde232d7eac8364bfb5f2a87ee61be4
+      EXPECTED: d86e53c2f98e4487c193f1638a8a9bc5c6104ba80abd0963d11282810111e41f
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - name: Confirm reviewed package and final native matrix
+        run: |
+          set -euo pipefail
+          test "$(gh run view 45882606336 --json conclusion --jq .conclusion)" = success
+          test "$(gh run view 45882616867 --json conclusion --jq .conclusion)" = success
+          mkdir -p "$RUNNER_TEMP/xcmate104"
+          gh run download 45882606336 --name plugin.video.xtreammate-0.1.29.104-candidate --dir "$RUNNER_TEMP/xcmate104"
+          git fetch --no-tags origin fix/xcmate-519-029104
+          git cat-file -e "$SOURCE^{commit}"
+          git show "$SOURCE:tools/verify_neodark3_latest_only.py" > "$RUNNER_TEMP/verify_104.py"
+      - name: Stage exact reviewed ZIP against current main, preserve other packages
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git switch --detach origin/main
+          git rev-parse HEAD > "$RUNNER_TEMP/release-base"
+          python - <<'PY'
+          import hashlib, json, os, pathlib, re, xml.etree.ElementTree as ET, zipfile
+          root = pathlib.Path("online-test")
+          aid = "plugin.video.xtreammate"
+          v = "0.1.29.104"
+          old = "0.1.29.103"
+          name = f"{aid}-{v}.zip"
+          expected = os.environ["EXPECTED"]
+          matches = list((pathlib.Path(os.environ["RUNNER_TEMP"])/"xcmate104").rglob(name))
+          assert len(matches)==1, matches
+          data = matches[0].read_bytes()
+          assert len(data)==4897443 and hashlib.sha256(data).hexdigest()==expected
+          with zipfile.ZipFile(matches[0]) as z:
+              assert len(z.namelist())==927 and z.testzip() is None
+              raw=z.read(f"{aid}/addon.xml")
+              addon=ET.fromstring(raw)
+              assert addon.get("id")==aid and addon.get("version")==v
+          cat=root/"addons.xml"
+          txt=cat.read_text(encoding="utf-8")
+          pat=r'<addon\b(?=[^>]*\bid="plugin\.video\.xtreammate")[^>]*>[\s\S]*?</addon>'
+          hits=list(re.finditer(pat,txt))
+          assert len(hits)==1 and ET.fromstring(hits[0].group()).get("version")==old
+          fragment=ET.tostring(addon,encoding="unicode")
+          txt=txt[:hits[0].start()]+fragment+txt[hits[0].end():]
+          ET.fromstring(txt)
+          cat.write_text(txt,encoding="utf-8")
+          (root/"addons.xml.md5").write_text(hashlib.md5(cat.read_bytes()).hexdigest()+"\n",encoding="ascii")
+          for p in root.iterdir():
+              if p.is_file() and re.fullmatch(r"plugin\.video\.xtreammate-\d+\.\d+\.\d+\.\d+\.zip(?:\.sha256)?",p.name):
+                  p.unlink()
+          for folder in (root,root/aid):
+              (folder/name).write_bytes(data)
+              (folder/(name+".sha256")).write_text(expected+"  "+name+"\n",encoding="ascii")
+          m=root/"manifest.json"
+          manifest=json.loads(m.read_text(encoding="utf-8"))
+          assert "xcmate104" not in manifest and manifest["zip_sha256"][aid]=="2d91cbfea442ee388f3671064bf46acdd645d9b46c86e47b47ce9c8947e63574"
+          manifest["zip_sha256"][aid]=expected
+          manifest["xcmate104"]={"addon_id":aid,"version":v,"sha256":expected,"bytes":len(data),"files":927,"source_commit":os.environ["SOURCE"],"source_pr":520,"source_issue":519,"candidate_run":45882606336,"native_repeat_run":45882616867,"channels":["pilot","neodark3"],"pilot_zip":f"online-test/{aid}/{name}","neodark3_zip":f"online-test/{name}","repository_released":True,"user_approved_pilot_release":True,"user_approved_neodark3_direct_release":True,"user_approved_regular_release":False,"epg_agent_public_manifest":"PUBLIC_READY","android_status":"NOT_TESTED","lg_webos_status":"NOT_TESTED","real_cdn_native_pixels":"PASS_LINUX_KODI_720P","rss_plateau":"OPEN","older_version_removed":"0.1.29.103","status":"PILOT_NEODARK3_TEST_ONLY_PHYSICAL_ACCEPTANCE_PENDING"}
+          m.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          idx=root/"index.html"
+          s=idx.read_text(encoding="utf-8")
+          lines=s.splitlines(keepends=True)
+          notices=rows=0
+          for i,line in enumerate(lines):
+              if "<strong>Pilot-Update:</strong>" in line and f"XCMate {old}" in line:
+                  lines[i]=line.replace(old,v)
+                  notices+=1
+              elif f'href="{aid}-{old}.zip"' in line:
+                  lines[i]=line.replace(old,v).replace("Tokenfreier öffentlicher EPG, Kanalzuordnung, Detail-Hero und BINGIE-Fokus. CDN-Bildabruf im Hostnetz blockiert.","Vollständiger lokaler EPG-Index, DMAX/SIXX-Zuordnung, gemeinsame tokenfreie Artwork-Versorgung und schnellere Vorschau. Echte CDN-Bildanzeige auf Linux-Kodi nachgewiesen; RSS-Langzeitplateau offen.")
+                  rows+=1
+          assert notices==rows==1
+          idx.write_text("".join(lines),encoding="utf-8")
+          PY
+          python "$RUNNER_TEMP/verify_104.py" --root "$PWD" --baseline "$(cat "$RUNNER_TEMP/release-base")" --version 0.1.29.104 --sha256 "$EXPECTED"
+          # Explicitly user-authorized removal of the preceding nested Pilot copy.
+          # The verified release guard above intentionally allows only flat cleanup.
+          # Check this additional change separately, retaining rollback via Git history.
+          old="online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.103.zip"
+          test -f "$old"
+          echo "2d91cbfea442ee388f3671064bf46acdd645d9b46c86e47b47ce9c8947e63574  $old" | sha256sum -c -
+          rm -- "$old" "$old.sha256"
+          test ! -e "$old" && test ! -e "$old.sha256"
+          test ! -e online-test/plugin.video.xtreammate-0.1.29.103.zip
+          test ! -e online-test/plugin.video.xtreammate-0.1.29.103.zip.sha256
+          git diff --name-only --diff-filter=D -- online-test/plugin.video.xtreammate/ | sort > "$RUNNER_TEMP/nested-deletions"
+          printf '%s\n' "$old" "$old.sha256" | sort | diff - "$RUNNER_TEMP/nested-deletions"
+      - name: Commit verified distribution only and publish with fast-forward safety
+        run: |
+          set -euo pipefail
+          git add -A online-test
+          git diff --cached --stat
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'release(pilot): XCMate 0.1.29.104 to Pilot and NeoDark3'
+          git push origin HEAD:main
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "$(git rev-parse HEAD)"
+          git show origin/main:online-test/plugin.video.xtreammate-0.1.29.104.zip | sha256sum | grep "^$EXPECTED "
+          git show origin/main:online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.104.zip | sha256sum | grep "^$EXPECTED "
+          git show origin/main:online-test/addons.xml | md5sum | grep "^$(git show origin/main:online-test/addons.xml.md5 | tr -d '\r\n') "
+          for old in online-test/plugin.video.xtreammate-0.1.29.103.zip online-test/plugin.video.xtreammate-0.1.29.103.zip.sha256 online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.103.zip online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.103.zip.sha256; do
+            if git cat-file -e "origin/main:$old" 2>/dev/null; then echo "Old package still present: $old"; exit 1; fi
+          done
+          echo "Verified main release: $(git rev-parse HEAD)"
