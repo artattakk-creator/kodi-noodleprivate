@@ -48,13 +48,13 @@ def _variants(name, cid):
     return shifts, countries, qualities, regional
 
 
-def compatible(provider_name, provider_id, source_name, source_id):
+def compatible(provider_name, provider_id, source_name, source_id, *, proven_id=False):
     a_shift, a_country, a_quality, a_region = _variants(provider_name, provider_id)
     b_shift, b_country, b_quality, b_region = _variants(source_name, source_id)
     return (a_shift == b_shift and len(a_shift) <= 1
             and len(a_country | b_country) <= 1
-            and len(a_quality | b_quality) <= 1
-            and (not a_region or not b_region or a_region == b_region))
+            and (proven_id or len(a_quality | b_quality) <= 1)
+            and a_region == b_region)
 
 
 def channel_name_key(value):

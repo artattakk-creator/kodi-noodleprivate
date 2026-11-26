@@ -8,11 +8,13 @@ from epg_agent_github import XMLTV_FILE, local_manifest
 def match(channels, streams, mappings, *, available=None, evidence=False):
     """Resolve a single compatible candidate at the strongest available proof."""
     from epg_binding48 import binding
-    from epg_variant53 import compatible, channel_name_key, raw_id
+    from epg_variant53 import broadcast_id, compatible, channel_name_key, raw_id
 
     by_name = defaultdict(list)
     by_raw_id = defaultdict(list)
     by_folded_id = defaultdict(list)
+    by_qualified_id = defaultdict(list)
+    by_broadcast_id = defaultdict(list)
     for cid, name in channels.items():
         if available is not None and cid not in available:
             continue
@@ -22,6 +24,10 @@ def match(channels, streams, mappings, *, available=None, evidence=False):
         unqualified = raw_id(cid)
         by_raw_id[unqualified].append(cid)
         by_folded_id[unqualified.casefold()].append(cid)
+        by_qualified_id[cid.casefold()].append(cid)
+        key = broadcast_id(cid)
+        if key:
+            by_broadcast_id[key].append(cid)
     selected, proofs = {}, {}
     ambiguous = unmatched = 0
     for stream in streams:
@@ -40,11 +46,14 @@ def match(channels, streams, mappings, *, available=None, evidence=False):
         provider_id = str(stream.get("epg_channel_id") or stream.get("tvg_id") or "").strip()
         exact = (provider_id,) if provider_id in channels and (available is None or provider_id in available) else ()
         tiers = ((exact, "provider_id"),
+                 (by_qualified_id.get(provider_id.casefold(), ()), "provider_id"),
                  (by_raw_id.get(provider_id, ()), "provider_id"),
                  (by_folded_id.get(provider_id.casefold(), ()), "provider_id"),
+                 (by_broadcast_id.get(broadcast_id(provider_id), ()), "provider_id"),
                  (by_name.get(channel_name_key(name), ()), "name"))
         for group, proof in tiers:
-            candidates = [cid for cid in group if compatible(name, provider_id, channels[cid], cid)]
+            candidates = [cid for cid in group
+                          if compatible(name, provider_id, channels[cid], cid, proven_id=proof=='provider_id')]
             if candidates:
                 break
         if len(candidates) == 1:

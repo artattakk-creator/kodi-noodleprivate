@@ -101,16 +101,32 @@ class Identity104(unittest.TestCase):
         from epg_agent100_import import match
 
         stations = {'s1.DMAX.de': 'DMAX', 's4.DMAX.at': 'DMAX', 's5.DMax.de': 'DE| DMAX HEVC',
-                    's8.DMAX+1.de': 'DMAX +1'}
+                    's7.DMAXRegional.de': 'DMAX', 's8.DMAX+1.de': 'DMAX +1'}
         rows = [dict(sid='de', name='DMAX HEVC', epg_channel_id='DMax.de.HEVC'),
                 dict(sid='at', name='DMAX HD', epg_channel_id='DMAX.at@HD'),
                 dict(sid='shift', name='DMAX +1 FHD', epg_channel_id='DMAX+1.de'),
                 dict(sid='unknown', name='DMAX HEVC')]
         selected, proofs, ambiguous, unmatched = match(stations, rows, {}, available={'s1.DMAX.de',
-                                                  's4.DMAX.at', 's8.DMAX+1.de'}, evidence=True)
+                                                  's4.DMAX.at', 's7.DMAXRegional.de', 's8.DMAX+1.de'}, evidence=True)
         self.assertEqual(selected, {'de': 's1.DMAX.de', 'at': 's4.DMAX.at', 'shift': 's8.DMAX+1.de'})
-        self.assertEqual(set(proofs), {'de', 'at', 'shift'})
+        self.assertEqual(proofs, {'de': 'provider_id', 'at': 'provider_id', 'shift': 'provider_id'})
         self.assertEqual((ambiguous, unmatched), (1, 0))
+
+    def test_exact_qualified_casefold_disambiguates_duplicate_raw_ids(self):
+        from epg_agent100_import import match
+
+        stations = {'s1.DMAX.de': 'DMAX', 's5.DMax.de': 'DMAX'}
+        rows = [dict(sid='de', name='DMAX HEVC', epg_channel_id='S1.DMAX.DE')]
+        self.assertEqual(match(stations, rows, {}), {'de': 's1.DMAX.de'})
+
+    def test_quality_shares_verified_broadcast_but_unknown_region_remains_unmapped(self):
+        from epg_agent100_import import match
+
+        stations = {'s1.DMAX.de': 'DMAX HD', 's2.DMAX.de@Berlin': 'DMAX'}
+        rows = [dict(sid='sd', name='DE| DMAX SD', epg_channel_id='DMAX.de@SD'),
+                dict(sid='berlin', name='DE| DMAX', epg_channel_id='DMAX.de@Berlin.HEVC'),
+                dict(sid='hamburg', name='DE| DMAX', epg_channel_id='DMAX.de@Hamburg')]
+        self.assertEqual(match(stations, rows, {}), {'sd': 's1.DMAX.de', 'berlin': 's2.DMAX.de@Berlin'})
 
 
 class MappingErrors104(unittest.TestCase):
