@@ -87,13 +87,12 @@ class PersonReferences102(Fixture, unittest.TestCase):
         self.assertFalse(value.get('image'))
         self.assertFalse(result(first).get('image'))
 
-    def test_mislabeled_known_cdn_cannot_bypass_source_optout(self):
+    def test_mislabeled_known_cdn_is_rejected_with_agent_pictures_enabled(self):
         from programme_urls55 import resolve
 
         event = self.imported_event()
         event['agent_art']['person'] = dict(url=BASE + 'first.png', match='EXACT_EVENT',
                                             source='agent_xmltv', provider='xmltv', attribution='XMLTV')
-        self.options['programme_tmdb_optout77'] = True
         with mock.patch('programme_urls55.probe', side_effect=self.preflight) as probe:
             value = resolve(dict(event, _art_view499='person1'), url_mode69=True)
         self.assertFalse(value.get('image'))
@@ -120,6 +119,7 @@ class PersonReferences102(Fixture, unittest.TestCase):
         self.assertFalse(window.getControl(157).visible)
 
     def test_native_details_show_two_sources_and_no_name_assignment(self):
+        from epg_handoff63 import profile_scope
         from programme_window46 import ProgrammeWindow46
         from programme_urls55 import resolve
 
@@ -157,7 +157,13 @@ class PersonReferences102(Fixture, unittest.TestCase):
                 self.assertGreaterEqual(height, 46, 'reserve both caption lines at native size')
                 self.assertLessEqual(assignment.y + height, 610, 'caption fits in the picture panel')
                 self.assertGreaterEqual(assignment.width, 105, 'fit the complete second caption word')
-            self.options['programme_tmdb_optout77'] = True
+            self.options.update(programme_tmdb46=False, tmdb_research43=False, programme_tmdb_optout77=True)
+            window._next = 0
+            window.pump()
+            for cid, artwork in ((150, first), (154, second)):
+                self.assertTrue(window.getControl(cid).visible)
+                self.assertEqual(window.getControl(cid).image, artwork['image'])
+            self.properties['XCMate.Agent103.Variant.' + profile_scope()] = 'standard'
             window._next = 0
             window.pump()
             self.assertFalse(window.getControl(150).visible)
