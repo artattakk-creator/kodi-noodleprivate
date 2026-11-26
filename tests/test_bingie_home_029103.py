@@ -18,6 +18,12 @@ def test_guarded_graph_has_fixed_hero_station_rail_and_native_cover_clip():
         parent = home.find(".//control[@id='9000']")
         cover = parent.find("control[@id='77777']")
         live = parent.find("control[@id='296903']")
+        navigation = widget_skin78.parse(revised['xml/IncludesBingie.xml'])
+        menu = navigation.find(".//control[@id='900']")
+        assert menu.findtext("onright[.='296903']") == '296903'
+        assert menu.findtext("onback[.='296903']") == '296903'
+        assert 'Control.IsVisible(296904)' in menu.find("onright[.='296903']").get('condition')
+        assert 'Control.IsVisible(296904)' in menu.find("onright[.='77777']").get('condition')
         hero = widgets.find("include[@name='XCMate50.Hero']/control")
         body = hero.find("control[@type='image']")
         live_list = widgets.find("include[@name='XCMate75.NativeLiveRow']/control")
@@ -73,6 +79,9 @@ def test_generated_live_moves_out_of_scroll_without_changing_paths_or_controls()
         old, new = (ET.fromstring(data).find("include[@name='skinshortcuts-template-Widgets']")
                     for data in (legacy, revised))
         fixed = root.find("include[@name='XCMate103.LiveZone']")
+        marker = fixed.find("control[@id='296904']")
+        assert marker is not None
+        assert marker.findtext('visible') == 'Control.IsVisible(1510) + Integer.IsGreater(Container(1510).NumItems,0)'
         moved = old.find("include[@content='XCMate50.LiveRow']")
         assert ET.tostring(fixed.find('include')) == ET.tostring(moved)
         old.remove(moved)

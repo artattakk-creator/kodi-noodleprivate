@@ -17,6 +17,11 @@ WIDTH = 1760
 HERO_HEIGHT = 640
 LIVE_HEIGHT = 80
 COVER_TOP = HERO_HEIGHT + LIVE_HEIGHT
+LIVE_RETURN = (
+    'Window.IsActive(Home) + Control.IsVisible(296904) + '
+    'String.IsEqual(Window(Home).Property(CurrentWidgetID),Window(Home).Property(XCMate103.LiveWidget)) + '
+    'String.IsEqual(Container(900).ListItem.Property(submenuVisibility),Window(Home).Property(XCMate103.LiveMenu))'
+)
 MUSIC_DETAILS = '[!String.IsEmpty(ListItem.Artist) | !String.IsEmpty(ListItem.Album)]'
 NO_HOME_ANIMATION = '![Window.IsActive(Home) + String.IsEqual(Skin.String(HomeLayout),bingie)]'
 RECEIPTS = Path(__file__).parents[1] / 'bingie103_layout.json'
@@ -53,6 +58,8 @@ def live_list(node):
     for layout in control.findall('itemlayout') + control.findall('focusedlayout'):
         label = layout.find("control[@type='label']")
         set_values(label, top=46, scroll='true')
+    for prop, parameter in (('LiveWidget', 'widgetid'), ('LiveMenu', 'submenuid')):
+        ET.SubElement(control, 'onfocus').text = f'SetProperty(XCMate103.{prop},$PARAM[{parameter}],Home)'
     focused = control.find('focusedlayout')
     frame = next(n for n in focused.findall("control[@type='image']")
                  if n.findtext('texture', '').endswith('/programme55/focus.png'))
@@ -95,6 +102,16 @@ def poster_cards(node):
 def motion(node):
     for animation in node.findall('animation'):
         animation.set('condition', NO_HOME_ANIMATION + ' + [' + animation.get('condition') + ']')
+
+
+def menu_return(node):
+    for direction in ('onright', 'onback'):
+        original = node.find(f"{direction}[.='77777']")
+        prior = original.get('condition')
+        original.set('condition', '[' + prior + '] + ![' + LIVE_RETURN + ']')
+        live = ET.Element(direction, condition='[' + prior + '] + [' + LIVE_RETURN + ']')
+        live.text = '296903'
+        node.insert(list(node).index(original) + 1, live)
 
 
 def cover_viewport(node):
@@ -188,6 +205,7 @@ TARGETS = (
     (WIDGETS, 'include', 'name', 'XCMate.SixRows.Cards', poster_cards),
     (WIDGETS, 'include', 'name', 'widget_base', native_wrapper),
     (BINGIE, 'include', 'name', 'Fixed_Focus_Navigation', motion),
+    (BINGIE, 'control', 'id', '900', menu_return),
     (HOME, 'control', 'id', '77777', cover_viewport),
 )
 

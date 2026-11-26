@@ -5,7 +5,7 @@
   },
   "XCMate75.NativeLiveRow": {
     "before": "6f8ca09cbf023fc4682f41a66561f2512fe10f8eb3c26f2c3ccdb7168186efd8",
-    "after": "43b23f9f0d865f27dba9deaff40d66e46f690401b2202224226b172ec0696e26"
+    "after": "734b909b398f85b2a834d1cf358bda5681adcb09c8d3b0127c5b3652c8b485dc"
   },
   "XCMate80.MediaRow": {
     "before": "a241579612b91e1c0e352e0de9473e8d225cae2ab9351905fab30bcc34b878af",
@@ -30,6 +30,10 @@
   "Fixed_Focus_Navigation": {
     "before": "7b1b4e81b8d4af941a99e1f49245d0bd54c9c2671aff7505e1b431d859e5d1e6",
     "after": "e2a272b933a0c438c32b92913508031a20f0817651100c81d58bfd571b74a734"
+  },
+  "900": {
+    "before": "257c91dc3063204191d9cfc70dcd6d3d9e30d10142779c7593a6fa9cadc8dd78",
+    "after": "414e408b79e81e9f1449b2d8cdff54a37334593c6a1a16ed484e2dd67118ae6a"
   },
   "77777": {
     "before": "572903fd97f2715693ab1199691ac7d1aade4d329e4b7825c4bd3526751b193c",
