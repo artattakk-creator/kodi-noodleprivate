@@ -475,7 +475,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
                     focusTexture=focused,noFocusTexture=normal,textOffsetX=0 if buttons is self.main_buttons else 36,textOffsetY=26 if buttons is self.main_buttons else 2,alignment=6 if buttons is self.main_buttons else 4,font='font12',disabledColor='0xFF6F7780'))
                 self._button_icons.append((buttons[-1],xbmcgui.ControlImage(52+i*space+(space-48)//2 if buttons is self.main_buttons else 60+i*space,y+6,48 if buttons is self.main_buttons else 26,48 if buttons is self.main_buttons else 26,__import__('player_controls').texture(icon))))
         all_controls = [self.bg,self.heading,self.sub,self.control,self.footer,self.capture,
-            *[c for row in self._row_controls for c in row],*self._info_controls,*self._micro44.controls,
+            *[c for row in self._row_controls for c in row],*self._info_controls,bar.programme_image,*self._micro44.controls,
             self.osd_bg,self.osd_title,*self.main_buttons,*self.extra_buttons,
             *[image for _,image in self._button_icons]]
         for control in all_controls: self.addControl(control)
@@ -550,6 +550,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         date=xbmc.getInfoLabel('System.Date(ddd, d. mmm yyyy)') or time.strftime('%a, %d. %b. %Y')
         clock=xbmc.getInfoLabel('System.Time(hh:mm)') or time.strftime('%H:%M')
         self._infobar45.render(channel.name if channel else 'Live-TV',self._local_logo(channel),info,details,date,clock)
+        self._infobar45.render_programme(self.portal,channel,info)
 
     def _list_content(self):
         if self.mode == 'groups':
@@ -656,7 +657,9 @@ class LiveNavigator(xbmcgui.WindowDialog):
             for row in self._row_controls:
                 for c in row:self._row_value44(c,'setVisible',False)
         for c in self._info_controls:c.setVisible(self.mode=='info' and c not in (self.info_hint,self.info_duration))
-        if self.mode!='info':self._micro44.hide()
+        if self.mode!='info':
+            self._micro44.hide()
+            self._infobar45.render_programme(self.portal,None,{})
         for c in (self.osd_bg,self.osd_title): c.setVisible(osd)
         seek = self._can_seek() if osd else False
         transport = [1,0,2,5,3,4]

@@ -1,0 +1,194 @@
+name: XCMate 0.1.29.104 installable candidate
+on:
+  push:
+    branches: [fix/xcmate-519-029104]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install host dependency
+        run: python -m pip install 'Pillow>=11,<13' 'simpleeval==0.9.13'
+      - name: Run focused client tests
+        env:
+          PYTHONPATH: src/plugin.video.xtreammate/resources/lib
+        run: |
+          python -m unittest discover -s tests -p 'test_xcmate_epg_agent*.py' -v
+          python -m unittest discover -s tests -p 'test_epg_agent*.py' -v
+          python -m unittest discover -s tests -p 'test_xcmate_0293_setup_first_run.py' -v
+          python -m unittest discover -s tests -p 'test_xcmate_service_idle102.py' -v
+          python -m unittest discover -s tests -p 'test_*103.py' -v
+          python -m unittest discover -s tests -p 'test_*104*.py' -v
+      - name: Verify public ZIP and SHA256
+        id: package
+        run: |
+          artifact="plugin.video.xtreammate-0.1.29.104"
+          python tools/package_xcmate_public.py "$RUNNER_TEMP/candidate" --version 0.1.29.104
+          (cd "$RUNNER_TEMP/candidate" && sha256sum -c "$artifact.zip.sha256")
+          echo "artifact=$artifact" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.package.outputs.artifact }}-candidate
+          path: ${{ runner.temp }}/candidate/${{ steps.package.outputs.artifact }}.zip*
+          if-no-files-found: error
+
+  public-cdn-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'Pillow>=11,<13' 'simpleeval==0.9.13'
+      - name: Recheck a pinned public event through real CDN transport
+        run: |
+          mkdir -p "$RUNNER_TEMP/public-feed"
+          feed="$RUNNER_TEMP/public-feed"
+          curl --silent --show-error --fail --location --proto '=https' --max-time 90 \
+            https://raw.githubusercontent.com/artattakk-creator/xcmate-epg-public/1dd93d633b7c7206f0694fb1aaf8e7a694afdda9/manifest.json \
+            --output "$feed/manifest.json"
+          curl --silent --show-error --fail --location --proto '=https' --max-time 90 \
+            https://github.com/artattakk-creator/xcmate-epg-public/releases/download/gs-hub-20261125T184530Z-3dcf8e71b9a1/epg-de.xml.gz \
+            --output "$feed/artwork.xml.gz"
+          python tools/run_xcmate104_public_art.py . --feed "$feed" --decoded-samples "$feed/native-input" |
+            tee "$feed/cdn-evidence.jsonl"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xcmate-029104-public-cdn-replay
+          path: |
+            ${{ runner.temp }}/public-feed/cdn-evidence.jsonl
+            ${{ runner.temp }}/public-feed/native-input/*.jpg
+          if-no-files-found: warn
+      - name: Check the same image bytes in a clean native Kodi detail window
+        run: |
+          feed="$RUNNER_TEMP/public-feed"
+          test -s "$feed/native-input/backdrop.jpg"
+          test -s "$feed/native-input/poster.jpg"
+          build="$RUNNER_TEMP/native-candidate"
+          proof="$RUNNER_TEMP/public-native"
+          mkdir -p "$proof"
+          python tools/package_xcmate_public.py "$build" --version 0.1.29.104
+          docker build --secret id=system_ca,src=/etc/ssl/certs/ca-certificates.crt \
+            -t xcmate-kodi-agent104 tools/kodi_helper57_host
+          docker run --rm --shm-size 256m --tmpfs /root/.kodi:rw,size=768m,mode=0700 \
+            -v "$build:/package:ro" -v "$feed:/feed:ro" \
+            -v "$feed/native-input:/native-input:ro" -v "$proof:/proof" \
+            -v "$GITHUB_WORKSPACE/tools/kodi_agent104_host:/harness:ro" \
+            xcmate-kodi-agent104 sh /harness/run.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xcmate-029104-public-native-pixels
+          path: |
+            ${{ runner.temp }}/public-native/*.json
+            ${{ runner.temp }}/public-native/*.png
+            ${{ runner.temp }}/public-native/error.log
+          if-no-files-found: warn
+      - name: Check the same backdrop on the native BINGIE Home Hero
+        run: |
+          feed="$RUNNER_TEMP/public-feed"
+          build="$RUNNER_TEMP/native-candidate"
+          proof="$RUNNER_TEMP/public-home"
+          skin="$RUNNER_TEMP/public-bingie"
+          mkdir -p "$proof" "$skin"
+          python - "$skin" <<'PY'
+          import hashlib
+          from pathlib import Path
+          import sys
+          from urllib.request import urlopen
+          import zipfile
+          sys.path.insert(0, 'tools')
+          from run_kodi_home74_contract import SKIN_SHA, SKIN_URL
+          folder = Path(sys.argv[1])
+          archive = folder / 'skin.zip'
+          with urlopen(SKIN_URL, timeout=60) as response:
+              archive.write_bytes(response.read(100 * 1024 * 1024 + 1))
+          assert hashlib.sha256(archive.read_bytes()).hexdigest() == SKIN_SHA
+          with zipfile.ZipFile(archive) as source:
+              assert all(not Path(n).is_absolute() and '..' not in Path(n).parts for n in source.namelist())
+              source.extractall(folder)
+          PY
+          python tools/build_bingie66_review.py --skin "$skin/skin.titan.bingie.mod" --output "$skin/candidate"
+          docker run --rm --shm-size 256m --tmpfs /root/.kodi:rw,size=768m,mode=0700 \
+            -e XCMATE_PUBLIC_SURFACE=home \
+            -v "$build:/package:ro" -v "$feed:/feed:ro" \
+            -v "$feed/native-input:/native-input:ro" -v "$proof:/proof" \
+            -v "$skin/skin.titan.bingie.mod:/skin:ro" -v "$skin/candidate:/candidate:ro" \
+            -v "$GITHUB_WORKSPACE/tools/kodi_home74_host/skin_fixture66.py:/skin_fixture66.py:ro" \
+            -v "$GITHUB_WORKSPACE/tools/kodi_agent104_host:/harness:ro" \
+            xcmate-kodi-agent104 sh /harness/run.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xcmate-029104-public-bingie-pixels
+          path: |
+            ${{ runner.temp }}/public-home/*.json
+            ${{ runner.temp }}/public-home/*.png
+            ${{ runner.temp }}/public-home/error.log
+          if-no-files-found: warn
+
+  comparative-soak:
+    runs-on: ubuntu-latest
+    timeout-minutes: 140
+    concurrency:
+      group: xcmate-029104-soak-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Prepare historical baseline and verify anonymous input
+        run: |
+          python -m pip install 'Pillow>=11,<13' 'simpleeval==0.9.13'
+          git worktree add --detach "$RUNNER_TEMP/baseline" 5842ce44a7784cf7fa2d0cf6cd3cbea15ff11a01
+          mkdir -p "$RUNNER_TEMP/soak/feed" "$RUNNER_TEMP/soak/results"
+          cd "$RUNNER_TEMP/soak/feed"
+          curl --silent --show-error --fail --location --proto '=https' --max-time 90 \
+            https://raw.githubusercontent.com/artattakk-creator/xcmate-epg-public/1dd93d633b7c7206f0694fb1aaf8e7a694afdda9/manifest.json \
+            --output manifest.json
+          curl --silent --show-error --fail --location --proto '=https' --max-time 90 \
+            https://github.com/artattakk-creator/xcmate-epg-public/releases/download/gs-hub-20261125T184530Z-3dcf8e71b9a1/epg-de.xml.gz \
+            --output artwork.xml.gz
+          sha256sum --check <<'SHA'
+          a75eec7977ca229ab34f122b59ee6d8413020d27845340757cc4ca961fb51a5d  manifest.json
+          22a07509bb76e7ee79904247c05cf57b45f2030c07a37304c43507a7bf05d75f  artwork.xml.gz
+          SHA
+          gzip --test artwork.xml.gz
+      - name: Compare identical two-hour playback guide, station and widget workloads
+        run: |
+          results="$RUNNER_TEMP/soak/results"
+          feed="$RUNNER_TEMP/soak/feed"
+          python tools/run_xcmate104_soak.py --checkout "$RUNNER_TEMP/baseline" --feed "$feed" \
+            > "$results/baseline-103.jsonl" &
+          base_pid="$!"
+          python tools/run_xcmate104_soak.py --checkout "$GITHUB_WORKSPACE" --feed "$feed" \
+            > "$results/candidate-104.jsonl" &
+          candidate_pid="$!"
+          status=0
+          wait "$base_pid" || status=1
+          wait "$candidate_pid" || status=1
+          tail -n 2 "$results/baseline-103.jsonl" "$results/candidate-104.jsonl"
+          exit "$status"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xcmate-029104-comparative-soak
+          path: ${{ runner.temp }}/soak/results/*.jsonl
+          if-no-files-found: warn

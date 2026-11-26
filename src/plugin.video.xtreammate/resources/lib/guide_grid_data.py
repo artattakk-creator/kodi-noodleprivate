@@ -17,10 +17,15 @@ def page(portal,offset,origin,category=None,client=None,mappings48=None,strict48
     from library_index import Reader
     from epg_sources import configuration
     from epg_events import deduplicate
+    from epg_status import revision as guide_revision
+    observed_revision=guide_revision(portal['id'])
     reader=Reader(portal['id']);channels,total=reader.page('live',category=category,offset=offset,limit=ROWS)
-    mappings=configuration(portal['id']).get('mappings',{}) if mappings48 is None else mappings48;result=[]
+    from epg_binding48 import view_mappings
+    mappings=view_mappings(configuration(portal['id']).get('mappings',{}) if mappings48 is None else mappings48)
+    result=[]
     from local_epg import window,channel_keys,for_channel
-    snapshot=window(portal['id'],channels,mappings,origin,origin+SPAN,limit=101,**({'strict48':True} if strict48 else {}))
+    snapshot=window(portal['id'],channels,mappings,origin,origin+SPAN,limit=101,
+                    strict48=strict48,provider_fallback=mappings48 is None)
     if snapshot is None and not strict48:
         from epg_fallback67 import window as fallback67
         snapshot=fallback67(portal['id'],channels,mappings,origin,origin+SPAN,101)
@@ -37,7 +42,8 @@ def page(portal,offset,origin,category=None,client=None,mappings48=None,strict48
                 if raw:
                     resolved=getattr(sender,'canonical',{}).get(ident,ident)
                     events=deduplicate(raw[:100],channel=resolved)
-                    if not manual:mapping='STREAM_ALIAS' if ident==sid else 'PROVIDER_ID'
+                    if ident in getattr(sender,'provider_fallback',()):mapping='MANUAL_PROVIDER_FALLBACK'
+                    elif not manual:mapping='STREAM_ALIAS' if ident==sid else 'PROVIDER_ID'
                     break
         if not events and not manual and client is not None and origin<=time.time()<origin+SPAN:
             from epg_views import cached_short_guide
@@ -58,14 +64,16 @@ def page(portal,offset,origin,category=None,client=None,mappings48=None,strict48
         from programme_requests68 import request as request_event68
         revision68=getattr(snapshot,'revision',None)
         for item68 in result[:ROWS]:
-            for event68 in item68['events']:event68['revision68']=revision68
+            for event68 in item68['events']:
+                event68['revision68']=revision68
+                event68['_guide_revision104']=observed_revision
             # One currently visible/first future event per row; a focused
             # different event uses the same broker through Preview's worker.
             raw68=next((v for v in item68['events'] if v['start']<=time.time()<v['stop']),
                        next((v for v in item68['events'] if v['stop']>origin),None))
             if raw68:
                 value68=describe(portal,item68['channel'],raw68,item68['epg_id'],revision68)
-                request_event68(value68,priority=True)
+                request_event68(dict(value68,_detail93=True),priority=True)
     from guide_publish44 import history_days
     from guide_store import path
     history=history_days(portal['id'],path()) if origin<__import__('guide_store').day_window(0)[0] else None
@@ -92,7 +100,11 @@ def initial(portal,origin,client=None,selected_sid80='',selected_group80=''):
     offset=position//ROWS*ROWS
     # Empty category is deliberately an empty selection, never category=None.
     value=page(portal,offset,origin,category,client)
-    value.update(category=category,row=position-offset)
+    catalogue=reader.state('live') if not groups else None
+    # A blank revision can be the placeholder left when Live was disabled.
+    # Once enabled, wait for the first real catalogue before resolving saved focus.
+    catalog_known=bool(groups or (catalogue and (catalogue['revision'] or not portal.get('include_live',True))))
+    value.update(category=category,row=position-offset,catalog_known=catalog_known)
     try:
         import xbmc
         xbmc.log('[XCMate][GUIDE_GROUP] stage=INITIAL groups={} saved_active={} selected_saved={} start_found={} start_in_group={} rows={} category_empty={} category_star={}'.format(

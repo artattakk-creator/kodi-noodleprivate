@@ -45,6 +45,19 @@ class GridAdapter:
         self.focus = parent.getFocusId()
 
     def load_preview(self, candidate, source, offset, cold, cancel):
+        if source == 'agent':
+            from epg_events import deduplicate
+            from programme_snapshot47 import identify
+            origin = self.original['origin']
+            start = origin + offset * 3 * 3600
+            cid = candidate['id']
+            events, detail = cold.agent_windows(self.portal, cid, [
+                (origin, origin + 10800, 96), (start, start + 2 * 86400, 96)], cancel)
+            sid = self.channel['sid']
+            clean = identify(self.portal['id'], sid, cid, deduplicate(events, channel=cid))
+            rows = [dict(row, events=clean, epg_id=cid, mapping='PREVIEW_RAM53')
+                    if str(row['channel']['sid']) == str(sid) else row for row in self.original['rows']]
+            return dict(rows=rows, details53=detail)
         from epg_sources import configuration
         from epg_binding48 import preview
         from guide_grid_data import page
@@ -52,7 +65,7 @@ class GridAdapter:
         mappings = preview(configuration(self.portal['id'])['mappings'], self.channel['sid'], candidate['id'], source)
         value = page(self.portal, self.original['offset'], self.original['origin'], self.original['category'], None, mappings48=mappings)
         start = self.original['origin'] + offset * 3 * 3600
-        detail = window(self.portal['id'], [self.channel], mappings, start, start + 2 * 86400, limit=96)
+        detail = window(self.portal['id'], [self.channel], mappings, start, start + 2 * 86400, limit=96, provider_fallback=False)
         value['details53'] = list((detail or {}).get(candidate['id'], []))
         selected = next((r for r in value['rows'] if str(r['channel']['sid']) == str(self.channel['sid'])), None)
         if selected is not None and not selected['events'] and not value['details53']:
@@ -131,20 +144,24 @@ class MiniAdapter:
         from epg_views import guide_for_channel
         from epg_events import deduplicate
         from programme_snapshot47 import bind, identify
-        mappings = preview(configuration(self.portal['id'])['mappings'], self.channel['sid'], candidate['id'], source)
         start = self.origin + offset * 3 * 3600
-        # Always include NOW in the Mini column; the dialog can page details.
-        detail = window(self.portal['id'], [self.channel], mappings, self.origin, start + 2 * 86400, limit=256)
-        events = list((detail or {}).get(candidate['id'], []))
-        if not events:
-            events = cold.programmes(self.portal, source, candidate['id'], cancel)
-        events = [dict(e, source_key46=source) for e in events if (e.get('source_key46') or e.get('epg_source46') or source) == source]
+        if source == 'agent':
+            events, details = cold.agent_windows(self.portal, candidate['id'], [
+                (self.origin, self.origin + 2 * 86400, 96), (start, start + 2 * 86400, 96)], cancel)
+        else:
+            mappings = preview(configuration(self.portal['id'])['mappings'], self.channel['sid'], candidate['id'], source)
+            # Always include NOW in the Mini column; the dialog can page details.
+            detail = window(self.portal['id'], [self.channel], mappings, self.origin, start + 2 * 86400, limit=256, provider_fallback=False)
+            events = list((detail or {}).get(candidate['id'], []))
+            if not events:
+                events = cold.programmes(self.portal, source, candidate['id'], cancel)
+            events = [dict(e, source_key46=source) for e in events if (e.get('source_key46') or e.get('epg_source46') or source) == source]
+            details = [e for e in events if e['start_timestamp'] < start + 2 * 86400 and e['stop_timestamp'] > start][:96]
         clean = identify(self.portal['id'], self.channel['sid'], candidate['id'], deduplicate(events, channel=candidate['id']))
         info = guide_for_channel({candidate['id']: events}, candidate['id'], now=self.origin)
         info.update(epg_id=candidate['id'], canonical46=candidate['id'], mapping='PREVIEW_RAM96', loading68=False,
                     programme_events=clean, preview_epoch96=self.epoch)
         info = bind(self.portal['id'], self.channel, info)
-        details = [e for e in events if e['start_timestamp'] < start + 2 * 86400 and e['stop_timestamp'] > start][:96]
         return dict(info96=info, details53=details)
 
     def apply_preview(self, value, source, candidate):

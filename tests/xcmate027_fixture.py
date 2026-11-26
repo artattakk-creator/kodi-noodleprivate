@@ -221,6 +221,10 @@ class Fixture:
         plugin.setResolvedUrl=mock.Mock()
         portals=types.ModuleType('portals');portals.get_active=lambda:[p for p in self.portals if p.get('enabled',True)]
         portals.get_by_id=lambda pid:next((p for p in self.portals if p['id']==pid),None)
+        def get_fields(pid, fields):
+            portal=portals.get_by_id(pid)
+            return __import__('copy').deepcopy({k:portal[k] for k in fields if k in portal}) if portal else None
+        portals.get_fields=get_fields
         portals.import_from_settings=lambda:None;portals.load_all=lambda:self.portals
         portals.update=lambda pid,data:next((p.update(data) for p in self.portals if p['id']==pid),None)
         epg=types.ModuleType('epg');self.cache={};epg.load_cache=lambda pid:self.cache

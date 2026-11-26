@@ -98,6 +98,7 @@ class InfoBar:
    c=_label(g[key],text,self.font[font],color,alignment=2 if key in ('badge_now','badge_next') else 0);self.controls.append(c);return c
   self.bg=image('panel','glass');self.left_sep=image('left_sep','separator');self.right_sep=image('right_sep','separator')
   self.logo=_image(g['logo'],os.path.join(media,'tv.png'),aspectRatio=2);self.controls.append(self.logo)
+  self.programme_image=_image(g['box'](1582,484,286,161),'',aspectRatio=2)
   self.name=label('name','name');self.date=label('date','date','0xFF919AA2');self.clock=label('clock','clock','0xFFB9C2CC')
   self.previous=label('previous','previous','0xFFBAC1C7')
   self.badge_now=image('badge_now','now');self.badge_next=image('badge_next','next')
@@ -112,6 +113,22 @@ class InfoBar:
  def write(self,control,method,*args):
   from render_diff44 import write
   write(self.owner,control,method,*args)
+ def render_programme(self,portal,channel,info):
+  image=''
+  if channel and info.get('now') and not info.get('preview_epoch96'):
+   from programme_events46 import visible
+   from programme_image69 import reference
+   from programme_requests68 import request,result
+   row=dict(channel.extra,sid=str(channel.extra.get('stream_id','')),name=channel.name) if hasattr(channel,'extra') else channel
+   event=dict(visible(portal,row,info),_detail93=True)
+   if event.get('title'):
+    artwork=result(event)
+    image=reference(artwork,event)
+    if image:
+     __import__('art_trace81').note(event,'RENDER_READY','INFOBAR_RECEIPT_BOUND',source=artwork.get('source'),role=artwork.get('role81'))
+    else:request(event,priority=True)
+  self.write(self.programme_image,'setImage',image)
+  self.write(self.programme_image,'setVisible',bool(image))
  def render(self,channel,logo,info,details,date='',clock=''):
   self.write(self.now_badge,'setLabel',tr(36031));self.write(self.next_badge,'setLabel',tr(36032))
   self.write(self.logo,'setImage',logo);self.write(self.name,'setLabel',channel)

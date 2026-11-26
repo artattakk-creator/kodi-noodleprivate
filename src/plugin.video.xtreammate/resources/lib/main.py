@@ -669,7 +669,6 @@ class Router:
             p=candidates[idx]
         configure_startup(p)
         xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
-        xbmc.executebuiltin('Container.Refresh')
 
     def _startup_playable(self):
         """Resolve only the configured stream, never refresh portal catalogs here.

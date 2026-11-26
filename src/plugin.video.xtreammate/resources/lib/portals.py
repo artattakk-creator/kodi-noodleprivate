@@ -32,6 +32,8 @@ def _read(select=lambda rows:rows):
     except PortalReadError:raise
     except Exception as exc:
         reason='PROFILE_BUSY' if isinstance(exc,TimeoutError) else 'INVALID_PROFILE' if isinstance(exc,ValueError) else 'READ_IO' if isinstance(exc,OSError) else 'UNKNOWN'
+        from service_runtime import portal_outcome
+        portal_outcome(reason)
         raise PortalReadError('Portalliste kann nicht gelesen werden. Daten wurden nicht verändert.',reason=reason) from exc
 
 
@@ -71,6 +73,17 @@ def save_all(portal_list: list):
 
 def get_by_id(portal_id: str) -> Optional[dict]:
     return _read(lambda rows:next((p for p in rows if p.get('id')==portal_id),None))
+
+
+def get_fields(portal_id: str, fields: tuple) -> Optional[dict]:
+    """Copy only the fields a consumer needs from one verified generation."""
+    def select(rows):
+        for portal in rows:
+            if portal.get('id')==portal_id:
+                return {key:portal[key] for key in fields if key in portal}
+        return None
+
+    return _read(select)
 
 
 def get_active() -> list:

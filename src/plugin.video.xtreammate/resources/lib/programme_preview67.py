@@ -66,18 +66,26 @@ class Preview:
   global _thread
   if not self.available or not portal or not event or not channel:self.hide();return
   from programme_requests68 import identity as event_identity74
+  from epg_status import revision as guide_revision
+  if event.get('_guide_revision104') is not None and event['_guide_revision104']!=guide_revision(portal['id']):self.hide();return
   row=dict(channel.extra,sid=str(channel.extra.get('stream_id','')),name=channel.name) if hasattr(channel,'extra') else dict(channel)
-  identity=event_identity74(dict(event,pid=str(portal['id']),sid=str(row.get('sid',row.get('stream_id',''))),canonical=event.get('canonical46',event.get('canonical','')),revision=event.get('revision68',event.get('revision'))))
+  from programme_events46 import describe
+  from programme_mapping85 import epoch
+  value=describe(portal,row,event,event.get('canonical46') or event.get('canonical',''),
+                 event.get('revision68',event.get('revision')),local_read=False)
+  value['_detail93']=True
+  if event.get('_no_art_request68'):value['_no_art_request68']=True
+  identity=(event_identity74(value),epoch(value),bool(value.get('_no_art_request68')))
   if self._key!=identity:self.hide();self._key=identity
   now=time.monotonic()
   with _lock:
    if now>=self._next:
-    self._next=now+.5;_done.setdefault(self.token,(identity,{}));_wanted[self.token]=(identity,dict(portal),row,dict(event))
+    self._next=now+.5;_done.setdefault(self.token,(identity,{}));_wanted[self.token]=(identity,dict(portal),row,value)
     while len(_wanted)>2:_wanted.pop(next(iter(_wanted)))
     if _thread is None or not _thread.is_alive():_thread=threading.Thread(target=_work,name='XCMate-local-preview67',daemon=True);_thread.start()
     _wake.set()
    current=_done.get(self.token,(None,{}));art=current[1] if current[0]==identity else {}
-  real=eligible(art)
+  real=__import__('programme_image69').eligible(art,value)
   signature67=(real,art.get('image') if real else '',art.get('source') if real else '',art.get('image_scope57') if real else '')
   if signature67==self._painted67:return
   self._painted67=signature67;self._hidden67=not real;self._source_hidden67=not real

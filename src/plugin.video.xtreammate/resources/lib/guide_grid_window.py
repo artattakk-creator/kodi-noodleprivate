@@ -76,16 +76,17 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
             from guide_grid_data import initial
             try:client=self.router._xc(self.portal)
             except (ValueError,AttributeError):client=None
-            sid80,group80=__import__('presentation80').guide_entry(self.router,self.portal)
+            sid80,group80=__import__('presentation80').guide_entry(self.router,self.portal,prefer_focus=False)
             return initial(self.portal,self.origin,client,selected_sid80=sid80,selected_group80=group80)
         self._request(load,self._initial_ready)
 
     def _initial_ready(self,value):
-        self._start_pending=not bool(value['groups'])
+        self._start_pending=not value.get('catalog_known', bool(value['groups']))
         self._start_retry=time.monotonic()+2
         self.category=value['category'];self.offset=value['offset'];self.row=value['row']
         self._loaded(value)
-        if not self.groups:self._show_groups(refresh=False)
+        if self._start_pending:self.getControl(102).setLabel(tr(33108))
+        elif not self.groups:self._show_groups(refresh=False)
 
     def _load(self,background=False):
         self._diagnosing=False
@@ -93,7 +94,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         if not background:
             self._loading=True
             if self._focus_zone=='grid':self.setFocusId(312)
-        self.getControl(102).setLabel(tr(33108))
+        if not background or not self.rows:self.getControl(102).setLabel(tr(33108))
         origin,offset,category=self.origin,self.offset,self.category
         router,portal=self.router,self.portal
         def load():
@@ -104,8 +105,16 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         self._request(load,self._loaded)
 
     def _loaded(self,value):
-        __import__('theme_render').guide_status(self,'ready' if value['rows'] else 'empty')
-        self._loading=False;self.rows=value['rows'];self.total=value['total'];self.groups=value['groups']
+        rows=value['rows']
+        if self._background and self.rows and (not rows and not value['groups']
+                                             or value.get('code')=='NOT_CREATED'):
+            self._loading=False
+            return
+        __import__('theme_render').guide_status(self,'ready' if rows else 'empty')
+        active_sid=self.rows[self.row]['channel']['sid'] if self._background and self.rows else None
+        self._loading=False;self.rows=rows;self.total=value['total'];self.groups=value['groups']
+        if active_sid is not None:
+            self.row=next((i for i,row in enumerate(rows) if row['channel']['sid']==active_sid),self.row)
         if self.groups and self.category not in {g['cid'] for g in self.groups}:
             self.category=self.groups[0]['cid'];self.offset=self.row=0;self._load();return
         self._history44=value.get('history44')
@@ -287,6 +296,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         if self.mode=='grid':
             self._views[self.category]=(self.offset,self.row,self.cursor,self.origin,self._focus_zone)
             self._group_return=(self.category,self.offset,self.row,self.cursor,self.origin,self._focus_zone,self._header,self.rows,self.total)
+        self._start_pending=False;self._start_retry=time.monotonic()+2
         self.mode='groups';self._loading=False;self._diagnosing=False
         self._generation+=1
         if self._pending_future is not None:self._pending_future.cancel()
@@ -317,8 +327,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
 
     def _groups_loaded(self,groups):
         if self.mode!='groups':return
-        if self._start_pending and groups:
-            self.mode='grid';self._grid_visibility(True);self._initial_load();return
+        if not groups and self.groups:return
         index=self.getControl(200).getSelectedPosition()
         selected=self.groups[index]['cid'] if 0<=index<len(self.groups) else self.category
         self.groups=groups;self._fill_groups(selected)
@@ -444,12 +453,17 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         if self._leaving:
             if time.monotonic()>=self._leave_after:self.close()
             return
-        if self.mode=='groups' and self._start_pending and self._pending_future is None and time.monotonic()>=self._start_retry:
-            self._start_retry=time.monotonic()+2
-            def groups():
-                from library_index import Reader
-                return Reader(self.portal['id'],timeout=.15,query_seconds=1).groups('live')
-            self._request(groups,self._groups_loaded)
+        now=time.monotonic()
+        if self._pending_future is None and now>=self._start_retry:
+            if self.mode=='grid' and self._start_pending:
+                self._initial_load()
+                return
+            if self.mode=='groups' and not self.groups:
+                self._start_retry=now+2
+                def groups():
+                    from library_index import Reader
+                    return Reader(self.portal['id'],timeout=.15,query_seconds=1).groups('live')
+                self._request(groups,self._groups_loaded)
         if self._diagnosing or self.mode=='groups':return
         # Poll only revision hints/time. Direction keys do not query the DB.
         now=time.monotonic()
@@ -460,10 +474,12 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         from media_art import revision as art_revision
         value=art_revision()
         if value!=self._art_revision:self._art_revision=value;self._refresh_logos()
-        revision=xbmcgui.Window(10000).getProperty('XCMate.ShortGuideRevision.'+str(self.portal['id']))
+        from epg_status import revision as epg_revision
+        revision=(xbmcgui.Window(10000).getProperty('XCMate.ShortGuideRevision.'+str(self.portal['id'])),
+                  epg_revision(self.portal['id']))
         if revision!=self._short_revision and self._pending_future is None:
             self._short_revision=revision
-            if revision:self._load(background=True)
+            if any(revision):self._load(background=True)
         if self._pending_future is None and now-self._last_data_refresh>=30:self._load(background=True)
         if not self._loading:
             delta=(time.time()-self.origin)*896/SPAN;self.getControl(500).setVisible(0<=delta<896)

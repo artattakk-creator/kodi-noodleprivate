@@ -12,6 +12,7 @@ _seen={};_budgets={}
 def trace(stage,event=None,code='READY',rows=0,duration_ms=0):
     stages={'SOURCE','MATCH','LOCAL_EVENT','IMAGE','CACHE','LISTITEM','FOCUS','MINI','FETCH','GUI'}
     codes={'READY','NO_EPG','NO_SOURCE_FACTS','NO_IMAGE','PENDING','READY_STALE','IMAGE_DECODER_MISSING','LOCAL_IMAGE_MISSING','SOURCE_UNAVAILABLE','UNAVAILABLE',
+           'AGENT_REFERENCE_MISSING','AGENT_REFERENCE_REJECTED','AGENT_REFERENCE_UNAVAILABLE','AGENT_ROLE_MISSING','AGENT_ART_DISABLED',
            'HTTP_NOT_FOUND','HTTP_SERVER','HTTP_CLIENT','TIMEOUT','IMAGE_PREFLIGHT_FAILED','INVALID_IMAGE','NO_MATCH_AMBIGUOUS','NO_ARTWORK','FETCH_ERROR','CACHE_ERROR','GUI_NOT_UPDATED','GUI_IMAGE_REQUESTED','TMDB_TOKEN_FILE_INVALID','HTTP_AUTH','HTTP_RATE_LIMIT','CACHE_IO_ERROR','PROGRAMME_CACHE_BUDGET','NO_YEAR','NOT_CLASSIFIED_MOVIE','TMDB_DISABLED','TMDB_TOKEN_MISSING','NO_MATCH','NO_VALID_URL',
            'HELPER_AVAILABLE','HELPER_NOT_AVAILABLE','HELPER_VERSION_UNSUPPORTED','HELPER_LOOKUP_OK',
            'HELPER_NO_ID','HELPER_ART_MISSING','HELPER_BACKGROUND_UNAVAILABLE','HELPER_TIMEOUT',
@@ -45,7 +46,7 @@ def enrich(pid,cid,rows,source=None,sid48=None,revision48=None):
     result=[]
     for raw in rows:
         value=dict(raw)
-        if value.get('_fused52'):
+        if value.get('_fused52') or value.get('_agent_event104'):
             result.append(value);continue
         event=dict(start=value['start_timestamp'],stop=value['stop_timestamp'],title=value['name'],description=value['descr'],source=value.get('source',0))
         rich=None
@@ -69,8 +70,9 @@ def enrich(pid,cid,rows,source=None,sid48=None,revision48=None):
 
 
 def source_metadata(event):
+    from epg_agent_catalog103 import EVENT_FIELDS
     from programme_store46 import metadata
     result=metadata(event)
-    for key in ('xmltv_image','provider_image','agent_art','subtitle','genre','episode_label','year','season','episode','cast','director','epg_source46','epg_text46','source_key46','fact_revision46','field_sources52','updated52'):
+    for key in (*EVENT_FIELDS,'xmltv_image','provider_image','agent_art','subtitle','genre','episode_label','year','season','episode','cast','director','xmltv_date','language','epg_source46','epg_text46','source_key46','fact_revision46','field_sources52','updated52'):
         if event.get(key) not in (None,'',[]):result[key]=event[key]
     return result

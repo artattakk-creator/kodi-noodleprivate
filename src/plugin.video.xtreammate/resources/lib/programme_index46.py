@@ -10,7 +10,7 @@ from programme_read47 import scoped
 MAX_BYTES=128*1024*1024
 APPLICATION_ID=0x58434D46
 _scans={};_reports={};_pauses={}
-FIELDS=('_work_ids_verified85','country','original_title','external_ids','work_id','pid','sid','canonical','key','start','stop','title','description','source','revision','code','subtitle','genre','episode_label','year','season','episode','cast','director','age_rating','xmltv_image','provider_image','agent_art','epg_source46','epg_text46','placeholder','source_key46','fact_revision46','field_sources52','updated52')
+FIELDS=('_work_ids_verified85','country','original_title','external_ids','work_id','pid','sid','canonical','key','start','stop','title','description','source','revision','code','subtitle','genre','episode_label','year','season','episode','cast','cast_roles','director','age_rating','xmltv_date','language','xmltv_title_lang','xmltv_tmdb_id','xmltv_tmdb_score','xmltv_image','provider_image','agent_art','epg_source46','epg_text46','placeholder','source_key46','fact_revision46','field_sources52','updated52','_agent_generation103','_agent_event104','_agent_images104')
 
 
 def path(guide=None):
@@ -135,7 +135,10 @@ def base_hash(event,facts_version=0):
     for filename in (metadata_path(),metadata_path()+'-wal'):
         try:s=os.stat(filename);signature.append((s.st_mtime_ns,s.st_size))
         except OSError:signature.append(None)
-    return digest([[event.get(k) for k in ('pid','sid','canonical','start','stop','title','description','source','revision','source_key46','fact_revision46')],signature,facts_version])
+    from agent_programme100 import INDEX_FIELDS
+    identity=[event.get(k) for k in ('pid','sid','canonical','start','stop','title','description','source','revision','source_key46','fact_revision46')]
+    if any(event.get(k) for k in INDEX_FIELDS):identity.extend(event.get(k) for k in INDEX_FIELDS)
+    return digest([identity,signature,facts_version])
 
 
 def fact_version(db,event):
@@ -178,7 +181,7 @@ class Stage:
             self.rows.clear()
 
 
-def finish(pid,generation,publish,guide=None):
+def finish(pid,generation,publish,guide=None,*,insert_missing=False):
     if not os.path.isfile(path(guide)):return
     db=None
     try:
@@ -188,7 +191,12 @@ def finish(pid,generation,publish,guide=None):
                 rows=db.execute('SELECT pid,cid,start,stop,source_id,titlehash,fingerprint,data FROM pending46 WHERE generation=? AND pid=? LIMIT 128',(generation,str(pid))).fetchall()
                 if not rows:break
                 db.executemany('DELETE FROM pending46 WHERE generation=? AND pid=? AND cid=? AND start=? AND stop=? AND source_id=?',[(generation,*r[:5]) for r in rows])
-                if publish:
+                if publish and insert_missing:
+                    for cid in {r[1] for r in rows}:
+                        count=db.executemany('INSERT OR IGNORE INTO facts VALUES(?,?,?,?,?,?,?,?,?)',
+                                             [(*r,time.time()) for r in rows if r[1]==cid]).rowcount
+                        if count:db.execute('INSERT INTO fact_versions VALUES(?,?,1) ON CONFLICT(pid,cid) DO UPDATE SET version=version+1',(str(pid),cid))
+                elif publish:
                     # A partial observation of the same event cannot erase
                     # already verified description/image/episode facts.
                     marks=','.join('(?,?,?,?)' for _ in rows)

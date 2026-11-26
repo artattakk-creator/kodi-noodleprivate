@@ -165,8 +165,20 @@ def phased(cls):
     def working(w):
         old['working'](w)
         if enabled(w) and w.stage=='epg_running':w.getControl(18).setLabel('EPG abbrechen / später')
-    for name,method in [('configure',configure),('_start_discovery',start),('discovered',discovered),('scanned',scanned),('saved',saved),('failed_work',failed),('onClick',click),('onAction',action),('render',render),('working',working)]:setattr(cls,name,method)
-    return cls
+    # Supply callbacks at type creation for native Kodi WindowXML bindings.
+    return type(cls)(cls.__name__, (cls,), {
+        "__module__": cls.__module__,
+        "configure": configure,
+        "_start_discovery": start,
+        "discovered": discovered,
+        "scanned": scanned,
+        "saved": saved,
+        "failed_work": failed,
+        "onClick": click,
+        "onAction": action,
+        "render": render,
+        "working": working,
+    })
 
 
 def open_published(portal):

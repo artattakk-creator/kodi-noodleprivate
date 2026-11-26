@@ -24,6 +24,8 @@ class Snapshot:
         return (path,s.st_dev,s.st_ino,s.st_size,s.st_mtime_ns,s.st_ctime_ns)
 
     def read(self,path,types,select=lambda rows:rows):
+        from service_runtime import portal_call,portal_outcome
+        portal_call()
         try:return self._read(path,types,select)
         except TimeoutError:
             # A cold root may use only a file generation independently proved
@@ -33,18 +35,25 @@ class Snapshot:
                 proven=read(path,types,self.version)
                 if proven is not None:
                     self.key,self.value=proven;self.retry=0;self.failures=0
-                    try:return copy.deepcopy(select(self.value))
+                    try:
+                        result=copy.deepcopy(select(self.value))
+                        portal_outcome('LOCK_PROOF')
+                        return result
                     except MemoryError:
                         self.value=None
                         __import__('service_runtime').note_pressure()
+                        portal_outcome('MEMORY')
                         raise PortalReadError('Profil konnte wegen Speicherknappheit nicht gelesen werden.',reason='MEMORY') from None
+            portal_outcome('PROFILE_BUSY')
             raise PortalReadError('Profil beschäftigt. Bitte kurz warten und erneut versuchen.',reason='PROFILE_BUSY') from None
+        except PortalReadError as exc:
+            portal_outcome(exc.reason)
+            raise
 
     def _read(self,path,types,select=lambda rows:rows):
         from boot_diagnostics import phase
         from profile_transaction import reading
-        from service_runtime import portal_call,portal_read,portal_failure,note_pressure
-        portal_call()
+        from service_runtime import portal_outcome,portal_read,portal_failure,note_pressure
         # A detached, already validated generation is safe while an unrelated
         # image/cache writer owns the profile lock. Recheck the actual file
         # identity after copying; a replacement/deletion never inherits it.
@@ -56,7 +65,9 @@ class Snapshot:
                     self.value=None;self.failures=min(5,self.failures+1);self.retry=time.monotonic()+min(30,2**self.failures)
                     portal_failure('OOM');note_pressure()
                     raise PortalReadError(reason='MEMORY') from None
-                if self.version(path)==key:return result
+                if self.version(path)==key:
+                    portal_outcome('CACHE')
+                    return result
         with self.lock,reading():
             key=self.version(path)
             if key!=self.key:self.value=None;self.retry=0;self.failures=0;self.key=key
@@ -73,18 +84,20 @@ class Snapshot:
                                 if not stat.S_ISREG(actual.st_mode):raise PortalReadError(reason='INVALID_PROFILE')
                                 if actual.st_size>4*1024*1024:raise PortalReadError('Portalliste überschreitet das sichere Leselimit.',reason='PROFILE_BUDGET')
                                 raw=stream.read(4*1024*1024+1)
+                            portal_read(len(raw))
                             if len(raw)>4*1024*1024:raise PortalReadError('Portalliste überschreitet das sichere Leselimit.',reason='PROFILE_BUDGET')
                             import json
                             value=json.loads(raw)
                             if not isinstance(value,list) or any(not isinstance(p,dict) or not isinstance(p.get('id'),str) or not p['id'] or p.get('type') not in types for p in value):raise PortalReadError(reason='INVALID_PROFILE')
                             if self.version(path)!=key:continue
-                            self.key=key;self.value=value;portal_read(len(raw))
+                            self.key=key;self.value=value
                             try:__import__('portal_proof95').record(path,key,raw)
                             except OSError:pass
                             break
                         else:raise PortalReadError('Portale wurden gleichzeitig geändert. Bitte erneut öffnen.',reason='PROFILE_RACE')
                 # Never expose cached credentials/groups to mutable callers.
                 result=copy.deepcopy(select(self.value));self.failures=0;self.retry=0
+                portal_outcome('LOCKED')
                 return result
             except MemoryError:
                 self.value=None;self.failures=min(5,self.failures+1);self.retry=time.monotonic()+min(30,2**self.failures)

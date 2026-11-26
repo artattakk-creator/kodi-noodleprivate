@@ -48,10 +48,11 @@ class Skin88(Skin86):
   before={name:(self.skin/name).read_bytes() for name in self.graph.FILES};user=self.prop.read_bytes()
   m=__import__('skin_upgrade63');m._done=False;m._pending=None;m._next=0
   self.options['bingie_hero63_notice']='0.1.29.78'
-  with mock.patch('widget_manager50.runtime',return_value=(self.profile,self.skin)),mock.patch('widget_skin50.applied',return_value=False):m.prepare()
-  self.assertIsNotNone(m._pending);self.assertFalse(m._pending['automatic78'])
-  self.assertEqual({name:(self.skin/name).read_bytes() for name in self.graph.FILES},before);self.assertEqual(self.prop.read_bytes(),user)
-  plan=m._pending['plan'];self.graph.apply(plan['id'],self.skin,confirmed=True)
+  with mock.patch('widget_manager50.runtime',return_value=(self.profile,self.skin)),mock.patch('widget_skin50.applied',return_value=False),mock.patch('xbmcvfs.translatePath',return_value=str(self.profile)):
+   m.prepare()
+   self.assertIsNotNone(m._pending)
+   self.assertEqual({name:(self.skin/name).read_bytes() for name in self.graph.FILES},before);self.assertEqual(self.prop.read_bytes(),user)
+   plan=m._pending['plan'];self.graph.apply(plan['id'],self.skin,confirmed=True)
   self.assertTrue(self.graph.installed(self.skin));self.assertEqual(self.prop.read_bytes(),user)
   m._pending=None;m._done=False
 

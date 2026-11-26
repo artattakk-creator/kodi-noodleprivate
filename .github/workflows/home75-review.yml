@@ -28,9 +28,12 @@ jobs:
             fault_seconds: 0
           - resolution: 1280x720
             fault_seconds: 1800
+          - resolution: 3840x2160
+            fault_seconds: 0
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
@@ -51,28 +54,32 @@ jobs:
           python tools/run_kodi_home82_contract.py --report-dir "${{ runner.temp }}/native75" --resolution "${{ matrix.resolution }}" --fault-idle-seconds "$fault_seconds"
       - name: .75 code and preservation regressions
         run: |
-          python tools/run_host94_contract.py -- python -m unittest discover -s tests -p '*02975.py' -v
-          python tools/run_host94_contract.py -- python -m unittest discover -s tests -p '*02976.py' -v
-          python tools/run_host94_contract.py -- python -m unittest discover -s tests -p '*02977.py' -v
-          python tools/run_host94_contract.py -- python -m unittest discover -s tests -p '*02978.py' -v
-          python tools/run_host94_contract.py -- python -m unittest discover -s tests -p '*02979.py' -v
-          python tools/run_host94_contract.py -- python -m unittest discover -s tests -p '*02980.py' -v
-          python tools/run_host94_contract.py -- python -m unittest discover -s tests -p '*02981.py' -v
-          python tools/run_host94_contract.py -- python -m unittest discover -s tests -p '*02982.py' -v
-          python tools/run_host94_contract.py -- python -m unittest discover -s tests -p '*02983.py' -v
-          python tools/run_host94_contract.py -- python -m unittest discover -s tests -p '*02984.py' -v
+          version="$(python -c 'import xml.etree.ElementTree as E; print(E.parse("src/plugin.video.xtreammate/addon.xml").getroot().get("version"))')"
+          if [[ "$version" = "0.1.29.102" || "$version" = "0.1.29.103" || "$version" = "0.1.29.104" ]]; then
+            python tools/run_home75_host_contract.py "$RUNNER_TEMP/native75/host"
+          else
+            for release in {75..84}; do
+              python tools/run_host94_contract.py -- python -m unittest discover -s tests -p "*029$release.py" -v
+            done
+          fi
       - name: Verify review ZIP exactly matches source
         run: |
-          python tools/package_xcmate71.py "${{ runner.temp }}/package75"
           candidate_version="$(python -c 'import xml.etree.ElementTree as E; print(E.parse("src/plugin.video.xtreammate/addon.xml").getroot().get("version"))')"
-          candidate_folder="media-spinner"
-          if [ "$candidate_version" = "0.1.29.91" ]; then candidate_folder="02991"; fi
-          if [ "$candidate_version" = "0.1.29.92" ]; then candidate_folder="02992"; fi
-          if [ "$candidate_version" = "0.1.29.93" ]; then candidate_folder="02993"; fi
-          if [ "$candidate_version" = "0.1.29.94" ]; then candidate_folder="02994"; fi
-          if [ "$candidate_version" = "0.1.29.95" ]; then candidate_folder="02995"; fi
-          if [ "$candidate_version" = "0.1.29.96" ]; then candidate_folder="02996"; fi
-          cmp "${{ runner.temp }}/package75/plugin.video.xtreammate-$candidate_version.zip" "docs/XCMate/test-builds/$candidate_folder/plugin.video.xtreammate-$candidate_version.zip"
+          package_dir="$RUNNER_TEMP/package75"
+          if [[ "$candidate_version" = "0.1.29.102" || "$candidate_version" = "0.1.29.103" || "$candidate_version" = "0.1.29.104" ]]; then
+            python tools/package_xcmate_public.py "$package_dir" --version "$candidate_version"
+            (cd "$package_dir" && sha256sum -c "plugin.video.xtreammate-$candidate_version.zip.sha256")
+          else
+            python tools/package_xcmate71.py "$package_dir"
+            candidate_folder="media-spinner"
+            if [ "$candidate_version" = "0.1.29.91" ]; then candidate_folder="02991"; fi
+            if [ "$candidate_version" = "0.1.29.92" ]; then candidate_folder="02992"; fi
+            if [ "$candidate_version" = "0.1.29.93" ]; then candidate_folder="02993"; fi
+            if [ "$candidate_version" = "0.1.29.94" ]; then candidate_folder="02994"; fi
+            if [ "$candidate_version" = "0.1.29.95" ]; then candidate_folder="02995"; fi
+            if [ "$candidate_version" = "0.1.29.96" ]; then candidate_folder="02996"; fi
+            cmp "$package_dir/plugin.video.xtreammate-$candidate_version.zip" "docs/XCMate/test-builds/$candidate_folder/plugin.video.xtreammate-$candidate_version.zip"
+          fi
           python tools/release_channel75.py
       - uses: actions/upload-artifact@v4
         if: always()
@@ -82,6 +89,9 @@ jobs:
             ${{ runner.temp }}/native75/*.json
             ${{ runner.temp }}/native75/*.png
             ${{ runner.temp }}/native75/probe.log
+            ${{ runner.temp }}/native75/container.log
+            ${{ runner.temp }}/native75/host/**/*.log
+            ${{ runner.temp }}/native75/host/summary.json
             ${{ runner.temp }}/native75/restart*.log
             ${{ runner.temp }}/native75/post75-error.txt
             ${{ runner.temp }}/native75/gui-error.txt
@@ -94,6 +104,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:

@@ -37,6 +37,8 @@ def fixture_prompt():
 
 fixture_prompt()
 rpc('Addons.SetAddonEnabled', {'addonid': 'plugin.video.xtreammate', 'enabled': True})
+addon_version = rpc('Addons.GetAddonDetails', {'addonid': 'plugin.video.xtreammate',
+                    'properties': ['version']})['addon']['version']
 rpc('Files.GetDirectory', {'directory': 'plugin://plugin.video.xtreammate/?fixture59=seed', 'media': 'files'})
 directory = rpc('Files.GetDirectory', dict(directory='plugin://plugin.video.xtreammate/?action=widget_live_start_group&pid=fixture59', media='video', properties=['title', 'art'], limits=dict(start=0, end=200)))
 assert directory['limits']['total'] == 88
@@ -127,6 +129,26 @@ for _ in range(200):
     current=rpc('GUI.GetProperties',{'properties':['currentwindow','currentcontrol']})
     ident=current['currentwindow']['id']
     if not states or states[-1]!=current:states.append(current)
+    if addon_version in ('0.1.29.103', '0.1.29.104') and ident == 12000 and not approved:
+        keys = ['Control.GetLabel(1)', 'Container(6).ListItem.Label', 'Container(3).ListItem.Label']
+        labels = rpc('XBMC.GetInfoLabels', {'labels': keys})
+        heading, choice, detail = (labels[key] for key in keys)
+        if ('SHA-256' in heading and heading.startswith(('Technical details', 'Technische Details'))
+                and detail in ('Back', 'Zurück')):
+            seen_preview = True
+            rpc('Input.Select')
+            time.sleep(.6)
+        elif heading in ('XCMate: update BINGIE Hero', 'XCMate: BINGIE-Hero aktualisieren'):
+            if seen_preview and choice in ('Install now', 'Jetzt installieren'):
+                rpc('Input.Select')
+                approved = True
+                time.sleep(.6)
+            elif not seen_preview and choice in ('Technical details', 'Technische Details'):
+                rpc('Input.Select')
+                time.sleep(.6)
+            elif choice in ('Cancel', 'Abbrechen', 'Install now', 'Jetzt installieren'):
+                rpc('Input.Down')
+                time.sleep(.3)
     if ident==10147 and not seen_preview:
         seen_preview=True;rpc('Input.Back');time.sleep(.6)
     elif ident==10100 and seen_preview and not approved:

@@ -20,7 +20,10 @@ _FIELDS=('now','next','description','image','now_time','now_end_time','next_time
     'source_index','reason','snapshot_revision','canonical46','programme_key47')
 _EVENT=('_work_ids_verified85','country','original_title','external_ids','work_id','title','description','start','stop','source','_source_index','programme_key47','canonical46',
     'source_key46','fact_revision46','subtitle','year','season','episode','genre',
-    'xmltv_image','provider_image','epg_source46','cast')
+    'xmltv_image','provider_image','epg_source46','cast','_agent_generation103','_agent_event104',
+    'agent_art','_agent_images104','_agent_channel104','_agent_start104','_agent_stop104',
+    'field_sources52','episode_label','age_rating','director',
+    'xmltv_tmdb_id','xmltv_tmdb_score','xmltv_title_lang')
 
 
 def profile_scope():
@@ -67,6 +70,9 @@ def note(stage,pid='',sid='',code='READY',duration_ms=0,facts=None):
            'EPG_SNAPSHOT_SCHEDULE_DELAY','EPG_DB_BUDGET','EPG_UI_UPDATE_DELAY')
     if code not in codes:code='EPG_CACHE_UNAVAILABLE'
     try:
+        if stage=='DB_READ':
+            observe_epg=getattr(__import__('service_runtime'),'observe_epg',None)
+            if observe_epg:observe_epg(stage,code,duration_ms)
         if code!='READY' and not __import__('diagnostic_rate86').admit('EPG_'+stage,dict(key=identity(pid,sid),revision=revision_tag(__import__('epg_status').revision(pid))),code,120):return
         key=(stage,identity(pid,sid),code);now=time.monotonic()
         with _lock:
@@ -112,6 +118,13 @@ def remember(pid,channel,info,mappings=None,expected_revision=None):
     record=dict(version=1,key=identity(pid,sid),revision=revision(pid),guide_tag=revision_tag(info.get('snapshot_revision')),binding=selector(mappings,sid),at=time.time(),info=value)
     try:
         raw=json.dumps(record,separators=(',',':'),allow_nan=False)
+        if len(raw.encode())>MAX_BYTES:
+            # Large reference sets are available to the worker through the
+            # index. Keep the exact airing and schedule when a slot is full.
+            for event in value['events']:
+                event.pop('agent_art',None)
+                event.pop('field_sources52',None)
+            raw=json.dumps(record,separators=(',',':'),allow_nan=False)
         if len(raw.encode())>MAX_BYTES:return
         import xbmcgui
         window=xbmcgui.Window(10000)
@@ -176,7 +189,8 @@ def get(pid,sid,now=None,mappings=None,_previous_guide67=False):
             if not 0<e['start']<e['stop']:return result('EPG_CACHE_UNAVAILABLE')
         from epg_views import guide_for_channel
         from programme_snapshot47 import bind
-        current=guide_for_channel({'v':info['events']},'v',now=ts)
+        canonical=info.get('canonical46') or info.get('epg_id') or 'v'
+        current=guide_for_channel({canonical:info['events']},canonical,now=ts)
         if isinstance(info.get('snapshot_revision'),list):info['snapshot_revision']=tuple(info['snapshot_revision'])
         for k in ('epg_id','mapping','snapshot_revision','canonical46'):
             if k in info:current[k]=info[k]

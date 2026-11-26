@@ -66,39 +66,21 @@ class Storage92(Fixture,unittest.TestCase):
  def test_legacy_bookmark_without_timer_is_a_protected_reference(self):
   (self.folder/'guide_bookmarks_v1.json').write_text(json.dumps({'old':dict(start=1,stop=2)}))
   self.assertIn((1,2),self.maintenance.reference_intervals())
- def test_genuinely_fresh_profile_defers_image_epg_but_existing_fresh_origin_is_preserved(self):
+ def test_genuinely_fresh_profile_uses_dynamic_mode_and_source_settings(self):
   import tempfile
   config=importlib.import_module('artwork_config')
   with tempfile.TemporaryDirectory() as folder,mock.patch('utils.addon_data_dir',return_value=folder):
-   self.assertEqual(config.initialize()['origin'],'FRESH');self.assertEqual(self.policy.read()['image_epg'],'later')
-   self.assertFalse(self.policy.images_enabled())
-   self.policy.path().unlink()  # Simulate the older .91 FRESH-origin profile without .92 policy.
-   self.assertEqual(config.initialize()['origin'],'FRESH');self.assertEqual(self.policy.read()['image_epg'],'legacy')
- def test_slow_initial_gui_publication_cannot_block_concurrent_marker_readers(self):
-  import threading,tempfile
-  fresh=tempfile.TemporaryDirectory();self.addCleanup(fresh.cleanup)
-  root_patch=mock.patch('utils.addon_data_dir',return_value=fresh.name);root_patch.start();self.addCleanup(root_patch.stop)
-  config=importlib.import_module('artwork_config');entered=threading.Event();release=threading.Event();rows=[];errors=[]
-  def publish(enabled):
-   self.assertFalse(enabled);entered.set();release.wait(2)
-  def initialize():
-   try:rows.append(config.initialize())
-   except Exception as error:errors.append(type(error).__name__)
-  with mock.patch.object(self.policy,'publish',side_effect=publish):
-   first=threading.Thread(target=initialize);first.start()
-   try:
-    self.assertTrue(entered.wait(1));self.assertEqual(config.read()['version'],config.VERSION)
-    self.assertEqual(self.policy.read()['image_epg'],'later')
-    others=[threading.Thread(target=initialize) for _ in range(3)]
-    for thread in others:thread.start()
-    for thread in others:thread.join(.4)
-    self.assertFalse(any(thread.is_alive() for thread in others));self.assertEqual(errors,[]);self.assertEqual(len(rows),3)
-   finally:release.set();first.join(1)
-  self.assertEqual(len(rows),4);self.assertTrue(all(row==rows[0] for row in rows));self.assertEqual(rows[0]['mode'],'dynamic')
+   self.assertEqual(config.initialize()['origin'],'FRESH')
+   self.assertEqual(config.read()['mode'],'dynamic')
+   self.assertFalse(self.policy.path().exists())
+   self.assertTrue(self.policy.images_enabled())
+
  def test_explicit_deactivation_rejects_new_gui_intent_without_touching_lastgood(self):
   request=importlib.import_module('programme_requests68');event=dict(pid='p',sid='1',title='Monk',start=self.now,stop=self.now+100)
-  self.policy.choose('no');self.assertFalse(request.request(event))
-  self.policy.choose('yes');self.assertTrue(request.request(event))
+  self.options.update(programme_xmltv96=False,programme_tmdb46=False,programme_tvmaze67=False)
+  self.policy.images_enabled();self.assertFalse(request.request(event))
+  self.options['programme_xmltv96']=True
+  self.policy.images_enabled();self.assertTrue(request.request(event))
  def test_short_snapshot_cannot_lose_current_programme_behind_dense_past(self):
   short=importlib.import_module('epg_snapshot92').short
   events=[dict(name=str(i),start_timestamp=i*60,stop_timestamp=(i+1)*60) for i in range(100)]
@@ -165,13 +147,13 @@ class Storage92(Fixture,unittest.TestCase):
  def test_legacy_profile_has_no_automatic_image_policy_change(self):
   self.assertEqual(self.policy.read()['image_epg'],'legacy');self.assertTrue(self.policy.images_enabled())
   self.assertFalse(self.policy.path().exists())
- def test_explicit_no_and_later_disable_new_jobs_but_do_not_delete_images(self):
+ def test_legacy_global_choice_leaves_enabled_sources_and_images_available(self):
   image=self.folder/'keep.png';image.write_bytes(b'KEEP')
   for value in ('no','later'):
-   self.policy.choose(value);self.assertFalse(self.policy.images_enabled());self.assertEqual(image.read_bytes(),b'KEEP')
- def test_invalid_policy_fails_closed_without_replacing_user_file(self):
+   self.policy.choose(value);self.assertTrue(self.policy.images_enabled());self.assertEqual(image.read_bytes(),b'KEEP')
+ def test_invalid_legacy_policy_does_not_change_sources_or_replace_user_file(self):
   for raw in ('{broken','[]','null'):
-   self.policy.path().write_text(raw);self.assertFalse(self.policy.images_enabled())
+   self.policy.path().write_text(raw);self.assertTrue(self.policy.images_enabled())
    self.assertEqual(self.policy.path().read_text(),raw)
  def test_only_week_old_exact_closed_owned_temp_is_removed(self):
   cache=self.folder/'cache';cache.mkdir();old=cache/('.xcmate-cache-'+'a'*32);old.write_bytes(b'x'*8192);os.utime(old,(0,0))

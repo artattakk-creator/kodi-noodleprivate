@@ -113,9 +113,15 @@ class Helper57(HelperFixture57,unittest.TestCase):
 
     def test_provider_event_image_has_priority_and_starts_no_helper_or_catalogue(self):
         self.event['xmltv_image']=URL
-        with mock.patch.object(self.sources,'attempts',side_effect=AssertionError('Unnecessary external lookup')):
+        self.options['programme_catalog57']=True
+        with (mock.patch.object(self.helper,'lookup') as helper,
+              mock.patch('programme_catalog57.xcmate') as xcmate_catalogue,
+              mock.patch('programme_catalog57.kodi') as kodi_library,
+              mock.patch('media_sources43.get') as metadata_network):
             value=self.urls.resolve(self.event,allow_lookup=True,check=mock.Mock())
         self.assertEqual(value['source'],'xmltv_event')
+        for lookup in (helper,xcmate_catalogue,kodi_library,metadata_network):
+            lookup.assert_not_called()
 
     def test_failed_provider_preflight_continues_to_helper_with_same_shared_validator(self):
         self.event['xmltv_image']='https://image.tmdb.org/t/p/w500/FAILED_PROVIDER.jpg'

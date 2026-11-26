@@ -39,6 +39,8 @@ def choose(source,on):
  if source not in FLAGS:raise ValueError('SOURCE_UNKNOWN')
  if on and source=='tmdb' and not token_valid():raise OSError('TMDB_TOKEN_MISSING_OR_INVALID')
  result=write(changes(source,on))
+ from storage_policy92 import images_enabled
+ images_enabled()
  from programme_refresh63 import request
  request();return result
 
@@ -48,8 +50,7 @@ def enroll_test_profile():
  combined={}
  for source in FLAGS:combined.update(changes(source,True))
  write(combined)
- from storage_policy92 import choose,images_enabled
- choose('yes')
+ from storage_policy92 import images_enabled
  if not images_enabled():raise OSError('SOURCE_POLICY_READBACK_FAILED')
  from programme_refresh63 import request
  request();return 'SOURCES_VERIFIED'

@@ -10,18 +10,20 @@ import uuid
 
 
 class PreviewUnavailable(ValueError):
-    pass
+    def __init__(self, code):
+        super().__init__(code)
+        self.code = code
 
 
 def source(portal,identity):
-    from epg_sources import configuration
-    from guide_publish44 import source_id
     if identity=='agent':
         from epg_agent100 import installed_source, SOURCE_RANK
         active = installed_source(portal['id'])
         if not active:
             raise PreviewUnavailable('SOURCE_MISSING')
         return active, SOURCE_RANK
+    from epg_sources import configuration
+    from guide_publish44 import source_id
     if identity=='provider':
         if not portal.get('provider_epg_enabled',True):raise PreviewUnavailable('SOURCE_DISABLED')
         from source_adapters import for_portal
@@ -45,15 +47,13 @@ class Limited:
 
 
 def scan(portal,identity,cid=None,cancel=lambda:False):
+    if identity == 'agent':
+        raise PreviewUnavailable('NO_LOCAL_INDEX')
     from stream_epg import source_stream
     from xmltv_stream import parse,PrefixReader
     from programme_index46 import bounds
     selected,rank=source(portal,identity);left,right=bounds()
     names={};events=[];used=0
-    agent=bool(selected.get('_agent_artwork') and cid is not None)
-    if agent:
-        from epg_agent100_art import event_art, validator
-        admit_art=validator()
     def channel(ident,name):
         nonlocal used
         if cid is not None:return
@@ -64,10 +64,6 @@ def scan(portal,identity,cid=None,cancel=lambda:False):
         nonlocal used
         if cid is None or event['channel']!=cid or event['stop_timestamp']<=left or event['start_timestamp']>=right:return
         event=dict(event,source_key46=identity,_source_index=rank,source=rank)
-        if agent:
-            references=event_art(event,admit_art)
-            if references:event['agent_art']=references
-            for key in ('screenshot_uri','icons','images'):event.pop(key,None)
         used+=len(json.dumps(event,ensure_ascii=False).encode())+256
         if len(events)>=512 or used>4*1024*1024:raise PreviewUnavailable('PREVIEW_EVENT_BUDGET')
         events.append(event)
@@ -76,7 +72,7 @@ def scan(portal,identity,cid=None,cancel=lambda:False):
         decoded=gzip.GzipFile(fileobj=packed) if packed.prefix==b'\x1f\x8b' else packed
         try:
             parse(Limited(decoded,256*1024*1024,cancel),channel,programme,cancel,
-                  max_seconds=45,include_icons=agent,include_images=agent)
+                  max_seconds=45)
         finally:
             if isinstance(decoded,gzip.GzipFile):decoded.close()
     if cancel():raise InterruptedError('PREVIEW_CANCELLED')
@@ -85,8 +81,36 @@ def scan(portal,identity,cid=None,cancel=lambda:False):
 
 class Candidates:
     """At most one catalogue and one channel, scoped to the open dialog."""
-    def __init__(self):self.catalogue=None;self.events=None
+    def __init__(self):
+        self.catalogue = None
+        self.events = None
+        self.agent_preview = None
+
+    def agent_windows(self, portal, cid, windows, cancel):
+        from epg_agent_catalog103 import programmes
+        selected, _ = source(portal, 'agent')
+        folder = selected['_agent_folder102']
+        results = [programmes(folder, cid, start, stop, limit=limit, cancel=cancel)
+                   for start, stop, limit in windows]
+        if cancel():
+            raise InterruptedError('CANCELLED')
+        self.agent_preview = (cid, selected['_agent_generation103'])
+        return results
+
+    def verify_agent_preview(self, portal, cid, cancel):
+        from epg_binding48 import MappingSaveError
+        if cancel():
+            raise MappingSaveError('MAPPING_CANCELLED')
+        try:
+            selected, _ = source(portal, 'agent')
+        except PreviewUnavailable:
+            raise MappingSaveError('MAPPING_GENERATION_CHANGED') from None
+        if self.agent_preview != (cid, selected['_agent_generation103']):
+            raise MappingSaveError('MAPPING_GENERATION_CHANGED')
     def channels(self,portal,identity,query,offset,cancel):
+        if identity == 'agent':
+            from mapping_search482 import search
+            return search(portal['id'], identity, query, offset, cancel)
         if self.catalogue is None or self.catalogue[0]!=identity:
             self.catalogue=(identity,scan(portal,identity,cancel=cancel))
         from mapping_search482 import matches,rank
@@ -96,6 +120,11 @@ class Candidates:
             rows.sort(key=lambda row:(score(row['id'],row['name']),row['id']))
         return rows[offset:offset+100]
     def programmes(self,portal,identity,cid,cancel):
+        if identity == 'agent':
+            from programme_index46 import bounds
+            start, stop = bounds()
+            rows, = self.agent_windows(portal, cid, [(start, stop, 256)], cancel)
+            return rows
         if self.events is None or self.events[:2]!=(identity,cid):
             self.events=(identity,cid,scan(portal,identity,cid,cancel))
         return self.events[2]
@@ -106,13 +135,16 @@ class Candidates:
 def publish(portal,identity,cid,name,events):
     """Save-only additive publication in the existing shared fact store.
 
-    No automatic aliases or global priorities change. Re-read every exact fact
-    before allowing the mapping write; a failed cache write is never success.
+    The confirmed binding is independent of this cache. Fill missing slots
+    and retain authoritative updates that arrived after the preview.
     """
     if not events:return
     from programme_store46 import Stage
     from programme_index46 import window
-    _,rank=source(portal,identity)
+    selected,rank=source(portal,identity)
+    if identity == 'agent':
+        _publish_agent_preview(portal['id'], selected, rank, cid, events)
+        return
     stage=Stage(portal['id'],'mapping53-'+uuid.uuid4().hex,rank,source_identity=identity)
     try:
         stage.channel48(cid,name)
@@ -121,8 +153,60 @@ def publish(portal,identity,cid,name,events):
             stage.add(event)
         stage.flush()
         if stage.failed or stage.facts46.failed:raise PreviewUnavailable('PREVIEW_WRITE_FAILED')
-        stage.finish(True)
+        stage.finish(True,insert_missing=True)
         for event in events:
             saved=window(portal['id'],cid,event['start_timestamp'],event['stop_timestamp'],limit=256,source48=identity)
-            if not any(e['start_timestamp']==event['start_timestamp'] and e['stop_timestamp']==event['stop_timestamp'] and e['name']==event['name'] for e in saved):raise PreviewUnavailable('PREVIEW_VERIFY_FAILED')
+            if not any(e['start_timestamp']==event['start_timestamp'] and e['stop_timestamp']==event['stop_timestamp'] for e in saved):raise PreviewUnavailable('PREVIEW_VERIFY_FAILED')
     finally:stage.finish(False)
+
+
+
+def _publish_agent_preview(pid, selected, rank, cid, events):
+    """Place the selected verified generation's preview in the normal guide."""
+    from epg_binding48 import connection
+    from epg_events import deduplicate
+    from epg_gate46 import access
+    from guide_store import path, import_cache
+    from stream_epg import portal_lease44
+
+    expected = selected.get('_agent_generation103')
+    if not expected or any(event.get('source_key46') != 'agent' or event['channel'] != cid
+                           or event.get('_agent_generation103') != expected for event in events):
+        raise PreviewUnavailable('PREVIEW_IDENTITY')
+    rows = deduplicate(events, channel=cid)
+    if not rows:
+        raise PreviewUnavailable('PREVIEW_VERIFY_FAILED')
+    first, last = rows[0]['start'], rows[-1]['start']
+
+    def slots():
+        db = connection()
+        if db is None:
+            return set()
+        try:
+            return set(db.execute('SELECT start,stop FROM guide44_inputs '
+                                  'WHERE pid=? AND source_id=? AND cid=? AND start BETWEEN ? AND ?',
+                                  (str(pid), 'agent', cid, first, last)))
+        finally:
+            db.close()
+
+    with portal_lease44(pid) as held:
+        if not held:
+            raise PreviewUnavailable('PREVIEW_GUIDE_BUSY')
+        filename = path()
+        gate = access(filename)
+        if gate == 'DB_AUTHORIZATION_MISSING' and selected.get('_agent_public102'):
+            from guide_backup44 import authorize
+            authorize(filename, current_schema_only=True)
+            gate = access(filename)
+        if gate not in ('READY', 'NOT_CREATED'):
+            raise PreviewUnavailable(gate)
+        before = slots()
+        missing = [row for row in rows if (row['start'], row['stop']) not in before]
+        if missing and not import_cache(pid, {cid: missing}, 'agent-binding-' + uuid.uuid4().hex,
+                                        trusted_feed=True, source_records={rank: selected}):
+            raise PreviewUnavailable('PREVIEW_WRITE_FAILED')
+        verified = slots()
+        if any((row['start'], row['stop']) not in verified for row in rows):
+            raise PreviewUnavailable('PREVIEW_VERIFY_FAILED')
+    from epg_status import changed
+    changed(pid)

@@ -5,16 +5,24 @@ def channel(portal, client):
     from library_index import Reader, IndexReadError
     sid=str(portal.get('start_stream_id') or '')
     if not sid or portal.get('type')!='xtream' or not portal.get('enabled',True):return None
+    from group_selection import enabled_ids, filter_entries
+    group=str(portal.get('start_group_id') or '*')
+    selected=group!='*'
+    if selected and group not in enabled_ids(portal['id'],'live',[{'category_id':group}]):
+        return None
     reader=Reader(portal['id'],timeout=.15,query_seconds=1)
     try:
-        if reader.state('live') is not None:
-            # An indexed but absent/disabled sender is authoritative. Falling
-            # back to a global file here would bypass the user's checkboxes.
+        indexed=reader.state('live') is not None
+        if indexed:
             row=reader.get('live',sid)
-            return dict(row,stream_id=row['sid'],stream_icon=row.get('stream_icon','')) if row else None
+            if row and (not selected or str(row.get('category_id'))==group):
+                return dict(row,stream_id=row['sid'],stream_icon=row.get('stream_icon',''))
+            if not selected:return None
     except IndexReadError:
-        return None  # No expensive fallback behind a locked/corrupt index.
-    from group_selection import filter_entries
+        return None
+    finally:
+        close=getattr(reader,'close',None)
+        if close:close()
     if callable(getattr(client,'iter_catalog',None)):
         entries=client.iter_catalog('get_live_streams',cached_only=True)
     else:
@@ -23,8 +31,10 @@ def channel(portal, client):
     try:
         for count,row in enumerate(entries):
             if count>=50000:return None
-            if isinstance(row,dict) and str(row.get('stream_id'))==sid:
-                return row if filter_entries([row],portal['id'],'live') else None
+            if (isinstance(row,dict) and str(row.get('stream_id'))==sid
+                    and (not selected or str(row.get('category_id'))==group)
+                    and filter_entries([row],portal['id'],'live')):
+                return row
     except (OSError,ValueError,TypeError):return None
     return None
 

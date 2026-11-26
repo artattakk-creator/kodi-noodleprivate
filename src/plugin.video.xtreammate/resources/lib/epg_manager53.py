@@ -210,7 +210,7 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
         if self.mode!='sources' or not self.rows:
             return
         from epg_progress94 import row as job_row
-        from epg_report53 import stamp
+        from epg_report53 import horizon_summary,stamp
         pos=max(0,min(self.getControl(200).getSelectedPosition(),len(self.rows)-1))
         source=self.rows[pos]
         saved=source['saved']
@@ -225,6 +225,9 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
             left,right=saved.get('first'),saved.get('last')
         lines=['Letzter Versuch · '+stamp(attempt)+'   Erfolg · '+stamp(finish or source['last_success']),
                'Gespeichert · '+stamp(left)+' bis '+stamp(right)]
+        raw=source.get('raw_horizon102')
+        if raw:
+            lines.append(horizon_summary('Geliefert am '+stamp(source.get('raw_attempt102')),raw))
         if observation:
             lines.append(job_row(self._job94,source['key'])['text'])
         else:
@@ -311,7 +314,7 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
                 self._show_report(live=True)
                 self._render_live_report()
             else:
-                self._show_report(describe(runs[-1-choice+int(live)],self.portal))
+                self._show_report(describe(runs[-1-choice+int(live)],self.portal,runs=runs))
 
         self._request(lambda:(history(pid),snapshot(pid)),ready)
 

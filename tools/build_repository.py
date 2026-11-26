@@ -134,6 +134,13 @@ def main():
                 target.write_bytes(source.read_bytes())
         entries.append(re.sub(r"^<\?xml[^>]*\?>\s*","",content))
         dest=ROOT/addon/f"{addon}-{version}.zip"
+        # Only the OWNER-ONLY bootstrap ZIP may carry the EPG read token.
+        # The ordinary Kodi repository is publicly downloadable, therefore
+        # no resources/private payload may ever enter its ZIP or addons.xml.
+        if addon == 'plugin.video.xtreammate':
+            private_assets = SRC / addon / 'resources' / 'private'
+            if private_assets.exists() and any(private_assets.rglob('*')):
+                raise RuntimeError('Private XCMate credentials prohibited in public Kodi repository')
         dest.parent.mkdir(exist_ok=True, parents=True)
         with zipfile.ZipFile(dest,"w",zipfile.ZIP_DEFLATED,compresslevel=8) as zf:
             for f in sorted((SRC/addon).rglob("*")):

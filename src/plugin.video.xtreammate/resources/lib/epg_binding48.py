@@ -39,12 +39,26 @@ def connection():
     return db
 
 
-def channels(pid,source,query='',offset=0,strict482=False):
+def channels(pid,source,query='',offset=0,strict482=False,*,cancel=lambda:False):
     from mapping_search482 import search,MappingReadError
-    try:return search(pid,source,str(query)[:160],offset)
+    try:return search(pid,source,str(query)[:160],offset,cancel)
     except MappingReadError:
         if strict482:raise
         return []
+
+
+def agent_events(pid,cid,start,stop,limit):
+    """None means the active generation still uses the legacy index."""
+    from epg_agent_catalog103 import IndexReadError, for_portal, programmes
+    from mapping_search482 import MappingReadError
+
+    folder=for_portal(pid)
+    if folder is None:return None
+    try:
+        return programmes(folder,cid,start,stop,limit)
+    except IndexReadError as error:
+        if error.code=='NO_LOCAL_INDEX':return None
+        raise MappingReadError(error.code) from None
 
 
 def read(db,pid,cid,source,start,stop,limit=48,strict=False):
@@ -53,6 +67,13 @@ def read(db,pid,cid,source,start,stop,limit=48,strict=False):
         from epg_agent100 import enabled
         if not enabled():
             return []
+        from mapping_search482 import MappingReadError
+        try:
+            indexed=agent_events(pid,cid,start,stop,limit)
+        except MappingReadError:
+            if strict:raise
+            return []
+        if indexed is not None:return indexed
     try:
         rows=db.execute('''SELECT title,description,start,stop,rank FROM guide44_inputs
           WHERE pid=? AND source_id=? AND cid=? AND start<? AND stop>?
@@ -94,13 +115,15 @@ class MappingSaveError(ValueError):
         super().__init__(code)
 
 
-def commit_verified(portal,sid,cid,source,prepare=None):
+def commit_verified(portal,sid,cid,source,prepare=None,*,validate=None):
     """Linearize write, cold readback and RO view preparation on the worker."""
     from profile_transaction import writing
     from epg_sources import _load_all,configuration
     from epg_handoff63 import profile_scope
     sid=str(sid);pid=str(portal['id'])
     with writing(timeout=.2):
+        if validate is not None:
+            validate()
         before=_load_all().get(pid,{})
         receipt=dict(pid=pid,sid=sid,profile474=profile_scope(),
                      target=dict(channel=str(cid),source=str(source)),before={})
@@ -116,12 +139,20 @@ def commit_verified(portal,sid,cid,source,prepare=None):
             stage='MAPPING_RELOAD_FAILED'
             receipt['prepared']=prepare() if prepare is not None else None
             if binding(configuration(pid)['mappings'],sid)!=receipt['target']:raise MappingSaveError('MAPPING_CONFLICT')
+            if validate is not None:
+                validate()
             receipt['stamp474']=_stamp474()
             return receipt
-        except Exception:
+        except Exception as error:
+            from mapping_search482 import failure
+            code=failure(error, writing=stage=='MAPPING_WRITE_FAILED')
+            if isinstance(error, MappingSaveError) and error.code in ('MAPPING_GENERATION_CHANGED','MAPPING_CANCELLED'):
+                code=error.code
+            elif code not in ('DB_BUSY','SQLITE_INTERRUPT','EPG_READ_TIMEOUT','SQLITE_WRITE_TIMEOUT','EPG_READ_FAILED'):
+                code=stage
             try:rollback_verified(receipt)
             except Exception as exc:raise MappingSaveError(getattr(exc,'code','MAPPING_ROLLBACK_UNCONFIRMED')) from None
-            raise MappingSaveError(stage) from None
+            raise MappingSaveError(code) from None
 
 
 def _stamp474():
@@ -145,6 +176,21 @@ def confirm_verified(receipt):
         if tuple(receipt['stamp474'])!=_stamp474():raise MappingSaveError('MAPPING_CONFLICT')
         yield
 
+
+
+def recheck_verified(receipt):
+    """Reconfirm the exact sender on a worker after another config write."""
+    from profile_transaction import writing
+    from epg_handoff63 import profile_scope
+    from epg_sources import configuration
+
+    with writing(timeout=.2):
+        if receipt['profile474']!=profile_scope():
+            raise MappingSaveError('MAPPING_PROFILE_CHANGED')
+        current=configuration(receipt['pid'])['mappings']
+        if binding(current,receipt['sid'])!=receipt['target']:
+            raise MappingSaveError('MAPPING_CONFLICT')
+        return dict(receipt,stamp474=_stamp474(),refresh_error='MAPPING_RELOAD_FAILED',rechecked=True)
 
 def rollback_verified(receipt):
     """Restore only this unchanged transaction's tuple, never a newer choice."""
@@ -207,7 +253,7 @@ def stage_channels(pid,generation,source,rows,guide=None):
         if db is not None:db.close()
 
 
-def finish_channels(pid,generation,publish,guide=None):
+def finish_channels(pid,generation,publish,guide=None,*,insert_missing=False):
     from programme_index46 import connect
     db=None
     try:
@@ -216,7 +262,8 @@ def finish_channels(pid,generation,publish,guide=None):
         db.close();db=connect(True,guide)
         with db:
             if publish:
-                db.execute('''INSERT OR REPLACE INTO source_channels48 SELECT pid,source_id,cid,name
+                verb='INSERT OR IGNORE' if insert_missing else 'INSERT OR REPLACE'
+                db.execute(verb+''' INTO source_channels48 SELECT pid,source_id,cid,name
                   FROM pending_channels48 WHERE pid=? AND generation=?''',(str(pid),generation))
             db.execute('DELETE FROM pending_channels48 WHERE pid=? AND generation=?',(str(pid),generation))
     except (OSError,sqlite3.Error,ValueError):pass
@@ -247,5 +294,6 @@ def qualified_cache(cache,mappings,sid):
     if not selected:return cache
     cid=selected['channel'];source=selected['source']
     rows=cache.get(cid,[]) if isinstance(cache,dict) else []
+    allowed={source,'provider'} if cid in getattr(cache,'provider_fallback',()) else {source}
     return {cid:[row for row in rows if isinstance(row,dict) and
-        (row.get('source_key46') or row.get('epg_source46'))==source]}
+        (row.get('source_key46') or row.get('epg_source46')) in allowed]}

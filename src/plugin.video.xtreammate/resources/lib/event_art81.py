@@ -3,9 +3,11 @@ import hashlib,json,time
 _upgrade={}
 
 def key(event):
+ from agent_programme100 import INDEX_FIELDS
  from epg_handoff63 import profile_scope
  from epg_events import title_key
  values=[profile_scope()]+[event.get(k) for k in ('pid','sid','canonical','source_key46','epg_source46','start','stop','year','season','episode','subtitle')]+[title_key(event.get('title',''))]
+ if any(event.get(k) for k in INDEX_FIELDS):values.extend(event.get(k) for k in INDEX_FIELDS)
  epoch=__import__('programme_mapping85').epoch(event)
  if epoch:values+=['manual85',epoch]
  return hashlib.sha256(json.dumps(values,sort_keys=True).encode()).hexdigest()
@@ -18,9 +20,9 @@ def rank(value):
  if value.get('manual85') or value.get('match')=='MANUAL_CONFIRMED':return -1
  if source=='agent_tmdb':return 0 if value.get('role81')!='poster' else 3
  if source=='agent_tvmaze':return 1 if value.get('role81')!='poster' else 3
- if source=='agent_xmltv':return 1
+ if source=='agent_xmltv':return 2
  if source.startswith('tmdb_'):return 0 if value.get('role81')!='poster' else 3
- return {'xmltv_event':1,'provider_event':2,'tvmaze_episode':2,'tvmaze_series':3}.get(source,4)
+ return {'xmltv_event':2,'provider_event':3,'tvmaze_episode':1,'tvmaze_series':1}.get(source,4)
 
 def allowed(value):
  from utils import setting_bool
@@ -41,8 +43,8 @@ def prior(event):
   if not value or not allowed(value):return None
   if value.get('mapping_epoch85',0)!=__import__('programme_mapping85').epoch(event):return None
   from programme_requests68 import identity,scope
-  from programme_art46 import fingerprint
-  return dict(value,image=record['file'],thumbnail=record['file'],key=event['key'],fingerprint=fingerprint(event),scope69=identity(event),profile69=scope(),until=min(record['at']+30*86400,max(time.time()+300,event['stop']+3600)))
+  from programme_image69 import fingerprint
+  return dict(value,image=record['file'],thumbnail=record['file'],key=event['key'],fingerprint=fingerprint(event,value.get('source')),scope69=identity(event),profile69=scope(),until=min(record['at']+30*86400,max(time.time()+300,event['stop']+3600)))
  except (OSError,ValueError,KeyError,TypeError):return None
 
 def commit(event,value,body=None):

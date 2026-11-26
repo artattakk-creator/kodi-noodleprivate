@@ -1,6 +1,6 @@
 """Per-portal startup group/channel selection using stable Xtream category IDs."""
 import xbmcgui
-from portals import update
+from portals import get_by_id, update, PortalReadError
 from xtream import XtreamClient
 from group_selection import enabled_ids
 
@@ -53,10 +53,20 @@ def configure_startup(portal):
     autoplay=portal.get('type')=='xtream' and dlg.yesno('XCMate – Automatischer Start',
         'Soll dieser Sender automatisch starten, wenn XCMate geöffnet wird? '
         'Mit Nein bleibt der Sender über „Startsender abspielen“ erreichbar.')
-    if not update(portal['id'], {'start_group_id':group,
-                                  'start_stream_id':str(channel['stream_id']),
-                                  'autoplay_start':autoplay}):
-        dlg.ok('XCMate','Die Startauswahl konnte nicht gespeichert werden.')
+    changes = dict(start_group_id=group, start_stream_id=str(channel['stream_id']),
+                   autoplay_start=autoplay)
+    try:
+        from profile_transaction import writing
+        with writing():
+            saved = get_by_id(portal['id'])
+            if not saved or (any(saved.get(k) != v for k, v in changes.items())
+                             and not update(portal['id'], changes)):
+                raise OSError('START_PREFERENCES_WRITE_FAILED')
+            saved = get_by_id(portal['id'])
+            if not saved or any(saved.get(k) != v for k, v in changes.items()):
+                raise OSError('START_PREFERENCES_READBACK_FAILED')
+    except (OSError, PortalReadError):
+        dlg.ok('XCMate','Die Startauswahl konnte nicht bestätigt werden. Bitte erneut versuchen.')
         return False
     dlg.notification('XCMate','Startgruppe und Startsender gespeichert')
     return True

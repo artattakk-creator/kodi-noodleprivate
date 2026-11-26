@@ -11,7 +11,7 @@ def identify(pid, sid, canonical, events):
     for event in events:
         value = dict(event)
         value['programme_key47'] = key(pid, sid, value)
-        value['canonical46'] = str(canonical or '')
+        value['canonical46'] = str(event.get('canonical46') or canonical or '')
         result.append(value)
     return result
 

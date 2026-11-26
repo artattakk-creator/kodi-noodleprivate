@@ -77,9 +77,17 @@ def resolve_guide(cache, epg_id='', stream_id='', now=None, client=None, mapping
     mapped = (mappings or {}).get(sid)
     if mapped:
         from epg_binding48 import qualified_cache
-        result = guide_for_channel(qualified_cache(cache,mappings,sid), str(mapped), now=now)
-        result['epg_id'] = str(mapped)
-        result['mapping'] = 'MANUAL'
+        qualified=qualified_cache(cache,mappings,sid)
+        result = guide_for_channel(qualified, str(mapped), now=now)
+        fallback=str(mapped) in getattr(cache,'provider_fallback',())
+        result['epg_id'] = getattr(cache,'canonical',{}).get(str(mapped),str(mapped)) if fallback else str(mapped)
+        if fallback:
+            provider=next((row for row in qualified.get(str(mapped),())
+                           if row.get('source_key46')=='provider'
+                           and row.get('start_timestamp')==result['start']
+                           and row.get('stop_timestamp')==result['stop']),{})
+            result['epg_id']=provider.get('_canonical') or result['epg_id']
+        result['mapping'] = 'MANUAL_PROVIDER_FALLBACK' if fallback else 'MANUAL'
         if not result['events']: result['reason'] = 'MANUAL_ID_MISSING'
         return result
     result = guide_for_channel(cache, epg_id, sid, now)

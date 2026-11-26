@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='utf-8'?>
+<tv>
+  <channel id="s1.KIKA.de">
+    <display-name>KIKA</display-name>
+  </channel>
+  <channel id="s1.13th.Street.Universal.de">
+    <display-name>13th Street Universal</display-name>
+  </channel>
+  <programme start="20261126182500 +0000" stop="20261126191500 +0000" channel="s1.13th.Street.Universal.de">
+    <title lang="de">Law &amp; Order: Special Victims Unit</title>
+    <sub-title>Der Klavierlehrer</sub-title>
+    <desc>Offensichtlich missbraucht Klavierlehrer Larry Holt (Kent Broadhurst) seine Schüler. Det. Stabler (Christopher Meloni) und Det. Benson (Mariska Hargitay) nehmen ihn nach dem Hinweis eines Fotostudios fest. Dort hat Holt Filme abgegeben, die kleine Jungen in eindeutig pornographischen Posen zeigen. Im Laufe der Ermittlungen kommt weiteres belastendes Material zum Vorschein. Dabei wird bald klar, dass es Holt auf einen seiner minderjährigen Schüler besonders abgesehen hatte. Dieser ist mittlerweile erwachsen und soll zu dem Fall vernommen werden. Dabei machen die Beamten eine unglaubliche Entdeckung. (Senderinfo).</desc>
+    <credits>
+      <director>Jean de Segonzac</director>
+      <actor>Christopher Meloni</actor>
+      <actor>Mariska Hargitay</actor>
+      <actor>Richard Belzer</actor>
+      <actor>Dann Florek</actor>
+      <actor>Kent Broadhurst</actor>
+      <actor>Wilson Jermaine Heredia</actor>
+      <actor>Carole Shelley</actor>
+    </credits>
+    <date>2000</date>
+    <category>Krimiserie</category>
+    <icon src="https://image.tmdb.org/t/p/w1280/xhK9YCxNwnE0OB1SWvCY39heHQI.jpg" />
+    <episode-num system="tmdb">tv/2734</episode-num>
+    <image type="poster" system="tmdb">https://image.tmdb.org/t/p/w500/pHNhUwSXuDQ9jPZOCb8SgJaQZsc.jpg</image>
+    <image type="backdrop" system="tmdb">https://image.tmdb.org/t/p/w1280/xhK9YCxNwnE0OB1SWvCY39heHQI.jpg</image>
+  </programme>
+  <programme start="20261126162500 +0000" stop="20261126170000 +0000" channel="s1.KIKA.de">
+    <title lang="de">Die Schlümpfe</title>
+    <sub-title>Papa Spatz; Schlumpf gegen Maschine; Farmis neues Haustier</sub-title>
+    <desc>Papa Spatz: Bei einem Unfall im Labor tauscht Papa Schlumpf seinen Körper mit einem Spatz. Schlumpfine und Schlaubi bitten Schlumpfhilde um Hilfe. Als sie herausfinden, dass der vermeintliche Papa Schlumpf nun ein Vogel ist, machen sie sich auf die Suche nach ihm. Sie finden Papa Schlumpf im Turm von Großmaul. Nachdem es noch einmal zu einem Unfall mit dem Elixier kommt, und alle ihre Körper untereinander wechseln, eilt Schlumpfhilde zu Hilfe. Schlumpf gegen Maschine: Handy muss feststellen, dass WW, der eigens von ihm erfundene Windel-Wickler, besser Dinge reparieren kann als er selbst. Aus Neid baut er einen noch größeren Roboter, der WW ausstechen soll. Es kommt zu einem Wettkampf zwischen den beiden, bei dem Handy in große Gefahr gerät, da er den Riesenroboter noch nicht ausreichend kontrollieren kann. Doch zum Glück hilft WW ihm letztendlich aus der Patsche. Farmis neues Haustier: Um sein Ungezieferproblem im Garten in den Griff zu bekommen, leiht sich Farmi aus Schlumpfhildes Labor die fleisch- und allesfressende Pflanze Yippi. Damit Yippi wächst und sich nicht vor den Raupen im Beet fürchtet, bekommt er von Begonia einen hochwirksamen Dünger, der Yippie schnell riesengroß werden lässt. Außerdem hat er unbändigen Hunger und wird zum Problem im Dorf. (Senderinfo).</desc>
+    <credits>
+      <director>William Renaud</director>
+      <director>Ray Patterson</director>
+      <actor>Emmanuel Curtil</actor>
+      <actor>Antoine Schoumsky</actor>
+      <actor>Anna Ramade</actor>
+      <actor>Magali Rosenzweig</actor>
+      <actor>Kelly Marot</actor>
+      <actor>Xavier Fangon</actor>
+    </credits>
+    <category>Animationsserie</category>
+  </programme>
+</tv>

@@ -16,10 +16,11 @@ def clipped(value,width):
   out.append(c)
  return value
 
-def guide_entry(router,portal):
+def guide_entry(router,portal,*,prefer_focus=True):
  params=getattr(router,'_params',{})
  sid=str(params.get('guide_sid80') or '')
  category=str(params.get('guide_group80') or '')
+ if not prefer_focus:return sid,category
  if not sid:
   from playback_exit import identity
   import xbmc

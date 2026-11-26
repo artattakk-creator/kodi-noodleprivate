@@ -6,6 +6,7 @@ import sys
 import tempfile
 import unittest
 from unittest import mock
+from types import SimpleNamespace
 
 LIB = Path(__file__).resolve().parents[1] / "src/plugin.video.xtreammate/resources/lib"
 sys.path.insert(0, str(LIB))
@@ -94,6 +95,69 @@ class AgentCycleTests(unittest.TestCase):
         restored = self.run_at(272_800)
         self.assertEqual(restored["code"], "CURRENT")
         self.assertEqual(len(self.installs), 1)
+
+    def test_failure_keeps_actual_attempt_and_retries_with_backoff(self):
+        from epg_agent_github import DeliveryError
+
+        def offline(*args, **options):
+            self.fetch_calls.append(options)
+            raise DeliveryError("PRIVATE_ENDPOINT_NETWORK_ERROR")
+
+        self.fetch = offline
+        first = self.run_at(100_000)
+        self.assertEqual((first["last_checked"], first["next_check"]), (100_000, 100_900))
+        self.run_at(100_899)
+        self.assertEqual(len(self.fetch_calls), 1)
+        second = self.run_at(100_900)
+        self.assertEqual((second["last_checked"], second["next_check"]), (100_900, 104_500))
+        third = self.run_at(104_500)
+        self.assertEqual(third["next_check"], 190_900)
+        self.run_at(104_501)
+        self.assertEqual(len(self.fetch_calls), 3)
+
+    def test_access_denied_local_recovers_only_after_verified_bundle(self):
+        from epg_agent_github import DeliveryError, read_token
+
+        self.token.write_text("github_pat_" + "a" * 40)
+        bundle = self.root / "bundle.txt"
+        bundle.write_text("github_pat_" + "b" * 40)
+        followup = self.fetch
+        attempts = []
+
+        def rotate(directory, path, **options):
+            attempts.append(path)
+            if path == self.token:
+                raise DeliveryError("PRIVATE_ENDPOINT_ACCESS_DENIED")
+            return followup(directory, path, **options)
+
+        self.fetch = rotate
+        with (mock.patch("epg_agent_token_bootstrap.bundled_path", return_value=bundle),
+              mock.patch.dict(sys.modules, utils=SimpleNamespace(addon_data_dir=lambda: str(self.root)))):
+            result = self.run_at(100_000)
+        self.assertEqual(result["code"], "CURRENT")
+        self.assertEqual(attempts, [self.token, bundle])
+        self.assertEqual(read_token(self.token), read_token(bundle))
+        self.assertEqual(result["portals"]["synthetic"]["verified"], 29)
+
+    def test_failed_bundle_does_not_replace_local_token_or_mask_status(self):
+        from epg_agent_github import DeliveryError, read_token
+
+        original = "github_pat_" + "a" * 40
+        self.token.write_text(original)
+        bundle = self.root / "bundle.txt"
+        bundle.write_text("github_pat_" + "b" * 40)
+
+        def denied(*args, **options):
+            raise DeliveryError("PRIVATE_ENDPOINT_ACCESS_DENIED",
+                                phase="manifest", http_status=403)
+
+        self.fetch = denied
+        with mock.patch("epg_agent_token_bootstrap.bundled_path", return_value=bundle):
+            result = self.run_at(100_000)
+        self.assertEqual(result["code"], "PRIVATE_ENDPOINT_ACCESS_DENIED")
+        self.assertEqual(result["remote_http_status"], 403)
+        self.assertEqual(result["remote_phase"], "manifest")
+        self.assertEqual(read_token(self.token), original)
 
     def test_manual_check_is_consumed_once_without_dropping_existing_data(self):
         self.run_at(100_000)

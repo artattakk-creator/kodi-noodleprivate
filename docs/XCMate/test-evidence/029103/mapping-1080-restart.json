@@ -1,0 +1,7 @@
+{
+  "binding": {
+    "channel": "s1.KIKA.de",
+    "source": "agent"
+  },
+  "programme": "Native fixture programme"
+}

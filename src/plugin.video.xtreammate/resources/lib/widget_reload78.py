@@ -7,11 +7,13 @@ import html,os,re
 from pathlib import Path
 from urllib.parse import urlsplit,parse_qs
 
-def candidate(data,layout80=False,six_rows=False):
+def candidate(data,layout80=False,six_rows=False,*,fixed_live=False):
     from widget_skin50 import spans,edit
+    from widget_live_zone103 import inline_live, move_live
     from navigation_builtin78 import uri
     uri=directory_uri89
     from widget_hooks45 import ROUTES
+    data=inline_live(data)
     changes=[]
     if layout80:
         for node80 in spans(data):
@@ -49,7 +51,8 @@ def candidate(data,layout80=False,six_rows=False):
             if count!=1:raise ValueError('UNVERIFIED_TEMPLATE')
             changes.append((start,end,new))
     result=edit(data,changes) if changes else data
-    return __import__('widget_six_consumer').patch(result) if layout80 and six_rows else result
+    if layout80 and six_rows:result=__import__('widget_six_consumer').patch(result)
+    return move_live(result) if fixed_live else result
 
 def repair(profile,skin):
     from widget_transaction50 import read,replace,sha
@@ -59,7 +62,8 @@ def repair(profile,skin):
     original=read(target)
     marker80=Path(skin)/'xml/IncludesVariables.xml'
     markers=read(marker80) if marker80.is_file() else b''
-    changed=candidate(original,layout80=b'XCMate80.Contract' in markers,six_rows=b'XCMate.SixRows.Contract' in markers)
+    changed=candidate(original,layout80=b'XCMate80.Contract' in markers,six_rows=b'XCMate.SixRows.Contract' in markers,
+                      fixed_live=b'XCMate103.Contract' in markers)
     if changed==original:return False
     snapshot(profile,skin)
     replace(target,changed,sha(original),target.stat().st_mode&0o777)

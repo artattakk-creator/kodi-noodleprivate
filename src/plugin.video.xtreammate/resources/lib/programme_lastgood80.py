@@ -6,7 +6,7 @@ def positive(event,value):
  if not isinstance(value,dict) or value.get('key')!=event.get('key'):return False
  until=value.get('until',0)
  if type(until) not in (int,float) or not math.isfinite(until) or until<=time.time():return False
- if value.get('fingerprint') and value['fingerprint']!=__import__('programme_art46').fingerprint(event):return False
+ if value.get('fingerprint') and value['fingerprint']!=__import__('programme_image69').fingerprint(event,value.get('source')):return False
  from programme_image69 import eligible
  return eligible(value,event)
 
@@ -43,7 +43,13 @@ def choose(event,value,previous,check_file=False):
   if not check_file or file_valid(value):
    if positive(event,previous) and (not check_file or file_valid(previous)):
     import agent_programme100 as roles499
-    if previous.get('role81')=='legacy_icon' and not roles499.manual(previous) and roles499.selected(value,roles499.view(event)):
+    view=roles499.view(event)
+    if roles499.typed(event) and (value.get('source') in roles499.SOURCES or previous.get('source') in roles499.SOURCES):
+     current=roles499.role_priority(value,view)
+     prior=roles499.role_priority(previous,view)
+     if current is not None and prior is not None and current!=prior:
+      return value if current<prior else previous
+    if previous.get('role81')=='legacy_icon' and not roles499.manual(previous) and roles499.selected(value,view):
      return value
     return __import__('event_art81').select(value,previous)
    return value
@@ -53,6 +59,6 @@ def choose(event,value,previous,check_file=False):
    note(event,'SAME_EVENT_RETRY');return dict(previous,retry80=str((value or {}).get('code','MISSING')))
   note(event,'FILE_INVALID')
  elif isinstance(previous,dict) and previous.get('source') not in (None,'','placeholder'):
-  reason='EVENT_CHANGED' if previous.get('key')!=event.get('key') else 'EXPIRED' if isinstance(previous.get('until'),(int,float)) and previous['until']<=time.time() else 'SOURCE_CHANGED' if previous.get('fingerprint')!=__import__('programme_art46').fingerprint(event) else 'POLICY_CHANGED'
+  reason='EVENT_CHANGED' if previous.get('key')!=event.get('key') else 'EXPIRED' if isinstance(previous.get('until'),(int,float)) and previous['until']<=time.time() else 'SOURCE_CHANGED' if previous.get('fingerprint')!=__import__('programme_image69').fingerprint(event,previous.get('source')) else 'POLICY_CHANGED'
   note(event,reason)
  return value

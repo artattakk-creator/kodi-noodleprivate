@@ -8,17 +8,16 @@ ADULT_LABEL = re.compile(r'\b(?:adult|erotik|erotic|xxx)\b|(?<!\d)18\s*\+(?!\d)'
 
 
 def context(pid):
-    from portals import get_by_id
+    from portals import get_fields
     from epg_handoff63 import profile_scope
     from portal_snapshot import PortalReadError
 
+    fields = ('id', 'xc_host', 'xc_user', 'xc_pass', 'type')
     try:
-        portal = get_by_id(str(pid)) or {}
+        portal = get_fields(str(pid), fields) or {}
     except PortalReadError as exc:
         raise OSError('HOME_FILTER_PORTAL_UNAVAILABLE') from exc
-    identity = [profile_scope(), str(pid)] + [
-        portal.get(key) for key in ('id', 'xc_host', 'xc_user', 'xc_pass', 'type')
-    ]
+    identity = [profile_scope(), str(pid)] + [portal.get(key) for key in fields]
     return hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()
 
 
@@ -46,7 +45,8 @@ def read():
 
 
 def selected(pid):
-    return read().get(context(pid))
+    policies = read()
+    return policies.get(context(pid)) if policies else None
 
 
 def allowed(pid, ids):
