@@ -162,7 +162,6 @@ class AgentSettings(OwnerDispatch, xbmcgui.WindowXMLDialog):
     @native_init
     def onInit(self):
         self._request_status()
-        self.setFocusId(200)
 
     def _load(self):
         from artwork_sources96 import enabled as research_enabled
@@ -219,6 +218,7 @@ class AgentSettings(OwnerDispatch, xbmcgui.WindowXMLDialog):
             (("research", "tvmaze"), "TVMaze-Direktrecherche (optional)", research[1]),
         ))
         if rows != self._rows:
+            first_load = self._rows is None
             control = self.getControl(200)
             index = control.getSelectedPosition()
             previous = self.actions[index] if 0 <= index < len(self.actions) else None
@@ -232,6 +232,8 @@ class AgentSettings(OwnerDispatch, xbmcgui.WindowXMLDialog):
             control.addItems(items)
             control.selectItem(self.actions.index(previous) if previous in self.actions else max(0, index))
             self._rows = rows
+            if first_load:
+                self.setFocusId(200)
         selected = self.receipt.get("portals", {}).get(str(self.portal.get("id", "")), {})
         lines = _detail_lines(self.receipt, selected, current, variant, active, job)
         body = "\n".join(lines)
