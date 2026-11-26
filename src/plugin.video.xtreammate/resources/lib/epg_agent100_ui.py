@@ -23,9 +23,10 @@ LABELS = {
     "AUTH_NOT_PROVISIONED": 39110,
     "IMPORT_PENDING": 39111,
 }
-NAMES = {"all": "Gesamt-EPG (alle Länder)", "de": "Deutschland", "at": "Österreich",
-         "en": "Englisch", "es": "Spanisch", "pl": "Polnisch", "fr": "Französisch",
-         "it": "Italienisch", "tr": "Türkisch", "ar": "Arabisch"}
+NAMES = {"all": "Gesamt-EPG (ALL)", "de": "Deutschland (DE)", "at": "Österreich (AT)",
+         "en": "Englisch (EN)", "es": "Spanisch (ES)", "pl": "Polnisch (PL)",
+         "fr": "Französisch (FR)", "it": "Italienisch (IT)",
+         "tr": "Türkisch (TR)", "ar": "Arabisch (AR)"}
 DELIVERY = {"manifest": "Manifest prüfen", "download": "EPG-Datei herunterladen",
             "validate": "Dateigröße, SHA-256 und XMLTV prüfen"}
 IMPORT = {"QUEUED": "Import eingereiht", "WAIT_CATALOG": "Lokalen Katalog abwarten",
@@ -303,6 +304,9 @@ class AgentSettings(OwnerDispatch, xbmcgui.WindowXMLDialog):
         if control_id == 304:
             self.next_action = "tmdb_access"
             self.close()
+            return
+        if control_id == 305 and self._status_text:
+            xbmcgui.Dialog().textviewer("EPG-Agent · Statusdetails", self._status_text)
             return
         if self.configuration is None or self._editing or self._closed:
             return

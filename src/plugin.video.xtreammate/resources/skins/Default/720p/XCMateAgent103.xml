@@ -51,7 +51,7 @@
       <height>448</height>
       <ondown>301</ondown>
       <onup>301</onup>
-      <onright>301</onright>
+      <onright>305</onright>
       <onleft>303</onleft>
       <itemlayout width="504" height="40">
         <control type="image">
@@ -125,6 +125,24 @@
       <height>26</height>
       <font>font13</font>
       <textcolor>FFCFEADA</textcolor>
+    </control>
+    <control type="button" id="305">
+      <left>974</left>
+      <top>84</top>
+      <width>255</width>
+      <height>38</height>
+      <font>font13</font>
+      <label>Statusdetails</label>
+      <align>center</align>
+      <aligny>center</aligny>
+      <onleft>200</onleft>
+      <onright>200</onright>
+      <onup>303</onup>
+      <ondown>302</ondown>
+      <textcolor>FFF5F7FA</textcolor>
+      <focusedcolor>FFFFFFFF</focusedcolor>
+      <texturefocus colordiffuse="FF2A654D">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturefocus>
+      <texturenofocus colordiffuse="FF253649">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturenofocus>
     </control>
     <control type="button" id="301">
       <left>40</left>
