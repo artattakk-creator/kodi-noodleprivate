@@ -62,12 +62,15 @@ jobs:
           curl --silent --show-error --fail --location --proto '=https' --max-time 90 \
             https://github.com/artattakk-creator/xcmate-epg-public/releases/download/gs-hub-20261125T184530Z-3dcf8e71b9a1/epg-de.xml.gz \
             --output "$feed/artwork.xml.gz"
-          python tools/run_xcmate104_public_art.py . --feed "$feed" | tee "$feed/cdn-evidence.jsonl"
+          python tools/run_xcmate104_public_art.py . --feed "$feed" --decoded-samples "$feed/native-input" |
+            tee "$feed/cdn-evidence.jsonl"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: xcmate-029104-public-cdn-replay
-          path: ${{ runner.temp }}/public-feed/cdn-evidence.jsonl
+          path: |
+            ${{ runner.temp }}/public-feed/cdn-evidence.jsonl
+            ${{ runner.temp }}/public-feed/native-input/*.jpg
           if-no-files-found: warn
 
   comparative-soak:

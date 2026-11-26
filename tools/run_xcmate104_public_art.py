@@ -15,6 +15,8 @@ parser.add_argument('repo', type=Path)
 inputs = parser.add_mutually_exclusive_group()
 inputs.add_argument('--catalogue', type=Path)
 inputs.add_argument('--feed', type=Path, help='Replay locally acquired public manifest and artwork XML.GZ')
+parser.add_argument('--decoded-samples', type=Path,
+                    help='Retain the two approved image bodies for a native pixel replay')
 args = parser.parse_args()
 sys.path.insert(0, str(args.repo.resolve() / 'tests'))
 from test_xcmate_agent_art104 import AgentArtwork104
@@ -109,6 +111,10 @@ try:
                     body = response.read(MAX_IMAGE + 1)
                 result.update(loopback_bytes=len(body), loopback_size=validate_image(body),
                               sha256=hashlib.sha256(body).hexdigest())
+                role = value.get('role81')
+                if args.decoded_samples is not None and role in ('backdrop', 'poster'):
+                    args.decoded_samples.mkdir(parents=True, exist_ok=True)
+                    (args.decoded_samples / (role + '.jpg')).write_bytes(body)
             print(json.dumps(dict(stage='DISPLAY_PAYLOAD', view=view, **result)), flush=True)
 finally:
     import decoded_assets88
