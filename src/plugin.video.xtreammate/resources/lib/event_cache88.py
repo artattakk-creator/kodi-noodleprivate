@@ -100,7 +100,7 @@ def _recover(event,context,view499):
     if proof.get('role81') in roles499.PERSON_ROLES:continue
     priority=roles499.role_priority(proof,view499)
     if view499 and priority is None and not roles499.manual(proof):continue
-    admitted_textures.append((priority or (0, not roles499.manual(proof)),texture,proof))
+    admitted_textures.append((priority or (not roles499.manual(proof), 0),texture,proof))
    except (OSError,ValueError,TypeError,KeyError,AttributeError):continue
   for _,texture,proof in sorted(admitted_textures,key=lambda row:row[0]):
    try:

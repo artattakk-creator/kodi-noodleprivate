@@ -24,6 +24,7 @@ def eligible(art,event=None):
  if source.startswith('agent_'):
   import agent_programme100 as roles499
   if not roles499.allowed(source) or event is not None and not roles499.fits(art,roles499.view(event)):return False
+  if event is not None and art.get('mapping_epoch85',0)!=__import__('programme_mapping85').epoch(event):return False
  if source=='xmltv_event' and (not setting_bool('programme_xmltv96',True) or not __import__('xmltv_art96').display_allowed(art,event)):return False
  if source.startswith('tmdb') and setting_bool('programme_tmdb_optout77',False) or source.startswith('tvmaze') and setting_bool('programme_tvmaze_optout77',False):return False
  if event is not None and art.get('fingerprint') and art['fingerprint']!=fingerprint(event,source):return False

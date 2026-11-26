@@ -113,9 +113,11 @@ def probe(url,cancel=lambda:False,*,qualified_origin=False):
 
 
 def _contains_credentials(event, url):
-    from portals import get_by_id
+    import portals
 
-    portal = get_by_id(str(event.get('pid', ''))) or {}
+    pid = str(event.get('pid', ''))
+    project = getattr(portals,'get_fields',None)
+    portal = (project(pid,('xc_user','xc_pass')) if project else portals.get_by_id(pid)) or {}
     path = unquote(urlsplit(url).path)
     secrets = (str(portal.get(key) or '') for key in ('xc_user', 'xc_pass'))
     return any(secret and (secret in path.split('/') or len(secret) >= 4 and secret in path)
@@ -191,9 +193,14 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     if view499 in roles499.PERSON_VIEWS:
         return _resolve_person(event, view499, cancel, check)
     typed499=roles499.typed(event)
+    mapping86=__import__('programme_mapping85').current(event)
+    manual_agent=bool(mapping86 and mapping86.get('source')=='agent_event103'
+                      and set(mapping86.get('agent103',{})).intersection(roles499.VIEW_ROLES[view499]))
     home86=__import__('home_schedule75').applicable() and view499=='hero'
     def usable86(v):
         if not v or not roles499.fits(v,view499):
+            return False
+        if manual_agent and not roles499.manual(v):
             return False
         if typed499 and not roles499.manual(v):
             if not roles499.selected(v,view499):
@@ -206,7 +213,6 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             if best86 is None or __import__('hero_art86').classify(v)[1]<__import__('hero_art86').classify(best86)[1]:best86=dict(v)
     def upgrade86(v):
         return home86 and allow_lookup and __import__('event_art81').upgrade(event,v)
-    mapping86=__import__('programme_mapping85').current(event)
     if mapping86 and mapping86.get('hidden'):
         return dict(key=event['key'],fingerprint=fingerprint(event),code='NO_IMAGE',source='placeholder',match='NONE',image=event['placeholder'],until=time.time()+3600,negative_scope68=__import__('programme_policy68').negative_scope(event),negative_scope77=__import__('programme_policy68').negative_scope(event),mapping_epoch85=__import__('programme_mapping85').epoch(event))
     invalid_manual96=False;fresh_xml96=[]
@@ -221,7 +227,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     if held89 and roles499.manual(held89) and roles499.fits(held89,view499):return held89
     local86=__import__('work_requests86').local_result(event)
     if local86 and roles499.fits(local86,view499):return local86
-    if typed499:
+    if typed499 or manual_agent:
         role499=roles499.read(event,view499)
         if role499 and (not mapping86 or roles499.manual(role499)):return role499
     if held89 and usable86(held89):return held89
@@ -245,7 +251,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             cached_fallback499=renewed84
             rank=roles499.role_priority(renewed84,view499)
             if (not mapping86 or roles499.manual(renewed84)) and rank is not None and not any(
-                    roles499.role_priority(candidate,view499)[0]<rank[0]
+                    roles499.role_priority(candidate,view499)<rank
                     for candidate in roles499.candidates(event,view499)):
                 return renewed84
         retain86(renewed84)
@@ -305,6 +311,11 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
                     ('provider_image','provider_event','Anbieter – konfigurierte Eventquelle')) if event.get(field) and (source!='xmltv_event' or __import__('artwork_sources96').enabled('xmltv'))]
     if invalid_manual96:candidates=fresh_xml96+[c for c in candidates if c.get('source')=='provider_event']
     agent100=roles499.candidates(event, requested=view499)
+    agent_status=roles499.source_status(event,view499,agent100)
+    if agent_status in roles499.REFERENCE_CODES:
+        from programme_pipeline77 import agent_stage
+        agent_stage(event,'FACTS',agent_status,dict(role81=roles499.VIEW_ROLE[view499]))
+    agent_failure=None
     if typed499:
         offered={row['url'] for row in agent100}
         candidates=[dict(row,role81='legacy_icon') for row in candidates if row['url'] not in offered]
@@ -323,10 +334,8 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         if mapping85 and mapping85.get('hidden'):return
         if mapping85 and mapping85.get('id'):
             if mapping85.get('source')=='agent_event103':
-                choices=list(__import__('agent_work103').choices(event,mapping85,view499))
-                for role in roles499.VIEW_ROLES[view499]:
-                    yield from (item for item in choices if item['role81']==role)
-                    yield from (item for item in agent100 if item['role81']==role)
+                yield from __import__('agent_work103').choices(event,mapping85,view499,cancel)
+                yield from agent100
                 yield from (c for c in candidates if c.get('match')=='EXACT_EVENT')
                 return
             elif mapping85.get('source')=='xmltv_event':
@@ -344,6 +353,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             return
         # The exact event can supply a different verified role to each view.
         yield from agent100
+        yield from __import__('agent_work103').related(event,view499,cancel)
         reference84=__import__('programme_reference84').get(event)
         if reference84 and reference84.get('candidate'):
             if home86:candidates.append(dict(reference84['candidate']))
@@ -386,7 +396,9 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             started=time.monotonic()
             try:found=find()
             except (SourceError,HelperError) as exc:
-                outcome70(value,source70,exc.code,event);failed(exc.code);return
+                outcome70(value,source70,exc.code,event)
+                if source70!='kodi' or exc.code!='KODI_LIBRARY_MISSING_VIEWS':failed(exc.code)
+                return
             outcome70(value,source70,'FOUND' if found else 'DISABLED' if source70=='tmdb' and not value['lookup70']['own'] else 'NO_CONFIRMED_IMAGE',event)
             if not found:return
             if found.get('source')=='tmdb_helper':source_trace(event,'HELPER_LOOKUP_OK',duration_ms=(time.monotonic()-started)*1000)
@@ -420,6 +432,15 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         if unsuitable69(event):failed('NO_UNIQUE_MATCH')
         elif value['code']=='NO_IMAGE':failed(diagnose(event))
         elif 'lookup_code56' not in value:value['lookup_code56']=diagnose(event)
+    def agent_diagnostic(candidate, stage, code, uri):
+        nonlocal agent_failure
+        if candidate['source'] in roles499.SOURCES:
+            from programme_pipeline77 import agent_stage
+            agent_stage(event,stage,code,candidate,uri)
+            if code not in ('APPROVED','IMAGE_DECODED','READY') and agent_failure is None:
+                agent_failure=code
+
+    tried_agent=set()
     for candidate in supplied():
         if cancel():return None
         if candidate.get('match') not in ('EXACT_EVENT','EXACT_TITLE_YEAR','EXACT_SEASON_EPISODE','EXACT_UNIQUE_FILM_TITLE')+PROOFS:continue
@@ -432,12 +453,20 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             from image_reference78 import canonical
             url=canonical(url) or url
         from programme_origin75 import candidate as origin75,grant as grant75
+        agent_choice499=candidate.get('source') in roles499.SOURCES
+        if agent_choice499:
+            attempt=(candidate['source'],candidate.get('role81'),url)
+            if attempt in tried_agent:continue
+            tried_agent.add(attempt)
         new_origin75=not safe(url) and candidate.get('match')=='EXACT_EVENT' and origin75(event,url,candidate.get('source'))
         if not safe(url) and not new_origin75:
+            agent_diagnostic(candidate,'URL','BLOCKED_IMAGE_HOST_OR_URL',url)
             trace77(event,'URL_SECURITY','BLOCKED');value['code']='BLOCKED_IMAGE_HOST_OR_URL';continue
         trace77(event,'URL_SECURITY','APPROVED')
         if _contains_credentials(event,url):
+            agent_diagnostic(candidate,'URL','BLOCKED_CREDENTIAL_URL',url)
             value['code']='BLOCKED_CREDENTIAL_URL';continue
+        agent_diagnostic(candidate,'URL','APPROVED',url)
         if home86 and not new_origin75:
             local86=__import__('hero_render86').recovered_candidate(event,candidate,url)
             if local86:
@@ -448,12 +477,14 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         if new_origin75:
             try:
                 verified77=probe(url,cancel=cancel,qualified_origin=True) if agent_origin499 else probe(url,cancel=cancel)
-            except SourceError as exc:value['code']=exc.code;continue
+            except SourceError as exc:
+                agent_diagnostic(candidate,'FETCH',exc.code,url)
+                value['code']=exc.code;continue
             if cancel():return None
-            grant75(url)
-            if isinstance(verified77,dict) and verified77.get('url'):
-                url=verified77['url'];grant75(url)
-        agent_choice499=candidate.get('source') in roles499.SOURCES
+            if not agent_choice499:
+                grant75(url)
+                if isinstance(verified77,dict) and verified77.get('url'):
+                    grant75(verified77['url'])
         typed_choice499=agent_choice499 or typed499 and not roles499.manual(candidate)
         if not typed_choice499 and (local_image63 or not url_mode69 and candidate.get('source') in ('tmdb_movie','tmdb_episode','tmdb_series')):
             from programme_art46 import prepare as materialize60
@@ -463,18 +494,27 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
                 if agent_origin499 and not check:
                     verified77=probe(url,cancel=cancel,qualified_origin=True)
                 else:verified77=(check or probe)(url,cancel=cancel)
+            origin_url=url
             if isinstance(verified77,dict) and verified77.get('url'):url=verified77['url']
-        except SourceError as exc:value['code']=exc.code;continue
+        except SourceError as exc:
+            agent_diagnostic(candidate,'FETCH',exc.code,url)
+            value['code']=exc.code;continue
         if cancel():return None
         role=candidate.get('role81')
         if typed_choice499:
             shape = 'backdrop' if role == 'legacy_icon' and view499 == 'hero' else role
-            if role not in roles499.VIEW_ROLES[view499] or not roles499.image_shape(shape,verified77):
+            if role not in roles499.VIEW_ROLES[view499] or not roles499.image_shape(shape,verified77) or not verified77.get('_body81'):
+                agent_diagnostic(candidate,'DECODE','AGENT_IMAGE_SHAPE',url)
                 failed('HERO_QUALITY_REJECTED');continue
         if agent_choice499:
             verified_source = roles499.validate_url(url, candidate['source'], qualified=bool(event.get('canonical')))
-            if not verified_source or not safe(url) or _contains_credentials(event,url):
+            if not verified_source or not (safe(url) or new_origin75) or _contains_credentials(event,url):
+                agent_diagnostic(candidate,'URL','BLOCKED_IMAGE_HOST_OR_URL',url)
                 failed('BLOCKED_IMAGE_HOST_OR_URL');continue
+            if new_origin75:
+                grant75(origin_url)
+                grant75(url)
+            agent_diagnostic(candidate,'DECODE','IMAGE_DECODED',url)
         if home86:
             quality86=dict(candidate,image_width77=(verified77 or {}).get('width',0),image_height77=(verified77 or {}).get('height',0))
             if not __import__('hero_art86').classify(quality86):
@@ -504,6 +544,12 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             # Verified roles share the existing bytes server and keep separate,
             # exact-event receipts. They never overwrite the other role's art.
             value=__import__('sticky_art88').publish89(event,value,verified77.get('_body81'))
+            if agent_choice499 and not value.get('decoded88'):
+                agent_diagnostic(candidate,'CACHE','AGENT_CACHE_UNAVAILABLE',url)
+                value=dict(key=event['key'],code='AGENT_CACHE_UNAVAILABLE',source='placeholder',
+                           match='NONE',image=event['placeholder'],until=time.time()+30)
+                continue
+            agent_diagnostic(candidate,'CACHE','READY',url)
             roles499.remember(event,view499,value)
             return value
         if isinstance(verified77,dict):
@@ -519,8 +565,12 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         if cached_fallback499:return dict(cached_fallback499,code='READY_STALE')
         if durable81:return durable81
         value['negative_scope68']=negative68
-        if typed499:
-            return dict(value,policy69=negative_scope({}))
+        if agent_failure:
+            value['code']=agent_failure
+        elif agent_status in roles499.REFERENCE_CODES:
+            value['code']=agent_status
+        if typed499 or agent_status in roles499.REFERENCE_CODES or manual_agent:
+            return dict(value,policy69=negative_scope({}),agent_policy104=roles499.policy())
     if url_mode69:
         if pressure84 and value.get('url_version55') and value.get('source')!='placeholder':
             value=__import__('programme_display84').remember(event,value)
@@ -577,10 +627,14 @@ def enqueue(event,allow_lookup=False,local_image63=False,priority68=False,refere
     if _stop.is_set() or not event.get('title'):return False
     import agent_programme100 as roles499
     from epg_handoff63 import profile_scope
+    from programme_requests68 import agent_failure,identity
+    from programme_mapping85 import epoch
     view499=roles499.view(event)
     profile499=profile_scope()
+    if not reference_only84 and (event.get('_agent_event104') or roles499.typed(event) or
+                                 event.get('epg_source46')=='agent') and agent_failure(event):return False
     with _lock:
-        key=(profile499,event['key'],'reference84' if reference_only84 else view499)
+        key=(profile499,identity(event),'reference84' if reference_only84 else view499,epoch(event),event['key'])
         if not reference_only84 and __import__('home_schedule75').applicable():local_image63=False
         if priority68==2:_focus75=key
         from utils import setting_bool
@@ -649,9 +703,11 @@ def _run():
         try:
             try:
                 from epg_handoff63 import profile_scope
+                from programme_mapping85 import epoch
                 from programme_requests68 import status,completed
                 deadline69=time.monotonic()+45
-                stopped69=lambda:_stop.is_set() or aborted() or len(job)>3 and job[3]!=profile_scope()
+                stopped69=lambda:(_stop.is_set() or aborted() or len(job)>3 and job[3]!=profile_scope()
+                                  or len(key)>3 and key[3]!=epoch(event))
                 cancelled=lambda:stopped69() or time.monotonic()>deadline69
                 if cancelled():continue
                 from storage_policy92 import images_enabled

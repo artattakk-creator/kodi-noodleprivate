@@ -38,7 +38,10 @@ def read():
   if not __import__('re').fullmatch('[a-f0-9]{64}',str(key)) or not isinstance(record,dict) or type(record.get('hidden')) is not bool:raise ValueError('MANUAL_SCHEMA')
   if not record['hidden'] and (record.get('source') not in ('tmdb','tvmaze','user_local86','xmltv_event','agent_event103') or type(record.get('id')) is not int or record['id']<=0):raise ValueError('MANUAL_SCHEMA')
   if record.get('source')=='xmltv_event' and not __import__('xmltv_art96').valid_proof(record.get('xmltv96')):raise ValueError('MANUAL_SCHEMA')
-  if record.get('source')=='agent_event103' and not __import__('agent_work103').valid(record.get('agent103')):raise ValueError('MANUAL_SCHEMA')
+  if record.get('source')=='agent_event103':
+   agent=__import__('agent_work103')
+   roles=record.get('agent103');origins=record.get('agent_origins104',{})
+   if not agent.valid(roles) or not isinstance(origins,dict) or not set(origins)<=set(roles) or not all(agent.valid_locator(origin) for origin in origins.values()):raise ValueError('MANUAL_SCHEMA')
   aliases90=record.get('aliases90',[])
   if not isinstance(aliases90,list) or len(aliases90)>2 or any(not isinstance(k,str) or not __import__('re').fullmatch('[a-f0-9]{64}',k) for k in aliases90):raise ValueError('MANUAL_SCHEMA')
  if any(not __import__('re').fullmatch('[a-f0-9]{64}',str(k)) or type(v) is not int or not 0<=v<=10**9 for k,v in data.get('epochs',{}).items()):raise ValueError('MANUAL_SCHEMA')
@@ -85,9 +88,14 @@ def set_mapping(event,candidate=None,hidden=False,automatic=False,cancel=lambda:
   agent103=bool(candidate and candidate.get('source')=='agent_event103')
   event_mapping96=candidate and candidate.get('source') in ('xmltv_event','agent_event103')
   agent_picks=dict(data['records'].get(event_key96,{}).get('agent103',{})) if agent103 else {}
+  agent_origins=dict(data['records'].get(event_key96,{}).get('agent_origins104',{})) if agent103 else {}
   if agent103:
-   agent_picks[candidate['role']]=candidate['id']
-   if not __import__('agent_work103').valid(agent_picks):raise ValueError('MANUAL_UNVERIFIED')
+   role=candidate['role'];locator=candidate.get('locator104')
+   agent_picks[role]=candidate['id']
+   agent=__import__('agent_work103')
+   if not agent.valid(agent_picks) or locator is not None and not agent.valid_locator(locator):raise ValueError('MANUAL_UNVERIFIED')
+   if locator is None:agent_origins.pop(role,None)
+   else:agent_origins[role]=locator
   if event_mapping96 or candidate is None and event_key96 in data['records']:key=event_key96
   if candidate and not event_mapping96:data['records'].pop(event_key96,None)
   if automatic:
@@ -110,6 +118,7 @@ def set_mapping(event,candidate=None,hidden=False,automatic=False,cancel=lambda:
    data['records'][key]=dict(hidden=bool(hidden),source=candidate.get('source') if candidate else '',id=candidate.get('id') if candidate else None,year=candidate.get('year') if candidate else None,country=candidate.get('country') if candidate else None,local86=candidate.get('local86') if candidate else None,media_type86=candidate.get('media_type86','tv') if candidate else 'tv',at=int(time.time()),provenance='USER_CONFIRMED' if not hidden else 'USER_HIDDEN')
   if not automatic and candidate and candidate.get('source')=='xmltv_event':data['records'][key]['xmltv96']=candidate['xmltv96']
   if not automatic and agent103:data['records'][key]['agent103']=agent_picks
+  if not automatic and agent_origins:data['records'][key]['agent_origins104']=agent_origins
   if not automatic and operation89 and __import__('re').fullmatch('[a-f0-9]{32}',operation89):data['records'][key]['operation89']=operation89
   if not automatic and aliases90:data['records'][key]['aliases90']=aliases90
   if not automatic and candidate and candidate.get('verified85'):

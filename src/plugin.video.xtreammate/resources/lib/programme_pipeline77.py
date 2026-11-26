@@ -1,8 +1,43 @@
 """Correlated, bounded pipeline evidence. Never claims Android visual PASS."""
-import hashlib,json,time
+import hashlib,json,threading,time
 _seen={}
+_agent_seen={};_agent_lock=threading.Lock()
 STAGES={'EPG_EVENT','MATCHED_EVENT_FACTS','IMAGE_SOURCE_SELECTION','MATCH_CONFIDENCE','URL_SECURITY','HTTP_RESPONSE','LOCAL_CACHE','EVENT_REVISION','IMAGE_LEASE','BINGIE_SKIN_PROPERTY','RENDER_CONTROL','ACTUAL_TEXTURE'}
 CODES={'IDENTIFIED','SOURCE_READY','SOURCE_MISSING','EXACT_MATCH','SOURCE_SELECTED','APPROVED','BLOCKED','IMAGE_DECODED','REFERENCE_VERIFIED','PERSISTED','RAM_ONLY','LOCAL_READY','BOUND','CONTROL_MISSING','IMAGE_REQUESTED','TEXTURE_CACHED','TEXTURE_PENDING','TEXTURE_UNAVAILABLE'}
+AGENT_STAGES={'FACTS','URL','FETCH','DECODE','CACHE'}
+AGENT_CODES={'READY','APPROVED','IMAGE_DECODED','AGENT_IMAGE_SHAPE','AGENT_CACHE_UNAVAILABLE',
+             'AGENT_REFERENCE_MISSING','AGENT_REFERENCE_REJECTED','AGENT_REFERENCE_UNAVAILABLE','AGENT_ROLE_MISSING','AGENT_ART_DISABLED',
+             'BLOCKED_IMAGE_HOST_OR_URL','BLOCKED_CREDENTIAL_URL','UNSAFE_SOURCE','DNS_ERROR','TLS_ERROR','CONNECTION_ERROR',
+             'REDIRECT_PRIVATE_ADDRESS','REDIRECT_UNSAFE_HOST',
+             'REDIRECT_BLOCKED','HTTP_AUTH','HTTP_NOT_FOUND','HTTP_RATE_LIMIT','HTTP_SERVER','HTTP_CLIENT',
+             'CONTENT_TYPE','CONTENT_ENCODING','IMAGE_LIMIT','INVALID_IMAGE','IMAGE_DECODER_MISSING',
+             'CANCELLED','TIMEOUT','IMAGE_PREFLIGHT_FAILED','REQUEST_QUEUE_FULL','FETCH_FAILED'}
+
+
+def agent_stage(event,stage,code,candidate=None,uri=''):
+    """Log only fixed role/host classes and redacted event correlation."""
+    from urllib.parse import urlsplit
+    from agent_programme100 import PERSON_ROLES, ROLE_ORDER, SOURCES
+    if stage not in AGENT_STAGES:return
+    code=code if code in AGENT_CODES else 'FETCH_FAILED'
+    candidate=candidate or {}
+    source=candidate.get('source')
+    source=source if source in SOURCES else 'agent'
+    role=candidate.get('role81')
+    role=role if role in ROLE_ORDER+PERSON_ROLES else 'none'
+    try:host=urlsplit(uri).hostname
+    except (ValueError,TypeError):host=None
+    host_class={'image.tmdb.org':'TMDB_CDN','static.tvmaze.com':'TVMAZE_CDN'}.get(host,'OTHER' if host else 'NONE')
+    tag=__import__('hero_timing87').correlation(event)[:12]
+    signature=(tag,stage,code,source,role,host_class)
+    now=time.monotonic()
+    with _agent_lock:
+        if now-_agent_seen.get(signature,-1e9)<30:return
+        _agent_seen[signature]=now
+        if len(_agent_seen)>256:_agent_seen.pop(next(iter(_agent_seen)))
+    import xbmc
+    try:xbmc.log(f'[XCMate][AGENT104] event={tag} stage={stage} code={code} source={source} role={role} host={host_class}',xbmc.LOGINFO)
+    except (AttributeError,RuntimeError):pass
 def note(event,stage,code,**facts):
     if stage not in STAGES or code not in CODES:return
     __import__('hero_timing87').pipeline(event,stage,code)

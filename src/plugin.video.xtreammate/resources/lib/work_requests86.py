@@ -13,7 +13,8 @@ def binding(event):
 def request(event,operation='search',**options):
  from programme_requests68 import scope
  from programme_requests68 import _FIELDS
- clean={k:event[k] for k in _FIELDS+('genre','year','country','external_ids','description','work_id','original_title','media_kind86') if k in event}
+ from agent_programme100 import INDEX_FIELDS
+ clean={k:event[k] for k in _FIELDS+INDEX_FIELDS+('genre','year','country','external_ids','description','work_id','original_title','media_kind86') if k in event}
  nonce=uuid.uuid4().hex;value=dict(nonce=nonce,event=clean,binding=binding(clean),scope=scope(),at=time.time(),deadline89=time.monotonic()+30,operation=operation,options=options)
  raw=json.dumps(value,separators=(',',':'))
  if len(raw.encode())>20000:raise ValueError('REQUEST_LIMIT')
@@ -34,7 +35,7 @@ def pending():
  try:
   raw=window().getProperty(KEY);data=json.loads(raw) if raw and len(raw.encode())<=20000 else {}
   from programme_requests68 import scope
-  return bool(isinstance(data.get('nonce'),str) and len(data['nonce'])==32 and data['nonce']!=_seen and isinstance(data.get('event'),dict) and data.get('binding')==binding(data['event']) and data.get('operation') in ('search','save','local') and data.get('scope')==scope() and 0<=time.time()-data.get('at',0)<30)
+  return bool(isinstance(data.get('nonce'),str) and len(data['nonce'])==32 and data['nonce']!=_seen and isinstance(data.get('event'),dict) and data.get('binding')==binding(data['event']) and data.get('operation') in ('search','preview','save','local') and data.get('scope')==scope() and 0<=time.time()-data.get('at',0)<30)
  except (ValueError,TypeError):return False
 
 def phase(stage):
@@ -50,10 +51,11 @@ def authoritative(event,expected):
  row=reader.get(kind,str(event.get('sid')))  # Reader closes each owned query connection.
  if not row:raise SourceError('EPG_REVISION_CHANGED')
  if kind=='live':
+  from agent_programme100 import INDEX_FIELDS
   actual=__import__('programme_events46').load(portal,row,event)
   if actual.get('code')!='LOCAL_EVENT' or any(actual.get(k)!=event.get(k) for k in ('title','start','stop')):raise SourceError('EPG_REVISION_CHANGED')
   __import__('programme_mapping85').refresh_sources(portal['id'])
-  if any(event.get(k) and event.get(k)!=actual.get(k) for k in ('canonical','epg_source46','source_key46')):raise SourceError('EPG_REVISION_CHANGED')
+  if any(event.get(k) and event.get(k)!=actual.get(k) for k in ('canonical','epg_source46','source_key46')+INDEX_FIELDS):raise SourceError('EPG_REVISION_CHANGED')
   return actual
  if row.get('name')!=event.get('title'):raise SourceError('EPG_REVISION_CHANGED')
  return event
@@ -81,7 +83,7 @@ def save(event,options,expected,cancel=lambda:False):
   from agent_work103 import find,verify
   verified=verify(current,selected,cancel);phase('SOURCE_REVERIFIED')
   current=authoritative(event,expected);phase('EPG_SCOPE_REVALIDATED')
-  if not find(current,verified['role'],verified['id']):raise SourceError('EPG_REVISION_CHANGED')
+  if not find(current,verified['role'],verified['id'],verified.get('locator104'),cancel):raise SourceError('EPG_REVISION_CHANGED')
   return mapping_commit90(current,verified,cancel=cancel,operation89=_seen)
  if selected.get('source')=='xmltv_event':
   if kind!='live':raise SourceError('CANDIDATES_REJECTED')
@@ -125,10 +127,18 @@ def _drain89(cancelled_service=lambda:False):
   def stop():return cancelled_service() or cancelled(nonce) or time.monotonic()>=deadline
   __import__('work_trace87').mark(nonce,'PICKED',data.get('operation',''),options.get('source',''))
   if data.get('operation')=='search':
-   if options.get('source')=='agent_event103':value=__import__('agent_work103').search(authoritative(event,data['binding']))
+   if options.get('source')=='agent_event103':
+    filters={k:options[k] for k in ('role','year','season','episode') if k in options}
+    value=__import__('agent_work103').search(authoritative(event,data['binding']),query=options.get('query',''),
+                                            page=options.get('page',1),source=options.get('image_source',''),cancel=stop,**filters)
    elif options.get('source')=='xmltv_event':value=__import__('xmltv_art96').search(event,stop)
    else:value=__import__('work_search86').search(options.get('query'),options.get('kind','tv'),options.get('source','tmdb'),options.get('page',1),stop)
    phase('SEARCH_READY')
+  elif data.get('operation')=='preview':
+   current=authoritative(event,data['binding']);selected=options.get('candidate') or {}
+   if current.get('media_kind86','live')!='live' or selected.get('source')!='agent_event103':raise SourceError('CANDIDATES_REJECTED')
+   uri=__import__('agent_work103').preview(current,selected,stop)
+   value=dict(code='READY',rows=[dict(thumb86=uri)])
   elif data.get('operation')=='local':value=dict(code='SAVED' if local_save(event,options.get('path',''),data['binding'],stop) else 'UNCHANGED',rows=[])
   elif data.get('operation')=='save':value=dict(code='SAVED' if save(event,options,data['binding'],stop) else 'UNCHANGED',rows=[])
   else:raise SourceError('CANDIDATES_REJECTED')

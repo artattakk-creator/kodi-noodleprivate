@@ -12,37 +12,50 @@ def placeholder(event):
  kind='news' if any(v in genre for v in ('nachricht','news')) else 'talk' if 'talk' in genre else 'series' if event.get('season') and event.get('episode') else 'movie' if any(v in genre for v in ('film','movie')) else 'neutral'
  return os.path.join(os.path.dirname(os.path.dirname(__file__)),'media','programme46',kind+'.png')
 
-def describe(portal,channel,event=None,canonical='',revision=None,guide=None):
- from programme_store46 import read
+def describe(portal,channel,event=None,canonical='',revision=None,guide=None,*,local_read=True):
  event=dict(event or {});pid=str(portal['id']);sid=str(channel.get('sid',channel.get('stream_id','')))
  value=dict(pid=pid,sid=sid,channel=str(channel.get('name','')),start=int(event.get('start',0)),stop=int(event.get('stop',0)),title=str(event.get('title') or event.get('name') or '')[:512],description=str(event.get('description') or event.get('descr') or '')[:8192],source=int(event.get('source',event.get('_source_index',0))),canonical=str(canonical),revision=revision)
- for name in ('source_key46','fact_revision46'):
+ for name in ('source_key46','fact_revision46','_agent_generation103','_agent_event104','_agent_images104',
+              '_agent_channel104','_agent_start104','_agent_stop104'):
   if event.get(name):value[name]=event[name]
  value['key']=key(pid,sid,value)
  if value['start']>0 and value['stop']>value['start'] and value['title']:
-  from programme_index46 import event as prepared_event46,metadata as prepared_metadata46
-  prepared46=prepared_event46(value) if guide is None else None
+  from programme_flow48 import source_metadata
+  prepared46=None
+  if local_read and not (event.get('_agent_event104') and event.get('_metadata_verified48')):
+   from programme_index46 import event as prepared_event46,metadata as prepared_metadata46
+   prepared46=prepared_event46(value) if guide is None else None
   if prepared46:value.update(prepared46)
   else:
-   from programme_flow48 import source_metadata
    value.update(source_metadata(event))
-   if not event.get('_metadata_verified48'):
+   if local_read and not event.get('_metadata_verified48'):
+    from programme_store46 import read
     value.update(prepared_metadata46(pid,canonical,value,guide) or read(pid,canonical,value,guide,verify_source=revision is not None))
-  if not value.get('metadata_code46') and not any(value.get(k) for k in ('xmltv_image','provider_image','subtitle','season')):value.update(legacy_metadata(pid,sid,canonical,value))
+  if local_read and not value.get('metadata_code46') and not event.get('_metadata_verified48') and not any(value.get(k) for k in ('xmltv_image','provider_image','subtitle','season','agent_art')):value.update(legacy_metadata(pid,sid,canonical,value))
+  if not value.get('epg_source46'):
+   origin=value.get('source_key46')
+   if origin or value['source']==0:value['epg_source46']=origin or 'provider'
   value['code']='LOCAL_EVENT'
  else:value.update(start=0,stop=0,title='',code='NO_EPG')
  from programme_flow48 import trace
  trace('LOCAL_EVENT',value,value.get('code','NO_EPG'))
  trace('MATCH',value,'READY' if value.get('epg_source46') else 'NO_SOURCE_FACTS')
- trace('SOURCE',value,'READY' if value.get('xmltv_image') or value.get('provider_image') else 'NO_SOURCE_FACTS')
+ from agent_programme100 import source_status
+ value['art_source_code104']=source_status(value)
+ trace('SOURCE',value,value['art_source_code104'])
  value['key']=key(pid,sid,value);value['placeholder']=placeholder(value)
  value['details_url']='plugin://plugin.video.xtreammate/?'+urlencode(dict(action='programme_details46',pid=pid,sid=sid,start=value['start'],stop=value['stop'],event=value['key'],source=value.get('source_key46','')))
  return value
 
-def from_info(portal,channel,info):
+def from_info(portal,channel,info,*,local_read=True):
  event=next((v for v in info.get('events',[]) if v['start']==info.get('start') and v['stop']==info.get('stop') and v['title']==info.get('now')),None)
  # A missing published event never turns a next-show or stale image into NOW.
- return describe(portal,channel,event,info.get('canonical46') or info.get('epg_id',''),info.get('snapshot_revision'))
+ canonical=(event or {}).get('canonical46') or info.get('canonical46') or (event or {}).get('_canonical') or info.get('epg_id','')
+ return describe(portal,channel,event,canonical,info.get('snapshot_revision'),local_read=local_read)
+
+def visible(portal,channel,info):
+ """Build the same event from published Now/Next facts without local storage reads."""
+ return from_info(portal,channel,info,local_read=False)
 
 def load(portal,channel,selected=None,now=None):
  from local_epg import window,channel_keys
@@ -63,7 +76,7 @@ def load(portal,channel,selected=None,now=None):
      if candidate['start']==int(selected.get('start',0)) and candidate['stop']==int(selected.get('stop',0)) and (not selected.get('title') or candidate['title']==selected['title']):event=candidate;break
     elif candidate['start']<=now<candidate['stop']:event=candidate;break
    if event is not None:
-    canonical=event.get('_canonical') or canonical
+    canonical=event.get('canonical46') or event.get('_canonical') or canonical
     source=event.get('source_key46')
     def same_source(row):
      if source:return row.get('source_key46')==source
@@ -72,7 +85,7 @@ def load(portal,channel,selected=None,now=None):
      return dict(start=row['start_timestamp'],stop=row['stop_timestamp'],title=row['name'])
     following=[schedule_row(row) for row in rows if row['start_timestamp']>=event['stop']
                and same_source(row) and row.get('name')][:3]
-    prior=window(portal['id'],[channel],mappings,event['start']-3*3600,event['start'],limit=48,budget=.08)
+    prior=None if selected and selected.get('_art_view499') else window(portal['id'],[channel],mappings,event['start']-3*3600,event['start'],limit=48,budget=.08)
     if prior is not None and getattr(prior,'revision',None)==getattr(view,'revision',None):
      previous=[row for row in prior.get(ident,[]) if row['stop_timestamp']<=event['start']
                and same_source(row) and row.get('name')]

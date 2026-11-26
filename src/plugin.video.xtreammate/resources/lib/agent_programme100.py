@@ -10,6 +10,9 @@ VIEW_ROLES = {
 ROLE_ORDER = ('backdrop', 'episode_still', 'poster', 'legacy_icon')
 PERSON_ROLES = ('person', 'character')
 PERSON_VIEWS = ('person1', 'person2')
+INDEX_FIELDS = ('_agent_generation103', '_agent_event104')
+REFERENCE_CODES = frozenset(('AGENT_REFERENCE_MISSING', 'AGENT_REFERENCE_REJECTED',
+                             'AGENT_REFERENCE_UNAVAILABLE', 'AGENT_ROLE_MISSING', 'AGENT_ART_DISABLED'))
 
 
 def pictures_enabled():
@@ -52,6 +55,27 @@ def typed(event):
     return isinstance(images, dict) and any(role in images for role in ROLE_ORDER)
 
 
+def source_status(event, requested=None, admitted=None):
+    """Describe the exact feed stage before an optional lookup is considered."""
+    images = event.get('agent_art')
+    agent = bool(images or event.get('_agent_event104') or event.get('epg_source46') == 'agent')
+    if not agent:
+        return 'READY' if event.get('xmltv_image') or event.get('provider_image') else 'NO_SOURCE_FACTS'
+    if not images:
+        state=event.get('_agent_images104')
+        return {'REJECTED':'AGENT_REFERENCE_REJECTED','ADMITTED':'AGENT_REFERENCE_UNAVAILABLE'}.get(state,'AGENT_REFERENCE_MISSING')
+    if requested is None:
+        return 'READY'
+    if not any(allowed(source) for source in SOURCES):
+        return 'AGENT_ART_DISABLED'
+    roles = PERSON_ROLES if requested in PERSON_VIEWS else VIEW_ROLES.get(requested, ())
+    if not any(role in images for role in roles):
+        return 'AGENT_ROLE_MISSING'
+    if admitted is None:
+        admitted=candidates(event, requested)
+    return 'READY' if admitted else 'AGENT_REFERENCE_REJECTED'
+
+
 def manual(value):
     return bool(value.get('manual85') or value.get('match') == 'MANUAL_CONFIRMED'
                 or value.get('source') == 'user_local86')
@@ -87,7 +111,7 @@ def selected(value, requested):
 def role_priority(value, requested):
     roles = VIEW_ROLES.get(requested, ())
     role = value.get('role81')
-    return (roles.index(role), not manual(value)) if role in roles else None
+    return (not manual(value), roles.index(role)) if role in roles else None
 
 
 def image_shape(role, checked):

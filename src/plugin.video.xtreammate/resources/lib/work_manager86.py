@@ -41,11 +41,14 @@ def open(parent,*,source96=None):
  if source96=='xmltv_event':source,kind='xmltv_event','event'
  from agent_work103 import LABELS, SOURCE
  live=event.get('media_kind86','live')=='live'
+ filters={}
  rescan96=source96=='xmltv_event'
  while not getattr(parent,'_closed',False) and not xbmc.Monitor().abortRequested():
-  action=2 if rescan96 else icon_select(dialog,tr(37080),[tr(37081)+' · '+query,tr(37082)+' · '+('EPG Agent' if source==SOURCE else source+' '+kind),tr(37083),tr(37084),tr(37085),tr(37098)]+([tr(39026),'EPG Agent · Bilder dieser Sendung'] if live else []))
+  action=2 if rescan96 else icon_select(dialog,tr(37080),[tr(37081)+' · '+query,tr(37082)+' · '+('EPG Agent' if source==SOURCE else source+' '+kind),tr(37083),tr(37084),tr(37085),tr(37098)]+([tr(39026),'EPG Agent · Bildersuche im lokalen Datenbestand'] if live else [])+(['EPG Agent · Suchfilter'] if live and source==SOURCE else []))
   rescan96=False
-  if action in (6,7):source,kind=('xmltv_event' if action==6 else SOURCE),'event';action=2
+  if action in (6,7):source,kind=('xmltv_event' if action==6 else SOURCE),'event';page=1;action=2
+  if action==8:
+   filters=agent_filters(dialog,filters);page=1;action=2
   if action<0:return changed
   if action==5:
    image=dialog.browse(1,tr(37098),'files','.jpg|.jpeg|.png',False,False,'')
@@ -67,15 +70,17 @@ def open(parent,*,source96=None):
    edited=dialog.input(tr(37081),defaultt=query)
    if not edited.strip():continue
    query=edited.strip()[:200];page=1
-  answer=wait(event,'search',query=query,kind=kind,source=source,page=page)
+  answer=wait(event,'search',query=query,kind=kind,source=source,page=page,**(filters if source==SOURCE else {}))
   rows=answer.get('rows',[])
-  if not rows:
+  if not rows and not answer.get('more'):
    dialog.ok('XCMate',status(answer.get('code')));continue
   items=[];labels=[]
   for row in rows:
    origin=('XMLTV' if row['source']=='xmltv_event' else row['source']+' '+row['media_type86'])
    if row['source']==SOURCE:
-    origin=LABELS[row['role']]+' '+str(sum(r['role']==row['role'] for r in rows[:len(items)])+1)+' · '+row['attribution']
+    origin=' · '.join(part for part in (LABELS[row['role']],row['attribution'],row.get('channel',''),
+                         f"S{row['season']} E{row['episode']}" if row.get('season') and row.get('episode') else '',
+                         row.get('work_id','')) if part)
    label=' · '.join(part for part in (row['title'],str(row.get('year') or ''),','.join(row.get('country',[])),origin) if part)
    item=xbmcgui.ListItem(label,label2=row.get('overview',''));items.append(item);labels.append(label)
    if row.get('thumb86'):item.setArt(dict(thumb=row['thumb86']))
@@ -88,6 +93,12 @@ def open(parent,*,source96=None):
   if picked>len(rows):page+=1;continue
   chosen=rows[picked]
   label=labels[picked]
+  if chosen['source']==SOURCE:
+   answer=wait(event,'preview',candidate=chosen)
+   if answer.get('code')!='READY' or not answer.get('rows'):
+    dialog.ok('XCMate',status(answer.get('code')));continue
+   preview=xbmcgui.ListItem(label,label2=tr(37089));preview.setArt(dict(thumb=answer['rows'][0]['thumb86']))
+   if icon_select(dialog,'EPG Agent · Bildvorschau',[preview,tr(37081)])!=0:continue
   reference=' · '.join(str(event[k]) for k in ('subtitle','year') if event.get(k))
   message=label+'\n'+chosen.get('overview','')+'\n'
   if reference and chosen['source']!=SOURCE:message+='EPG · '+reference+'\n'
@@ -99,9 +110,32 @@ def open(parent,*,source96=None):
   dialog.ok('XCMate',status(answer.get('code')))
  return changed
 
+def agent_filters(dialog,filters):
+ from agent_work103 import LABELS
+ sources={'agent_tmdb':'TMDB','agent_tvmaze':'TVMaze','agent_xmltv':'XMLTV'}
+ result=dict(filters)
+ labels={'role':'Bildrolle','image_source':'Bildquelle','year':'Jahr','season':'Staffel','episode':'Folge'}
+ definitions={'role':LABELS,'image_source':sources}
+ keys=list(labels)
+ def label(key):
+  value=result.get(key,'')
+  return labels[key]+' · '+str(definitions.get(key,{}).get(value,value) or 'Alle')
+ picked=icon_select(dialog,'EPG Agent · Suchfilter',[label(key) for key in keys]+['Filter zurücksetzen'])
+ if picked<0:return result
+ if picked==len(keys):return {}
+ key=keys[picked]
+ if key in definitions:
+  options=definitions[key]
+  selected=icon_select(dialog,labels[key],['Alle']+list(options.values()))
+  if selected>=0:result[key]=(['']+list(options))[selected]
+ else:
+  text=dialog.input(labels[key],defaultt=str(result.get(key,'')),type=xbmcgui.INPUT_NUMERIC)
+  if text and text.isdecimal():result[key]=int(text)
+ return result
+
 def status(code):
  codes={'RESERVE_BLOCKED':38721,'PROFILE_BUSY':38722,'SQLITE_BUSY':38722,'WRITE_DENIED':38723,'SOURCE_DISABLED':37090,'TMDB_TOKEN_MISSING':37091,'ZERO_RESULTS':37092,'EPG_REVISION_CHANGED':37093,'CANDIDATES_REJECTED':37094,'CANCELLED':37111,'USER_CANCELLED':37111,'REQUEST_TIMEOUT':37112,'WORKER_BUSY':37113,'WORKER_STOPPED':37114,'KODI_STOPPED':37115,'NETWORK_TIMEOUT':37116,'PERSISTENCE_BLOCKED':37117,'READBACK_FAILED':37117,'SAVE_BLOCKED':37096,'UNCHANGED':37095}
- if code in ('BLOCKED_IMAGE_HOST_OR_URL','BLOCKED_CREDENTIAL_URL','NO_ARTWORK',
+ if code in ('BLOCKED_IMAGE_HOST_OR_URL','BLOCKED_CREDENTIAL_URL','NO_ARTWORK','AGENT_CACHE_UNAVAILABLE',
              'DNS_ERROR','TLS_ERROR','HTTP_AUTH','HTTP_NOT_FOUND','HTTP_RATE_LIMIT','HTTP_SERVER','NETWORK_ERROR'):
   return tr(37097)+' · '+code
  return tr(codes.get(code,37097))

@@ -5,7 +5,7 @@ alone reloads authoritative local event facts and uses the existing URL queue.
 No provider URLs, tokens, SQL, files or HTTP in request()/result().
 """
 import hashlib,json,threading,time
-from agent_programme100 import PERSON_VIEWS
+from agent_programme100 import INDEX_FIELDS, PERSON_VIEWS, REFERENCE_CODES
 PREFIX='XCMate.Programme68.'
 SLOTS=64
 PERSON_SLOTS=8
@@ -13,7 +13,8 @@ ROLE_BANKS={'hero':0,'details':1,'card':2,**{view:3+i for i,view in enumerate(PE
 INTENT_SLOTS=3*SLOTS+len(PERSON_VIEWS)*PERSON_SLOTS
 MAX_BYTES=8192
 _FIELDS=('pid','sid','start','stop','title','canonical','revision','source_key46','fact_revision46','epg_source46')
-_ART=('key','fingerprint','code','source','match','image','thumbnail','sha256','attribution','image_scope57','until','failure_reason68','storage68','source_url','url_version55','url_verified69','scope69','profile69','persisted69','storage69','storage_code69','policy69','resolved_at55','sources70','lookup70','origin_policy75','decoded77','image_width77','image_height77','display84','display_key84','provisional85','manual85','temp85','mapping_epoch85','role81','decoded88','asset88','provider_id','vote_average88','vote_count88','xmltv96')
+_BINDING_FIELDS=('canonical','source_key46','fact_revision46')+INDEX_FIELDS
+_ART=('key','fingerprint','code','source','match','image','thumbnail','sha256','attribution','image_scope57','until','failure_reason68','storage68','source_url','url_version55','url_verified69','scope69','profile69','persisted69','storage69','storage_code69','policy69','resolved_at55','sources70','lookup70','origin_policy75','decoded77','image_width77','image_height77','display84','display_key84','provisional85','manual85','temp85','mapping_epoch85','role81','decoded88','asset88','provider_id','vote_average88','vote_count88','xmltv96','agent_policy104')
 _lock=threading.Lock()
 _thread=None
 _stop=threading.Event()
@@ -28,6 +29,7 @@ def scope():
 
 def identity(event):
  values=[scope()]+[event.get(k) for k in _FIELDS]
+ if any(event.get(k) for k in INDEX_FIELDS):values.extend(event.get(k) for k in INDEX_FIELDS)
  return hashlib.sha256(json.dumps(values,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
 
 def slot_for(tag,view='hero'):
@@ -46,12 +48,24 @@ def _read(key):
  except (ValueError,TypeError):return {}
  return value if isinstance(value,dict) else {}
 
+def agent_failure(event):
+ """Use the same short failure receipt for focus, service and prefetch."""
+ from agent_programme100 import policy, view
+ from programme_mapping85 import epoch
+ from programme_status70 import retry
+ tag=identity(event)
+ value=_read('status.'+str(slot_for(tag,view(event))))
+ art=value.get('art',{})
+ return bool(isinstance(art,dict) and value.get('tag')==tag and value.get('scope')==scope() and value.get('mapping_epoch85',0)==epoch(event)
+             and art.get('source')=='placeholder' and art.get('agent_policy104')==policy()
+             and art.get('until',0)>time.time() and not retry(event,art))
+
 def request(event,priority=False):
  """A bounded intent only; callers already possess the displayed local event."""
  try:
   if event.get('_no_art_request68') or not event.get('pid') or not event.get('sid') or not event.get('title'):return False
   if not 0<int(event['start'])<int(event['stop']):return False
-  value={k:event[k] for k in _FIELDS if k in event}
+  value={k:event[k] for k in _FIELDS+INDEX_FIELDS if k in event}
   if any(isinstance(v,str) and len(v)>1024 for v in value.values()):return False
   from programme_state482 import POLICY
   profile=__import__('epg_handoff63').profile_scope()
@@ -79,6 +93,7 @@ def request(event,priority=False):
 
 def trace(event,code):
  codes=set(__import__('programme_revision85').REASONS)|{'QUEUED','RUNNING','LOCAL_IMAGE_READY','IMAGE_READY','NOT_SCHEDULED','NO_MATCH','NO_ARTWORK','CACHE_MISS','CACHE_MISMATCH','DB_FULL','FETCH_FAILED','CANCELLED','HTTP_AUTH','HTTP_RATE_LIMIT','TIMEOUT','PROGRAMME_DB_UNAVAILABLE','CACHE_ERROR','CACHE_IO_ERROR','PROGRAMME_CACHE_BUDGET','TMDB_DISABLED','TMDB_TOKEN_MISSING','BLOCKED_IMAGE_HOST_OR_URL','NO_MATCH_AMBIGUOUS','HELPER_TIMEOUT','HELPER_BACKGROUND_UNAVAILABLE','NO_UNIQUE_MATCH','NO_IMAGE','NO_YEAR','NOT_CLASSIFIED_MOVIE','AWAITING_BACKGROUND_REFRESH','RESERVE_BLOCKED','DISK_FULL','BUDGET_FULL','IMAGE_URL_READY_RAM','IMAGE_URL_READY','SAFE_RESERVE_BLOCKED','REAL_ENOSPC','SQLITE_FULL_POLICY','SQLITE_FULL_STORAGE','SQLITE_FULL_UNKNOWN','SQLITE_BUSY_LOCKED','SQLITE_IO','EPG_READ_TIMEOUT','IMAGE_LOOKUP_TIMEOUT'}
+ codes.update(__import__('programme_pipeline77').AGENT_CODES)
  fixed=code if code in codes or code in __import__('programme_state482').ERRORS or code in ('REQUESTED','WAITING_SERVICE') else 'FETCH_FAILED'
  key=(identity(event),fixed);now=time.monotonic()
  with _lock:
@@ -94,6 +109,7 @@ def status(event,code,art=None):
  try:
   trace(event,code)
   import agent_programme100 as roles499
+  from programme_mapping85 import epoch
   view=roles499.view(event)
   tags=[identity(event)]
   with _lock:tags+=list(_aliases.get((tags[0],view),()))
@@ -111,9 +127,10 @@ def status(event,code,art=None):
     local69=os.path.isabs(str(payload.get('image',''))) and not payload.get('url_version55')
     fields69=('source_url','url_verified69','url_version55') if local69 else ('source_url','image','thumbnail','url_verified69','url_version55')
     for field69 in fields69:payload.pop(field69,None)
+  mapping_epoch=epoch(event)
   for tag in set(tags):
    adjusted=dict(payload,scope69=tag) if payload.get('url_verified69') else dict(payload)
-   value=dict(tag=tag,scope=scope(),at=time.time(),code=code,art=adjusted,detail93=bool(event.get('_detail93')),
+   value=dict(tag=tag,scope=scope(),at=time.time(),code=code,art=adjusted,detail93=bool(event.get('_detail93')),mapping_epoch85=mapping_epoch,
               view499=view,typed499=roles499.typed(event))
    raw=json.dumps(value,separators=(',',':'),allow_nan=False)
    if len(raw.encode())<=MAX_BYTES:_window().setProperty(PREFIX+'status.'+str(slot_for(tag,view)),raw)
@@ -136,8 +153,10 @@ def result(event,previous=None):
   if not roles499.fits(previous,requested):previous=None
   tag=identity(event);value=_read('status.'+str(slot_for(tag,requested)))
   from programme_status70 import valid,waiting
-  if value.get('tag')!=tag or value.get('scope')!=scope() or not valid(value):return waiting(event,previous)
+  from programme_mapping85 import epoch
+  if value.get('tag')!=tag or value.get('scope')!=scope() or value.get('mapping_epoch85',0)!=epoch(event) or not valid(value):return waiting(event,previous)
   art=value.get('art') or {}
+  if art.get('agent_policy104') and art['agent_policy104']!=roles499.policy():return waiting(event,previous)
   if not roles499.fits(art,requested):return waiting(event,previous)
   terminal80=__import__('programme_deadline80').code(event,value.get('code'))
   if terminal80=='IMAGE_LOOKUP_TIMEOUT' and not __import__('programme_lastgood80').positive(event,previous):return dict(code=terminal80,source='placeholder')
@@ -189,9 +208,10 @@ def drain(cancel=lambda:False):
  global _cursor
  from programme_urls55 import enqueue
  from programme_events46 import load
+ from programme_mapping85 import epoch
  from portals import get_by_id
  from library_index import Reader
- processed=0
+ processed=0;loaded={}
  for offset in range(INTENT_SLOTS):
   slot=(_cursor+offset)%INTENT_SLOTS
   if cancel():break
@@ -204,13 +224,14 @@ def drain(cancel=lambda:False):
    event=dict(event,_art_view499=requested)
    person=requested in PERSON_VIEWS
    previous69=_read('status.'+str(slot))
-   if previous69.get('tag')==value['tag'] and previous69.get('scope')==scope():
+   if previous69.get('tag')==value['tag'] and previous69.get('scope')==scope() and previous69.get('mapping_epoch85',0)==epoch(event):
     artifact69=previous69.get('art') or {}
     from programme_image69 import policy as image_policy
     from programme_status70 import retry as retry70,valid as valid70
     if artifact69.get('code') in __import__('programme_revision85').REASONS and artifact69.get('until',0)>time.time():continue
     positive77=artifact69.get('source') not in (None,'','placeholder')
     ready77=not positive77 or __import__('programme_image69').eligible(artifact69,event)
+    if artifact69.get('agent_policy104') and artifact69['agent_policy104']!=__import__('agent_programme100').policy():ready77=False
     if ready77 and valid70(previous69) and artifact69.get('until',0)>time.time() and artifact69.get('policy69')==image_policy(artifact69.get('source')) and not retry70(event,artifact69) and not __import__('programme_status70').legacy_negative(artifact69):continue
     if previous69.get('code') in ('QUEUED','RUNNING') and 0<=time.time()-previous69.get('at',0)<60:
      if value.get('priority') and previous69.get('code')=='QUEUED':
@@ -231,21 +252,24 @@ def drain(cancel=lambda:False):
    policy=fingerprint(event)+'|'+requested;tag=value['tag'];now=time.monotonic()
    with _lock:prior=_seen.get((tag,policy),-1e9)
    if now-prior<10:continue
-   reader=Reader(portal['id'])
-   try:channel=reader.get('live',str(event.get('sid','')))
-   finally:
-    close=getattr(reader,'close',None)
-    if close:close()
+   if tag not in loaded:
+    reader=Reader(portal['id'])
+    try:channel=reader.get('live',str(event.get('sid','')))
+    finally:
+     close=getattr(reader,'close',None)
+     if close:close()
+    loaded[tag]=(channel,load(portal,channel,event) if channel else None)
+   channel,record=loaded[tag]
    if not channel:
     status(event,'CACHE_MISS')
     mark_seen(tag,policy,now)
     continue
-   current=load(portal,channel,event)
+   current=dict(record)
    current['_art_view499']=requested
    if value.get('detail93'):current['_detail93']=True
    # No cached-short fallback may override an explicit source/guide binding.
-   if current.get('code')!='LOCAL_EVENT' or any(event.get(k) and event.get(k)!=current.get(k) for k in ('canonical','source_key46','fact_revision46')) or event.get('revision') is not None and json.dumps(event['revision'])!=json.dumps(current.get('revision')):
-    code69=current.get('read_code69') or ('NO_SOURCE_FACTS' if current.get('code')!='LOCAL_EVENT' else 'SOURCE_CHANGED' if any(event.get(k)!=current.get(k) for k in ('canonical','source_key46','fact_revision46')) else 'EVENT_CHANGED')
+   if current.get('code')!='LOCAL_EVENT' or any(event.get(k) and event.get(k)!=current.get(k) for k in _BINDING_FIELDS) or event.get('revision') is not None and json.dumps(event['revision'])!=json.dumps(current.get('revision')):
+    code69=current.get('read_code69') or ('NO_SOURCE_FACTS' if current.get('code')!='LOCAL_EVENT' else 'SOURCE_CHANGED' if any(event.get(k)!=current.get(k) for k in _BINDING_FIELDS) else 'EVENT_CHANGED')
     if current.get('code')=='LOCAL_EVENT':
      request(current,priority=True)
     else:
@@ -259,12 +283,18 @@ def drain(cancel=lambda:False):
     aliases=_aliases.setdefault((identity(current),requested),set());aliases.add(tag)
     while len(_aliases)>128:_aliases.pop(next(iter(_aliases)))
    allow=not person and (own or setting_bool('programme_tvmaze67',False) or setting_bool('programme_helper57',True) or setting_bool('programme_catalog57',True))
-   if not person and not allow and not current.get('xmltv_image') and not current.get('provider_image') and not __import__('agent_programme100').candidates(current):
+   if not person and not allow and not current.get('xmltv_image') and not current.get('provider_image') and not __import__('agent_programme100').candidates(current,requested) and not __import__('agent_work103').work_id(current):
     # An explicit local XMLTV choice can refer to another active feed.
     # Admit it without granting remote search; resolve revalidates its facts.
     local96=__import__('programme_mapping85').current(current)
-    if not (setting_bool('programme_xmltv96',True) and local96 and local96.get('source')=='xmltv_event' and not local96.get('hidden')):
-     status(current,'TMDB_LOOKUP_DISABLED')
+    if not (local96 and not local96.get('hidden') and (local96.get('source')=='agent_event103' or
+            setting_bool('programme_xmltv96',True) and local96.get('source')=='xmltv_event')):
+     reason=__import__('agent_programme100').source_status(current,requested)
+     code=reason if reason in REFERENCE_CODES else 'TMDB_LOOKUP_DISABLED'
+     value=dict(code=code,source='placeholder',until=time.time()+120,
+                policy69=__import__('programme_image69').policy())
+     if code in REFERENCE_CODES:value['agent_policy104']=__import__('agent_programme100').policy()
+     status(current,code,value)
      mark_seen(tag,policy,now)
      continue
    accepted=enqueue(current,allow_lookup=allow,local_image63=not person and setting_bool('programme_art_local69',False),priority68=2 if value.get('priority') else False)
