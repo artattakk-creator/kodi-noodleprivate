@@ -111,7 +111,7 @@ class PrefixReader:
 
 
 def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None,progress=None,include_icons=False,
-          *,include_images=False,channel_image=None,strict_images=False,reject_credentials=False):
+          *,include_images=False,channel_image=None,channel_alias=None,include_titles=False,strict_images=False,reject_credentials=False):
     stream=PrefixReader(stream)
     data=gzip.GzipFile(fileobj=stream) if stream.prefix==b'\x1f\x8b' else stream
     parser=expat.ParserCreate()
@@ -210,6 +210,12 @@ def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None,pr
                     else:
                         if not record.get('icon'):record['icon']=fields['url']
                         if include_icons:record.setdefault('icons',[]).append(fields['url'])
+            if tag=='display-name' and len(stack)==3 and stack[1]=='channel' and channel_alias is not None:
+                names=record.setdefault('display_aliases',[])
+                if value and len(names)<32:names.append(value)
+            if tag=='title' and len(stack)==3 and stack[1]=='programme' and include_titles:
+                titles=record.setdefault('title_aliases',[])
+                if value and len(titles)<8:titles.append(value[:512])
             if tag in ('display-name','title','sub-title','date','desc','category','country','language') and tag not in record: record[tag]=value
             if tag=='value' and stack[-3:]==['programme','rating','value'] and value and 'rating' not in record:
                 record['rating']=value[:32]
@@ -239,6 +245,8 @@ def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None,pr
                     counts['channels']+=1
                     cid=record.get('id','')
                     on_channel(cid,record.get('display-name') or cid)
+                    if channel_alias is not None and cid:
+                        for name in record.get('display_aliases',()):channel_alias(cid,name)
                     if channel_image is not None and cid:
                         for logo in record.get('logos',()):channel_image(cid,logo)
                 elif tag=='programme':
@@ -258,6 +266,8 @@ def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None,pr
                             season=record.get('season'),episode_number=record.get('episode_number'))
                         if include_icons:event['icons']=record.get('icons',[])
                         if include_images:event['images']=record.get('images',[])
+                        if include_titles and len(record.get('title_aliases',()))>1:
+                            event['title_aliases']=record['title_aliases'][1:]
                         for key in ('country','language','cast_roles','xmltv_title_lang','xmltv_tmdb_id'):
                             if record.get(key):event[key]=record[key]
                         if event.get('xmltv_tmdb_id') and record.get('xmltv_tmdb_score'):

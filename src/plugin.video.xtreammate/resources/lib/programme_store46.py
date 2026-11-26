@@ -32,6 +32,9 @@ def metadata(event):
  """Bounded source facts, no title/description replacement or network calls."""
  result={}
  if isinstance(event.get('agent_art'),dict):result['agent_art']=event['agent_art']
+ if event.get('source_key46')=='agent':
+  from epg_agent_catalog103 import EVENT_FIELDS
+  result.update((key,event[key]) for key in EVENT_FIELDS if key in event)
  rating=age_rating(event)
  if rating:result['age_rating']=rating
  language=event.get('language')
@@ -57,7 +60,7 @@ def metadata(event):
  if isinstance(external,dict):
   valid={k:str(v) for k,v in external.items() if k in ('imdb_id','tvdb_id','tvrage_id') and isinstance(v,(str,int)) and __import__('re').fullmatch(r'(?:tt)?[0-9]{1,12}',str(v))}
   if valid:result['external_ids']=valid;result['_work_ids_verified85']=True
- for target,keys,limit in [('subtitle',('sub_title','sub-title','subtitle'),512),('genre',('category','genre'),256),('episode_label',('episode',),128),('xmltv_image',('screenshot_uri','icon'),2048),('provider_image',('programme_image','event_image'),2048)]:
+ for target,keys,limit in [('subtitle',('sub_title','sub-title','subtitle'),512),('genre',('category','genre'),256),('episode_label',('episode_label','episode'),128),('xmltv_image',('screenshot_uri','icon'),2048),('provider_image',('programme_image','event_image'),2048)]:
   value=next((event[k] for k in keys if isinstance(event.get(k),str) and event[k].strip()),'')
   if value:result[target]=value.strip()[:limit]
  for target,keys in [('season',('season','season_number')),('episode',('episode_number',)),('year',('year','date'))]:

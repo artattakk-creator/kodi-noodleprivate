@@ -72,7 +72,7 @@ def mapping_scope(portal):
         groups = _state(_read(), pid, "live")
         if groups:
             groups = dict(groups, enabled=sorted(groups["enabled"]), known=sorted(groups["known"]))
-        inputs = ("mapping-103", catalogue, mappings, getattr(mappings, "sources48", {}), groups)
+        inputs = ("mapping-104", catalogue, mappings, getattr(mappings, "sources48", {}), groups)
         raw = json.dumps(inputs, sort_keys=True, separators=(",", ":"))
         return hashlib.sha256(raw.encode()).hexdigest()
     except (IndexReadError, ImportError, AttributeError, OSError, ValueError):
@@ -86,8 +86,8 @@ def install(portal, folder, cancel):
     from epg_agent_catalog103 import build as build_catalogue
     from epg_status import read
 
+    index = build_catalogue(folder, cancel)
     artwork = build(folder, cancel)
-    build_catalogue(folder, cancel)
     result = {}
     source = dict(id=SOURCE_ID, name=SOURCE_NAME, enabled=True, local=True,
                   uri=str(folder / XMLTV_FILE), _agent_artwork=str(artwork), _agent_folder102=folder,
@@ -97,4 +97,6 @@ def install(portal, folder, cancel):
     job = dict(portal, _epg_auto53=True, _epg_sources53=[SOURCE_ID],
                _agent_source=source, _agent_result=result, _agent_cancel=cancel)
     _refresh_portal_epg(portal["id"], job, force=True)
-    return result or dict(code=read(portal["id"]).get("refresh", {}).get("code", "IMPORT_BUSY"))
+    if not result:
+        result["code"] = read(portal["id"]).get("refresh", {}).get("code", "IMPORT_BUSY")
+    return dict(result, index_schema104=index["index_schema"])

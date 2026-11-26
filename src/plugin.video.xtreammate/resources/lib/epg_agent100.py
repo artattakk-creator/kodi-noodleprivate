@@ -125,7 +125,8 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
           fetch=None, install=None, cancel=lambda: False, public=False, force=False):
     """Persist manifest outcomes and only advance a portal after verified readback."""
     from epg_agent100_import import mapping_scope
-    if install is None:
+    migrate_index = install is None
+    if migrate_index:
         from epg_agent100_import import install
     now = time.time() if now is None else now
     current = state(directory)
@@ -190,8 +191,8 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
             _failed(current, now, exc.code, phase=exc.phase, http_status=exc.http_status)
         except InterruptedError:
             current.update(last_checked=0, next_check=0, code="CANCELLED")
-        except OSError:
-            _failed(current, now, "STORAGE_ERROR")
+        except OSError as exc:
+            _failed(current, now, getattr(exc, "code69", "STORAGE_ERROR"))
         except MemoryError:
             _failed(current, now, "MEMORY_PRESSURE")
         else:
@@ -213,6 +214,9 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
                                channels=payload["channels"], programmes=payload["programmes"],
                                artwork_records=payload["artwork_records"],
                                image_counts=payload.get("image_counts", {}), etag=payload["etag"])
+                if payload.get("index_schema104"):
+                    current.update(index_generation104=payload["generation"],
+                                   index_schema104=payload["index_schema104"])
             elif status == "NOT_MODIFIED":
                 current.update(remote="AVAILABLE", etag=payload["etag"])
             elif status in ("PRIVATE_PENDING", "PUBLIC_PENDING", "NO_PROFILE_SELECTED"):
@@ -242,7 +246,9 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
             continue
         scope = mapping_scope(portal)
         same_generation = last.get("generation") == target
-        if same_generation and (scope is None or last.get("mapping_scope") == scope):
+        from epg_agent_catalog103 import VERSION as index_version
+        migration_pending = migrate_index and last.get("index_schema104") != index_version
+        if same_generation and not migration_pending and (scope is None or last.get("mapping_scope") == scope):
             continue
         previous_attempt = last.get("attempt", 0)
         if (not manual and last.get("candidate") == target and last.get("attempt_scope") == scope
@@ -258,7 +264,9 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
         except InterruptedError:
             result = dict(code="CANCELLED")
         except (DeliveryError, OSError, ValueError, sqlite3.Error) as exc:
-            result = dict(code=exc.code if isinstance(exc, DeliveryError) else "IMPORT_ERROR")
+            result = dict(code=exc.code if isinstance(exc, DeliveryError) else getattr(exc, "code69", "IMPORT_ERROR"))
+        if result.get("index_schema104") and target == generation:
+            current.update(index_generation104=target, index_schema104=result["index_schema104"])
         if result["code"] in SUCCESS and result.get("verified", 0) > 0:
             receipts[pid] = dict(result, generation=target, attempt=now, last_success=now,
                                  mapping_scope=scope)
@@ -314,6 +322,7 @@ def installed_source(pid):
     if not enabled():
         return None
     from epg_agent100_art import INDEX
+    from epg_agent_catalog103 import ready
     from epg_agent_github import XMLTV_FILE, local_manifest
     folder = local_candidate(pid)
     if folder is None:
@@ -325,10 +334,10 @@ def installed_source(pid):
     if folder is None:
         return None
     index = folder / INDEX
-    if index.is_symlink() or not index.is_file():
+    if index.is_symlink() or not (index.is_file() or ready(folder)):
         return None
     return dict(id=SOURCE_ID, name=SOURCE_NAME, local=True, enabled=True,
-                uri=str(folder / XMLTV_FILE), _agent_artwork=str(index),
+                uri=str(folder / XMLTV_FILE), _agent_artwork=str(index), _agent_folder102=folder,
                 _agent_generation103=folder.name.removeprefix("candidate-"),
                 _agent_public102=local_manifest(folder).get("status") == "PUBLIC_READY")
 
@@ -347,6 +356,7 @@ def run(portals, cancel):
     generation = record.get("generation")
     receipts = record.get("portals", {})
     from epg_agent100_import import mapping_scope
+    from epg_agent_catalog103 import VERSION as index_version
     pending_import = False
     for portal in eligible:
         last = receipts.get(str(portal["id"]), {})
@@ -355,7 +365,7 @@ def run(portals, cancel):
             break
         if last.get("generation"):
             scope = mapping_scope(portal)
-            if scope is not None and last.get("mapping_scope") != scope:
+            if last.get("index_schema104") != index_version or (scope is not None and last.get("mapping_scope") != scope):
                 pending_import = True
                 break
     if (_due(record, now) or request > record.get("request", 0)

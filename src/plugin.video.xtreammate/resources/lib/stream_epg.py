@@ -78,7 +78,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
     raw_horizon=Coverage(now)
     agent_channels={};agent_icons={};agent_matched=False
     agent_proofs={};agent_processed={};agent_ambiguous=agent_unmatched=0;agent_retained=False;agent_available=None
-    if agent_artwork:
+    if agent_artwork and not agent_folder:
         from epg_agent100_art import event_art, validator
         admit_agent_art=validator()
     staged_channels=set()
@@ -125,13 +125,14 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
             agent_icons[cid]=url
     def programme(event):
         nonlocal stored
-        raw_horizon.add(event['channel'],event['start_timestamp'],event['stop_timestamp'])
+        if not agent_folder:
+            raw_horizon.add(event['channel'],event['start_timestamp'],event['stop_timestamp'])
         if agent_artwork and not agent_matched:
             match_agent()
         if event['channel'] not in ids or event['stop_timestamp']<=left: return
         if not event['name']: return
         if event['start_timestamp']>=right46:return
-        if agent_artwork:
+        if agent_artwork and not agent_folder:
             references=event_art(event,admit_agent_art)
             if references:event['agent_art']=references
             event.pop('screenshot_uri',None)  # Keep only the admitted references.
@@ -147,8 +148,9 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         http_status=None
         try:
             if agent_folder:
-                from epg_agent_catalog103 import stations
-                agent_channels, feed_events, agent_available = stations(agent_folder, left, right46)
+                from epg_agent_catalog103 import iter_programmes, logos, stations, statistics
+                phase = 'INDEX'
+                agent_channels, _, agent_available = stations(agent_folder, left, right46)
                 agent_retained = bool(source.get('_agent_incremental103') and db.execute(
                     "SELECT 1 FROM guide44_inputs WHERE pid=? AND source_id=? LIMIT 1",
                     (pid, identity)).fetchone())
@@ -156,8 +158,15 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
                     from epg_agent100_art import processed_channels
                     agent_processed = processed_channels(agent_artwork, pid)
                 match_agent()
-            should_parse = not agent_folder or bool(ids)
-            if should_parse:
+                agent_icons.update(logos(agent_folder, set(aliases.values())))
+                index = statistics(agent_folder)
+                counts = dict(channels=index['channels'], programmes=index['programmes'], bytes=0, skipped=0,
+                              raw_horizon102=index['horizon'], index_schema104=index['index_schema'])
+                progress54.emit('PARSE', force=True, programmes=index['programmes'],
+                                channels=index['channels'])
+                for event in iter_programmes(agent_folder, ids, left, right46, cancel):
+                    programme(event)
+            else:
                 parse_options=dict(include_icons=True,include_images=True,strict_images=True,
                                    channel_image=channel_icon,max_seconds=720) if agent_artwork else {}
                 with source_stream(source,cancel=cancel) as stream:
@@ -165,8 +174,6 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
                     http_status=getattr(stream,'http_status',None)
                     if progress:counts=parse(progress54.wrap(stream),channel,programme,cancel,progress=progress54.parsed,**parse_options)
                     else:counts=parse(stream,channel,programme,cancel,**parse_options)
-            else:
-                counts = dict(channels=len(agent_channels), programmes=feed_events, bytes=0, skipped=0)
         except Exception as exc:
             try:
                 exc.xcmate_stage=phase
@@ -174,7 +181,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
                     exc.epg_counts102=dict(http_status=http_status)
             except Exception: pass
             raise
-        if should_parse:
+        if not agent_folder:
             counts['raw_horizon102']=raw_horizon.result()
         if http_status is not None:
             counts['http_status']=http_status

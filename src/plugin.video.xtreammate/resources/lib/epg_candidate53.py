@@ -10,18 +10,20 @@ import uuid
 
 
 class PreviewUnavailable(ValueError):
-    pass
+    def __init__(self, code):
+        super().__init__(code)
+        self.code = code
 
 
 def source(portal,identity):
-    from epg_sources import configuration
-    from guide_publish44 import source_id
     if identity=='agent':
         from epg_agent100 import installed_source, SOURCE_RANK
         active = installed_source(portal['id'])
         if not active:
             raise PreviewUnavailable('SOURCE_MISSING')
         return active, SOURCE_RANK
+    from epg_sources import configuration
+    from guide_publish44 import source_id
     if identity=='provider':
         if not portal.get('provider_epg_enabled',True):raise PreviewUnavailable('SOURCE_DISABLED')
         from source_adapters import for_portal
@@ -45,15 +47,13 @@ class Limited:
 
 
 def scan(portal,identity,cid=None,cancel=lambda:False):
+    if identity == 'agent':
+        raise PreviewUnavailable('NO_LOCAL_INDEX')
     from stream_epg import source_stream
     from xmltv_stream import parse,PrefixReader
     from programme_index46 import bounds
     selected,rank=source(portal,identity);left,right=bounds()
     names={};events=[];used=0
-    agent=bool(selected.get('_agent_artwork') and cid is not None)
-    if agent:
-        from epg_agent100_art import event_art, validator
-        admit_art=validator()
     def channel(ident,name):
         nonlocal used
         if cid is not None:return
@@ -64,11 +64,6 @@ def scan(portal,identity,cid=None,cancel=lambda:False):
         nonlocal used
         if cid is None or event['channel']!=cid or event['stop_timestamp']<=left or event['start_timestamp']>=right:return
         event=dict(event,source_key46=identity,_source_index=rank,source=rank)
-        if agent:
-            event['_agent_generation103'] = selected.get('_agent_generation103')
-            references=event_art(event,admit_art)
-            if references:event['agent_art']=references
-            for key in ('screenshot_uri','icons','images'):event.pop(key,None)
         used+=len(json.dumps(event,ensure_ascii=False).encode())+256
         if len(events)>=512 or used>4*1024*1024:raise PreviewUnavailable('PREVIEW_EVENT_BUDGET')
         events.append(event)
@@ -77,7 +72,7 @@ def scan(portal,identity,cid=None,cancel=lambda:False):
         decoded=gzip.GzipFile(fileobj=packed) if packed.prefix==b'\x1f\x8b' else packed
         try:
             parse(Limited(decoded,256*1024*1024,cancel),channel,programme,cancel,
-                  max_seconds=45,include_icons=agent,include_images=agent)
+                  max_seconds=45)
         finally:
             if isinstance(decoded,gzip.GzipFile):decoded.close()
     if cancel():raise InterruptedError('PREVIEW_CANCELLED')
@@ -86,8 +81,36 @@ def scan(portal,identity,cid=None,cancel=lambda:False):
 
 class Candidates:
     """At most one catalogue and one channel, scoped to the open dialog."""
-    def __init__(self):self.catalogue=None;self.events=None
+    def __init__(self):
+        self.catalogue = None
+        self.events = None
+        self.agent_preview = None
+
+    def agent_windows(self, portal, cid, windows, cancel):
+        from epg_agent_catalog103 import programmes
+        selected, _ = source(portal, 'agent')
+        folder = selected['_agent_folder102']
+        results = [programmes(folder, cid, start, stop, limit=limit, cancel=cancel)
+                   for start, stop, limit in windows]
+        if cancel():
+            raise InterruptedError('CANCELLED')
+        self.agent_preview = (cid, selected['_agent_generation103'])
+        return results
+
+    def verify_agent_preview(self, portal, cid, cancel):
+        from epg_binding48 import MappingSaveError
+        if cancel():
+            raise MappingSaveError('MAPPING_CANCELLED')
+        try:
+            selected, _ = source(portal, 'agent')
+        except PreviewUnavailable:
+            raise MappingSaveError('MAPPING_RELOAD_FAILED') from None
+        if self.agent_preview != (cid, selected['_agent_generation103']):
+            raise MappingSaveError('MAPPING_RELOAD_FAILED')
     def channels(self,portal,identity,query,offset,cancel):
+        if identity == 'agent':
+            from mapping_search482 import search
+            return search(portal['id'], identity, query, offset, cancel)
         if self.catalogue is None or self.catalogue[0]!=identity:
             self.catalogue=(identity,scan(portal,identity,cancel=cancel))
         from mapping_search482 import matches,rank
@@ -97,6 +120,11 @@ class Candidates:
             rows.sort(key=lambda row:(score(row['id'],row['name']),row['id']))
         return rows[offset:offset+100]
     def programmes(self,portal,identity,cid,cancel):
+        if identity == 'agent':
+            from programme_index46 import bounds
+            start, stop = bounds()
+            rows, = self.agent_windows(portal, cid, [(start, stop, 256)], cancel)
+            return rows
         if self.events is None or self.events[:2]!=(identity,cid):
             self.events=(identity,cid,scan(portal,identity,cid,cancel))
         return self.events[2]

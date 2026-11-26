@@ -205,7 +205,11 @@ def _verify_profile(path, record, cancel, now, http_status, *, report_dir, publi
     _verify(path, record, cancel, on_event=measure, reject_credentials=public)
     report = dict(horizon=coverage.result(), http_status=http_status,
                   channels=sorted(_channel_digest(cid) for cid in event_channels))
-    target = _coverage_file(report_dir, record["profile"])
+    _write_coverage(report_dir, record["profile"], report)
+
+
+def _write_coverage(folder, profile, report):
+    target = _coverage_file(folder, profile)
     try:
         with gzip.open(target, "wt", encoding="utf-8") as output:
             json.dump(report, output, separators=(",", ":"))
@@ -318,6 +322,7 @@ def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: 
                 phase("validate")
 
             callbacks["on_verify"] = on_verify
+        asset_http = None
         for p, record in rows:
             key = (record["sha256"], record["bytes"])
             if key in verified_assets:
@@ -344,8 +349,10 @@ def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: 
                 path = _download(record, token, downloads, opener, cancel, on_http=status.append,
                                  **callbacks)
             transferred += record["bytes"]
-            _verify_profile(path, record, cancel, observed, status[0] if status else None,
-                            report_dir=temporary, public=public)
+            asset_http = status[0] if status else None
+            if len(unique_assets) > 1:
+                _verify_profile(path, record, cancel, observed, asset_http,
+                                report_dir=temporary, public=public)
             verified_assets[key] = record
             sources.append((p, path))
         final = temporary / XMLTV_FILE
@@ -353,32 +360,45 @@ def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: 
             os.replace(sources[0][1], final)
         else:
             _combine(sources, final, cancel)
-        counts = {"channels": 0, "programmes": 0}
-        images = {}
-        def on_channel(cid, _name):
-            counts["channels"] += 1
-        def on_logo(cid, url):
-            images["channel_logo"] = images.get("channel_logo", 0) + 1
-        def on_event(event):
-            counts["programmes"] += 1
-            for item in event.get("images", ()):
-                key = item["type"]
-                images[key] = images.get(key, 0) + 1
-            images["programme_icon"] = images.get("programme_icon", 0) + len(event.get("icons", ()))
-        from xmltv_stream import parse as parse_xmltv
+        from epg_agent_catalog103 import build as build_index
+        expected = {"status": manifest["status"], "schema_version": 5}
+        if len(sources) == 1:
+            record = rows[0][1]
+            expected.update(channel_count=record["channels"], programme_count=record["programmes"],
+                            staged_sha256=record["sha256"], bytes=record["bytes"])
+        event_channels = set()
+        def measure(event):
+            if len(sources) == 1:
+                event_channels.add(event["channel"])
+
         try:
-            with final.open("rb") as stream:
-                result = parse_xmltv(stream, on_channel, on_event, cancel=cancel,
-                                     max_seconds=900, include_icons=True,
-                                     include_images=True, channel_image=on_logo,
-                                     strict_images=True)
-        except (OSError, ValueError, EOFError, zlib.error):
-            fail("HUB5_XMLTV_INVALID")
-        if result["skipped"] or not counts["channels"] or not counts["programmes"]:
-            fail("HUB5_XMLTV_INVALID")
-        if len(sources) == 1 and (counts["channels"] != rows[0][1]["channels"] or
-                                  counts["programmes"] != rows[0][1]["programmes"]):
-            fail("HUB5_COUNT_MISMATCH")
+            if phase is not None:
+                phase("index")
+            counts = build_index(temporary, cancel, manifest=expected, on_event=measure)
+        except InterruptedError:
+            raise
+        except DeliveryError as exc:
+            if len(sources) == 1:
+                legacy_error = {"XMLTV_CHANNEL_INVALID": "HUB4_CHANNEL_INVALID",
+                                "XMLTV_EVENT_INVALID": "HUB4_PROGRAMME_INVALID",
+                                "INVALID_GZIP": "HUB4_XMLTV_INVALID",
+                                "UNCOMPRESSED_SIZE_LIMIT": "HUB4_UNCOMPRESSED_LIMIT",
+                                "CHANNEL_INDEX_UNVERIFIED": "HUB4_COUNT_MISMATCH"}.get(exc.code)
+                if legacy_error:
+                    fail(legacy_error)
+            if exc.code in ("XMLTV_CHANNEL_INVALID", "XMLTV_EVENT_INVALID", "INVALID_GZIP"):
+                fail("HUB5_XMLTV_INVALID")
+            if exc.code == "CHANNEL_INDEX_UNVERIFIED":
+                fail("HUB5_COUNT_MISMATCH")
+            raise
+        except (ValueError, EOFError, zlib.error):
+            fail("HUB4_XMLTV_INVALID" if len(sources) == 1 else "HUB5_XMLTV_INVALID")
+        if len(sources) == 1:
+            report = dict(horizon=counts["horizon"], http_status=asset_http,
+                          channels=sorted(_channel_digest(cid) for cid in event_channels))
+            for profile, _ in rows:
+                _write_coverage(temporary, profile, report)
+        images = counts["image_counts"]
         if public:
             manifest = {k: manifest[k] for k in ("schema_version", "schema", "status", "repo",
                         "delivery", "default_profile", "profiles", "variants", "tag",
@@ -393,7 +413,7 @@ def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: 
         saved = dict(manifest, selected_profiles=list(profiles), variant=variant,
                      asset_generation=signature, channel_count=counts["channels"],
                      programme_count=counts["programmes"], image_counts=images,
-                     staged_sha256=_sha256(final))
+                     staged_sha256=counts["digest"])
         with (temporary / "manifest.json").open("w", encoding="utf-8") as output:
             json.dump(saved, output, sort_keys=True)
             output.flush()
@@ -407,7 +427,7 @@ def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: 
         return dict(response, status="STAGED_FULL_CANDIDATE",
                     path=str(destination), channels=counts["channels"],
                     programmes=counts["programmes"], image_counts=images,
-                    artwork_records=sum(images.values()))
+                    artwork_records=sum(images.values()), index_schema104=counts["index_schema"])
     finally:
         if temporary.exists():
             shutil.rmtree(temporary, ignore_errors=True)

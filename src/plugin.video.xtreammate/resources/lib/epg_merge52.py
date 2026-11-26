@@ -6,6 +6,8 @@ missing facts. Different channel IDs require an explicit per-source station proo
 """
 import bisect,hashlib,json,sqlite3,time
 
+from epg_agent_catalog103 import EVENT_FIELDS
+
 DETAILS = ('descr', 'subtitle', 'genre', 'season', 'episode', 'episode_label', 'year',
            'cast', 'cast_roles', 'director', 'age_rating', 'country', 'original_title', 'work_id',
            'external_ids', '_work_ids_verified85', 'xmltv_image', 'provider_image',
@@ -150,6 +152,9 @@ def merge(primary,donors,cid,limit=256):
                         origins.update(('agent_art.' + role, donor_origins['agent_art.' + role])
                                        for role in additional)
                         donated = True
+            if donor.get('_agent_event104') and not peer.get('_agent_event104'):
+                peer.update((key, donor[key]) for key in EVENT_FIELDS if key in donor)
+                donated = True
             if origins:
                 peer['field_sources52'] = origins
             if donated:
@@ -213,16 +218,31 @@ def window(pid,sid,cid,start,stop,primary=(),limit=256,manual=False,guide=None):
         if db is None:return list(primary)
         deadline=time.monotonic()+.06;db.set_progress_handler(lambda:int(time.monotonic()>deadline),1000)
         allowed=ranks(pid);targets=[(None,str(cid))]
+        indexed_agent = False
         if not manual:
-            targets.extend((source, channel) for source, channel in proven_targets(db, pid, sid, allowed)
-                           if channel != str(cid))
+            proven = proven_targets(db, pid, sid, allowed)
+            agent_cid = next((channel for source, channel in proven if source == 'agent'), None)
+            if agent_cid:
+                from epg_agent_catalog103 import IndexReadError, for_portal, programmes, ready
+
+                folder = for_portal(pid)
+                indexed_agent = ready(folder)
+                if indexed_agent:
+                    try:
+                        donors.extend(programmes(folder, agent_cid, start, stop, limit=limit))
+                    except IndexReadError:
+                        pass
+                    primary = [row for row in primary if row.get('source') != allowed['agent']
+                               and row.get('source_key46') != 'agent']
+            targets.extend((source, channel) for source, channel in proven
+                           if channel != str(cid) and (source != 'agent' or not indexed_agent))
         for source,channel in targets:
             sql='SELECT source_id,fingerprint,data,updated FROM facts WHERE pid=? AND cid=? AND start<? AND stop>?'
             args=[str(pid),channel,stop,start]
             if source:sql+=' AND source_id=?';args.append(source)
             sql+=' ORDER BY start,stop LIMIT ?';args.append(min(1024,max(128,limit*4)))
             for identity,fingerprint,data,updated in db.execute(sql,args):
-                if identity not in allowed or len(data)>24576:continue
+                if identity not in allowed or (identity == 'agent' and indexed_agent) or len(data)>24576:continue
                 value=read_fact(data)
                 if identity=='compatibility' and primary:
                     # Legacy facts still require exact authoritative text and
