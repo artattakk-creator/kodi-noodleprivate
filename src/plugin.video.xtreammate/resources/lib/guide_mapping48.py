@@ -131,15 +131,17 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
         self._entry482=False
         def ready(rows):
             from menu_icons45 import select
-            reasons={'READY':'Bereit','IMPORTING':'Aktualisierung läuft','LAST_GOOD':'Letzter geprüfter Stand',
-                     'DB_BUSY':'Datenbank belegt','SOURCE_TIMEOUT':'Abfragezeit überschritten',
-                     'SQLITE_INTERRUPT':'Lokales Lesebudget erreicht','SOURCE_UNAVAILABLE':'Daten nicht erreichbar',
-                     'NO_LOCAL_INDEX':'Index nicht verfügbar'}
+            reasons={'READY':'Bereit','IMPORTING':'Import läuft','LAST_GOOD':'Letzter Stand',
+                     'DB_BUSY':'Datenbank belegt','SOURCE_TIMEOUT':'Zeitlimit',
+                     'SQLITE_INTERRUPT':'Lesebudget','SOURCE_UNAVAILABLE':'Keine Daten',
+                     'NO_LOCAL_INDEX':'kein Index'}
             labels=[]
             for row in rows:
-                status = reasons.get(row['local_code'], 'Index nicht verfügbar')
+                status = reasons.get(row['local_code'], 'kein Index')
                 count = row['local_count']
-                local = f'{count} Kanäle · {status}' if count is not None else status
+                local = f'{count} Kanäle' if count is not None else status
+                if count is not None and (row['id'] == 'agent' or row['local_code'] != 'READY'):
+                    local += ' · ' + status
                 labels.append(row['name'] + ' · lokal: ' + local)
             choice=select(xbmcgui.Dialog(),'EPG-Anbieter wählen',labels,default='database')
             if not 0<=choice<len(rows):
@@ -327,7 +329,7 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
             self._saved_refresh_error474('MAPPING_UI_REFRESH_FAILED')
             return
         self.getControl(103).setText('EPG-Zuordnung gespeichert und geprüft.')
-        try:xbmcgui.Dialog().notification('XCMate','EPG-Zuordnung gespeichert und geprüft.',time=3000)
+        try:xbmcgui.Dialog().notification('XCMate','Gespeichert und geprüft.',time=3000)
         except RuntimeError:pass
         self.close()
 

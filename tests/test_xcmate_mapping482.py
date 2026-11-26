@@ -291,7 +291,7 @@ class Mapping482(unittest.TestCase):
             self.d._choose_source();self.pump()
         labels = choose.call_args.args[2]
         self.assertTrue(all('Datenbank belegt' in label for label in labels if 'Agent' not in label))
-        self.assertTrue(any('Agent' in label and 'Index nicht verfügbar' in label for label in labels))
+        self.assertTrue(any('Agent' in label and 'kein Index' in label for label in labels))
 
     def test_missing_names_require_explicit_cold_load_and_keep_preview_in_ram(self):
         self.d.query='Kabel1HD';calls=[]
