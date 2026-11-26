@@ -5,9 +5,11 @@ from pathlib import Path
 import sys
 import time
 import traceback
+from types import SimpleNamespace
 
 import xbmc
 import xbmcaddon
+import xbmcgui
 
 from PIL import Image, ImageChops, ImageStat
 
@@ -36,6 +38,88 @@ def capture(name):
         except OSError:
             xbmc.sleep(100)
     raise RuntimeError('SCREENSHOT_UNAVAILABLE')
+
+
+def paint_difference(before, after, rect):
+    scale = (after.width / 1280, after.height / 720)
+    region = tuple(round(value * scale[index % 2]) for index, value in enumerate(rect))
+    diff = ImageChops.difference(before.crop(region), after.crop(region))
+    return round(sum(ImageStat.Stat(diff).mean) / 3, 3)
+
+
+def check_surface(name, control, before, rect, paint):
+    deadline = time.monotonic() + 8
+    while time.monotonic() < deadline:
+        paint()
+        if control.isVisible():
+            break
+        xbmc.sleep(125)
+    require(control.isVisible(), name + '_IMAGE_NOT_VISIBLE')
+    xbmc.sleep(650)
+    screen = capture(name)
+    difference = paint_difference(before, screen, rect)
+    require(difference > 4, name + '_PIXELS_UNCHANGED')
+    return dict(status='PASS', difference=difference, resolution=[screen.width, screen.height])
+
+
+def live_surfaces(media, portal, channel, info, event):
+    from guide_grid_window import GuideGridWindow
+    from infobar45 import InfoBar
+    from mini_epg import MiniProgramme
+
+    row = SimpleNamespace(name=channel['name'], extra=dict(channel, stream_id=channel['sid']))
+    info = dict(info, events=[event], programme_events=[event])
+    results = {}
+    receipt['live_surfaces'] = results
+
+    class SurfaceOwner(xbmcgui.WindowDialog):
+        pass
+
+    owner = SurfaceOwner()
+    bar = InfoBar(owner, str(media), 1280, 720)
+    owner.addControls(bar.controls + bar.technology.controls + [bar.programme_image])
+    owner.show()
+    try:
+        bar.render(channel['name'], str(media / 'tv.png'), info, {})
+        bar.render_programme(portal, None, {})
+        xbmc.sleep(450)
+        results['infobar'] = check_surface('infobar', bar.programme_image, capture('infobar-before'),
+                                           (1065,331,1230,415), lambda: bar.render_programme(portal, row, info))
+    finally:
+        owner.close()
+
+    owner = SurfaceOwner()
+    owner._width, owner._height, owner._media = 1280, 720, str(media)
+    owner.portal, owner._highlight, owner.visible_channels = portal, {'channels':0}, [row]
+    owner._guide = {channel['sid']: info}
+    mini = MiniProgramme(owner)
+    owner.show()
+    try:
+        mini.render()
+        mini.preview67.hide()
+        xbmc.sleep(450)
+        results['mini'] = check_surface('mini', mini.preview67.image, capture('mini-before'),
+                                        (910,133,1215,283), mini.render)
+        mini.preview67.hide()
+    finally:
+        owner.close()
+
+    grid = GuideGridWindow('XCMateGuideGrid.xml', str(root), 'Default', '720p')
+    grid.configure(SimpleNamespace(), portal)
+    # Supply the already read and verified viewport. Kodi still constructs,
+    # selects, lays out and renders its actual guide controls and preview.
+    grid._initial_load = lambda: None
+    grid.show()
+    try:
+        grid.rows = [dict(channel=channel, events=[event], mapping='MANUAL', epg_id=channel['epg_channel_id'])]
+        grid.total = 1
+        grid._render()
+        grid._preview67.hide()
+        xbmc.sleep(450)
+        results['guide'] = check_surface('guide', grid._preview67.image, capture('guide-before'),
+                                         (940,532,1225,675), grid._focus_cell)
+    finally:
+        grid.close()
 
 
 def run():
@@ -125,21 +209,17 @@ def run():
         view.pump()
         xbmc.sleep(1800)
         after = capture('details')
-        def compare(region):
-            diff = ImageChops.difference(before.crop(region), after.crop(region))
-            return round(sum(ImageStat.Stat(diff).mean)/3, 3)
-        dims = (after.width / 1280, after.height / 720)
-        expand = lambda rect: tuple(round(value * dims[i % 2]) for i, value in enumerate(rect))
-        backdrop = expand((635,68,955,109))
-        portrait = expand((1010,85,1120,265))
-        receipt['pixels'] = dict(backdrop_difference=compare(backdrop), poster_difference=compare(portrait),
+        backdrop = paint_difference(before, after, (635,68,955,109))
+        portrait = paint_difference(before, after, (1010,85,1120,265))
+        receipt['pixels'] = dict(backdrop_difference=backdrop, poster_difference=portrait,
                                  backdrop_visible=view.getControl(110).isVisible(), poster_visible=view.getControl(114).isVisible(),
                                  resolution=[after.width,after.height])
         require(receipt['pixels']['backdrop_difference'] > 4 and receipt['pixels']['poster_difference'] > 8,
                 'IMAGE_PIXELS_NOT_CHANGED')
         require(all(receipt['pixels'][key] for key in ('backdrop_visible','poster_visible')), 'IMAGE_CONTROL_HIDDEN')
-        receipt['status'] = 'PASS'
         view.close()
+        live_surfaces(root / 'resources/media', portal, channel, info, event)
+        receipt['status'] = 'PASS'
     finally:
         time.time = wall
 
