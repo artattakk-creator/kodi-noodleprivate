@@ -73,6 +73,10 @@ def build(original):
     verify(result)
     return __import__('widget_skin90').upgrade(__import__('widget_skin88').upgrade(__import__('widget_skin87').upgrade(result)))
 
+def build103(original):
+    from widget_skin103 import MARKER, VARIABLES, upgrade
+    return upgrade(original if MARKER in original[VARIABLES] else build(original))
+
 def verify(files):
     roots={name:parse(files[name]) for name in FILES}
     registry=roots[FILES[5]];definitions={n.get('name') for n in registry.findall('variable')}
@@ -97,7 +101,9 @@ def verify(files):
 
 def installed(skin):
     try:
+        from widget_skin103 import MARKER, VARIABLES, upgrade
         files88={name:read(Path(skin)/name) for name in FILES};verify(files88)
+        if MARKER in files88[VARIABLES]:return upgrade(files88)==files88
         if __import__('widget_skin88').previous_owned(skin):return False
         if not __import__('widget_skin90').verify(files88):return False
         return True
@@ -123,8 +129,10 @@ def runtime():
         window=xbmcgui.Window(10000)
         if xbmc.getInfoLabel('Control.GetLabel(296780)')!=READY:return dict(code='VARIABLES_NOT_LOADED')
         from home_runtime77 import control
-        for ident in (296301,296302,296751,296780,296781,296782):control(window,ident)
-        return dict(code='RUNTIME_READY',controls=6,variables=True)
+        ids=(296301,296302,296751,296780,296781,296782)
+        if xbmc.getInfoLabel('$VAR[XCMate103.Contract]')=='READY':ids+=(296903,)
+        for ident in ids:control(window,ident)
+        return dict(code='RUNTIME_READY',controls=len(ids),variables=True)
     except (AttributeError,RuntimeError,ValueError):return dict(code='RENDER_CONTROLS_NOT_LOADED')
 
 def prepare(skin):

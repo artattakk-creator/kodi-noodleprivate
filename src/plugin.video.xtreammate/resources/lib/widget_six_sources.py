@@ -88,6 +88,8 @@ def discover(profile,pid,enabled=lambda addon:False,reload_value=lambda name:'xc
  roots=[(key,values) for key,values in groups.items() if set(values)=={'live','vod','series'}]
  result={'root':roots[0][0] if len(roots)==1 else None,'code':'READY' if len(roots)==1 else 'OWN_HOME_AMBIGUOUS' if roots else 'OWN_HOME_MISSING','sources':{}}
  for kind,title,cid,target in EXTRAS:
+  addon=AUDIO if kind=='mp3' else HELPER
+  addon_version=version(addon) if kind=='mp3' else ''
   choices=[]
   for record in rows:
    try:choices.append(uri(record['path'],kind))
@@ -95,9 +97,11 @@ def discover(profile,pid,enabled=lambda addon:False,reload_value=lambda name:'xc
   if kind=='mp3' and not choices:
    value=menu_audio(profile)
    if value:choices.append(value)
-  choices=list(dict.fromkeys(choices));addon=AUDIO if kind=='mp3' else HELPER
+   elif addon_version==AUDIO_ALBUM_VERSION:
+    choices.append('plugin://'+AUDIO+AUDIO_NEW_ALBUMS)
+  choices=list(dict.fromkeys(choices))
   code='SOURCE_NOT_CONFIGURED' if not choices else 'SOURCE_AMBIGUOUS' if len(choices)>1 else 'SOURCE_UNAVAILABLE' if not enabled(addon) else 'WAITING'
-  resolved=runtime_uri(choices[0],kind,reload_value,version=version(addon) if kind=='mp3' else '') if len(choices)==1 else ''
+  resolved=runtime_uri(choices[0],kind,reload_value,version=addon_version) if len(choices)==1 else ''
   result['sources'][kind]={'kind':kind,'title':title,'cid':cid,'target':target,'code':code,'uri':resolved if code=='WAITING' else '',
    'source_hash':hashlib.sha256(resolved.encode()).hexdigest() if len(choices)==1 else '', 'addon':addon}
  return result

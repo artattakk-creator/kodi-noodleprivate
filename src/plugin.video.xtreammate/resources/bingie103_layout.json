@@ -1,0 +1,38 @@
+{
+  "XCMate50.Hero": {
+    "before": "8c9623f52b85b0a88bce71dfb74a3295b59fd3164328e8b65c56471130faa601",
+    "after": "9beb7b0c1d8f3786ce6aeb0307c65a37dc5ef94008dfc298297091ca4c4a98f5"
+  },
+  "XCMate75.NativeLiveRow": {
+    "before": "6f8ca09cbf023fc4682f41a66561f2512fe10f8eb3c26f2c3ccdb7168186efd8",
+    "after": "b84e001d8c3677ad018146059aec4d4fba7a37e34ee194160c7bbc16a7372bf7"
+  },
+  "XCMate80.MediaRow": {
+    "before": "a241579612b91e1c0e352e0de9473e8d225cae2ab9351905fab30bcc34b878af",
+    "after": "e8383f14492d758df02e969197661655e78530416b3ec00da6af2b48feaa57dd"
+  },
+  "XCMate.SixRows.Row": {
+    "before": "e5307c7ab032af43aed6012765654bfbb934c5bd4fb078464627d52ec512bb09",
+    "after": "5758f329b225ceb77cced465eb8dc95e812f54c47c58a3c428ecac01e7a5101a"
+  },
+  "XCMate81.PosterRow": {
+    "before": "a3372b8d791f109d11d3271b12f756cc6f11db38a07decdc7ea6db80c5bf5f6c",
+    "after": "9954cc7c33ef13432f3756aa7f0ef161fcdca14a52e6372d0ca2c64f7bea7d85"
+  },
+  "XCMate.SixRows.Cards": {
+    "before": "7805365ffdb0b606b1870c5b77ea8c78db66f872b5fe6de78551119b91a7f908",
+    "after": "cf688d144e5d0e9c93bc973d1753ee6705e2b255d18669e2cf0c03828c013a0c"
+  },
+  "widget_base": {
+    "before": "399a2e6afe450bd78f054c63e242c2645455ce7101ca7d5369b7026561e0d701",
+    "after": "950f98231e8afc6e45a19f7f1de0febc874a1c9cb18a96e172ec5104797afc2c"
+  },
+  "Fixed_Focus_Navigation": {
+    "before": "7b1b4e81b8d4af941a99e1f49245d0bd54c9c2671aff7505e1b431d859e5d1e6",
+    "after": "e2a272b933a0c438c32b92913508031a20f0817651100c81d58bfd571b74a734"
+  },
+  "77777": {
+    "before": "572903fd97f2715693ab1199691ac7d1aade4d329e4b7825c4bd3526751b193c",
+    "after": "4fe5a88db98734f5bb973507ada7c7997b660021073aa2d09c6163c6f8f130f3"
+  }
+}
