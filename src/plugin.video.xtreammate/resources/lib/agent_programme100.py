@@ -2,26 +2,38 @@
 
 SOURCES = {'agent_tmdb': 'tmdb', 'agent_tvmaze': 'tvmaze', 'agent_xmltv': 'xmltv'}
 VIEW_ROLE = {'hero': 'backdrop', 'details': 'episode_still', 'card': 'poster'}
-ROLE_ORDER = (*VIEW_ROLE.values(), 'legacy_icon', 'thumb')
+VIEW_ROLES = {
+    'hero': ('backdrop', 'legacy_icon'),
+    'details': ('episode_still', 'backdrop', 'poster', 'legacy_icon'),
+    'card': ('poster', 'legacy_icon'),
+}
+ROLE_ORDER = ('backdrop', 'episode_still', 'poster', 'legacy_icon')
 PERSON_ROLES = ('person', 'character')
 PERSON_VIEWS = ('person1', 'person2')
 
 
-def allowed(source):
+def pictures_enabled():
     from utils import setting_bool
     from epg_handoff63 import profile_scope
     import xbmcgui
 
-    if not setting_bool('epg_agent_enabled', False):
+    return (setting_bool('epg_agent_enabled', False) and
+            xbmcgui.Window(10000).getProperty('XCMate.Agent103.Variant.' + profile_scope()) in ('', 'artwork'))
+
+
+def allowed(source):
+    from epg_handoff63 import profile_scope
+    from utils import setting_bool
+    import xbmcgui
+
+    if source not in SOURCES or not pictures_enabled():
         return False
     if xbmcgui.Window(10000).getProperty('XCMate.Storage92.Disabled.' + profile_scope()) == 'true':
         return False
-    if source == 'agent_tmdb':
-        return (setting_bool('programme_tmdb46', False) and setting_bool('tmdb_research43', False)
-                and not setting_bool('programme_tmdb_optout77', False))
-    if source == 'agent_tvmaze':
-        return setting_bool('programme_tvmaze67', False) and not setting_bool('programme_tvmaze_optout77', False)
-    return source == 'agent_xmltv' and setting_bool('programme_xmltv96', True)
+    # Honour older explicit per-supplier opt-outs. The API enable flags and
+    # token store are independent of references that the feed already contains.
+    provider = SOURCES[source]
+    return provider == 'xmltv' or not setting_bool('programme_' + provider + '_optout77', False)
 
 
 def view(event):
@@ -48,13 +60,30 @@ def fits(value, requested):
                     and value.get('role81') in PERSON_ROLES and value.get('decoded88') is True))
     if value and value.get('role81') in PERSON_ROLES:
         return False
-    if not value or manual(value) or value.get('source') not in SOURCES:
+    if not value or value.get('source') in (None, '', 'placeholder'):
         return True
-    return value.get('role81') in (VIEW_ROLE[requested], 'legacy_icon')
+    role = value.get('role81')
+    if manual(value):
+        return role not in ('poster', 'episode_still') if requested == 'hero' else (
+            role == 'poster' if requested == 'card' else True)
+    if value.get('source') not in SOURCES:
+        return True
+    if role not in VIEW_ROLES[requested]:
+        return False
+    if role == 'legacy_icon' and requested == 'hero':
+        return image_shape('backdrop', {'decoded77': value.get('decoded77'),
+                           'width': value.get('image_width77'), 'height': value.get('image_height77')})
+    return True
 
 
 def selected(value, requested):
     return requested in VIEW_ROLE and value.get('role81') == VIEW_ROLE[requested]
+
+
+def role_priority(value, requested):
+    roles = VIEW_ROLES.get(requested, ())
+    role = value.get('role81')
+    return (roles.index(role), not manual(value)) if role in roles else None
 
 
 def image_shape(role, checked):
@@ -122,7 +151,7 @@ def candidates(event, requested=None):
     if requested in PERSON_VIEWS:
         index = PERSON_VIEWS.index(requested)
         return person_candidates(event)[index:index + 1]
-    roles = (VIEW_ROLE[requested], 'legacy_icon') if requested else ROLE_ORDER
+    roles = VIEW_ROLES[requested] if requested else ROLE_ORDER
     return _candidates(event, roles)
 
 
@@ -145,8 +174,6 @@ def person_candidates(event):
 
 
 def _candidates(event, roles):
-    from urllib.parse import urlsplit
-
     raw = event.get('agent_art')
     if not isinstance(raw, dict):
         return []
@@ -167,15 +194,32 @@ def _candidates(event, roles):
                     or not allowed(source) or row.get('match') != 'EXACT_EVENT'
                     or not isinstance(uri, str) or len(uri) > 2048 or uri in seen):
                 continue
-            try:
-                parsed = urlsplit(uri)
-                if parsed.scheme != 'https' or not parsed.hostname or parsed.port not in (None, 443) or (
-                        parsed.username is not None or parsed.password is not None or '?' in uri or '#' in uri):
-                    continue
-            except ValueError:
+            verified = validate_url(uri, source, qualified=bool(event.get('canonical')))
+            if not verified or verified['source'] != source:
                 continue
             seen.add(uri)
-            credit = row.get('attribution')
             result.append(dict(source=source, match='EXACT_EVENT', role81=role, url=uri,
-                               attribution=credit[:500] if isinstance(credit, str) else 'XCMate EPG Agent'))
+                               attribution=row.get('attribution', verified['attribution'])[:500]
+                               if isinstance(row.get('attribution'), str) else verified['attribution']))
     return result
+
+
+
+def validate_url(uri, source, *, qualified=False):
+    from urllib.parse import urlsplit
+    from epg_agent100_art import validator
+
+    provider = SOURCES.get(source)
+    if not provider or not isinstance(uri, str) or '?' in uri or '#' in uri:
+        return None
+    checked = validator()(uri, provider)
+    if not checked and qualified and provider == 'xmltv':
+        # For an exact stored programme origin the worker still requires
+        # programme_origin75's credential checks, pinned DNS and decode.
+        try:
+            host = urlsplit(uri).hostname
+            if host and '.' in host and not host.endswith('.test'):
+                checked = validator({host})(uri, provider)
+        except (TypeError, ValueError):
+            pass
+    return checked

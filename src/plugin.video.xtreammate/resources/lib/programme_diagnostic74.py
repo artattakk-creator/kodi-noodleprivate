@@ -7,7 +7,8 @@ def check(cancel=lambda:False):
     migration77=ensure(force=True)
     gates=settings();result=dict(gates=gates,migration77=migration77)
     from tmdb_connection60 import test_connection
-    result['tmdb']=test_connection(cancel)
+    try:result['tmdb']=test_connection(cancel)
+    except (OSError, RuntimeError):result['tmdb']='API_PROBE_FAILED'
     if not gates['tvmaze']:result['tvmaze']='DISABLED'
     elif cancel():result['tvmaze']='CANCELLED'
     else:
@@ -16,14 +17,19 @@ def check(cancel=lambda:False):
             value=get('https://api.tvmaze.com/shows/1',api=True,cancel=cancel)
             result['tvmaze']='TVMAZE_OK' if value.get('id')==1 else 'INVALID_RESPONSE'
         except SourceError as error:result['tvmaze']=error.code
-    result['image']=active_image(cancel)
+        except (ValueError, TypeError, AttributeError):result['tvmaze']='INVALID_RESPONSE'
+        except (OSError, RuntimeError):result['tvmaze']='API_PROBE_FAILED'
+    try:result['image']=active_image(cancel)
+    except (OSError, RuntimeError, ValueError, TypeError, AttributeError):result['image']='IMAGE_PROBE_FAILED'
     from widget_skin77 import inspect as skin77
-    result['skin77']=skin77()
+    try:result['skin77']=skin77()
+    except (OSError, RuntimeError, ValueError, TypeError, AttributeError):result['skin77']={'code':'SKIN_PROBE_FAILED'}
     import xbmcgui,json
     try:result['render77']=json.loads(xbmcgui.Window(10000).getProperty('XCMate.Home77.Render') or '{}')
     except (ValueError,TypeError):result['render77']={}
     from kodi_schema75 import inspect
-    result['kodi_library']=inspect()
+    try:result['kodi_library']=inspect()
+    except (OSError, RuntimeError, ValueError, TypeError, AttributeError):result['kodi_library']={'code':'LIBRARY_PROBE_FAILED'}
     return result
 
 def active_image(cancel=lambda:False):
@@ -54,7 +60,7 @@ def show():
     values=[];cancelled=threading.Event()
     def worker():
         try:values.append(check(cancelled.is_set))
-        except Exception:values.append(dict(tmdb='UNAVAILABLE',tvmaze='UNAVAILABLE',gates={}))
+        except Exception:values.append(dict(tmdb='NOT_TESTED',tvmaze='NOT_TESTED',image='DIAGNOSTIC_FAILED',gates={}))
     threading.Thread(target=worker,name='XCMate-picture-test74',daemon=True).start()
     started=time.monotonic();monitor=xbmc.Monitor()
     try:
@@ -63,7 +69,7 @@ def show():
     finally:progress.close();cancelled.set()
     result=values[0] if values else dict(tmdb='TIMEOUT',tvmaze='TIMEOUT',gates={})
     gates=result['gates']
-    text='TMDB: '+result['tmdb']+'\nTVMaze: '+result['tvmaze']+'\n'+tr(38106,result.get('image','NOT_TESTED'))+'\n\n'
+    text='TMDB API: '+result['tmdb']+'\nTVMaze API: '+result['tvmaze']+'\n'+tr(38106,result.get('image','NOT_TESTED'))+'\n\n'
     text+=tr(38102,tr(38103 if gates.get('own') else 38104),tr(38103 if gates.get('tvmaze') else 38104))
     text+='\n'+tr(38105)
     library=result.get('kodi_library',{})

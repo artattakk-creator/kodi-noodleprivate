@@ -26,13 +26,14 @@ def publish(enabled,code=None):
 
 def images_enabled():
     # Worker/startup only. Focus callbacks use the scoped availability flag.
+    from agent_programme100 import pictures_enabled
     from artwork_sources96 import enabled, health, token_valid
     from media_sources43 import SourceError
 
     code = health()
     try:
         active = code in ('READY', 'NOT_CREATED') and (
-            enabled('xmltv') or enabled('tvmaze') or
+            pictures_enabled() or enabled('xmltv') or enabled('tvmaze') or
             (enabled('tmdb') and token_valid())
         )
     except SourceError as exc:

@@ -67,25 +67,25 @@
    <texture colordiffuse="FFFFC46C">special://home/addons/plugin.video.xtreammate/resources/media/programme46/track.png</texture>
   </control>
   <control type="image" id="128">
-   <left>82</left><top>287</top><width>300</width><height>29</height>
+   <left>82</left><top>287</top><width>518</width><height>29</height>
    <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
   </control>
   <control type="label" id="106">
-   <left>94</left><top>287</top><width>278</width><height>29</height>
+   <left>94</left><top>287</top><width>496</width><height>29</height>
    <font>font12</font>
    <textcolor>FFE4C17B</textcolor>
   </control>
   <control type="image" id="129">
-   <left>405</left><top>287</top><width>234</width><height>29</height>
+   <left>618</left><top>287</top><width>234</width><height>29</height>
    <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
   </control>
   <control type="image" id="130">
-   <left>419</left><top>292</top><width>56</width><height>19</height>
+   <left>632</left><top>292</top><width>56</width><height>19</height>
    <aspectratio>keep</aspectratio>
    <texture>special://home/addons/plugin.video.xtreammate/resources/media/tmdb60/tmdb.png</texture>
   </control>
   <control type="label" id="108">
-   <left>482</left><top>287</top><width>150</width><height>29</height>
+   <left>695</left><top>287</top><width>150</width><height>29</height>
    <font>font12</font>
    <textcolor>FFE4C17B</textcolor>
   </control>
@@ -362,11 +362,15 @@
    <font>font12</font>
    <textcolor>FFBBC8D6</textcolor>
   </control>
+  <control type="label" id="147">
+   <left>82</left><top>321</top><width>845</width><height>27</height>
+   <font>font12</font><textcolor>FFFFC46C</textcolor>
+  </control>
   <control type="label" id="104">
    <visible>false</visible>
   </control>
   <control type="button" id="501">
-   <left>58</left><top>637</top><width>214</width><height>47</height>
+   <left>58</left><top>637</top><width>187</width><height>47</height>
    <font>font13</font>
    <textoffsetx>42</textoffsetx>
    <textcolor>FFFFFFFF</textcolor>
@@ -383,7 +387,7 @@
    <texture />
   </control>
   <control type="button" id="502">
-   <left>291</left><top>637</top><width>260</width><height>47</height>
+   <left>259</left><top>637</top><width>214</width><height>47</height>
    <font>font13</font>
    <textoffsetx>18</textoffsetx>
    <textcolor>FFFFFFFF</textcolor>
@@ -396,7 +400,7 @@
    <ondown>502</ondown>
   </control>
   <control type="button" id="503">
-   <left>570</left><top>637</top><width>260</width><height>47</height>
+   <left>486</left><top>637</top><width>214</width><height>47</height>
    <font>font13</font>
    <textoffsetx>18</textoffsetx>
    <textcolor>FFFFFFFF</textcolor>
@@ -409,7 +413,7 @@
    <ondown>503</ondown>
   </control>
   <control type="button" id="504">
-   <left>852</left><top>637</top><width>356</width><height>47</height>
+   <left>719</left><top>637</top><width>267</width><height>47</height>
    <font>font13</font>
    <textoffsetx>18</textoffsetx>
    <textcolor>FFFFFFFF</textcolor>
@@ -418,6 +422,14 @@
    <onright>501</onright>
    <onup>504</onup>
    <ondown>504</ondown>
+   <texturefocus colordiffuse="FFDFBC70">special://home/addons/plugin.video.xtreammate/resources/media/programme46/track.png</texturefocus>
+   <texturenofocus border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texturenofocus>
+  </control>
+  <control type="button" id="505">
+   <left>999</left><top>637</top><width>209</width><height>47</height>
+   <font>font13</font><textoffsetx>18</textoffsetx>
+   <textcolor>FFFFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+   <onleft>504</onleft><onright>501</onright><onup>505</onup><ondown>505</ondown>
    <texturefocus colordiffuse="FFDFBC70">special://home/addons/plugin.video.xtreammate/resources/media/programme46/track.png</texturefocus>
    <texturenofocus border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texturenofocus>
   </control>

@@ -39,9 +39,11 @@ def timeline(event,now=None):
  now=time.time() if now is None else now;start=event.get('start',0);stop=event.get('stop',0)
  if not 0<start<stop:return '',0
  times=time.strftime('%H:%M',time.localtime(start))+'–'+time.strftime('%H:%M',time.localtime(stop))
- minutes=max(0,math.ceil((stop-now)/60));duration=max(1,math.ceil((stop-start)/60))
+ minutes=max(0,math.ceil((stop-now)/60))
+ total,seconds=divmod(int(stop-start),60)
+ duration=f'{total}:{seconds:02d}' if seconds else str(total)
  state='beginnt in '+str(max(0,math.ceil((start-now)/60)))+' Min.' if now<start else 'beendet' if now>=stop else 'noch '+str(minutes)+' Min.'
- return times+' · '+str(duration)+' Min. · '+state,max(0,min(100,(now-start)*100/(stop-start)))
+ return times+' · '+duration+' Min. · '+state,max(0,min(100,(now-start)*100/(stop-start)))
 def tmdb_source(source):
  return str(source).startswith('tmdb') or source=='agent_tmdb'
 

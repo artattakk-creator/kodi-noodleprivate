@@ -43,7 +43,13 @@ def choose(event,value,previous,check_file=False):
   if not check_file or file_valid(value):
    if positive(event,previous) and (not check_file or file_valid(previous)):
     import agent_programme100 as roles499
-    if previous.get('role81')=='legacy_icon' and not roles499.manual(previous) and roles499.selected(value,roles499.view(event)):
+    view=roles499.view(event)
+    if roles499.typed(event) and (value.get('source') in roles499.SOURCES or previous.get('source') in roles499.SOURCES):
+     current=roles499.role_priority(value,view)
+     prior=roles499.role_priority(previous,view)
+     if current is not None and prior is not None and current!=prior:
+      return value if current<prior else previous
+    if previous.get('role81')=='legacy_icon' and not roles499.manual(previous) and roles499.selected(value,view):
      return value
     return __import__('event_art81').select(value,previous)
    return value

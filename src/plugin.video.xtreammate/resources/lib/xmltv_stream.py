@@ -172,6 +172,8 @@ def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None,pr
                         record.setdefault('icons',[]).append(icon)
             elif tag=='image' and direct and stack[1]=='programme' and (include_images or strict_images):
                 picture=picture_start(tag,attributes)
+            if tag=='actor' and stack[1:]==['programme','credits','actor']:
+                record['_actor_role']=attributes.get('role','').strip()[:96]
             if tag=='episode-num' and direct:record['_episode_system']=attributes.get('system','').casefold()
             if tag=='title' and direct and 'title' not in record:
                 language=attributes.get('lang','').casefold()
@@ -216,7 +218,13 @@ def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None,pr
                 score=_TMDB_SCORE.fullmatch(value)
                 if score:unambiguous('xmltv_tmdb_score',float(score.group(1)))
             if tag=='director' and value and len(record.setdefault('director',[]))<8:record['director'].append(value[:120])
-            if tag=='actor' and value and len(record.setdefault('cast',[]))<24:record['cast'].append(value[:120])
+            if tag=='actor':
+                role=record.pop('_actor_role','')
+                if value and len(record.setdefault('cast',[]))<24:
+                    actor=value[:120];record['cast'].append(actor)
+                    if role:
+                        roles=record.setdefault('cast_roles',{})
+                        roles[actor]=role if actor not in roles or roles[actor]==role else ''
             if tag=='episode-num' and stack[-2:]==['programme','episode-num']:
                 if record.get('_episode_system')=='onscreen': record['episode']=value[:128]
                 elif record.get('_episode_system')=='tmdb' and TMDB_WORK_ID.fullmatch(value):
@@ -250,7 +258,7 @@ def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None,pr
                             season=record.get('season'),episode_number=record.get('episode_number'))
                         if include_icons:event['icons']=record.get('icons',[])
                         if include_images:event['images']=record.get('images',[])
-                        for key in ('country','language','xmltv_title_lang','xmltv_tmdb_id'):
+                        for key in ('country','language','cast_roles','xmltv_title_lang','xmltv_tmdb_id'):
                             if record.get(key):event[key]=record[key]
                         if event.get('xmltv_tmdb_id') and record.get('xmltv_tmdb_score'):
                             event['xmltv_tmdb_score']=record['xmltv_tmdb_score']

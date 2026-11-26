@@ -20,7 +20,8 @@ def hosts():
     from utils import setting
     values={'image.tmdb.org'}
     from utils import setting_bool
-    if setting_bool('programme_tvmaze67',False):values.add('static.tvmaze.com')
+    if setting_bool('programme_tvmaze67',False) or __import__('agent_programme100').pictures_enabled():
+        values.add('static.tvmaze.com')
     for host in str(setting('programme_image_hosts55','')).lower().split(',')[:20]:
         host=host.strip()
         if re.fullmatch(r'[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?',host) and '.' in host:
@@ -217,15 +218,15 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             if exc96.code not in ('SQLITE_BUSY','EPG_READ_BUDGET'):raise
             # Short DB contention does not revoke the last confirmed image.
     held89=None if invalid_manual96 else __import__('programme_lock89').current(event,worker=True)
-    if held89 and roles499.manual(held89):return held89
+    if held89 and roles499.manual(held89) and roles499.fits(held89,view499):return held89
     local86=__import__('work_requests86').local_result(event)
-    if local86:return local86
-    if typed499 and not mapping86:
+    if local86 and roles499.fits(local86,view499):return local86
+    if typed499:
         role499=roles499.read(event,view499)
-        if role499:return role499
-    if held89 and (usable86(held89) or not typed499):return held89
+        if role499 and (not mapping86 or roles499.manual(role499)):return role499
+    if held89 and usable86(held89):return held89
     external89=None if invalid_manual96 else __import__('external_art89').recover_programme(event)
-    if external89 and (usable86(external89) or not typed499):return external89
+    if external89 and usable86(external89):return external89
     temp85=None if invalid_manual96 else __import__('artwork_temp85').lookup(event)
     retain86(temp85)
     if temp85 and usable86(temp85):
@@ -313,24 +314,28 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         mapping85=__import__('programme_mapping85').current(event)
         if mapping85 and mapping85.get('hidden'):return
         if mapping85 and mapping85.get('id'):
-            if mapping85.get('source')=='xmltv_event':
+            if mapping85.get('source')=='agent_event103':
+                choices=list(__import__('agent_work103').choices(event,mapping85,view499))
+                for role in roles499.VIEW_ROLES[view499]:
+                    yield from (item for item in choices if item['role81']==role)
+                    yield from (item for item in agent100 if item['role81']==role)
+                yield from (c for c in candidates if c.get('match')=='EXACT_EVENT')
+                return
+            elif mapping85.get('source')=='xmltv_event':
                 chosen96=__import__('xmltv_art96').mapped(event,mapping85,cancel)
                 if chosen96:yield chosen96
             elif mapping85.get('source') in ('tmdb','tvmaze') and __import__('programme_candidates85').enabled(mapping85['source']) and allow_lookup:
                 try:manual85=__import__('programme_candidates85').candidate(event,cancel)
                 except (SourceError,HelperError) as error85:
                     failed(error85.code);manual85=None
-                if manual85:yield manual85
+                if manual85 and roles499.fits(manual85,view499):yield manual85
             # Optional remote permission and local exact-event XMLTV fallback
             # are separate. A disabled/failed TMDB mapping cannot erase it.
             yield from agent100
             yield from (c for c in candidates if c.get('source') in ('xmltv_event','provider_event') and c.get('match')=='EXACT_EVENT')
             return
-        # The same verified event can have different images for different
-        # views. Missing roles descend to the feed icon, then the UI fallback.
-        if typed499:
-            exact_role=roles499.VIEW_ROLE[view499]
-            yield from (candidate for candidate in agent100 if candidate.get('role81')==exact_role)
+        # The exact event can supply a different verified role to each view.
+        yield from agent100
         reference84=__import__('programme_reference84').get(event)
         if reference84 and reference84.get('candidate'):
             if home86:candidates.append(dict(reference84['candidate']))
@@ -360,7 +365,6 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         else:
             yield from own81
         if not allow_lookup:
-            if typed499:yield from (candidate for candidate in agent100 if candidate.get('role81')=='legacy_icon')
             yield from candidates
             return
         from programme_outcomes70 import add as outcome70
@@ -396,7 +400,6 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
                 fallback_sources.append((find,source70))
         for found in deferred:  # generic series art never masks an exact still
             yield from alternatives(found)
-        if typed499:yield from (candidate for candidate in agent100 if candidate.get('role81')=='legacy_icon')
         yield from candidates
         deferred=[]
         for find,source70 in fallback_sources:
@@ -442,7 +445,8 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             grant75(url)
             if isinstance(verified77,dict) and verified77.get('url'):
                 url=verified77['url'];grant75(url)
-        typed_choice499=typed499 and not roles499.manual(candidate)
+        agent_choice499=candidate.get('source') in roles499.SOURCES
+        typed_choice499=agent_choice499 or typed499 and not roles499.manual(candidate)
         if not typed_choice499 and (local_image63 or not url_mode69 and candidate.get('source') in ('tmdb_movie','tmdb_episode','tmdb_series')):
             from programme_art46 import prepare as materialize60
             return materialize60(event,cancel=cancel,resolved60=dict(candidate,_local_only63=True) if local_image63 else candidate)
@@ -455,9 +459,14 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         except SourceError as exc:value['code']=exc.code;continue
         if cancel():return None
         role=candidate.get('role81')
-        if typed_choice499 and (role not in (roles499.VIEW_ROLE[view499],'legacy_icon') or
-                                not roles499.image_shape(role,verified77)):
-            failed('HERO_QUALITY_REJECTED');continue
+        if typed_choice499:
+            shape = 'backdrop' if role == 'legacy_icon' and view499 == 'hero' else role
+            if role not in roles499.VIEW_ROLES[view499] or not roles499.image_shape(shape,verified77):
+                failed('HERO_QUALITY_REJECTED');continue
+        if agent_choice499:
+            verified_source = roles499.validate_url(url, candidate['source'], qualified=bool(event.get('canonical')))
+            if not verified_source or not safe(url) or _contains_credentials(event,url):
+                failed('BLOCKED_IMAGE_HOST_OR_URL');continue
         if home86:
             quality86=dict(candidate,image_width77=(verified77 or {}).get('width',0),image_height77=(verified77 or {}).get('height',0))
             if not __import__('hero_art86').classify(quality86):

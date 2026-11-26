@@ -70,7 +70,13 @@ def metadata(event):
  if isinstance(director,str) and director.strip():result['director']=director[:512]
  elif isinstance(director,list):result['director']=' / '.join(str(v)[:120] for v in director[:8] if isinstance(v,str))
  cast=event.get('cast')
- if isinstance(cast,list) and any(isinstance(v,str) and v.strip() for v in cast):result['cast']=[v[:120] for v in cast[:24] if isinstance(v,str) and v.strip()]
+ if isinstance(cast,list) and any(isinstance(v,str) and v.strip() for v in cast):
+  result['cast']=[v[:120] for v in cast[:24] if isinstance(v,str) and v.strip()]
+  roles=event.get('cast_roles')
+  if isinstance(roles,dict):
+   known={name:roles[name].strip()[:96] for name in result['cast']
+          if isinstance(roles.get(name),str) and roles[name].strip()}
+   if known:result['cast_roles']=known
  return result
 
 def connect(write=False,guide=None):

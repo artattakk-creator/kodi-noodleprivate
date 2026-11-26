@@ -54,6 +54,8 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   self._hero_art={};self._poster_art={};self._next_art_intent=0
   self._detail_view_event={};self._extra_page=False;self._reference_images=('','')
   self._person_references=();self._next_person_intent=0
+  self._reference_label='';self._manual_picture_until=0
+  self._picture_status=None
   self._cancel=threading.Event();self._future=None;self.event=None;self._art_signature=None;self._next=0;self._scroll46=0;self._art68={}
  def _gui(self):
   if threading.get_ident()!=self._owner:raise RuntimeError('PROGRAMME_OWNER_THREAD')
@@ -61,13 +63,13 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
  def onInit(self):
   self._gui()
   if self._ready:return
-  for cid in (104,105,107,108,110,114,115,116,120,121,129,130,142,143,144,145,146,1130):
+  for cid in (104,105,107,108,110,114,115,116,120,121,129,130,142,143,144,145,146,147,1130):
    self.getControl(cid).setVisible(False)
   self._shown=True;self._ready=True;self.getControl(501).setLabel(tr(36101));self.getControl(101).setLabel(tr(36100))
   from menu_icons45 import icon
   self.getControl(881).setImage(icon('back',full=True));self.setFocusId(501)
   self._paint_facts(dict(self.selected or {},channel=self.channel.get('name','')))
-  self.getControl(502).setLabel('Sendung merken');self.getControl(503).setLabel('Jetzt umschalten')
+  self.getControl(502).setLabel('Sendung merken');self.getControl(503).setLabel('Jetzt umschalten');self.getControl(505).setLabel('Bilder zuweisen')
   self._start_read85()
  def _start_read85(self):
   if not _slots.acquire(blocking=False):return
@@ -80,6 +82,14 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
      from media_art import local_art,request as request_logos
      value=load(self.portal,self.channel,self.selected)
      value['_source_label100']=source_name(self.portal,value)
+     origins=value.get('field_sources52') or {}
+     if isinstance(origins,dict):
+      labels={}
+      for item in list(origins.values())[:32]:
+       source=item.get('source') if isinstance(item,dict) else None
+       if isinstance(source,str) and len(source)<=160 and source not in labels:
+        labels[source]=source_name(self.portal,dict(title=value.get('title'),source_key46=source))
+      value['_fact_source_names']=labels
      value['_detail93']=True
      if self.selected and self.selected.get('_no_art_request68'):value['_no_art_request68']=True
      logos88=__import__('logo_manifest86').read(self.portal,[self.channel])
@@ -112,7 +122,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   if not episode and event.get('season') and event.get('episode'):
    episode=tr(36103,event['season'],event['episode'])
   label(102,text(episode))
-  facts=' · '.join(text(event[k]) for k in ('year','genre','age_rating','language') if event.get(k))
+  facts=' · '.join(text(event[k]) for k in ('year','genre','country','language','age_rating') if event.get(k))
   label(106,facts)
   self.getControl(128).setVisible(bool(facts))
   source=event.get('_source_label100','')
@@ -140,6 +150,10 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   synopsis=text(event.get('description'))
   cast=event.get('cast')
   names=[text(name).strip() for name in cast if isinstance(name,str) and name.strip()] if isinstance(cast,list) else []
+  roles=event.get('cast_roles')
+  if isinstance(roles,dict):
+   names=[name+' · '+text(roles[name]) if isinstance(roles.get(name),str) and roles[name].strip() else name
+          for name in names]
   channel_id=event.get('canonical')
   if event.get('source_key46')=='agent':
    origins=event.get('field_sources52') or {}
@@ -154,10 +168,26 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   title_language=event.get('xmltv_title_lang')
   metadata_language=not event.get('language') and isinstance(title_language,str) and re.fullmatch(r'[a-z]{2,3}(?:-[a-z0-9]{2,8}){0,3}',title_language)
   if metadata_language:technical.append('Metadaten-Sprache   '+title_language.upper())
+  if event.get('season') or event.get('episode'):
+   technical.append(' · '.join(label+' '+text(event[key]) for key,label in
+                               (('season','Staffel'),('episode','Folge')) if event.get(key)))
   if self._detail_view_event.get('_tmdb_id'):
    technical.append('TMDB-ID   '+str(self._detail_view_event['_tmdb_id']))
   if self._detail_view_event.get('_tmdb_rating'):
    technical.append('Bewertung   '+self._detail_view_event['_tmdb_rating'])
+  origins=event.get('field_sources52') or {}
+  source_names=event.get('_fact_source_names') or {}
+  contributions={}
+  for field,label in (('descr','Handlung'),('subtitle','Folgentitel'),('season','Staffel'),
+                      ('episode','Folge'),('year','Jahr'),('genre','Genre'),('country','Land'),
+                      ('xmltv_date','XMLTV-Datum'),('xmltv_title_lang','Metadaten-Sprache'),
+                      ('language','Sprache'),('cast','Mitwirkende'),('director','Regie'),
+                      ('xmltv_tmdb_score','Bewertung'),('agent_art','Bildreferenzen')):
+   item=origins.get(field)
+   name=source_names.get(item.get('source')) if isinstance(item,dict) else ''
+   if name and name!=event.get('_source_label100'):
+    contributions.setdefault(name,[]).append(label)
+  technical.extend(text(name)+'   '+', '.join(fields) for name,fields in contributions.items())
   start,stop=(time.localtime(event[key]) if event.get(key) else None
               for key in ('start','stop'))
   exact_day=bool(start and stop and start[:3]==stop[:3])
@@ -190,18 +220,20 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
    if y+23>615:break
    chips.append((name,x,y,width))
    x+=width+7
-  overflow=len(chips)<len(names)
+  overflow=len(chips)<len(names) or any(26+len(name)*10>244 for name in names)
   more=bool(scheduled or backdrop or poster or people or overflow or gaps)
   if not more:
    if self._extra_page:self.setFocusId(501)
    self._extra_page=False
   extra=self._extra_page
   self.getControl(504).setLabel('Zur Übersicht' if extra else
-                               'Bildmaterial und Programm' if scheduled and (backdrop or poster or people) else 'Weitere Details')
+                               'Bilder und Programm' if scheduled and (backdrop or poster or people) else 'Weitere Details')
   self.getControl(504).setVisible(more)
-  back,bookmark,tune,more_button=(self.getControl(cid) for cid in (501,502,503,504))
-  tune.setNavigation(tune,tune,bookmark,more_button if more else back)
-  back.setNavigation(back,back,more_button if more else tune,bookmark)
+  back,bookmark,tune,more_button,artwork=(self.getControl(cid) for cid in (501,502,503,504,505))
+  tune.setNavigation(tune,tune,bookmark,more_button if more else artwork)
+  more_button.setNavigation(more_button,more_button,tune,artwork)
+  artwork.setNavigation(artwork,artwork,more_button if more else tune,back)
+  back.setNavigation(back,back,artwork,bookmark)
 
   show_plot=bool(synopsis) and not extra
   show_cast=bool(names) and not extra
@@ -261,16 +293,17 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   for cid,margin in ((132,0),(134,22),(137,22),(138,36),(144,22)):
    self.getControl(cid).setWidth(schedule_width-2*margin)
   body=self.getControl(134)
-  body_y=highlight_y+40 if selected else 420
+  body_y=highlight_y+37 if selected else 420
   body.setPosition(70,body_y)
-  body.setHeight((546 if gaps else 604)-body_y)
+  body.setHeight((552 if gaps else 604)-body_y)
   body.setText('\n'.join(schedule))
   gap_x=70
-  gap_y=548 if show_schedule else 386
+  gap_y=555 if show_schedule else 386
   gap_width=(schedule_width-44 if show_schedule else 634 if show_images else 1140)
   for cid,dy in ((142,0),(143,26)):
    control=self.getControl(cid)
    control.setPosition(gap_x,gap_y+dy);control.setWidth(gap_width)
+   if cid==143:control.setHeight(30 if show_schedule else 100)
    control.setVisible(extra and bool(gaps))
   self.getControl(143).setText(' · '.join(gaps))
 
@@ -294,7 +327,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
    image.setImage(uri);image.setVisible(show_images and bool(uri))
   caption=self.getControl(145)
   caption.setPosition(image_x+22,580);caption.setWidth(backdrop_width)
-  caption.setLabel('Hintergrundbild / Hero');caption.setVisible(show_images and bool(people and backdrop))
+  caption.setLabel(self._reference_label);caption.setVisible(show_images and bool(backdrop))
   self._paint_person_cards(people,portrait_left,portrait_width)
 
  def _paint_person_cards(self,people,left,width):
@@ -353,8 +386,10 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
  def _advertise_art(event,request):
   request(event,priority=True)
   art=event.get('agent_art') or {}
-  if art.get('backdrop'):request(dict(event,_art_view499='hero'),priority=True)
-  if art.get('poster'):request(dict(event,_art_view499='card'),priority=False)
+  if art.get('backdrop') or art.get('legacy_icon'):
+   request(dict(event,_art_view499='hero'),priority=False)
+  if art.get('poster'):
+   request(dict(event,_art_view499='card'),priority=False)
 
  def _paint_art(self,art,hero,poster):
   from programme_actions88 import rating,tmdb_source,tmdb_id,xmltv_tmdb
@@ -368,10 +403,13 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   poster_image=image(poster,'card')
   detail_image=image(art)
   confirmed=__import__('agent_programme100').manual(art)
-  ready=detail_image if confirmed and art.get('role81')!='poster' else hero_image
-  if not ready and art.get('role81')!='poster':ready=detail_image
+  role=art.get('role81')
+  ready=hero_image
+  if confirmed and role=='backdrop' or not ready and role not in ('poster','episode_still'):
+   ready=detail_image or ready
   cover=poster_image if poster.get('role81')=='poster' else ''
-  if (confirmed or not cover) and art.get('role81')=='poster':cover=detail_image
+  if detail_image and role=='poster' and (confirmed or not cover):cover=detail_image
+  gallery=detail_image if detail_image and role=='episode_still' else ready
   if cover==ready:cover=''
   primary=art if confirmed and detail_image else hero if hero_image else poster if cover and cover==poster_image and not ready else art
   source=primary.get('source','') if ready or cover else ''
@@ -389,10 +427,9 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   art_id=(tmdb_id(primary) or tmdb_id(visible_poster)) if ready or cover else None
   verified_id=feed_id or art_id
   poster_source=(poster if cover==poster_image else art).get('source','') if cover else ''
-  episode_picture=bool(ready and ready==detail_image and (art.get('role81')=='episode_still'
-                       or art.get('image_scope57')=='episode'))
+  episode_picture=bool(detail_image and (role=='episode_still' or art.get('image_scope57')=='episode'))
   series_picture=bool(ready and primary.get('image_scope57')=='series_fallback')
-  signature=(ready,cover,source,score,score_scope,brand,verified_id,poster_source,episode_picture,
+  signature=(ready,cover,gallery,source,score,score_scope,brand,verified_id,poster_source,episode_picture,
              series_picture,self._person_references)
   if signature==self._art_signature:return
   self._art_signature=signature
@@ -401,18 +438,23 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   for cid in (115,116):self.getControl(cid).setVisible(bool(ready))
   self.getControl(1130).setVisible(bool(cover))
   self._paint_tmdb(verified_id,score,score_scope,brand)
-  names={'provider_event':'Anbieter','xmltv_event':'XMLTV','agent_xmltv':'XMLTV',
-         'tvmaze_series':'TVMaze','tvmaze_episode':'TVMaze','agent_tvmaze':'TVMaze',
-         'user_local86':'Manuell'}
-  image_source='TMDB' if tmdb_source(source) else names.get(source,'')
-  picture_label='Serienbild (kein Episodenbild)' if series_picture else 'Bild'
+  names={'provider_event':'Anbieter','xmltv_event':'XMLTV','agent_xmltv':'Agent/XMLTV',
+         'tvmaze_series':'TVMaze','tvmaze_episode':'TVMaze','agent_tvmaze':'Agent/TVMaze',
+         'agent_tmdb':'Agent/TMDB','user_local86':'Manuell'}
+  image_source=names.get(source,'TMDB' if tmdb_source(source) else '')
+  picture_label='Serienbild' if series_picture else 'Hintergrundbild' if ready else 'Poster'
   self.getControl(105).setLabel(picture_label+' · '+image_source if image_source else '')
   self.getControl(105).setVisible(bool(image_source))
-  poster_attribution='TMDB' if tmdb_source(poster_source) else names.get(poster_source,'')
+  poster_attribution=names.get(poster_source,'TMDB' if tmdb_source(poster_source) else '')
   self.getControl(146).setLabel('Poster · '+poster_attribution if poster_attribution else '')
   self.getControl(146).setVisible(bool(poster_attribution))
   self._detail_view_event['_episode_picture']=episode_picture
-  self._reference_images=(ready,cover)
+  self._reference_images=(gallery,cover)
+  if episode_picture:
+   reference_credit=names.get(art.get('source'),'TMDB' if tmdb_source(art.get('source')) else '')
+   self._reference_label='Episodenbild'+(' · '+reference_credit if reference_credit else '')
+  else:
+   self._reference_label='Hintergrundbild'+(' · '+image_source if image_source else '')
   self._paint_cards()
   __import__('programme_pipeline77').note(self.event,'RENDER_CONTROL',
       'IMAGE_REQUESTED' if ready or cover else 'SOURCE_MISSING',
@@ -442,8 +484,13 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   if getattr(self,'_series_menu85',False):
    self._series_menu85=False
    if __import__('work_manager86').open(self):
-    self._art68={};self._art_signature=None;self._next=0
-    if self.event:__import__('programme_requests68').request(self.event,priority=True)
+    self._art68={};self._art_signature=None;self._next=0;self._next_art_intent=0
+    self._hero_art={};self._poster_art={}
+    if self.event:
+     from programme_requests68 import request
+     self._manual_picture_until=time.monotonic()+45
+     self._set_picture_status('Zuordnung gespeichert · Bild wird geladen …')
+     self._advertise_art(self.event,request)
    return
   if self._future is not None and not self._future.done() and time.monotonic()>self._read_deadline69:
    self._cancel.set();self._future.cancel();self._future=None
@@ -466,7 +513,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
    if eligible(art,self.event):self._art68=dict(art)
    roles=self.event.get('agent_art') or {}
    for role,view,field in (('backdrop','hero','_hero_art'),('poster','card','_poster_art')):
-    if roles.get(role):
+    if roles.get(role) or role=='backdrop' and roles.get('legacy_icon'):
      event_view=dict(self.event,_art_view499=view)
      prior=getattr(self,field)
      setattr(self,field,choose(event_view,result(event_view,prior),prior) or {})
@@ -475,7 +522,41 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
     self._advertise_art(self.event,request)
    self._person_references=self._read_person_cards(result,request)
    self._paint_art(art,self._hero_art,self._poster_art)
+   self._paint_picture_status(art)
    self._paint_time(self.event)
+ def _set_picture_status(self,label):
+  if self._picture_status==label:return
+  self._picture_status=label
+  status=self.getControl(147);status.setLabel(label);status.setVisible(bool(label))
+
+ def _paint_picture_status(self,art):
+  from agent_programme100 import manual
+  from programme_deadline80 import WAITING
+  from programme_state482 import POLICY
+
+  values=(art,self._hero_art,self._poster_art)
+  if self._manual_picture_until:
+   if any(manual(value) and value.get('image') for value in values):
+    self._manual_picture_until=0
+   elif time.monotonic()<self._manual_picture_until:
+    return
+   else:
+    self._manual_picture_until=0;self._set_picture_status('Zuordnung gespeichert · Bild derzeit nicht verfügbar')
+    return
+  if any(value.get('source') not in (None,'','placeholder') and value.get('image') for value in values):
+   self._set_picture_status('')
+   return
+  code=art.get('code','')
+  if code in WAITING:
+   label='Programmbild wird geladen …'
+  elif code in POLICY:
+   label='Bildquelle blockiert · '+code
+  elif code:
+   label='Kein Programmbild · '+code
+  else:
+   label=''
+  self._set_picture_status(label)
+
  def run(self):
   self._gui();monitor=xbmc.Monitor();start=time.monotonic()
   try:
@@ -499,6 +580,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
  def onClick(self,cid):
   self._gui()
   if cid==501:self.close()
+  elif cid==505:self._series_menu85=True
   elif cid==504:
    self._extra_page=not self._extra_page;self._scroll46=0
    self._person_references=();self._next_person_intent=0;self._next=0
