@@ -19,6 +19,10 @@ cat > /root/.kodi/addons/script.xcmate.publicpixels/addon.xml <<'XML'
 </addon>
 XML
 cp /harness/probe.py /root/.kodi/addons/script.xcmate.publicpixels/
+if [ "${XCMATE_PUBLIC_SURFACE:-details}" = home ]; then
+  cp /harness/home_pixels.py /root/.kodi/addons/script.xcmate.publicpixels/
+  python3 /harness/prepare_home.py
+fi
 cat > /root/.kodi/userdata/guisettings.xml <<'XML'
 <settings version="2">
   <setting id="services.webserver">true</setting>
@@ -32,13 +36,18 @@ cat > /root/.kodi/userdata/addon_data/plugin.video.xtreammate/xcmate_update_noti
 JSON
 Xvfb :99 -screen 0 1280x720x24 -nolisten tcp -ac >/proof/xvfb.log 2>&1 &
 sleep 1
-/usr/lib/x86_64-linux-gnu/kodi/kodi.bin --standalone --windowing=x11 >/proof/kodi-launch.log 2>&1 &
-kodi_pid="$!"
+start_player() {
+  /usr/lib/x86_64-linux-gnu/kodi/kodi.bin --standalone --windowing=x11 >>/proof/kodi-launch.log 2>&1 &
+  kodi_pid="$!"
+}
+start_player
 trap 'if [ -f /root/.kodi/temp/kodi.log ]; then cp /root/.kodi/temp/kodi.log /proof/native-player.log; fi
       kill "$kodi_pid" 2>/dev/null || true' EXIT
-python3 - <<'PY'
+run_probe() {
+python3 - "$1" <<'PY'
 import json
 from pathlib import Path
+import sys
 import time
 from urllib.request import Request, urlopen
 
@@ -65,6 +74,32 @@ else:
 for ident in ('script.module.pil', 'plugin.video.xtreammate', 'script.xcmate.publicpixels'):
     if rpc('Addons.SetAddonEnabled', dict(addonid=ident, enabled=True)).get('result') != 'OK':
         raise RuntimeError('ADDON_NOT_ENABLED ' + ident)
+if sys.argv[1] == 'skin':
+    for ident in ('script.skinshortcuts', 'skin.titan.bingie.mod'):
+        if rpc('Addons.SetAddonEnabled', dict(addonid=ident, enabled=True)).get('result') != 'OK':
+            raise RuntimeError('ADDON_NOT_ENABLED ' + ident)
+    if rpc('Settings.SetSettingValue', dict(setting='lookandfeel.skin', value='skin.titan.bingie.mod')).get('result') is not True:
+        raise RuntimeError('BINGIE_SETTING_NOT_SAVED')
+    rpc('Application.Quit')
+    raise SystemExit(0)
+if sys.argv[1] == 'home':
+    deadline = time.monotonic() + 30
+    while time.monotonic() < deadline:
+        state = rpc('GUI.GetProperties', dict(properties=['currentwindow', 'currentcontrol']))['result']
+        ident = state['currentwindow']['id']
+        labels = rpc('XBMC.GetInfoLabels', dict(labels=['Control.GetLabel(1)']))['result']
+        if ident == 10100:
+            heading = labels['Control.GetLabel(1)']
+            if 'skin' in heading.casefold() and state['currentcontrol']['label'].casefold() != 'yes':
+                rpc('Input.Left')
+            rpc('Input.Select')
+        elif ident == 10000:
+            break
+        else:
+            rpc('Input.Back')
+        time.sleep(.25)
+    else:
+        raise RuntimeError('BINGIE_HOME_NOT_ACTIVE')
 if rpc('Addons.ExecuteAddon', dict(addonid='script.xcmate.publicpixels')).get('result') != 'OK':
     raise RuntimeError('PIXEL_CHECK_NOT_STARTED')
 receipt = Path('/proof/receipt.json')
@@ -85,4 +120,11 @@ else:
     raise RuntimeError('PIXEL_CHECK_TIMEOUT')
 rpc('Application.Quit')
 PY
+}
+if [ "${XCMATE_PUBLIC_SURFACE:-details}" = home ]; then
+  run_probe skin
+  wait "$kodi_pid"
+  start_player
+fi
+run_probe "${XCMATE_PUBLIC_SURFACE:-details}"
 wait "$kodi_pid"

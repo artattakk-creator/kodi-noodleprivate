@@ -97,6 +97,48 @@ jobs:
             ${{ runner.temp }}/public-native/*.png
             ${{ runner.temp }}/public-native/error.log
           if-no-files-found: warn
+      - name: Check the same backdrop on the native BINGIE Home Hero
+        run: |
+          feed="$RUNNER_TEMP/public-feed"
+          build="$RUNNER_TEMP/native-candidate"
+          proof="$RUNNER_TEMP/public-home"
+          skin="$RUNNER_TEMP/public-bingie"
+          mkdir -p "$proof" "$skin"
+          python - "$skin" <<'PY'
+          import hashlib
+          from pathlib import Path
+          import sys
+          from urllib.request import urlopen
+          import zipfile
+          sys.path.insert(0, 'tools')
+          from run_kodi_home74_contract import SKIN_SHA, SKIN_URL
+          folder = Path(sys.argv[1])
+          archive = folder / 'skin.zip'
+          with urlopen(SKIN_URL, timeout=60) as response:
+              archive.write_bytes(response.read(100 * 1024 * 1024 + 1))
+          assert hashlib.sha256(archive.read_bytes()).hexdigest() == SKIN_SHA
+          with zipfile.ZipFile(archive) as source:
+              assert all(not Path(n).is_absolute() and '..' not in Path(n).parts for n in source.namelist())
+              source.extractall(folder)
+          PY
+          python tools/build_bingie66_review.py --skin "$skin/skin.titan.bingie.mod" --output "$skin/candidate"
+          docker run --rm --shm-size 256m --tmpfs /root/.kodi:rw,size=768m,mode=0700 \
+            -e XCMATE_PUBLIC_SURFACE=home \
+            -v "$build:/package:ro" -v "$feed:/feed:ro" \
+            -v "$feed/native-input:/native-input:ro" -v "$proof:/proof" \
+            -v "$skin/skin.titan.bingie.mod:/skin:ro" -v "$skin/candidate:/candidate:ro" \
+            -v "$GITHUB_WORKSPACE/tools/kodi_home74_host/skin_fixture66.py:/skin_fixture66.py:ro" \
+            -v "$GITHUB_WORKSPACE/tools/kodi_agent104_host:/harness:ro" \
+            xcmate-kodi-agent104 sh /harness/run.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xcmate-029104-public-bingie-pixels
+          path: |
+            ${{ runner.temp }}/public-home/*.json
+            ${{ runner.temp }}/public-home/*.png
+            ${{ runner.temp }}/public-home/error.log
+          if-no-files-found: warn
 
   comparative-soak:
     runs-on: ubuntu-latest

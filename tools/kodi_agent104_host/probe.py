@@ -1,6 +1,7 @@
 """Native rendering of the archived public airing from separately verified CDN bytes."""
 import hashlib
 import json
+import os
 from pathlib import Path
 import sys
 import time
@@ -15,6 +16,7 @@ from PIL import Image, ImageChops, ImageStat
 
 proof = Path('/proof')
 receipt = {'stage': 'NATIVE_RENDERER', 'transport': 'exact hash-verified replay of pinned GitHub Actions CDN responses'}
+surface = os.environ.get('XCMATE_PUBLIC_SURFACE', 'details')
 addon_api = xbmcaddon.Addon
 addon = addon_api('plugin.video.xtreammate')
 xbmcaddon.Addon = lambda ident='plugin.video.xtreammate': addon_api(ident)
@@ -166,15 +168,17 @@ def run():
         from tmdb_token61 import location
         require(not Path(location()).exists(), 'TOKEN_FILE')
         publish_variant('artwork')
-        portal, channel = {'id':'pixel-replay'}, {'sid':'1','name':'13th Street','epg_channel_id':cid}
+        portal = {'id': 'fixture59'}
+        channel = {'sid': '1', 'name': '13th Street', 'epg_channel_id': cid}
         info = guide_for_channel({cid:[raw]}, cid, now=sample_now)
         info.update(canonical46=cid, snapshot_revision=(raw['_agent_generation103'], sample_now))
-        event = dict(visible(portal, channel, info), _detail93=True, _no_art_request68=True)
+        event = visible(portal, channel, info)
         require(event['_agent_event104'] == raw['_agent_event104'] and event['start'] == original_start,
                 'EVENT_IDENTITY_CHANGED')
         receipt.update(canonical=cid, title=event['title'], event=raw['_agent_event104'],
                        generation=raw['_agent_generation103'], feed_sha256=stats['digest'],
-                       media_library_provider_enabled=False, token=False, research=False, clock=sample_now)
+                       media_library_provider_enabled=False, token=False, research=False, clock=sample_now,
+                       surface=surface)
         expected_hashes = {
             'backdrop': '78bb577b2fc57716a228bd19448451123286e86d50f8d116bf8b55393c54da7c',
             'poster': 'e786385a4d974901c3cacdb697e83de78a84ec4d5375bb684e822a225e9af4c9',
@@ -188,6 +192,20 @@ def run():
         def replay(url, **kwargs):
             body, width, height = references[url]
             return dict(url=url, width=width, height=height, bytes=len(body), decoded77=True, _body81=body)
+
+        def resolve_image(request, role):
+            value = resolve(request, allow_lookup=False, url_mode69=True, check=replay)
+            require(value.get('decoded88') and value.get('role81') == role and value.get('sha256') == expected_hashes[role],
+                    'ROLE_OR_IMAGE_DIGEST')
+            return value
+
+        if surface == 'home':
+            from home_pixels import render
+            render(portal, channel, info, event, resolve_image, capture, receipt, require)
+            receipt['status'] = 'PASS'
+            return
+
+        event.update(_detail93=True, _no_art_request68=True)
         view = ProgrammeWindow46('XCMateProgramme46.xml', str(root), 'Default', '720p')
         view.configure(portal, channel, event)
         view._start_read85 = lambda: None
@@ -198,9 +216,7 @@ def run():
         receipt['receipts'] = {}
         for name, role in (('hero','backdrop'),('details','backdrop'),('card','poster')):
             request = dict(event, _art_view499=name)
-            value = resolve(request, allow_lookup=False, url_mode69=True, check=replay)
-            require(value.get('decoded88') and value.get('role81') == role and value.get('sha256') == expected_hashes[role],
-                    'ROLE_OR_IMAGE_DIGEST')
+            value = resolve_image(request, role)
             completed(request, value)
             receipt['receipts'][name] = dict(event=identity(request), role=role, sha256=value['sha256'],
                                              code=value['code'], source=value['source'])
