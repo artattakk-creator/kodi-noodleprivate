@@ -128,11 +128,13 @@ def skin_setup():
     import xbmcgui
     from skin_patch103 import confirm,phase,show_error
     from widget_skin50 import prepare,applied
+    from widget_skin78 import supported
+    from widget_skin103 import installed
     dialog=xbmcgui.Dialog()
     try:
         with phase('runtime'):
             profile,skin=runtime()
-        if applied(skin):
+        if (installed(skin) if supported(skin) else applied(skin)):
             # Never reapply or rebuild on opening this directory. Recovery of a
             # stale generated include is a separate, explicit user action.
             xbmcgui.Dialog().ok('XCMate',tr(36416))
@@ -158,7 +160,7 @@ def install_skin(plan,profile,skin,dialog):
     with phase('target'):
         apply(plan['id'],skin,confirmed=True)
     with phase('reload'):
-        trace('SKIN_PATCH_VERIFIED')
+        trace('SKIN_FILES_VERIFIED')
         rebuild()
     dialog.notification('XCMate',tr(36415))
 

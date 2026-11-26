@@ -216,3 +216,22 @@ class HeroPatch103(Fixture50, unittest.TestCase):
         ):
             home_activation78.poll()
         self.assertNotIn(home_activation78.KEY, self.properties)
+
+    def test_reviewed_102_layout_can_upgrade_and_both_backup_generations_restore(self):
+        from home_inventory78 import snapshot
+
+        legacy = self.graph.build(self.before)
+        legacy_plan = self.tx.prepare(
+            'skin', [(self.skin / name, legacy[name]) for name in self.graph.FILES],
+            dict(skin=str(self.skin), meta_sha=self.tx.sha((self.skin / 'addon.xml').read_bytes()),
+                 contract78=1, inventory78=snapshot(self.profile, self.skin)),
+        )
+        self.tx.apply(legacy_plan['id'], 'skin', [self.skin / name for name in self.graph.FILES], confirmed=True)
+        plan = self.skinmod.prepare(self.skin)
+        self.assertEqual(plan['metadata'].get('layout103'), 1)
+        self.skinmod.apply(plan['id'], self.skin, confirmed=True)
+        self.assertNotEqual(self.graph_bytes(), legacy)
+        self.skinmod.apply(plan['id'], self.skin, confirmed=True, restore=True)
+        self.assertEqual(self.graph_bytes(), legacy)
+        self.skinmod.apply(legacy_plan['id'], self.skin, confirmed=True, restore=True)
+        self.assertEqual(self.graph_bytes(), self.before)

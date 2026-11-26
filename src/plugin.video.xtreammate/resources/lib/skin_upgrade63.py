@@ -24,20 +24,22 @@ def prepare():
     from widget_skin50 import applied,prepare as make
     from widget_skin75 import previously_applied
     from widget_skin77 import inspect
-    from widget_skin78 import installed,previous_owned,supported
+    from widget_skin78 import previous_owned,supported
+    from widget_skin103 import installed,previous_owned as previous103
 
     try:profile,skin=runtime()
     except (OSError,ValueError,RuntimeError):return
     marker=xbmcgui.Window(10000)
     marker.clearProperty('XCMate.Home78.Apply')
-    if applied(skin):return
-    if supported(skin) and installed(skin):
+    full_graph=supported(skin)
+    if not full_graph and applied(skin):return
+    if full_graph and installed(skin):
         from home_activation78 import KEY,request
         if not marker.getProperty(KEY):request('installed78')
         return
     if setting_bool('home78_repair_optout',False) or setting('bingie_hero63_notice','')=='0.1.29.103':
         return
-    owned = (supported(skin) and (previous_owned(skin) or __import__('widget_skin88').previous_owned(skin)))
+    owned = (full_graph and (previous103(skin) or previous_owned(skin) or __import__('widget_skin88').previous_owned(skin)))
     if not owned and not previously_applied(skin) and inspect().get('code')!='ADAPTER_APPROVAL_REQUIRED':
         return
 

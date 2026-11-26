@@ -21,7 +21,7 @@ class Skin78(Fixture50,unittest.TestCase):
   before=self.menu.read_bytes(),self.prop.read_bytes();plan=self.plan();self.assertEqual(len(plan['entries']),8)
   self.assertEqual({n:(self.skin/n).read_bytes() for n in self.m.FILES},self.original)
   self.skinmod.apply(plan['id'],self.skin,confirmed=True)
-  self.assertTrue(self.m.installed(self.skin));current={n:(self.skin/n).read_bytes() for n in self.m.FILES};self.assertEqual(self.m.build(current),current)
+  self.assertTrue(self.m.installed(self.skin));current={n:(self.skin/n).read_bytes() for n in self.m.FILES};self.assertEqual(self.m.build103(current),current)
   self.assertEqual((self.menu.read_bytes(),self.prop.read_bytes()),before)
   self.skinmod.apply(plan['id'],self.skin,confirmed=True,restore=True);self.assertEqual({n:(self.skin/n).read_bytes() for n in self.m.FILES},self.original)
  def test_disk_patch_is_not_runtime_pass_until_actual_controls_and_variable_resolve(self):

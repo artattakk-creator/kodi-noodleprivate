@@ -147,13 +147,13 @@ def prepare(skin):
         paths=[root/name for name in FILES]
         if any(path.parent.is_symlink() for path in paths):raise ValueError('UNSAFE_TARGET')
         original={name:read(path) for name,path in zip(FILES,paths)}
-        candidate=build(original)
+        candidate=build103(original)
         meta_sha=sha(read(root/'addon.xml'))
     with phase('inventory'):
         inventory=snapshot(profile,root)
     with phase('journal'):
         changes=[(path,candidate[name]) for name,path in zip(FILES,paths)]
-        return transaction('skin',changes,dict(skin=str(root),meta_sha=meta_sha,contract78=1,
+        return transaction('skin',changes,dict(skin=str(root),meta_sha=meta_sha,contract78=1,layout103=1,
                            inventory78=inventory,profile=str(profile)),originals=tuple(original.values()))
 
 def apply(token,skin,confirmed=False,restore=False):
@@ -173,7 +173,7 @@ def apply(token,skin,confirmed=False,restore=False):
             raise ValueError('SKIN_CHANGED')
         if 'profile' in metadata and metadata['profile']!=str(profile):raise ValueError('PROFILE_CHANGED')
         original={name:read(backup/('original.'+str(i))) for i,name in enumerate(FILES)}
-        expected=build(original)
+        expected=build103(original) if metadata.get('layout103')==1 else build(original)
         for i,name in enumerate(FILES):
             if expected[name]!=read(backup/('candidate.'+str(i))):raise ValueError('CANDIDATE_VERIFY_FAILED')
     # Revalidate the complete saved widget inventory before activating own
@@ -196,7 +196,9 @@ def apply(token,skin,confirmed=False,restore=False):
     xbmcaddon.Addon().setSetting('home78_repair_optout','true' if restore else 'false')
     if restore:xbmcgui.Window(10000).clearProperty('XCMate.Home78.Activation')
     if not restore:
-        if not installed(root):raise ValueError('TARGET_VERIFY_FAILED')
+        from widget_skin103 import installed as installed103
+        verified=installed103 if metadata.get('layout103')==1 else installed
+        if not verified(root):raise ValueError('TARGET_VERIFY_FAILED')
         from home_activation78 import request
         request(token,consumers_changed=b'XCMate80.Contract' in expected['xml/IncludesVariables.xml'])
     return result
