@@ -43,7 +43,7 @@ jobs:
 
   public-cdn-replay:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
         with:
@@ -71,6 +71,31 @@ jobs:
           path: |
             ${{ runner.temp }}/public-feed/cdn-evidence.jsonl
             ${{ runner.temp }}/public-feed/native-input/*.jpg
+          if-no-files-found: warn
+      - name: Check the same image bytes in a clean native Kodi detail window
+        run: |
+          feed="$RUNNER_TEMP/public-feed"
+          test -s "$feed/native-input/backdrop.jpg"
+          test -s "$feed/native-input/poster.jpg"
+          build="$RUNNER_TEMP/native-candidate"
+          proof="$RUNNER_TEMP/public-native"
+          mkdir -p "$proof"
+          python tools/package_xcmate_public.py "$build" --version 0.1.29.104
+          docker build --secret id=system_ca,src=/etc/ssl/certs/ca-certificates.crt \
+            -t xcmate-kodi-agent104 tools/kodi_helper57_host
+          docker run --rm --shm-size 256m --tmpfs /root/.kodi:rw,size=768m,mode=0700 \
+            -v "$build:/package:ro" -v "$feed:/feed:ro" \
+            -v "$feed/native-input:/native-input:ro" -v "$proof:/proof" \
+            -v "$GITHUB_WORKSPACE/tools/kodi_agent104_host:/harness:ro" \
+            xcmate-kodi-agent104 sh /harness/run.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xcmate-029104-public-native-pixels
+          path: |
+            ${{ runner.temp }}/public-native/*.json
+            ${{ runner.temp }}/public-native/*.png
+            ${{ runner.temp }}/public-native/error.log
           if-no-files-found: warn
 
   comparative-soak:

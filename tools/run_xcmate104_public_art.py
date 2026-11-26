@@ -100,7 +100,10 @@ try:
             print(json.dumps(dict(stage='HTTPS_DECODE', code=error.code)), flush=True)
             raise
 
-    with mock.patch.object(programme_transport77, 'verified', observed), \
+    replay_time = events['s1.13th.Street.Universal.de']['start'] + 600
+    print(json.dumps(dict(stage='REPLAY_CLOCK', airing_timestamp=replay_time, network_clock='real')), flush=True)
+    with mock.patch('time.time', return_value=replay_time), \
+         mock.patch.object(programme_transport77, 'verified', observed), \
          mock.patch('tmdb_token61.effective_tmdb_read_token', side_effect=AssertionError('Direct token read')):
         for view in ('hero', 'details', 'card'):
             event = dict(events['s1.13th.Street.Universal.de'], _art_view499=view)
