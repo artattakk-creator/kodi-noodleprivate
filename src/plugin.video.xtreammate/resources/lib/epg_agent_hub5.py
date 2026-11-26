@@ -307,6 +307,17 @@ def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: 
         verified_assets = {}
         observed = time.time()
         transferred = 0
+        callbacks = {}
+        if progress is not None:
+            def on_bytes(size):
+                progress(transferred + size, total)
+
+            callbacks["on_bytes"] = on_bytes
+        if phase is not None:
+            def on_verify():
+                phase("validate")
+
+            callbacks["on_verify"] = on_verify
         for p, record in rows:
             key = (record["sha256"], record["bytes"])
             if key in verified_assets:
@@ -323,24 +334,15 @@ def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: 
             status = []
             if phase is not None:
                 phase("download")
-            on_bytes = on_verify = None
             if progress is not None:
                 progress(transferred, total)
-
-                def on_bytes(size):
-                    progress(transferred + size, total)
-
-            if phase is not None:
-                def on_verify():
-                    phase("validate")
-
             if public:
                 from epg_agent_public import download_asset
                 path = download_asset(record, manifest["tag"], downloads, opener, cancel,
-                                      on_http=status.append, on_bytes=on_bytes, on_verify=on_verify)
+                                      on_http=status.append, **callbacks)
             else:
                 path = _download(record, token, downloads, opener, cancel, on_http=status.append,
-                                 on_bytes=on_bytes, on_verify=on_verify)
+                                 **callbacks)
             transferred += record["bytes"]
             _verify_profile(path, record, cancel, observed, status[0] if status else None,
                             report_dir=temporary, public=public)
