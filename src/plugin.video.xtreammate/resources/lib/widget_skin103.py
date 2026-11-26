@@ -60,6 +60,20 @@ def media_wrapper(node):
         set_values(group, left=0)
 
 
+def native_wrapper(node):
+    group = node.find("control[@type='group']")
+    # Native poster rows have 330px covers. Keeping the 440px wrapper makes
+    # Kodi align its oversized bottom to the 360px clip and cut off the top.
+    # Hub windows keep the original dimensions.
+    for tag, home in (('left', 0), ('height', 1080 - COVER_TOP)):
+        original = group.find(tag)
+        group.remove(original)
+        for condition, value in (('Window.IsActive(Home)', home),
+                                 ('!Window.IsActive(Home)', original.text)):
+            call = ET.SubElement(group, 'include', content=tag, condition=condition)
+            ET.SubElement(call, 'param', name=tag, value=str(value))
+
+
 def poster_cards(node):
     for layout in node.findall('itemlayout') + node.findall('focusedlayout'):
         label = layout.find("control[@type='label']")
@@ -166,7 +180,7 @@ TARGETS = (
     (WIDGETS, 'include', 'name', 'XCMate.SixRows.Row', media_wrapper),
     (WIDGETS, 'include', 'name', 'XCMate81.PosterRow', poster_cards),
     (WIDGETS, 'include', 'name', 'XCMate.SixRows.Cards', poster_cards),
-    (WIDGETS, 'include', 'name', 'widget_base', media_wrapper),
+    (WIDGETS, 'include', 'name', 'widget_base', native_wrapper),
     (BINGIE, 'include', 'name', 'Fixed_Focus_Navigation', motion),
     (HOME, 'control', 'id', '77777', cover_viewport),
 )

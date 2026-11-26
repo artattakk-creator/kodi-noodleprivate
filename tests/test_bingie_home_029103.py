@@ -32,6 +32,9 @@ def test_guarded_graph_has_fixed_hero_station_rail_and_native_cover_clip():
         assert 'ControlGroup(296903).HasFocus()' in hero.findtext('visible')
         assert revised['shortcuts/template.xml'] == legacy['shortcuts/template.xml']
         assert revised['shortcuts/overrides.xml'] == legacy['shortcuts/overrides.xml']
+        native_wrapper = widgets.find("include[@name='widget_base']/control")
+        home_height = native_wrapper.find("include[@content='height'][@condition='Window.IsActive(Home)']/param")
+        assert home_height is not None and home_height.get('value') == '360'
         assert widget_skin78.build103(revised) == revised
         damaged = dict(revised)
         changed = changed_geometry(revised['xml/IncludesHomeWidgets.xml'])

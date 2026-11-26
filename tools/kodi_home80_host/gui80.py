@@ -4,9 +4,10 @@ Reuse every historical native case; only explicit .80 layout expectations
 change. The controlled provider/AV stream is synthetic, never Android PASS.
 """
 from pathlib import Path
-import xbmcaddon
+import xbmc,xbmcaddon
 version80=xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version')
 current_releases80=('0.1.29.101', '0.1.29.102', '0.1.29.103')
+layout80_103=xbmc.getInfoLabel('$VAR[XCMate103.Contract]')=='READY'
 modern80=version80 in ('0.1.29.88','0.1.29.89','0.1.29.90','0.1.29.91','0.1.29.92','0.1.29.93','0.1.29.94','0.1.29.95','0.1.29.96') + current_releases80
 source80=Path('/base_gui79.py').read_text()
 for old80,new80 in (("Path('/root/home75.json')","Path('/root/home75-base80.json')"),('range(600,1040)','range(480,1040)'),('((270,20),1080,580)','((270,0),1620,480)'),('getpixel((330,645))','getpixel((330,525))'),('getpixel((800,150))','getpixel((1000,150))')):
@@ -46,7 +47,7 @@ def settle_idle86():
  deadline=time.monotonic()+5
  while True:
   pump();xbmc.sleep(100);_,frame=capture('home86-before-idle')
-  hero=frame.getpixel((1500,300) if modern80 else (500,300));logo=frame.getpixel((330,525))
+  hero=frame.getpixel((1500,300) if modern80 else (500,300));logo=frame.getpixel((190,665) if layout80_103 else (330,525))
   if max(abs(a-b) for a,b in zip(hero,(20,80,130)))<=8 and max(abs(a-b) for a,b in zip(logo,(20,90,150)))<=8:return
   if time.monotonic()>=deadline:
    prefix='XCMate.Hero63.'+home.getProperty('XCMate.Hero63.Active')+'.'
@@ -54,6 +55,12 @@ def settle_idle86():
 if modern80:
  source80=source80.replace('crop((120,20,250,500))','crop((110,20,145,500))')
  source80=source80.replace('((270,0),1620,480)','((130,0),1760,620)').replace('getpixel((300,150))','getpixel((1500,150))').replace('getpixel((500,300))','getpixel((1500,300))').replace('getpixel((1000,150))','getpixel((1500,150))')
+
+if layout80_103:
+ # Card X follows the same measured left edge as the fixed station band.
+ source80=source80.replace('getpixel((330,665))','getpixel((190,665))')
+ source80=source80.replace('getpixel((350,770))','getpixel((210,770))')
+ source80=source80.replace('getpixel((350,1020))','getpixel((210,1020))')
 
 def detail_hero_matches102(frame, texture):
  # The .102 detail paints two gradients over the XMLTV hero (XML control 110).
@@ -77,11 +84,11 @@ def capture_focused_rail102(name, expected_focus):
  while True:
   path,frame=capture(name)
   lines=contours(frame)
-  if home.getFocusId()==expected_focus and 1<=len(lines)<=2:return path,frame
+  if home.getFocusId()==expected_focus and rail_present(lines,expected_focus):return path,frame
   if time.monotonic()>=deadline:raise RuntimeError(('NATIVE_ONE_RAIL',name,expected_focus,lines))
   pump()
 
-if version80 in current_releases80[1:]:
+if version80 in ('0.1.29.102', '0.1.29.103'):
  old_detail80="max(abs(a-b) for a,b in zip(detail_rgb77.getpixel((486,395)),expected77))<=8"
  if source80.count(old_detail80)!=1:raise RuntimeError('NATIVE102_DETAIL_PIXEL_ANCHOR_CHANGED')
  source80=source80.replace(old_detail80,'detail_hero_matches102(detail_rgb77,expected77)')
