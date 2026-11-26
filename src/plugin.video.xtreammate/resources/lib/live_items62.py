@@ -43,7 +43,7 @@ def values(portal,rows):
             events63={}
             try:
                 from widget_render47 import values as decorate
-                enriched=decorate(portal,'live',batch,approved)
+                enriched=decorate(portal,'live',batch,approved,epg=text63)
                 if len(enriched)!=len(base):raise ValueError()
                 for item,value in zip(base,enriched):
                     if value['props'].get('XCMate.MediaId')!=item['props']['XCMate.MediaId']:raise ValueError()

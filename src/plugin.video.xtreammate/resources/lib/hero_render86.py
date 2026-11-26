@@ -10,7 +10,8 @@ def window():
  return xbmcgui.Window(10000)
 def tag(event,value):
  return hashlib.sha256(json.dumps([__import__('event_art81').key(event),value.get('image'),value.get('source'),value.get('sha256'),value.get('mapping_epoch85')],sort_keys=True).encode()).hexdigest()
-def prepare(event,value):
+def prepare(event,value,still_current=lambda:True):
+ if not still_current():return
  if __import__('programme_lock89').current(event,worker=True):return
  from hero_art86 import classify
  import xbmc
@@ -19,13 +20,15 @@ def prepare(event,value):
    from media_sources43 import validate_image,MAX_IMAGE
    with open(value['image'],'rb') as stream:body86=stream.read(MAX_IMAGE+1)
    if value.get('sha256') and hashlib.sha256(body86).hexdigest()!=value['sha256']:
-    window().setProperty(PREFIX+'Invalid',tag(event,value));return
+    if still_current():window().setProperty(PREFIX+'Invalid',tag(event,value))
+    return
    width86,height86=validate_image(body86)
    value=dict(value,image_width77=width86,image_height77=height86)
   except (OSError,ValueError,__import__('media_sources43').SourceError):
-   window().setProperty(PREFIX+'Invalid',tag(event,value));return
+   if still_current():window().setProperty(PREFIX+'Invalid',tag(event,value))
+   return
  kind=classify(value)
- if not kind:return
+ if not kind or not still_current():return
  key=tag(event,value);win=window()
  try:
   ready=json.loads(win.getProperty(PREFIX+'Ready') or '{}')
@@ -46,7 +49,7 @@ def prepare(event,value):
    width,height=validate_image(body);after=os.stat(image)
    if value.get('sha256') and hashlib.sha256(body).hexdigest()!=value['sha256']:return
    if (before.st_ino,before.st_mtime_ns,before.st_size)!=(after.st_ino,after.st_mtime_ns,after.st_size):return
-   if not classify(dict(value,image_width77=width,image_height77=height)):return
+   if not classify(dict(value,image_width77=width,image_height77=height)) or not still_current():return
    win.setProperty(PREFIX+'Ready',json.dumps(dict(key=key,at=time.monotonic(),kind=kind[0],rank=kind[1],width=width,height=height,role=value.get('role81',''),evidence='LOCAL_DECODE_REQUESTED_NOT_PIXEL_PROOF')))
    __import__('programme_lock89').propose(event,value,dict(file=image,sha256=hashlib.sha256(body).hexdigest()))
   except (OSError,ValueError,__import__('media_sources43').SourceError):pass
@@ -66,6 +69,7 @@ def prepare(event,value):
    width=value.get('image_width77',value.get('width',0));height=value.get('image_height77',value.get('height',0))
    if not width or not height or record['width']<64 or record['height']<64:continue
    if abs((record['width']/record['height'])/(width/height)-1)>.08:continue
+   if not still_current():return
    win.setProperty(PREFIX+'Ready',json.dumps(dict(key=key,at=time.monotonic(),kind=kind[0],rank=kind[1],width=width,height=height,decoded_width=record['width'],decoded_height=record['height'],role=value.get('role81',''))))
    __import__('programme_lock89').propose(event,value,record)
    __import__('art_trace81').note(event,'RENDER_READY','KODI_TEXTURE_DECODED',width=record['width'],height=record['height'])
@@ -77,7 +81,7 @@ def choose(event,value,values,win):
  from event_art81 import allowed,key
  event_key=key(event) if event else ''
  held89=__import__('programme_lock89').acknowledge(event,win) if event else None
- if held89:
+ if __import__('programme_image69').eligible(held89,event):
   kind89=classify(held89)
   if kind89:
    values.update(Image=held89['image'],ArtSource=held89['source'],Kind86=kind89[0],Rank86=str(kind89[1]),SourceUrl86=held89.get('source_url',''),Digest87=held89['sha256'])

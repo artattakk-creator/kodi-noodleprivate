@@ -13,6 +13,8 @@ def key(event,source=None):
  from programme_image69 import policy
  from epg_events import title_key,integer
  facts=[profile_scope(),_account(event.get('pid')),str(event.get('pid')),str(event.get('sid')),str(event.get('canonical') or ''),str(event.get('source_key46') or ''),str(event.get('epg_source46') or ''),integer(event.get('start')),integer(event.get('stop')),title_key(event.get('title')),epoch(event),policy(source)]
+ if event.get('_agent_event104') or event.get('_agent_generation103'):
+  facts+=['agent104',event.get('_agent_event104'),event.get('_agent_generation103')]
  return hashlib.sha256(json.dumps(facts,sort_keys=True).encode()).hexdigest()
 def window():
  import xbmcgui

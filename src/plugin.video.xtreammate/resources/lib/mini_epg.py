@@ -41,7 +41,7 @@ class MiniProgramme:
         plot_y=122+preview_height+28
         self.description=xbmcgui.ControlTextBox(preview_x,plot_y,preview_width,max(64,h-plot_y-90),font='font12',textColor='0xFFE8EDF2')
         owner.addControls([self.description])
-        self._preview_channel67=None;self._loading68=True
+        self._preview_channel67=None;self._preview_info104={};self._loading68=True
         self.column_width=width
         self.visible(False)
 
@@ -73,6 +73,7 @@ class MiniProgramme:
         sid=str(channel.extra.get('stream_id','')) if channel else ''
         snapshot=owner._guide.get(sid)
         info=snapshot or {};events,current=programme_rows(info.get('programme_events',info.get('events',[])),past=2)
+        self._preview_info104=info
         identity=lambda event:(event['start'],event['stop'])
         signature=(sid,tuple(identity(e) for e in events))
         self._loading68=bool((channel is not None and snapshot is None) or info.get('loading68',False) or channel is None and (not getattr(owner,'_catalog_ready',True) or getattr(owner,'_catalog_partial46',False)))
@@ -117,7 +118,7 @@ class MiniProgramme:
             self._set(stamp,'setVisible',present);self._set(title,'setVisible',bool(text))
             if focused:self._set(highlight,'setVisible',True)
 
-        selected67=self.events[self.selected] if self.selected<len(self.events) else None
+        selected67=self._selected_programme()
         self.preview67.render(getattr(self.owner,'portal',None),self._preview_channel67,selected67)
         from presentation80 import text
         description=text(str((selected67 or {}).get('description') or '')[:500])
@@ -129,6 +130,14 @@ class MiniProgramme:
         if not self.events:return
         self.focused=True;self.selected=programme_rows(self.events,past=2)[1];self.list.selectItem(self.selected);self.owner.setFocus(self.list)
         self._set(self.hint,'setLabel',tr(35830));self._paint()
+
+    def _selected_programme(self):
+        if self.selected>=len(self.events):return None
+        event=self.events[self.selected];info=self._preview_info104
+        return dict(event,canonical46=event.get('canonical46') or info.get('canonical46',''),
+                    revision68=event.get('revision68',info.get('snapshot_revision')),
+                    _guide_revision104=info.get('_guide_revision104'),
+                    _no_art_request68=bool(info.get('preview_epoch96') or event.get('_no_art_request68')))
 
     def command(self,command,native=False):
         if not self.focused:return False
@@ -143,7 +152,7 @@ class MiniProgramme:
         elif command=='ok':
             if self.events:
                 import xbmcgui
-                event=self.events[self.selected]
+                event=self._selected_programme()
                 from programme_window46 import request
                 request(self.owner,self.owner.index.by_sid.get(self.sid),event)
         elif command=='right':pass

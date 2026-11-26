@@ -8,11 +8,17 @@ def note(event,stage,code='OK',**facts):
  tag=__import__('hero_timing87').correlation(event)[:12]
  # Only fixed enums/numbers; exception messages, paths and account data excluded.
  fixed=code if isinstance(code,str) and 1<=len(code)<=40 and all(c in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789' for c in code) else 'UNCLASSIFIED'
- key=(tag,stage,fixed);now=time.monotonic()
+ role=facts.get('role')
+ source=facts.get('source')
+ if role not in ('backdrop','episode_still','poster','legacy_icon'):role=''
+ if source not in ('agent_tmdb','agent_tvmaze','agent_xmltv','xmltv_event','provider_event','tmdb_movie','tmdb_series','tmdb_episode','tvmaze_series','tvmaze_episode','user_local86','station_logo','standard'):source=''
+ key=(tag,stage,fixed,source,role);now=time.monotonic()
  if now-_seen.get(key,-1e9)<30:return
  _seen[key]=now
  while len(_seen)>512:_seen.pop(next(iter(_seen)))
  clean={k:v for k,v in facts.items() if k in ('ms','status','count','width','height','free','reserve','budget') and type(v) in (int,float,bool)}
+ if role:clean['role']=role
+ if source:clean['source']=source
  import xbmc
  try:xbmc.log('[XCMate][ART81] event='+tag+' stage='+stage+' code='+fixed+' '+json.dumps(clean,separators=(',',':')),xbmc.LOGINFO)
  except (AttributeError,RuntimeError):pass

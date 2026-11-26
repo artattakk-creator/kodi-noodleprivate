@@ -17,6 +17,8 @@ def page(portal,offset,origin,category=None,client=None,mappings48=None,strict48
     from library_index import Reader
     from epg_sources import configuration
     from epg_events import deduplicate
+    from epg_status import revision as guide_revision
+    observed_revision=guide_revision(portal['id'])
     reader=Reader(portal['id']);channels,total=reader.page('live',category=category,offset=offset,limit=ROWS)
     from epg_binding48 import view_mappings
     mappings=view_mappings(configuration(portal['id']).get('mappings',{}) if mappings48 is None else mappings48)
@@ -62,14 +64,16 @@ def page(portal,offset,origin,category=None,client=None,mappings48=None,strict48
         from programme_requests68 import request as request_event68
         revision68=getattr(snapshot,'revision',None)
         for item68 in result[:ROWS]:
-            for event68 in item68['events']:event68['revision68']=revision68
+            for event68 in item68['events']:
+                event68['revision68']=revision68
+                event68['_guide_revision104']=observed_revision
             # One currently visible/first future event per row; a focused
             # different event uses the same broker through Preview's worker.
             raw68=next((v for v in item68['events'] if v['start']<=time.time()<v['stop']),
                        next((v for v in item68['events'] if v['stop']>origin),None))
             if raw68:
                 value68=describe(portal,item68['channel'],raw68,item68['epg_id'],revision68)
-                request_event68(value68,priority=True)
+                request_event68(dict(value68,_detail93=True),priority=True)
     from guide_publish44 import history_days
     from guide_store import path
     history=history_days(portal['id'],path()) if origin<__import__('guide_store').day_window(0)[0] else None

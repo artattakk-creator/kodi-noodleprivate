@@ -123,9 +123,10 @@ class GuideSnapshot:
             preview96=self._preview96.get(str(sid))
             base=preview96[1] if preview96 and preview96[1] is not None else self._values.get(str(sid))
         is_preview96=bool(preview96 and preview96[1] is not None)
-        if not is_preview96 and str(sid) in self._seeded63:
+        guide_revision = self._seeded63.get(str(sid)) if base is None else base.get('_guide_revision104',self._seeded63.get(str(sid)))
+        if not is_preview96 and guide_revision is not None:
             from epg_status import revision
-            if self._seeded63[str(sid)]!=revision(self.portal['id']):
+            if guide_revision!=revision(self.portal['id']):
                 base=None;self._wake.set()
         if base is None:
             from epg_handoff63 import get
@@ -140,11 +141,12 @@ class GuideSnapshot:
         if not base.get('now') and base.get('next_start',0)>ts:
             return dict(base)
         # Re-evaluate only a bounded, already normalized programme list in RAM.
-        info = guide_for_channel({'v':[dict(e,name=e['title'], start_timestamp=e['start'],
-            stop_timestamp=e['stop'], descr=e.get('description','')) for e in base.get('programme_events',base['events'])]}, 'v', now=ts)
+        canonical=base.get('canonical46') or base.get('epg_id') or 'v'
+        info = guide_for_channel({canonical:base.get('programme_events',base['events'])},canonical,now=ts)
         info['previous']=base.get('now') if base.get('now') and base.get('stop',0)<=ts else base.get('previous','')
         info.update(epg_id=base.get('epg_id',''), mapping=base.get('mapping',''),
-                    source_index=base.get('source_index'),snapshot_revision=base.get('snapshot_revision'),canonical46=base.get('canonical46',''))
+                    snapshot_revision=base.get('snapshot_revision'),canonical46=base.get('canonical46',''),
+                    _guide_revision104=base.get('_guide_revision104'))
         if is_preview96:info['preview_epoch96']=preview96[0]
         if base.get('programme_events'):info['programme_events']=base['programme_events']
         if not info['events']: info['reason'] = base.get('reason','NO_DATA')
@@ -228,6 +230,7 @@ class GuideSnapshot:
                 from infobar_epg45 import previous
                 info['previous']=previous(self.portal['id'],c,self._mappings,info.get('start') or now,info.get('snapshot_revision'))
             info['canonical46']=getattr(local,'canonical',{}).get(info.get('epg_id',''),info.get('epg_id',''))
+            info['_guide_revision104']=rev
             from programme_snapshot47 import bind
             values[sid] = bind(self.portal['id'],c,info)
             from epg_handoff63 import remember,get as warm63
@@ -239,7 +242,7 @@ class GuideSnapshot:
             if not values[sid].get('_published_at63'):values[sid]['_published_at63']=time.time()
             if not info['now'] and sid not in self._mappings: missing.append(c)
         with self._lock:
-            if generation!=self._request_generation or serial!=self._refresh_serial:return  # Late old viewport cannot publish.
+            if generation!=self._request_generation or serial!=self._refresh_serial or revision(self.portal['id'])!=rev:return
             from render_diff44 import signature
             changed=signature(values)!=signature({sid:self._values[sid] for sid in values if sid in self._values})
             self._values.update(values)
