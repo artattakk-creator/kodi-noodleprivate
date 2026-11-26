@@ -12,11 +12,12 @@ class MappingReadError(OSError):
 def failure(error):
     code=getattr(error,'code','')
     allowed={'DB_BUSY','SOURCE_TIMEOUT','SOURCE_UNAVAILABLE','NO_LOCAL_INDEX','NO_PROGRAMMES',
-             'SOURCE_INVALID','SOURCE_LIMIT','MAPPING_CANCELLED','MAPPING_BUSY'}
+             'SOURCE_INVALID','SOURCE_LIMIT','MAPPING_CANCELLED','MAPPING_BUSY','SQLITE_INTERRUPT'}
     if code in allowed:return code
     name=getattr(error,'sqlite_errorname','')
-    if name in ('SQLITE_BUSY','SQLITE_LOCKED') or isinstance(error,sqlite3.Error) and str(error) in ('database is locked','database table is locked'):return 'DB_BUSY'
-    if name=='SQLITE_INTERRUPT' or isinstance(error,TimeoutError):return 'SOURCE_TIMEOUT'
+    if name.startswith(('SQLITE_BUSY','SQLITE_LOCKED')) or isinstance(error,sqlite3.Error) and str(error) in ('database is locked','database table is locked'):return 'DB_BUSY'
+    if name=='SQLITE_INTERRUPT':return 'SQLITE_INTERRUPT'
+    if isinstance(error,TimeoutError):return 'SOURCE_TIMEOUT'
     if isinstance(error,InterruptedError):return 'MAPPING_CANCELLED'
     hint=str(error) if isinstance(error,ValueError) else ''
     if hint in ('PREVIEW_BYTE_BUDGET','PREVIEW_CHANNEL_BUDGET','PREVIEW_EVENT_BUDGET'):return 'SOURCE_LIMIT'
@@ -25,7 +26,7 @@ def failure(error):
 
 
 _PREFIX=re.compile(r'^\s*(?:[A-Za-z]{2}|AUS)\s*[|:]\s*',re.IGNORECASE)
-_QUALITY=re.compile(r'(?:uhd|hevc|fhd|hd|sd|4k|8k)\s*$')
+_QUALITY=re.compile(r'(?:uhd|hevc|fhd|hd|sd|4k|8k)(?:[\s()\[\]-]+(?:uhd|hevc|fhd|hd|sd|4k|8k))*[\s)\]]*$')
 _DISTRIBUTION=re.compile(r'^joyn\s+|\s*\(joyn\)\s*$')
 _EINS=re.compile(r'\beins\b')
 _ASCII_OTHER=re.compile(r'[^a-z0-9+]')
@@ -94,9 +95,9 @@ def terms(query):
     return list(dict.fromkeys((query.casefold(),clean,spaced,re.sub(r'\b1\b','eins',spaced))))[:4]
 
 
-def _deadline(db):
+def _deadline(db, cancel=lambda: False):
     deadline=time.monotonic()+.15
-    db.set_progress_handler(lambda:int(time.monotonic()>deadline),1000)
+    db.set_progress_handler(lambda:int(cancel() or time.monotonic()>deadline),1000)
 
 def _search_order(db,query):
     folded=query.casefold()
@@ -107,19 +108,56 @@ def _search_order(db,query):
     return 'mapping_rank(cid,name),cid'
 
 
-def search(pid,source,query='',offset=0):
+def agent_search(pid, query, offset, cancel):
+    from contextlib import closing
+    from epg_agent100 import local_candidate
+    from epg_agent_catalog103 import connect
+
+    db = connect(local_candidate(pid))
+    if db is None:
+        return None  # A pre-upgrade installation can still read retained rows.
+    with closing(db):
+        _deadline(db, cancel)
+        if cancel():
+            raise MappingReadError('MAPPING_CANCELLED')
+        if not query:
+            rows = db.execute('SELECT cid,name,first,last FROM channels ORDER BY cid LIMIT 100 OFFSET ?', (offset,))
+        else:
+            # Normalized search keys are prepared once for the generation.
+            # Exact CID, then exact normalized station name, then fragments.
+            wanted = normal(query)
+            db.create_collation('mapping_fold', lambda a, b: (a.casefold() > b.casefold()) - (a.casefold() < b.casefold()))
+            rows = db.execute('''SELECT cid,name,first,last FROM channels
+              WHERE cid=? COLLATE mapping_fold OR
+                    (?!='' AND (instr(name_key,?) OR instr(id_key,?))
+                      AND (instr(?, '+') OR instr(name_key,'+')=0
+                           OR substr(name_key,1,instr(name_key,'+')-1)!=?))
+              ORDER BY CASE WHEN cid=? COLLATE mapping_fold THEN 0
+                            WHEN name_key=? THEN 1 ELSE 2 END,cid
+              LIMIT 100 OFFSET ?''', (query,wanted,wanted,wanted,wanted,wanted,query,wanted,offset))
+        result = [dict(id=cid, name=name, first=first, last=last) for cid,name,first,last in rows]
+        if cancel():
+            raise MappingReadError('MAPPING_CANCELLED')
+        return result
+
+
+def search(pid,source,query='',offset=0,cancel=lambda:False):
     from programme_index46 import connect
     from epg_binding48 import connection
     db=None
     query=str(query)[:160]
     try:
         args=(str(pid),source,max(0,int(offset)))
+        if source=='agent':
+            rows = agent_search(pid, query, args[2], cancel)
+            if rows is not None:
+                return rows
         db=connect(False)
         if db is not None:
-            _deadline(db)
+            _deadline(db, cancel)
             if db.execute("SELECT 1 FROM sqlite_master WHERE name='source_channels48'").fetchone():
-                count=db.execute('SELECT count(*) FROM source_channels48 WHERE pid=? AND source_id=?',(str(pid),source)).fetchone()[0]
-                if count:
+                found=db.execute('SELECT 1 FROM source_channels48 WHERE pid=? AND source_id=? LIMIT 1',(str(pid),source)).fetchone()
+                if found:
                     # Apply the same normalizer before pagination. Raw-text SQL
                     # filtering loses accents/punctuation and can spend its cap
                     # on excluded +1 channels before the first valid result.
@@ -130,7 +168,7 @@ def search(pid,source,query='',offset=0):
             db.close();db=None
         db=connection()
         if db is None:raise MappingReadError('NO_LOCAL_INDEX')
-        _deadline(db)
+        _deadline(db, cancel)
         count=db.execute('SELECT 1 FROM guide44_inputs WHERE pid=? AND source_id=? LIMIT 1',(str(pid),source)).fetchone()
         if not count:raise MappingReadError('NO_LOCAL_INDEX')
         order=_search_order(db,query)
@@ -139,7 +177,8 @@ def search(pid,source,query='',offset=0):
         if not rows and query:raise MappingReadError('NO_LOCAL_INDEX')
         return [dict(id=r[0],name=r[0],first=None,last=None) for r in rows]
     except MappingReadError:raise
-    except (sqlite3.Error,OSError,ValueError) as error:raise MappingReadError(failure(error)) from None
+    except (sqlite3.Error,OSError,ValueError) as error:
+        raise MappingReadError('MAPPING_CANCELLED' if cancel() else failure(error)) from None
     finally:
         if db is not None:db.close()
 
@@ -166,9 +205,35 @@ def source_rows(portal):
     except (sqlite3.Error,OSError,ValueError) as error:code=failure(error)
     finally:
         if db is not None:db.close()
-    from epg_agent100 import SOURCE_ID
-    # A pending agent cannot supply a preview. Preserve the configured source
-    # for saved bindings, and offer it here whenever retained data is present.
-    return [dict(row, local_count=counts.get(row['id']),
-                 local_code=code if row['id'] in counts or code!='READY' else 'NO_LOCAL_INDEX')
-            for row in rows if row['id']!=SOURCE_ID or counts.get(SOURCE_ID, 0)>0]
+    from epg_agent100 import SOURCE_ID, local_candidate, profile, state
+    from epg_agent_catalog103 import connect as catalogue
+    result = [dict(row, local_count=counts.get(row['id']),
+                   local_code=code if row['id'] in counts or code!='READY' else 'NO_LOCAL_INDEX')
+              for row in rows]
+    for row in result:
+        if row['id'] != SOURCE_ID:
+            continue
+        directory = profile()
+        record = state(directory)
+        pid = portal['id']
+        receipt = record.get('portals', {}).get(str(pid), {})
+        phase = record.get('code', '')
+        row['local_code'] = 'READY' if row['local_count'] else 'NO_LOCAL_INDEX'
+        if phase in ('IMPORTING', 'CHECKING'):
+            row['local_code'] = 'IMPORTING'
+        elif record.get('remote') == 'ERROR' or receipt.get('code') not in (None, 'READY', 'PARTIAL_PRESERVED'):
+            row['local_code'] = 'LAST_GOOD' if receipt.get('generation') else 'SOURCE_UNAVAILABLE'
+            row['source_error'] = record.get('code') if record.get('remote') == 'ERROR' else receipt['code']
+        try:
+            db = catalogue(local_candidate(pid, directory, record))
+            if db is not None:
+                try:
+                    _deadline(db)
+                    row['local_count'] = db.execute('SELECT channels FROM totals').fetchone()[0]
+                finally:
+                    db.close()
+                if row['local_code'] == 'NO_LOCAL_INDEX':
+                    row['local_code'] = 'READY'
+        except (sqlite3.Error, OSError, ValueError) as error:
+            row['local_code'] = failure(error)
+    return result

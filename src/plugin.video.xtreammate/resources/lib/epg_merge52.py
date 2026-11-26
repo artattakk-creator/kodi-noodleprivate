@@ -2,17 +2,36 @@
 
 No new EPG database, source requests, configuration writes or destructive
 retention. Published intervals win conflicts; only proven same events donate
-missing facts. Different channel IDs require an explicit per-source name match.
+missing facts. Different channel IDs require an explicit per-source station proof.
 """
 import bisect,hashlib,json,sqlite3,time
 
-DETAILS=('descr','subtitle','genre','season','episode','episode_label','year','cast','director','xmltv_image','provider_image','agent_art','xmltv_date','language','xmltv_title_lang','xmltv_tmdb_id','xmltv_tmdb_score')
+DETAILS = ('descr', 'subtitle', 'genre', 'season', 'episode', 'episode_label', 'year',
+           'cast', 'cast_roles', 'director', 'age_rating', 'country', 'original_title', 'work_id',
+           'external_ids', '_work_ids_verified85', 'xmltv_image', 'provider_image',
+           'agent_art', 'xmltv_date', 'language', 'xmltv_title_lang',
+           'xmltv_tmdb_id', 'xmltv_tmdb_score')
+EVENT_FIELDS = ('name', 'start_timestamp', 'stop_timestamp')
 
 
-def same(a,b,cid):
-    from epg_events import normalize,duplicate
-    aa=normalize(a,cid);bb=normalize(b,cid)
-    return bool(aa and bb and duplicate(aa,bb))
+def same(a, b, cid):
+    from epg_events import normalize, duplicate, title_key
+    aa, bb = normalize(a, cid), normalize(b, cid)
+    if not aa or not bb or not duplicate(aa, bb):
+        return False
+    return all(not a.get(key) or not b.get(key) or title_key(a[key]) == title_key(b[key])
+               for key in ('subtitle', 'year', 'xmltv_tmdb_id'))
+
+
+def _provenance(event, source, cid):
+    if not source:
+        return {}
+    origin = dict(source=source, channel=str(cid))
+    fields = {field: origin for field in (*EVENT_FIELDS, *DETAILS)
+              if event.get(field) and not field.startswith('_')}
+    fields.update(('agent_art.' + role, origin) for role in event.get('agent_art', {}))
+    fields.update(event.get('field_sources52', {}))
+    return fields
 
 
 def retained(previous,incoming):
@@ -34,6 +53,9 @@ def merge(primary,donors,cid,limit=256):
         n=normalize(raw,cid)
         if not n:return None
         value=dict(raw,name=n['title'],descr=n['description'],start_timestamp=n['start'],stop_timestamp=n['stop'],channel=str(cid))
+        origin = raw.get('source_key46') or raw.get('epg_source46')
+        if origin:
+            value['field_sources52'] = _provenance(value, origin, raw.get('channel') or cid)
         return value
     accepted=[v for raw in deduplicate(primary,channel=cid) if (v:=form(raw))]
     def indices():
@@ -55,27 +77,57 @@ def merge(primary,donors,cid,limit=256):
             if peer.get('descr') and donor.get('descr') and peer['descr'].strip()!=donor['descr'].strip():continue
             source=donor.get('source_key46') or donor.get('epg_source46')
             if not source:continue
-            origins=dict(peer.get('field_sources52',{}))
+            origins = dict(peer.get('field_sources52', {}))
+            donor_origins = donor.get('field_sources52', {})
+            donated = False
+            if (str(raw.get('channel') or cid) == str(cid)
+                    and peer.get('source') == donor.get('source')
+                    and (a, b) == (peer['start_timestamp'], peer['stop_timestamp'])
+                    and peer['descr'] == donor['descr']):
+                # Exact archive proof for the base time and text, even where
+                # the master row only has a numeric priority.
+                for field in (*EVENT_FIELDS, 'descr'):
+                    if field in donor_origins:
+                        origins.setdefault(field, donor_origins[field])
+                peer.setdefault('epg_source46', source)
+                peer.setdefault('source_key46', source)
             for field in DETAILS:
-                if field=='xmltv_tmdb_score' and donor.get('xmltv_tmdb_id')!=peer.get('xmltv_tmdb_id'):continue
+                if field == 'xmltv_tmdb_score' and donor.get('xmltv_tmdb_id') != peer.get('xmltv_tmdb_id'):
+                    continue
+                if field == '_work_ids_verified85' and donor.get('external_ids') != peer.get('external_ids'):
+                    continue
+                if field == 'cast_roles' and donor.get('cast') != peer.get('cast'):
+                    continue
                 if not peer.get(field) and donor.get(field):
-                    peer[field]=donor[field]
-                    origins[field]=dict(source=source,channel=str(raw.get('channel') or cid))
-            # Only fields from a verified exact/near-identical source record
-            # are donated; episode/season conflicts fail same().
+                    peer[field] = donor[field]
+                    if field in donor_origins:
+                        origins[field] = donor_origins[field]
+                    donated = True
+                    if field == 'agent_art':
+                        origins.update((key, value) for key, value in donor_origins.items()
+                                       if key.startswith('agent_art.'))
+                elif field == 'agent_art' and donor.get(field):
+                    additional = {role: ref for role, ref in donor[field].items()
+                                  if role not in peer[field]}
+                    if additional:
+                        peer[field] = dict(peer[field], **additional)
+                        origins.update(('agent_art.' + role, donor_origins['agent_art.' + role])
+                                       for role in additional)
+                        donated = True
             if origins:
-                peer['field_sources52']=origins
-                peer['epg_source46']=peer.get('epg_source46') or source
-                peer['epg_text46']=hashlib.sha256(peer['descr'][:4096].encode()).hexdigest()
-                peer['_fused52']=True;peer['_metadata_verified48']=True
-                peer['fact_revision46']=hashlib.sha256(json.dumps([peer.get('fact_revision46'),donor.get('fact_revision46'),origins],sort_keys=True).encode()).hexdigest()
-                peer['updated52']=max(peer.get('updated52',0),donor.get('updated52',0))
+                peer['field_sources52'] = origins
+            if donated:
+                peer['epg_text46'] = hashlib.sha256(peer['descr'][:4096].encode()).hexdigest()
+                peer['_fused52'] = True
+                peer['_metadata_verified48'] = True
+                peer['fact_revision46'] = hashlib.sha256(json.dumps(
+                    [peer.get('fact_revision46'), donor.get('fact_revision46'), origins],
+                    sort_keys=True).encode()).hexdigest()
+                peer['updated52'] = max(peer.get('updated52', 0), donor.get('updated52', 0))
             continue
         before=bisect.bisect_left(starts,a);after=bisect.bisect_left(starts,b)
         if after>before or before and ends[before-1]>a:continue
         donor['_fused52']=True;donor['_metadata_verified48']=True
-        source=donor.get('source_key46') or donor.get('epg_source46')
-        donor['field_sources52']={key:dict(source=source,channel=str(raw.get('channel') or cid)) for key in DETAILS if donor.get(key)}
         accepted.append(donor)
         starts,ends=indices()
     return sorted(accepted,key=lambda e:(e['start_timestamp'],e['stop_timestamp']))[:min(256,max(1,limit))]
@@ -117,7 +169,7 @@ def window(pid,sid,cid,start,stop,primary=(),limit=256,manual=False,guide=None):
         allowed=ranks(pid);targets=[(None,str(cid))]
         if not manual:
             try:
-                targets.extend((source,channel) for source,channel in db.execute('SELECT source_id,cid FROM source_aliases52 WHERE pid=? AND sid=? AND proof=\'name\' LIMIT 32',(str(pid),str(sid))) if source in allowed and channel!=str(cid))
+                targets.extend((source,channel) for source,channel in db.execute('SELECT source_id,cid FROM source_aliases52 WHERE pid=? AND sid=? AND proof IN (\'name\',\'provider_id\') LIMIT 32',(str(pid),str(sid))) if source in allowed and channel!=str(cid))
             except sqlite3.OperationalError:pass  # Existing profiles have no aliases until a verified refresh.
         for source,channel in targets:
             sql='SELECT source_id,fingerprint,data,updated FROM facts WHERE pid=? AND cid=? AND start<? AND stop>?'
@@ -139,6 +191,9 @@ def window(pid,sid,cid,start,stop,primary=(),limit=256,manual=False,guide=None):
                     if not origin_matches(pid,channel,event,identity,guide):continue
                 value.update(_source_index=allowed[identity],source=allowed[identity],source_key46=identity,fact_revision46=fingerprint,updated52=updated)
                 donors.append(value)
+        primary = [dict(row, source_key46='provider', epg_source46='provider')
+                   if row.get('source') == 0 and 'provider' in allowed else row
+                   for row in primary]
         return merge(primary,donors,str(cid),limit)
     except (OSError,sqlite3.Error,ValueError,KeyError,TypeError):return list(primary)
     finally:

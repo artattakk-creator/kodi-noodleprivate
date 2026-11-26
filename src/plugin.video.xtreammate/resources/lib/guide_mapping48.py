@@ -81,6 +81,7 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
         messages={'MAPPING_BUSY':'Andere EPG-Abfrage läuft. Bitte erneut versuchen.',
                   'DB_BUSY':'EPG-Datenbank belegt. Bitte erneut versuchen.',
                   'SOURCE_TIMEOUT':'Quelle antwortet zu langsam. Bitte erneut laden.',
+                  'SQLITE_INTERRUPT':'Lokales Lesebudget erreicht. Bitte erneut laden.',
                   'SOURCE_UNAVAILABLE':'Quelle nicht erreichbar. Bitte erneut versuchen.',
                   'SOURCE_INVALID':'Quelldaten nicht lesbar. Andere Quelle prüfen.',
                   'SOURCE_LIMIT':'Quelle überschreitet das begrenzte Lesebudget.',
@@ -93,8 +94,14 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
         self.getControl(104).setVisible(busy)
         self.getControl(105).setLabel(str((self.source or {}).get('name',''))[:72])
         if code=='NO_LOCAL_INDEX':
-            self.getControl(404).setLabel('Quelle laden');self.getControl(404).setEnabled(True)
-        elif self.source and code in ('DB_BUSY','SOURCE_TIMEOUT','SOURCE_UNAVAILABLE','SOURCE_INVALID','SOURCE_LIMIT','MAPPING_BUSY','MAPPING_CANCELLED'):
+            if (self.source or {}).get('id') == 'agent':
+                self.getControl(103).setText('Der Agent-Senderindex ist lokal noch nicht verfügbar. '
+                                             'Nach dem Import erneut prüfen.\n(NO_LOCAL_INDEX)')
+                self.getControl(404).setLabel('Erneut prüfen')
+            else:
+                self.getControl(404).setLabel('Quelle laden')
+            self.getControl(404).setEnabled(True)
+        elif self.source and code in ('DB_BUSY','SQLITE_INTERRUPT','SOURCE_TIMEOUT','SOURCE_UNAVAILABLE','SOURCE_INVALID','SOURCE_LIMIT','MAPPING_BUSY','MAPPING_CANCELLED'):
             self.getControl(404).setLabel('Erneut laden');self.getControl(404).setEnabled(True)
     def _launch482(self,phase,call,apply,stop=None):
         if self.future:
@@ -124,9 +131,16 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
         self._entry482=False
         def ready(rows):
             from menu_icons45 import select
-            reasons={'DB_BUSY':'Datenbank belegt','SOURCE_TIMEOUT':'Abfragezeit überschritten',
-                     'SOURCE_UNAVAILABLE':'Daten nicht erreichbar','NO_LOCAL_INDEX':'Index nicht verfügbar'}
-            labels=[r['name']+' · lokal: '+(str(r['local_count'])+' Kanäle' if r['local_count'] is not None else reasons.get(r['local_code'],'Index nicht verfügbar')) for r in rows]
+            reasons={'READY':'Bereit','IMPORTING':'Aktualisierung läuft','LAST_GOOD':'Letzter geprüfter Stand',
+                     'DB_BUSY':'Datenbank belegt','SOURCE_TIMEOUT':'Abfragezeit überschritten',
+                     'SQLITE_INTERRUPT':'Lokales Lesebudget erreicht','SOURCE_UNAVAILABLE':'Daten nicht erreichbar',
+                     'NO_LOCAL_INDEX':'Index nicht verfügbar'}
+            labels=[]
+            for row in rows:
+                status = reasons.get(row['local_code'], 'Index nicht verfügbar')
+                count = row['local_count']
+                local = f'{count} Kanäle · {status}' if count is not None else status
+                labels.append(row['name'] + ' · lokal: ' + local)
             choice=select(xbmcgui.Dialog(),'EPG-Anbieter wählen',labels,default='database')
             if not 0<=choice<len(rows):
                 self._status482('SOURCE_SELECT','Keine Quelle gewählt. Bitte „Quelle wählen“ verwenden.');return
@@ -159,6 +173,9 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
             self.setFocusId(200 if rows else 401)
         source=self.source['id'];query=self.query;offset=self.offset;stop=threading.Event()
         def load():
+            if source == 'agent':
+                return channels(self.portal['id'], source, query, offset, strict482=True,
+                                cancel=lambda: self.cancel.is_set() or stop.is_set())
             if self._cold482 or self.cold53.catalogue is not None and self.cold53.catalogue[0]==source:
                 return self.cold53.channels(self.portal,source,query,offset,lambda:self.cancel.is_set() or stop.is_set())
             return channels(self.portal['id'],source,query,offset,strict482=True)
@@ -240,7 +257,9 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
                 self.candidate=self.rows[pos];self.detail_offset53=0;self.previewed=False;self.getControl(405).setEnabled(False)
                 self.getControl(404).setEnabled(True);self._preview()
         elif cid==404:
-            if not self.candidate and getattr(self,'_state482','')=='NO_LOCAL_INDEX':self._cold482=True;self._channels()
+            if not self.candidate and getattr(self,'_state482','')=='NO_LOCAL_INDEX':
+                self._cold482=(self.source or {}).get('id')!='agent'
+                self._channels()
             elif not self.candidate and self.source:self._channels()
             else:self._preview()
         elif cid==405 and self.previewed:

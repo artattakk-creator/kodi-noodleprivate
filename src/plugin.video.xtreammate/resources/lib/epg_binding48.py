@@ -39,9 +39,9 @@ def connection():
     return db
 
 
-def channels(pid,source,query='',offset=0,strict482=False):
+def channels(pid,source,query='',offset=0,strict482=False,*,cancel=lambda:False):
     from mapping_search482 import search,MappingReadError
-    try:return search(pid,source,str(query)[:160],offset)
+    try:return search(pid,source,str(query)[:160],offset,cancel)
     except MappingReadError:
         if strict482:raise
         return []

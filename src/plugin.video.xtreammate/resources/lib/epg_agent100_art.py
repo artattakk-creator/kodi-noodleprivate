@@ -129,12 +129,22 @@ def build(folder, cancel):
                 cid TEXT PRIMARY KEY,url TEXT)""")
             db.execute("""CREATE TABLE IF NOT EXISTS stream_bindings(
                 pid TEXT,sid TEXT,cid TEXT,PRIMARY KEY(pid,sid))""")
+            db.execute("""CREATE TABLE IF NOT EXISTS processed_channels103(
+                pid TEXT,cid TEXT,populated INTEGER,PRIMARY KEY(pid,cid))""")
     finally:
         db.close()
     return output
 
 
-def bind_streams(filename, pid, aliases, channel_art):
+def processed_channels(filename, pid):
+    db = sqlite3.connect(Path(filename).resolve().as_uri() + "?mode=ro", uri=True, timeout=.15)
+    try:
+        return dict(db.execute("SELECT cid,populated FROM processed_channels103 WHERE pid=?", (str(pid),)))
+    finally:
+        db.close()
+
+
+def bind_streams(filename, pid, aliases, channel_art, processed=None):
     db = sqlite3.connect(filename, timeout=.15)
     try:
         with db:
@@ -142,6 +152,9 @@ def bind_streams(filename, pid, aliases, channel_art):
             db.execute("DELETE FROM stream_bindings WHERE pid=?", (str(pid),))
             db.executemany("INSERT INTO stream_bindings VALUES(?,?,?)",
                            ((str(pid), sid, cid) for sid, cid in aliases.items()))
+            if processed:
+                db.executemany("INSERT OR REPLACE INTO processed_channels103 VALUES(?,?,?)",
+                               ((str(pid), cid, value) for cid, value in processed.items()))
     finally:
         db.close()
 
