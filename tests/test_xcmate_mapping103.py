@@ -9,7 +9,9 @@ import time
 import unittest
 from unittest import mock
 
-from xcmate027_fixture import Fixture
+from xcmate027_fixture import Fixture, LIB
+
+sys.path.insert(0, str(LIB))
 
 
 class StationProofs103(unittest.TestCase):
@@ -39,6 +41,36 @@ class StationProofs103(unittest.TestCase):
                                [dict(sid='1', name='DE| Fixture FHD HEVC',
                                      epg_channel_id='Fixture.de')], {}),
                          {'1': 's1.Fixture.de'})
+
+
+class EventIdentity103(unittest.TestCase):
+    def test_conflicting_verified_work_ids_keep_the_other_show_from_donating_art(self):
+        from epg_merge52 import merge
+
+        base = dict(channel='provider', name='Series', start_timestamp=1000, stop_timestamp=2000,
+                    source_key46='provider')
+        poster = {'poster': {'url': 'https://image.tmdb.org/t/p/w500/fixture.jpg'}}
+        for left, right in (
+            (dict(external_ids={'imdb_id': 'tt111'}, _work_ids_verified85=True),
+             dict(external_ids={'imdb_id': 'tt222'}, _work_ids_verified85=True)),
+            (dict(work_id='tvmaze:111'), dict(work_id='tvmaze:222')),
+        ):
+            with self.subTest(left=left):
+                donor = dict(base, **right)
+                donor.update(channel='agent', source_key46='agent', agent_art=poster)
+                result = merge([dict(base, **left)], [donor], 'provider')
+                self.assertNotIn('agent_art', result[0])
+
+    def test_comparable_verified_imdb_format_preserves_the_same_event(self):
+        from epg_merge52 import merge
+
+        base = dict(channel='provider', name='Series', start_timestamp=1000, stop_timestamp=2000,
+                    external_ids={'imdb_id': 'tt0000123'}, _work_ids_verified85=True,
+                    source_key46='provider')
+        donor = dict(base, channel='agent', source_key46='agent',
+                     external_ids={'imdb_id': 123}, genre='Drama')
+        result = merge([base], [donor], 'provider')
+        self.assertEqual(result[0]['genre'], 'Drama')
 
 
 class MappingScope103(unittest.TestCase):

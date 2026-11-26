@@ -14,13 +14,47 @@ DETAILS = ('descr', 'subtitle', 'genre', 'season', 'episode', 'episode_label', '
 EVENT_FIELDS = ('name', 'start_timestamp', 'stop_timestamp')
 
 
+def _external_ids(event):
+    raw = event.get('external_ids')
+    if not event.get('_work_ids_verified85') or not isinstance(raw, dict):
+        return {}
+    result = {}
+    for key in ('imdb_id', 'tvdb_id', 'tvrage_id'):
+        value = str(raw.get(key, '')).strip().casefold()
+        if key == 'imdb_id':
+            value = value.removeprefix('tt')
+        if value.isascii() and value.isdigit() and 0 < len(value) <= 12:
+            result[key] = int(value)
+    return result
+
+
+def _work_identity(event):
+    value = event.get('work_id')
+    if not isinstance(value, str) or not value.strip():
+        return None
+    namespace, separator, key = value.strip().partition(':')
+    if not separator:
+        namespace, key = '', namespace
+    if not key:
+        return None
+    if key.isascii() and key.isdigit():
+        key = key.lstrip('0') or '0'
+    return namespace.casefold(), key
+
+
 def same(a, b, cid):
     from epg_events import normalize, duplicate, title_key
     aa, bb = normalize(a, cid), normalize(b, cid)
     if not aa or not bb or not duplicate(aa, bb):
         return False
-    return all(not a.get(key) or not b.get(key) or title_key(a[key]) == title_key(b[key])
-               for key in ('subtitle', 'year', 'xmltv_tmdb_id'))
+    if any(a.get(key) and b.get(key) and title_key(a[key]) != title_key(b[key])
+           for key in ('subtitle', 'year', 'xmltv_tmdb_id')):
+        return False
+    left, right = _external_ids(a), _external_ids(b)
+    if any(left[key] != right[key] for key in left.keys() & right.keys()):
+        return False
+    left_work, right_work = _work_identity(a), _work_identity(b)
+    return not (left_work and right_work and left_work[0] == right_work[0] and left_work != right_work)
 
 
 def _provenance(event, source, cid):
@@ -93,6 +127,8 @@ def merge(primary,donors,cid,limit=256):
                 peer.setdefault('source_key46', source)
             for field in DETAILS:
                 if field == 'xmltv_tmdb_score' and donor.get('xmltv_tmdb_id') != peer.get('xmltv_tmdb_id'):
+                    continue
+                if field == 'external_ids' and not _external_ids(donor):
                     continue
                 if field == '_work_ids_verified85' and donor.get('external_ids') != peer.get('external_ids'):
                     continue
