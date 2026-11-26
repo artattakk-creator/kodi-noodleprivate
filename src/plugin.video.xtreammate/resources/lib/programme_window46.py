@@ -445,7 +445,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
          'tvmaze_series':'TVMaze','tvmaze_episode':'TVMaze','agent_tvmaze':'Agent/TVMaze',
          'agent_tmdb':'Agent/TMDB','user_local86':'Manuell'}
   image_source=names.get(source,'TMDB' if tmdb_source(source) else '')
-  picture_label='Serienbild' if series_picture else 'Hintergrundbild' if ready else 'Poster'
+  picture_label='Serienbild (kein Episodenbild)' if series_picture else 'Hintergrundbild' if ready else 'Poster'
   self.getControl(105).setLabel(picture_label+' · '+image_source if image_source else '')
   self.getControl(105).setVisible(bool(image_source))
   poster_attribution=names.get(poster_source,'TMDB' if tmdb_source(poster_source) else '')

@@ -20,6 +20,7 @@ class PlayNavigation80(Fixture,unittest.TestCase):
  def test_changed_flag_does_not_short_circuit_actual_consumer_preparation(self):
   import home_activation78 as activation
   activation.request('a'*32,consumers_changed=True)
-  with mock.patch('xbmc.getCondVisibility',return_value=False),mock.patch('widget_reload78.repair',return_value=True) as repair,mock.patch('widget_hooks45.prepare'):
+  profile, skin = self.folder, self.folder / 'skin'
+  with mock.patch('xbmc.getCondVisibility',return_value=False),mock.patch('widget_manager50.runtime',return_value=(profile,skin)),mock.patch('widget_reload78.repair',return_value=True) as repair,mock.patch('widget_hooks45.prepare'):
    activation.prepare()
-  repair.assert_called_once()
+  repair.assert_called_once_with(profile,skin)

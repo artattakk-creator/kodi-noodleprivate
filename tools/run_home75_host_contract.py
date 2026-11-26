@@ -1,4 +1,4 @@
-"""Compare the cumulative Home host suites with the immutable .101 source."""
+"""Compare the cumulative Home host suites with the immutable preceding release."""
 import argparse
 import json
 import os
@@ -11,6 +11,7 @@ from tempfile import TemporaryDirectory
 from run_host94_contract import ROOT, materialize
 
 BASELINE_101 = '5cc1a34d451e88cfb82b7b16daeb2a5976d0021b'
+BASELINE_102 = '5703b25caade638b4404570170fe9d19957271ba'
 
 
 def suite_result(output, status):
@@ -69,13 +70,16 @@ def main():
     subprocess.run(['git', 'diff', '--quiet', 'HEAD', '--', 'src/plugin.video.xtreammate', 'tests', 'tools'],
                    cwd=ROOT, check=True)
     head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
-    subprocess.run(['git', 'merge-base', '--is-ancestor', BASELINE_101, head], cwd=ROOT, check=True)
+    from xml.etree import ElementTree
+    version = ElementTree.parse(ROOT / 'src/plugin.video.xtreammate/addon.xml').getroot().get('version')
+    previous = BASELINE_102 if version == '0.1.29.103' else BASELINE_101
+    subprocess.run(['git', 'merge-base', '--is-ancestor', previous, head], cwd=ROOT, check=True)
     with TemporaryDirectory(prefix='xcmate-home75-') as temporary:
         directory = Path(temporary)
-        baseline, historical, prior_skips = collect(BASELINE_101, directory / 'baseline', report / 'baseline')
+        baseline, historical, prior_skips = collect(previous, directory / 'baseline', report / 'baseline')
         current, failures, skips = collect(head, directory / 'candidate', report / 'candidate')
 
-    summary = dict(baseline_commit=BASELINE_101, candidate_commit=head,
+    summary = dict(baseline_commit=previous, candidate_commit=head,
                    baseline_cases=len(baseline), current_cases=len(current),
                    known_failures=sorted(failures & historical), new_failures=sorted(failures - historical),
                    removed_cases=sorted(baseline - current), new_skips=sorted(skips - prior_skips))
