@@ -219,12 +219,14 @@ class PublicAgentTest(unittest.TestCase):
             root = Path(temp)
             def public_stage(path, **opts):
                 return stage_public_candidate(path, opener=fixture, **opts)
-            with patch("epg_agent100.profile", return_value=root), patch(
+            with patch("utils.addon_data_dir", return_value=str(root), create=True), patch(
+                    "epg_agent100.profile", return_value=root), patch(
                     "epg_agent100._request_time", return_value=0), patch(
                     "epg_agent_token_bootstrap.ensure_local_token", side_effect=AssertionError("public token access")), patch(
                     "epg_agent_public.stage_public_candidate", side_effect=public_stage):
                 run([dict(id="new")], lambda: False)
                 self.assertEqual(state(root)["code"], "PUBLIC_PENDING")
+                self.assertTrue((root / ".xcmate-config.lock").is_file())
             self.assertEqual(fixture.urls, [MANIFEST])
 
     def test_public_xmltv_rejects_private_image_reference(self):
