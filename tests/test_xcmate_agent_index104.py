@@ -32,7 +32,7 @@ class CompleteIndex104(Fixture, unittest.TestCase):
           <image type="poster" orient="P" system="tmdb">https://image.tmdb.org/t/p/w500/fixture.jpg</image>
         </programme>
         <programme channel="s4.DMAX.at" start="20261126172500 +0100" stop="20261126180000 +0100">
-          <title>Fixture AT</title>
+          <title>Fixture AT</title><episode-num system="tmdb">movie/678</episode-num>
         </programme>
         </tv>"""))
         saved = dict(status="PUBLIC_READY", channel_count=2, programme_count=2,
@@ -127,3 +127,13 @@ class CompleteIndex104(Fixture, unittest.TestCase):
         self.assertFalse(worker.is_alive())
         self.assertIs(reports.get(timeout=1), InterruptedError)
         self.assertFalse(ready(newer))
+
+
+    def test_verified_work_airings_remain_queryable_without_any_artwork(self):
+        from epg_agent_catalog103 import build, search_art, work_events
+
+        build(self.folder, lambda: False)
+        rows, more = work_events(self.folder, 'movie/678')
+        self.assertFalse(more)
+        self.assertEqual([(row['channel'], row['title']) for row in rows], [('s4.DMAX.at', 'Fixture AT')])
+        self.assertEqual(search_art(self.folder, work_id='movie/678'), ([], False))

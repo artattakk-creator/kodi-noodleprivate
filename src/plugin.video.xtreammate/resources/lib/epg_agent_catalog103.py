@@ -14,7 +14,7 @@ import zlib
 from epg_agent_github import DeliveryError, MAX_XML_UNCOMPRESSED, XMLTV_FILE, local_manifest
 
 INDEX = "channels.sqlite"
-VERSION = 1
+VERSION = 2
 APPLICATION_ID = 1480805703
 PAGE = 256
 EVENT_FIELDS = ("_agent_event104", "_agent_generation103", "_agent_images104",
@@ -48,6 +48,7 @@ INDICES = """
     CREATE INDEX channel_id ON channels(id_key,cid);
     CREATE INDEX channel_alias_key ON channel_aliases(name_key,cid);
     CREATE INDEX event_channel_time ON events(cid,start,stop,eid);
+    CREATE INDEX event_work_time ON events(work,start,stop,eid);
     CREATE INDEX works_identity ON works(work_id,year,season,episode,wid);
 """
 
@@ -205,6 +206,7 @@ def _art_rows(event, admit):
 
 
 def _collect(db, path, expected, cancel, on_event, progress):
+    from functools import lru_cache
     from epg_agent100_art import validator
     from epg_horizon102 import Coverage
     from import_budget import check_space
@@ -248,6 +250,17 @@ def _collect(db, path, expected, cancel, on_event, progress):
         elif expected.get("schema_version") == 3:
             raise DeliveryError("ARTWORK_REFERENCE_INVALID")
 
+    @lru_cache(maxsize=2048)
+    def intern_work(identity):
+        db.execute("INSERT OR IGNORE INTO works VALUES(NULL,?,?,?,?,?,?)", identity)
+        return db.execute("SELECT wid FROM works WHERE title_key=? AND title=? AND year=? AND "
+                          "work_id=? AND season=? AND episode=?", identity).fetchone()[0]
+
+    @lru_cache(maxsize=512)
+    def intern_asset(fields):
+        db.execute("INSERT OR IGNORE INTO assets VALUES(NULL,?,?,?,?)", fields)
+        return db.execute("SELECT aid FROM assets WHERE url=? AND source=?", fields[:2]).fetchone()[0]
+
     def programme(event):
         nonlocal references
         cid = event["channel"]
@@ -273,15 +286,12 @@ def _collect(db, path, expected, cancel, on_event, progress):
         event["_agent_images104"] = "ADMITTED" if art else "REJECTED" if images or icons else "ABSENT"
         for key in ("channel", "start_timestamp", "stop_timestamp", "screenshot_uri", "images", "icons"):
             event.pop(key, None)
-        work = None
-        if art:
-            identity = (title_key(event["name"]), event["name"], _year(event),
-                        event.get("xmltv_tmdb_id", ""), event.get("season") or 0,
-                        event.get("episode_number") or 0)
-            db.execute("INSERT OR IGNORE INTO works VALUES(NULL,?,?,?,?,?,?)", identity)
-            work = db.execute("SELECT wid FROM works WHERE title_key=? AND title=? AND year=? AND "
-                              "work_id=? AND season=? AND episode=?", identity).fetchone()[0]
-            keys = {title_key(text) for text in event.get("title_aliases", ())} - {"", identity[0]}
+        identity = (title_key(event["name"]), event["name"], _year(event),
+                    event.get("xmltv_tmdb_id", ""), event.get("season") or 0,
+                    event.get("episode_number") or 0)
+        work = intern_work(identity)
+        keys = {title_key(text) for text in event.get("title_aliases", ())} - {"", identity[0]}
+        if keys:
             db.executemany("INSERT OR IGNORE INTO work_aliases VALUES(?,?)",
                            ((key, work) for key in keys))
         payload = zlib.compress(json.dumps(event, ensure_ascii=False, separators=(",", ":")).encode(), 1)
@@ -290,8 +300,7 @@ def _collect(db, path, expected, cancel, on_event, progress):
         positions = Counter()
         for role, reference in art:
             fields = tuple(reference[key] for key in ("url", "source", "provider", "attribution"))
-            db.execute("INSERT OR IGNORE INTO assets VALUES(NULL,?,?,?,?)", fields)
-            asset = db.execute("SELECT aid FROM assets WHERE url=? AND source=?", fields[:2]).fetchone()[0]
+            asset = intern_asset(fields)
             position = positions[role]
             db.execute("INSERT INTO event_art VALUES(?,?,?,?,?,?)",
                        (event_id, role, position, asset, reference.get("orient", ""), reference.get("size", "")))
@@ -376,7 +385,8 @@ def build(folder, cancel, *, manifest=None, on_event=None, progress=None):
                 db.execute("PRAGMA quick_check").fetchone() == ("ok",),
                 db.execute("SELECT * FROM totals").fetchone() == totals,
                 db.execute("SELECT count(*) FROM channels").fetchone() == (totals[0],),
-                db.execute("SELECT count(*),min(start),max(stop) FROM events").fetchone() == totals[1:4],
+                db.execute("SELECT count(*),min(start),max(stop) FROM events e "
+                           "JOIN works w ON w.wid=e.work").fetchone() == totals[1:4],
                 db.execute("SELECT count(*) FROM event_art").fetchone() == (references,),
                 db.execute("SELECT count(*) FROM event_art p JOIN events e ON e.eid=p.eid "
                            "JOIN assets a ON a.aid=p.aid").fetchone() == (references,),
@@ -516,6 +526,30 @@ def iter_programmes(folder, channels, start, stop, cancel):
                 offset += len(batch)
             if cancel():
                 raise InterruptedError("CANCELLED")
+
+
+def work_events(folder, work_id, *, year=None, season=None, episode=None,
+                offset=0, limit=100, cancel=lambda: False):
+    """Page exact indexed work airings, including those with no imagery."""
+    from xmltv_stream import TMDB_WORK_ID
+
+    if not isinstance(work_id, str) or not TMDB_WORK_ID.fullmatch(work_id):
+        return [], False
+    filters = ["w.work_id=?"]
+    params = [work_id]
+    for column, value in (("w.year", year), ("w.season", season), ("w.episode", episode)):
+        if value is not None:
+            filters.append(column + "=?")
+            params.append(value)
+    limit = min(max(1, limit), 100)
+    sql = ("SELECT e.cid,e.start,e.stop,w.title,w.year,w.season,w.episode FROM works w "
+           "JOIN events e ON e.work=w.wid WHERE " + " AND ".join(filters) +
+           " ORDER BY w.year,w.season,w.episode,w.wid,e.start,e.stop,e.eid LIMIT ? OFFSET ?")
+    with _read(folder, cancel) as db:
+        rows = db.execute(sql, (*params, limit + 1, max(0, offset))).fetchall()
+    return [dict(channel=cid, start_timestamp=begin, stop_timestamp=end, title=title, work_id=work_id,
+                 year=year, season=season or None, episode_number=episode or None)
+            for cid, begin, end, title, year, season, episode in rows[:limit]], len(rows) > limit
 
 
 _ART_COLUMNS = ("e.cid,e.start,e.stop,w.title,w.year,w.work_id,w.season,w.episode,p.role," + _COLUMNS)
