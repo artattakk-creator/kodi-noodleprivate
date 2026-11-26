@@ -64,6 +64,38 @@ class Schedule75(Fixture,unittest.TestCase):
             for phase,expected in [(0,(False,False)),(1,(True,False)),(2,(True,True))]:
                 state['phase']=phase;self.properties[self.s.KEY]=json.dumps(state)
                 self.assertEqual((self.s.allowed('vod'),self.s.allowed('series')),expected)
+    def test_active_103_receiver_uses_the_visible_hero_title_and_exact_geometry(self):
+        for kind, visible, height, expected in (
+                ('live', True, 640, True), ('vod', True, 640, True),
+                ('series', True, 640, True), ('live', False, 640, False),
+                ('live', True, 620, False)):
+            with self.subTest(kind=kind, visible=visible, height=height):
+                self.properties.clear()
+                self.s.configure(self.portals)
+                image = types.SimpleNamespace(getPosition=lambda: (130,0),
+                                              getWidth=lambda: 1760, getHeight=lambda: height)
+                window = types.SimpleNamespace(
+                    getFocusId=lambda: 2510,
+                    getControl=lambda ident: image if ident==296751 else object(),
+                    getProperty=lambda key: self.properties.get(key,''),
+                    setProperty=self.properties.__setitem__)
+                labels = {'$VAR[XCMate103.Contract]':'READY',
+                          'ListItem.Property(XCMate.WidgetKind41)':kind,
+                          'ListItem.Property(XCMate.PortalId)':'p',
+                          'ListItem.Property(XCMate.MediaId)':'1',
+                          'Control.GetLabel(296781)':'Actual selected title'}
+                with (mock.patch.object(self.s,'applicable',return_value=True),
+                      mock.patch('xbmcgui.getCurrentWindowId',return_value=10000),
+                      mock.patch('xbmcgui.getCurrentWindowDialogId',return_value=9999),
+                      mock.patch('xbmcgui.Window',return_value=window),
+                      mock.patch('xbmc.getInfoLabel',side_effect=lambda name: labels.get(name,'')),
+                      mock.patch('xbmc.getCondVisibility',side_effect=lambda name: visible and name=='Control.IsVisible(296781)'),
+                      mock.patch('render_temp85.pin_visible'), mock.patch('home_status86.observe')):
+                    self.s.observe()
+                state = self.s._read(self.s.KEY)
+                self.assertEqual(state['visible'], [kind] if expected else [])
+                self.assertEqual(state['phase'], 1 if expected and kind=='live' else 0)
+
     def test_focused_series_can_bypass_gate_only_for_selected_item(self):
         from epg_handoff63 import profile_scope
         self.properties[self.s.FOCUS]=json.dumps(dict(profile=profile_scope(),pid='p',sid='7',kind='series',at=time.monotonic()))

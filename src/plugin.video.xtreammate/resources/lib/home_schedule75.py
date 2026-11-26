@@ -147,12 +147,17 @@ def observe():
     window.setProperty(FOCUS+'.viewport85.'+kind,json.dumps(value))
     try:
         from home_runtime77 import control
-        image=control(window,296751);title=control(window,296752 if kind=='live' else 296754)
+        fixed_home=xbmc.getInfoLabel('$VAR[XCMate103.Contract]')=='READY'
+        title_id=296781 if fixed_home else 296752 if kind=='live' else 296754
+        image=control(window,296751)
+        control(window,title_id)
         x,y=image.getPosition();width=image.getWidth();height=image.getHeight()
-        title_id=296752 if kind=='live' else 296754
-        rendered=bool(xbmc.getInfoLabel('Control.GetLabel('+str(title_id)+')')) and xbmc.getCondVisibility('Control.IsVisible('+str(title_id)+')')
-        cinematic88=(x,y,width,height)==(130,0,1760,620)
-        geometry=cinematic88 or 100<=x<=300 and 0<=y<=100 and 1000<=width<=1650 and 350<=height<=660
+        rendered=bool(xbmc.getInfoLabel('Control.GetLabel('+str(title_id)+')').strip()) and xbmc.getCondVisibility('Control.IsVisible('+str(title_id)+')')
+        if fixed_home:
+            geometry=(x,y,width,height)==(130,0,1760,640)
+        else:
+            cinematic88=(x,y,width,height)==(130,0,1760,620)
+            geometry=cinematic88 or 100<=x<=300 and 0<=y<=100 and 1000<=width<=1650 and 350<=height<=660
     except (AttributeError,RuntimeError,ValueError):
         window.setProperty('XCMate.Home75.RenderProbe','CONTROL_UNAVAILABLE')
         trace('RENDER_CONTROL_MISSING');return
