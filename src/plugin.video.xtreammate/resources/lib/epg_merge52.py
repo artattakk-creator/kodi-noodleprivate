@@ -6,7 +6,7 @@ missing facts. Different channel IDs require an explicit per-source name match.
 """
 import bisect,hashlib,json,sqlite3,time
 
-DETAILS=('descr','subtitle','genre','season','episode','episode_label','year','cast','director','xmltv_image','provider_image','agent_art')
+DETAILS=('descr','subtitle','genre','season','episode','episode_label','year','cast','director','xmltv_image','provider_image','agent_art','xmltv_date','language','xmltv_title_lang','xmltv_tmdb_id','xmltv_tmdb_score')
 
 
 def same(a,b,cid):
@@ -21,6 +21,7 @@ def retained(previous,incoming):
     if previous.get('descr') and incoming.get('descr') and previous['descr'].strip()!=incoming['descr'].strip():return incoming
     value=dict(incoming)
     for field in DETAILS:
+        if field=='xmltv_tmdb_score' and previous.get('xmltv_tmdb_id')!=value.get('xmltv_tmdb_id'):continue
         if not value.get(field) and previous.get(field):value[field]=previous[field]
     value['epg_text46']=hashlib.sha256(str(value.get('descr',''))[:4096].encode()).hexdigest()
     return value
@@ -56,6 +57,7 @@ def merge(primary,donors,cid,limit=256):
             if not source:continue
             origins=dict(peer.get('field_sources52',{}))
             for field in DETAILS:
+                if field=='xmltv_tmdb_score' and donor.get('xmltv_tmdb_id')!=peer.get('xmltv_tmdb_id'):continue
                 if not peer.get(field) and donor.get(field):
                     peer[field]=donor[field]
                     origins[field]=dict(source=source,channel=str(raw.get('channel') or cid))

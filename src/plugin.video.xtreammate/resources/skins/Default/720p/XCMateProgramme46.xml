@@ -1,25 +1,425 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <window>
  <defaultcontrol always="true">501</defaultcontrol>
  <coordinates><system>1</system></coordinates>
  <controls>
-  <control type="image"><left>30</left><top>30</top><width>1220</width><height>660</height><texture>special://home/addons/plugin.video.xtreammate/resources/media/programme46/panel.png</texture></control>
-  <control type="label" id="101"><left>56</left><top>46</top><width>1160</width><height>48</height><font>font16</font><textcolor>FFFFFFFF</textcolor></control>
-  <control type="image" id="110"><left>56</left><top>112</top><width>536</width><height>302</height><aspectratio>keep</aspectratio><texture /></control>
-  <control type="image" id="113"><left>68</left><top>124</top><width>148</width><height>72</height><texture>special://home/addons/plugin.video.xtreammate/resources/media/programme46/logo-back.png</texture></control>
-  <control type="image" id="111"><left>78</left><top>134</top><width>128</width><height>52</height><aspectratio>keep</aspectratio><texture /></control>
-  <control type="label" id="112"><left>78</left><top>134</top><width>128</width><height>52</height><font>font13</font><textcolor>FFFFFFFF</textcolor><align>center</align></control>
-  <control type="image" id="120"><left>56</left><top>426</top><width>536</width><height>6</height><texture>special://home/addons/plugin.video.xtreammate/resources/media/programme46/track.png</texture></control>
-  <control type="image" id="121"><left>56</left><top>426</top><width>1</width><height>6</height><texture>special://home/addons/plugin.video.xtreammate/resources/media/programme46/progress.png</texture></control>
-  <control type="textbox" id="103"><left>622</left><top>112</top><width>584</width><height>418</height><font>font13</font><textcolor>FFE8EDF2</textcolor><autoscroll time="0" /></control>
-  <control type="label" id="104"><left>56</left><top>476</top><width>536</width><height>28</height><font>font12</font><textcolor>FFBCC7D2</textcolor></control>
-  <control type="textbox" id="105"><left>56</left><top>510</top><width>536</width><height>66</height><font>font12</font><textcolor>FF99A9B8</textcolor></control>
-  <control type="label" id="109"><left>622</left><top>534</top><width>584</width><height>25</height><font>font12</font><textcolor>FFBCC7D2</textcolor></control>
-  <control type="label" id="106"><left>622</left><top>583</top><width>584</width><height>25</height><font>font12</font><textcolor>FF99A9B8</textcolor></control>
-  <control type="button" id="501"><left>56</left><top>610</top><width>240</width><height>48</height><font>font13</font><textoffsetx>40</textoffsetx><textcolor>FFFFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor><texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/programme46/progress.png</texturefocus><texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/programme46/logo-back.png</texturenofocus><onleft>503</onleft><onright>502</onright><onup>501</onup><ondown>501</ondown></control>
-  <control type="image" id="881"><left>68</left><top>624</top><width>20</width><height>20</height><texture /></control>
-  <control type="image" id="130"><left>1026</left><top>610</top><width>180</width><height>48</height><aspectratio>keep</aspectratio><texture>special://home/addons/plugin.video.xtreammate/resources/media/tmdb60/tmdb.png</texture></control>
- <control type="button" id="502"><left>326</left><top>610</top><width>260</width><height>48</height><font>font13</font><textoffsetx>14</textoffsetx><textcolor>FFFFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor><texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/programme46/progress.png</texturefocus><texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/programme46/logo-back.png</texturenofocus><onleft>501</onleft><onright>503</onright><onup>502</onup><ondown>502</ondown><label>Sendung merken</label></control>
-  <control type="button" id="503"><left>596</left><top>610</top><width>260</width><height>48</height><font>font13</font><textoffsetx>14</textoffsetx><textcolor>FFFFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor><texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/programme46/progress.png</texturefocus><texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/programme46/logo-back.png</texturenofocus><onleft>502</onleft><onright>501</onright><onup>503</onup><ondown>503</ondown><label>Jetzt umschalten</label></control>
-  <control type="label" id="107"><left>56</left><top>438</top><width>536</width><height>36</height><font>font12</font><textcolor>FFFFFFFF</textcolor></control><control type="label" id="108"><left>622</left><top>559</top><width>584</width><height>24</height><font>font12</font><textcolor>FFFFFFFF</textcolor></control></controls>
+  <control type="image">
+   <left>0</left><top>0</top><width>1280</width><height>720</height>
+   <texture colordiffuse="FF25324D">special://home/addons/plugin.video.xtreammate/resources/media/programme46/track.png</texture>
+  </control>
+  <control type="image" id="100">
+   <left>48</left><top>24</top><width>1184</width><height>332</height>
+   <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
+  </control>
+  <control type="image" id="110">
+   <left>52</left><top>28</top><width>1176</width><height>324</height>
+   <aspectratio>scale</aspectratio>
+   <texture />
+  </control>
+  <control type="image" id="115">
+   <left>52</left><top>28</top><width>1176</width><height>324</height>
+   <texture>special://home/addons/plugin.video.xtreammate/resources/media/hero88/left-gradient.png</texture>
+  </control>
+  <control type="image" id="116">
+   <left>52</left><top>28</top><width>1176</width><height>324</height>
+   <texture>special://home/addons/plugin.video.xtreammate/resources/media/media_detail_gradient.png</texture>
+  </control>
+  <control type="image" id="111">
+   <left>82</left><top>52</top><width>146</width><height>54</height>
+   <aspectratio align="left">keep</aspectratio>
+   <texture />
+  </control>
+  <control type="label" id="112">
+   <left>82</left><top>52</top><width>818</width><height>54</height>
+   <font>font13</font>
+   <textcolor>FFE8EDF2</textcolor>
+  </control>
+  <control type="image" id="1130">
+   <left>969</left><top>43</top><width>192</width><height>276</height>
+   <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
+  </control>
+  <control type="image" id="114">
+   <left>973</left><top>47</top><width>184</width><height>268</height>
+   <aspectratio>keep</aspectratio>
+   <texture />
+  </control>
+  <control type="label" id="101">
+   <left>82</left><top>117</top><width>845</width><height>62</height>
+   <font>font_MainMenu</font>
+   <textcolor>FFFFFFFF</textcolor>
+  </control>
+  <control type="label" id="102">
+   <left>82</left><top>185</top><width>845</width><height>40</height>
+   <font>font30_title</font>
+   <textcolor>FFECE5DC</textcolor>
+  </control>
+  <control type="label" id="107">
+   <left>82</left><top>231</top><width>845</width><height>32</height>
+   <font>font13</font>
+   <textcolor>FFFFFFFF</textcolor>
+  </control>
+  <control type="image" id="120">
+   <left>82</left><top>267</top><width>520</width><height>6</height>
+   <texture>special://home/addons/plugin.video.xtreammate/resources/media/programme46/track.png</texture>
+  </control>
+  <control type="image" id="121">
+   <left>82</left><top>267</top><width>1</width><height>6</height>
+   <texture colordiffuse="FFFFC46C">special://home/addons/plugin.video.xtreammate/resources/media/programme46/track.png</texture>
+  </control>
+  <control type="image" id="128">
+   <left>82</left><top>287</top><width>300</width><height>29</height>
+   <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
+  </control>
+  <control type="label" id="106">
+   <left>94</left><top>287</top><width>278</width><height>29</height>
+   <font>font12</font>
+   <textcolor>FFE4C17B</textcolor>
+  </control>
+  <control type="image" id="129">
+   <left>405</left><top>287</top><width>234</width><height>29</height>
+   <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
+  </control>
+  <control type="image" id="130">
+   <left>419</left><top>292</top><width>56</width><height>19</height>
+   <aspectratio>keep</aspectratio>
+   <texture>special://home/addons/plugin.video.xtreammate/resources/media/tmdb60/tmdb.png</texture>
+  </control>
+  <control type="label" id="108">
+   <left>482</left><top>287</top><width>150</width><height>29</height>
+   <font>font12</font>
+   <textcolor>FFE4C17B</textcolor>
+  </control>
+  <control type="image" id="117">
+   <left>48</left><top>370</top><width>678</width><height>113</height>
+   <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
+  </control>
+  <control type="label" id="118">
+   <left>70</left><top>382</top><width>626</width><height>26</height>
+   <label>[B]Handlung[/B]</label>
+   <font>font13</font>
+   <textcolor>FFEAF0F8</textcolor>
+  </control>
+  <control type="textbox" id="103">
+   <left>70</left><top>415</top><width>626</width><height>55</height>
+   <font>font13</font>
+   <textcolor>FFE8EDF2</textcolor>
+  </control>
+  <control type="image" id="119">
+   <left>48</left><top>494</top><width>678</width><height>116</height>
+   <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
+  </control>
+  <control type="label" id="123">
+   <left>70</left><top>505</top><width>626</width><height>26</height>
+   <label>[B]Mitwirkende[/B]</label>
+   <font>font13</font>
+   <textcolor>FFEAF0F8</textcolor>
+  </control>
+  <control type="image" id="700">
+   <left>70</left><top>535</top><width>105</width><height>23</height>
+   <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
+  </control>
+  <control type="label" id="720">
+   <left>78</left><top>535</top><width>95</width><height>26</height>
+   <label />
+   <font>font10</font>
+   <textcolor>FFEAF0F8</textcolor>
+  </control>
+  <control type="image" id="701">
+   <left>70</left><top>535</top><width>105</width><height>23</height>
+   <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
+  </control>
+  <control type="label" id="721">
+   <left>78</left><top>535</top><width>95</width><height>26</height>
+   <label />
+   <font>font10</font>
+   <textcolor>FFEAF0F8</textcolor>
+  </control>
+  <control type="image" id="702">
+   <left>70</left><top>535</top><width>105</width><height>23</height>
+   <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
+  </control>
+  <control type="label" id="722">
+   <left>78</left><top>535</top><width>95</width><height>26</height>
+   <label />
+   <font>font10</font>
+   <textcolor>FFEAF0F8</textcolor>
+  </control>
+  <control type="image" id="703">
+   <left>70</left><top>535</top><width>105</width><height>23</height>
+   <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
+  </control>
+  <control type="label" id="723">
+   <left>78</left><top>535</top><width>95</width><height>26</height>
+   <label />
+   <font>font10</font>
+   <textcolor>FFEAF0F8</textcolor>
+  </control>
+  <control type="image" id="704">
+   <left>70</left><top>535</top><width>105</width><height>23</height>
+   <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
+  </control>
+  <control type="label" id="724">
+   <left>78</left><top>535</top><width>95</width><height>26</height>
+   <label />
+   <font>font10</font>
+   <textcolor>FFEAF0F8</textcolor>
+  </control>
+  <control type="image" id="705">
+   <left>70</left><top>535</top><width>105</width><height>23</height>
+   <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
+  </control>
+  <control type="label" id="725">
+   <left>78</left><top>535</top><width>95</width><height>26</height>
+   <label />
+   <font>font10</font>
+   <textcolor>FFEAF0F8</textcolor>
+  </control>
+  <control type="image" id="706">
+   <left>70</left><top>535</top><width>105</width><height>23</height>
+   <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
+  </control>
+  <control type="label" id="726">
+   <left>78</left><top>535</top><width>95</width><height>26</height>
+   <label />
+   <font>font10</font>
+   <textcolor>FFEAF0F8</textcolor>
+  </control>
+  <control type="image" id="707">
+   <left>70</left><top>535</top><width>105</width><height>23</height>
+   <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
+  </control>
+  <control type="label" id="727">
+   <left>78</left><top>535</top><width>95</width><height>26</height>
+   <label />
+   <font>font10</font>
+   <textcolor>FFEAF0F8</textcolor>
+  </control>
+  <control type="image" id="708">
+   <left>70</left><top>535</top><width>105</width><height>23</height>
+   <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
+  </control>
+  <control type="label" id="728">
+   <left>78</left><top>535</top><width>95</width><height>26</height>
+   <label />
+   <font>font10</font>
+   <textcolor>FFEAF0F8</textcolor>
+  </control>
+  <control type="image" id="709">
+   <left>70</left><top>535</top><width>105</width><height>23</height>
+   <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
+  </control>
+  <control type="label" id="729">
+   <left>78</left><top>535</top><width>95</width><height>26</height>
+   <label />
+   <font>font10</font>
+   <textcolor>FFEAF0F8</textcolor>
+  </control>
+  <control type="image" id="710">
+   <left>70</left><top>535</top><width>105</width><height>23</height>
+   <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
+  </control>
+  <control type="label" id="730">
+   <left>78</left><top>535</top><width>95</width><height>26</height>
+   <label />
+   <font>font10</font>
+   <textcolor>FFEAF0F8</textcolor>
+  </control>
+  <control type="image" id="711">
+   <left>70</left><top>535</top><width>105</width><height>23</height>
+   <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
+  </control>
+  <control type="label" id="731">
+   <left>78</left><top>535</top><width>95</width><height>26</height>
+   <label />
+   <font>font10</font>
+   <textcolor>FFEAF0F8</textcolor>
+  </control>
+  <control type="image" id="125">
+   <left>742</left><top>370</top><width>490</width><height>240</height>
+   <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
+  </control>
+  <control type="label" id="126">
+   <left>764</left><top>382</top><width>446</width><height>26</height>
+   <label>[B]Technische Kerndaten[/B]</label>
+   <font>font13</font>
+   <textcolor>FFEAF0F8</textcolor>
+  </control>
+  <control type="textbox" id="127">
+   <left>764</left><top>415</top><width>446</width><height>177</height>
+   <font>font12</font>
+   <textcolor>FFBBC8D8</textcolor>
+  </control>
+  <control type="image" id="132">
+   <left>48</left><top>370</top><width>678</width><height>240</height>
+   <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
+  </control>
+  <control type="label" id="133">
+   <left>70</left><top>382</top><width>626</width><height>26</height>
+   <label>[B]TV-Programm um diese Ausstrahlung[/B]</label>
+   <font>font13</font>
+   <textcolor>FFEAF0F8</textcolor>
+  </control>
+  <control type="textbox" id="134">
+   <left>70</left><top>466</top><width>626</width><height>124</height>
+   <font>font12</font>
+   <textcolor>FFBBC8D8</textcolor>
+  </control>
+  <control type="image" id="137">
+   <left>70</left><top>416</top><width>633</width><height>36</height>
+   <texture colordiffuse="FF97A5B7">special://home/addons/plugin.video.xtreammate/resources/media/programme46/track.png</texture>
+  </control>
+  <control type="label" id="138">
+   <left>84</left><top>419</top><width>602</width><height>29</height>
+   <font>font12</font>
+   <textcolor>FFE4C17B</textcolor>
+  </control>
+  <control type="image" id="135">
+   <left>742</left><top>370</top><width>490</width><height>240</height>
+   <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
+  </control>
+  <control type="label" id="136">
+   <left>764</left><top>382</top><width>446</width><height>26</height>
+   <label>[B]Vorhandene Bildreferenzen[/B]</label>
+   <font>font13</font>
+   <textcolor>FFEAF0F8</textcolor>
+  </control>
+  <control type="image" id="140">
+   <left>763</left><top>421</top><width>282</width><height>159</height>
+   <aspectratio>keep</aspectratio>
+  </control>
+  <control type="image" id="141">
+   <left>1060</left><top>421</top><width>139</width><height>159</height>
+   <aspectratio>keep</aspectratio>
+  </control>
+  <control type="label" id="142">
+   <left>70</left><top>548</top><width>630</width><height>26</height>
+   <label>[B]Was in diesem Datensatz fehlt[/B]</label><font>font13</font>
+   <textcolor>FFEAF0F8</textcolor>
+  </control>
+  <control type="textbox" id="143">
+   <left>70</left><top>574</top><width>630</width><height>42</height>
+   <font>font12</font><textcolor>FFBBC8D8</textcolor>
+  </control>
+  <control type="label" id="144">
+   <left>70</left><top>412</top><width>626</width><height>28</height>
+   <font>font12</font><textcolor>FFBBC8D8</textcolor>
+  </control>
+  <control type="label" id="145">
+   <left>764</left><top>580</top><width>445</width><height>24</height>
+   <font>font12</font><textcolor>FFBBC8D8</textcolor>
+  </control>
+  <control type="label" id="146">
+   <left>957</left><top>322</top><width>215</width><height>27</height>
+   <align>center</align><font>font12</font><textcolor>FFBBC8D8</textcolor>
+  </control>
+  <control type="image" id="153">
+   <left>984</left><top>416</top><width>107</width><height>190</height>
+   <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
+  </control>
+  <control type="image" id="157">
+   <left>1097</left><top>416</top><width>107</width><height>190</height>
+   <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texture>
+  </control>
+  <control type="image" id="150">
+   <left>984</left><top>422</top><width>107</width><height>124</height>
+   <aspectratio>keep</aspectratio>
+  </control>
+  <control type="image" id="154">
+   <left>1097</left><top>422</top><width>107</width><height>124</height>
+   <aspectratio>keep</aspectratio>
+  </control>
+  <control type="label" id="151">
+   <left>984</left><top>546</top><width>107</width><height>23</height>
+   <align>center</align><font>font12</font><textcolor>FFEAF0F8</textcolor>
+  </control>
+  <control type="label" id="155">
+   <left>1097</left><top>546</top><width>107</width><height>23</height>
+   <align>center</align><font>font12</font><textcolor>FFEAF0F8</textcolor>
+  </control>
+  <control type="textbox" id="152">
+   <left>990</left><top>568</top><width>95</width><height>38</height>
+   <font>font12</font><textcolor>FFBBC8D8</textcolor>
+  </control>
+  <control type="textbox" id="156">
+   <left>1103</left><top>568</top><width>95</width><height>38</height>
+   <font>font12</font><textcolor>FFBBC8D8</textcolor>
+  </control>
+  <control type="label" id="148">
+   <left>984</left><top>468</top><width>107</width><height>22</height>
+   <align>center</align><font>font12</font><textcolor>FFBBC8D8</textcolor>
+  </control>
+  <control type="label" id="149">
+   <left>1097</left><top>468</top><width>107</width><height>22</height>
+   <align>center</align><font>font12</font><textcolor>FFBBC8D8</textcolor>
+  </control>
+  <control type="label" id="109">
+   <left>48</left><top>612</top><width>560</width><height>24</height>
+   <font>font12</font>
+   <textcolor>FFBBC8D6</textcolor>
+  </control>
+  <control type="label" id="105">
+   <left>665</left><top>612</top><width>565</width><height>24</height>
+   <font>font12</font>
+   <textcolor>FFBBC8D6</textcolor>
+  </control>
+  <control type="label" id="104">
+   <visible>false</visible>
+  </control>
+  <control type="button" id="501">
+   <left>58</left><top>637</top><width>214</width><height>47</height>
+   <font>font13</font>
+   <textoffsetx>42</textoffsetx>
+   <textcolor>FFFFFFFF</textcolor>
+   <focusedcolor>FFFFFFFF</focusedcolor>
+   <texturefocus colordiffuse="FFDFBC70">special://home/addons/plugin.video.xtreammate/resources/media/programme46/track.png</texturefocus>
+   <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/programme46/panel.png</texturenofocus>
+   <onleft>503</onleft>
+   <onright>502</onright>
+   <onup>501</onup>
+   <ondown>501</ondown>
+  </control>
+  <control type="image" id="881">
+   <left>72</left><top>650</top><width>20</width><height>20</height>
+   <texture />
+  </control>
+  <control type="button" id="502">
+   <left>291</left><top>637</top><width>260</width><height>47</height>
+   <font>font13</font>
+   <textoffsetx>18</textoffsetx>
+   <textcolor>FFFFFFFF</textcolor>
+   <focusedcolor>FFFFFFFF</focusedcolor>
+   <texturefocus colordiffuse="FFDFBC70">special://home/addons/plugin.video.xtreammate/resources/media/programme46/track.png</texturefocus>
+   <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/programme46/panel.png</texturenofocus>
+   <onleft>501</onleft>
+   <onright>503</onright>
+   <onup>502</onup>
+   <ondown>502</ondown>
+  </control>
+  <control type="button" id="503">
+   <left>570</left><top>637</top><width>260</width><height>47</height>
+   <font>font13</font>
+   <textoffsetx>18</textoffsetx>
+   <textcolor>FFFFFFFF</textcolor>
+   <focusedcolor>FFFFFFFF</focusedcolor>
+   <texturefocus colordiffuse="FFDFBC70">special://home/addons/plugin.video.xtreammate/resources/media/programme46/track.png</texturefocus>
+   <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/programme46/panel.png</texturenofocus>
+   <onleft>502</onleft>
+   <onright>501</onright>
+   <onup>503</onup>
+   <ondown>503</ondown>
+  </control>
+  <control type="button" id="504">
+   <left>852</left><top>637</top><width>356</width><height>47</height>
+   <font>font13</font>
+   <textoffsetx>18</textoffsetx>
+   <textcolor>FFFFFFFF</textcolor>
+   <focusedcolor>FFFFFFFF</focusedcolor>
+   <onleft>503</onleft>
+   <onright>501</onright>
+   <onup>504</onup>
+   <ondown>504</ondown>
+   <texturefocus colordiffuse="FFDFBC70">special://home/addons/plugin.video.xtreammate/resources/media/programme46/track.png</texturefocus>
+   <texturenofocus border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme46/detail-card.png</texturenofocus>
+  </control>
+ </controls>
 </window>

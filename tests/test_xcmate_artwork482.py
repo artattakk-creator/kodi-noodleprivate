@@ -20,35 +20,30 @@ class Artwork482(unittest.TestCase):
         self.policy=importlib.import_module('storage_policy92')
         self.f.options.update(programme_tmdb46=True,tmdb_research43=True,programme_tvmaze67=True)
 
-    def test_policy_disabled_deferred_and_invalid_have_distinct_visible_status_without_lookup(self):
-        cases=[(b'{"version":1,"image_epg":"no"}','IMAGE_EPG_DISABLED'),
-               (b'{"version":1,"image_epg":"later"}','IMAGE_EPG_DEFERRED'),
-               (b'{broken','STORAGE_POLICY_INVALID')]
-        for raw,code in cases:
-            with self.subTest(code=code):
-                self.f.properties.clear();self.policy.path().write_bytes(raw)
-                self.assertFalse(self.policy.images_enabled())
-                with mock.patch('media_sources43.get',side_effect=AssertionError('NO_LOOKUP')):
-                    self.assertFalse(self.requests.request(self.event,priority=True))
-                    art=self.requests.result(self.event)
-                self.assertEqual(art.get('code'),code)
-                text=importlib.import_module('programme_diagnostics59').message(self.event,art)
-                self.assertNotIn('Kein bestätigtes Sendungsbild',text)
-                self.assertEqual(self.policy.path().read_bytes(),raw)
-                self.assertFalse(any('request.' in key for key in self.f.properties))
+    def test_legacy_global_choices_do_not_veto_enabled_sources(self):
+        self.f.options.update(programme_xmltv96=True, programme_tmdb46=False,
+                              programme_tvmaze67=False)
+        for raw in ('{"version":1,"image_epg":"no"}',
+                    '{"version":1,"image_epg":"later"}',
+                    '{broken'):
+            with self.subTest(raw=raw):
+                self.policy.path().write_text(raw)
+                self.assertTrue(self.policy.images_enabled())
+                self.assertTrue(self.requests.request(self.event, priority=True))
+                self.assertEqual(self.policy.path().read_text(), raw)
 
-    def test_existing_intent_gets_policy_reason_when_service_admission_is_blocked(self):
+    def test_existing_intent_gets_policy_reason_when_all_sources_are_off(self):
         self.assertTrue(self.requests.request(self.event,priority=True))
-        self.policy.path().write_text('{"version":1,"image_epg":"no"}')
+        self.f.options.update(programme_xmltv96=False,programme_tmdb46=False,programme_tvmaze67=False)
         with mock.patch('series_requests85.drain'),mock.patch('programme_urls55.enqueue',side_effect=AssertionError('NO_LOOKUP')):
             self.assertEqual(self.requests.drain(),0)
         self.assertEqual(self.requests.result(self.event).get('code'),'IMAGE_EPG_DISABLED')
 
-    def test_explicit_reenable_replaces_old_policy_error_with_actual_new_request_state(self):
-        self.policy.path().write_text('{"version":1,"image_epg":"no"}')
+    def test_tvmaze_reactivation_works_with_legacy_deferred_value(self):
+        self.policy.path().write_text('{"version":1,"image_epg":"later"}')
+        self.f.options.update(programme_xmltv96=False,programme_tmdb46=False,programme_tvmaze67=False)
         self.policy.images_enabled();self.assertFalse(self.requests.request(self.event))
-        self.assertEqual(self.requests.result(self.event).get('code'),'IMAGE_EPG_DISABLED')
-        self.policy.path().write_text('{"version":1,"image_epg":"yes"}')
+        self.f.options['programme_tvmaze67']=True
         self.policy.images_enabled();self.assertTrue(self.requests.request(self.event))
         self.assertEqual(self.requests.result(self.event).get('code'),'REQUESTED')
 
@@ -67,6 +62,169 @@ class Artwork482(unittest.TestCase):
         self.assertEqual(art['code'],'SETTINGS_XML_INVALID')
         self.assertIn('einstellungen',importlib.import_module('programme_diagnostics59').message(self.event,art).casefold())
         self.assertEqual(settings.read_bytes(),b'<settings>');self.assertEqual(token.read_bytes(),b'SYNTHETIC_PRIVATE_BYTES_ONLY')
+
+    def test_detail_has_unbacked_logo_and_hides_absent_metadata_and_artwork(self):
+        from programme_window46 import ProgrammeWindow46
+        from xcmate027_fixture import ADDON
+
+        window = ProgrammeWindow46('XCMateProgramme46.xml', str(ADDON), 'Default', '720p')
+        window.configure(self.f.portal, self.f.channel)
+        self.addCleanup(window.close)
+        with mock.patch.object(window, '_start_read85'):
+            window.onInit()
+        self.assertNotIn(113, window.controls)
+        self.assertFalse(window.getControl(114).visible)
+        self.assertFalse(window.getControl(110).visible)
+        self.assertFalse(window.getControl(103).visible)
+        self.assertFalse(window.getControl(104).visible)
+        self.assertFalse(window.getControl(504).visible)
+        window._paint_facts(dict(channel='Welt HD', title='Report',
+                                 subtitle='Belegte Folge', description='Belegter Text',
+                                 genre='Doku', cast=['Belegter Name']))
+        self.assertEqual(window.getControl(101).label, 'Report')
+        self.assertEqual(window.getControl(102).label, 'Belegte Folge')
+        self.assertEqual(window.getControl(103).text, 'Belegter Text')
+        self.assertTrue(window.getControl(119).visible)
+        self.assertEqual(window.getControl(720).label, 'Belegter Name')
+        self.assertTrue(window.getControl(125).visible)
+        self.assertIn('Welt HD', window.getControl(127).text)
+        self.assertFalse(window.getControl(109).visible)
+
+    def test_reference_detail_gives_full_rows_to_nine_cast_names(self):
+        from programme_window46 import ProgrammeWindow46
+        from xcmate027_fixture import ADDON
+
+        window = ProgrammeWindow46('XCMateProgramme46.xml', str(ADDON), 'Default', '720p')
+        window.configure(self.f.portal, self.f.channel)
+        self.addCleanup(window.close)
+        with mock.patch.object(window, '_start_read85'):
+            window.onInit()
+        cast = ['Rose McIver', 'Utkarsh Ambudkar', 'Brandon Scott Jones', 'Danielle Pinnock',
+                'Richie Moriarty', 'Asher Grodman', 'Rebecca Wisocky', 'Devan Chandler Long',
+                'Román Zaragoza']
+        window._paint_facts(dict(channel='Comedy Central', title='Ghosts',
+                                 description='Ein kurzer Sendungstext.', cast=cast))
+        self.assertEqual(window.getControl(101).node.findtext('font'), 'font_MainMenu')
+        self.assertEqual(window.getControl(102).node.findtext('font'), 'font30_title')
+        for index, name in enumerate(cast):
+            label = window.getControl(720 + index)
+            self.assertTrue(label.visible, name)
+            self.assertEqual(label.label, name)
+
+    def test_detail_supporting_page_uses_same_event_and_keeps_back_action(self):
+        from programme_window46 import ProgrammeWindow46
+        from xcmate027_fixture import ADDON
+
+        window = ProgrammeWindow46('XCMateProgramme46.xml', str(ADDON), 'Default', '720p')
+        window.configure(self.f.portal, self.f.channel)
+        self.addCleanup(window.close)
+        with mock.patch.object(window, '_start_read85'):
+            window.onInit()
+        event = dict(self.event, following46=[dict(start=self.event['stop'], title='Danach')])
+        window._paint_facts(event)
+        self.assertTrue(window.getControl(504).visible)
+        self.assertEqual(window.getControl(503).node.findtext('onright'),'504')
+        window.onClick(504)
+        self.assertTrue(window.getControl(132).visible)
+        self.assertIn('Danach', window.getControl(134).text)
+        self.assertTrue(window.getControl(138).visible)
+        window.onClick(504)
+        self.assertFalse(window.getControl(132).visible)
+        window.onClick(501)
+        self.assertTrue(window._closed)
+
+    def test_detail_exposes_only_observed_gaps_and_adjacent_programmes(self):
+        from programme_window46 import ProgrammeWindow46
+        from xcmate027_fixture import ADDON
+
+        window = ProgrammeWindow46('XCMateProgramme46.xml', str(ADDON), 'Default', '720p')
+        window.configure(self.f.portal, self.f.channel)
+        self.addCleanup(window.close)
+        with mock.patch.object(window, '_start_read85'):
+            window.onInit()
+        start = self.event['start']
+        window._paint_facts(dict(self.event, director='Pat Meyer',
+                                 preceding46=dict(start=start-600, stop=start, title='Davor'),
+                                 following46=[dict(start=self.event['stop'], title='Danach')]))
+        window.onClick(504)
+        self.assertIn('Davor', window.getControl(144).label)
+        self.assertIn('Danach', window.getControl(134).text)
+        self.assertTrue(window.getControl(143).visible)
+        self.assertIn('Episodenbild', window.getControl(143).text)
+        self.assertNotIn('Regie', window.getControl(143).text)
+
+    def test_full_technical_card_keeps_both_broadcast_times_in_one_row(self):
+        from programme_window46 import ProgrammeWindow46
+        from xcmate027_fixture import ADDON
+
+        window = ProgrammeWindow46('XCMateProgramme46.xml', str(ADDON), 'Default', '720p')
+        window.configure(self.f.portal, self.f.channel)
+        self.addCleanup(window.close)
+        with mock.patch.object(window, '_start_read85'):
+            window.onInit()
+        event = dict(self.event, xmltv_date='20261024', director='Pat Meyer',
+                     channel='Test', canonical='test.id', _source_label100='XMLTV',
+                     start=1792882800, stop=1792885500)
+        window._paint_facts(event)
+        dates = [row for row in window.getControl(127).text.splitlines()
+                 if row.startswith(('Beginn', 'Ende'))]
+        self.assertEqual(len(dates), 1)
+        self.assertIn('Ende', dates[0])
+
+    def test_verified_episode_picture_is_not_reported_missing(self):
+        from programme_window46 import ProgrammeWindow46
+        from xcmate027_fixture import ADDON
+
+        window = ProgrammeWindow46('XCMateProgramme46.xml', str(ADDON), 'Default', '720p')
+        window.configure(self.f.portal, self.f.channel)
+        self.addCleanup(window.close)
+        with mock.patch.object(window, '_start_read85'):
+            window.onInit()
+        window.event = dict(self.event, team='Synthetic', director='Pat Meyer')
+        window._paint_facts(window.event)
+        image = dict(source='tvmaze_episode', image_scope57='episode', image='/verified/still.png')
+        with mock.patch('programme_image69.eligible', side_effect=lambda value,event: bool(value)):
+            window._paint_art(image, {}, {})
+        window.onClick(504)
+        self.assertEqual(window.getControl(110).image, image['image'])
+        self.assertNotIn('Episodenbild', window.getControl(143).text)
+
+    def test_detail_renders_each_verified_image_in_its_own_role(self):
+        from programme_window46 import ProgrammeWindow46
+        from xcmate027_fixture import ADDON
+        from agent_programme100 import fits, view
+
+        window = ProgrammeWindow46('XCMateProgramme46.xml', str(ADDON), 'Default', '720p')
+        window.configure(self.f.portal, self.f.channel)
+        self.addCleanup(window.close)
+        window.event = dict(self.event, _detail93=True)
+        backdrop = dict(source='agent_tmdb', role81='backdrop', image='/verified/backdrop.png')
+        poster = dict(source='agent_tmdb', role81='poster', image='/verified/poster.png')
+        with mock.patch('programme_image69.eligible', side_effect=lambda value,event: fits(value,view(event))):
+            window._paint_art({},backdrop,poster)
+        self.assertEqual(window.getControl(110).image,backdrop['image'])
+        self.assertEqual(window.getControl(114).image,poster['image'])
+
+    def test_verified_poster_rating_is_visible_with_non_tmdb_backdrop(self):
+        from programme_window46 import ProgrammeWindow46
+        from xcmate027_fixture import ADDON
+
+        window = ProgrammeWindow46('XCMateProgramme46.xml', str(ADDON), 'Default', '720p')
+        window.configure(self.f.portal, self.f.channel)
+        self.addCleanup(window.close)
+        window.event = dict(self.event)
+        backdrop = dict(source='provider_event', role81='backdrop', image='/verified/backdrop.png')
+        poster = dict(source='tmdb_series', role81='poster', image='/verified/poster.png',
+                      vote_average88=8.1, vote_count88=100, provider_id='126027')
+        with mock.patch('programme_image69.eligible', side_effect=lambda value,event: bool(value)):
+            window._paint_art({}, backdrop, poster)
+        self.assertTrue(window.getControl(108).visible)
+        self.assertEqual(window.getControl(108).label, '8,1/10 · Serie')
+        self.assertIn('126027', window.getControl(127).text)
+        with mock.patch('programme_image69.eligible', side_effect=lambda value,event: bool(value)):
+            window._paint_art({}, backdrop, dict(poster, vote_count88=0))
+        self.assertTrue(window.getControl(130).visible)
+        self.assertFalse(window.getControl(108).visible)
 
     def test_healthy_explicit_lookup_decodes_correct_bytes_and_reaches_detail_consumer(self):
         self.f.folder.joinpath('settings.xml').write_text('<settings><setting id="programme_tmdb46">true</setting><setting id="tmdb_research43">true</setting></settings>')

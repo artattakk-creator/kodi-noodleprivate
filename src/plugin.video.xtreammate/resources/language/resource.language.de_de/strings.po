@@ -6299,3 +6299,7 @@ msgstr "Installierte Designs"
 msgctxt "#39124"
 msgid "Posters / backdrops / episode images / station logos"
 msgstr "Poster / Hintergründe / Episodenbilder / Senderlogos"
+
+msgctxt "#39125"
+msgid "Public EPG data is being prepared. The provider guide remains available."
+msgstr "Öffentliche EPG-Daten werden bereitgestellt. Das Anbieter-EPG bleibt verfügbar."

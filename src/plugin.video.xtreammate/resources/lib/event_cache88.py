@@ -11,7 +11,10 @@ def clean(value):
  if not isinstance(value,dict) or set(value)-{'source','match','role81','image_scope57','manual85','mapping_epoch85','source_hash88','dns_hash88','vote_average88','vote_count88'}:raise ValueError('CACHE88_PROOF')
  from programme_sources57 import PROOFS
  if value.get('source') not in SOURCES or value.get('match') not in ('EXACT_EVENT','EXACT_TITLE_YEAR','EXACT_SEASON_EPISODE','EXACT_UNIQUE_FILM_TITLE')+PROOFS or value.get('match')=='PROVISIONAL_TV85':raise ValueError('CACHE88_PROOF')
- if value.get('role81','') not in ('','backdrop','poster','episode_still','thumb','legacy_icon') or value.get('image_scope57','') not in ('','movie','episode','series','series_fallback'):raise ValueError('CACHE88_PROOF')
+ from agent_programme100 import PERSON_ROLES, SOURCES as AGENT_SOURCES
+ role=value.get('role81','')
+ if role not in ('','backdrop','poster','episode_still','thumb','legacy_icon',*PERSON_ROLES) or value.get('image_scope57','') not in ('','movie','episode','series','series_fallback'):raise ValueError('CACHE88_PROOF')
+ if role in PERSON_ROLES and (value['source'] not in AGENT_SOURCES or value['match']!='EXACT_EVENT'):raise ValueError('CACHE88_PROOF')
  if type(value.get('manual85',False)) is not bool or type(value.get('mapping_epoch85',0)) is not int or not 0<=value.get('mapping_epoch85',0)<2**63 or not re.fullmatch('[a-f0-9]{64}',value.get('source_hash88','')):raise ValueError('CACHE88_PROOF')
  if not re.fullmatch('[a-f0-9]{64}',value.get('dns_hash88','')):raise ValueError('CACHE88_DNS')
  if 'vote_average88' in value and (type(value['vote_average88']) not in (int,float) or not 0<=value['vote_average88']<=10):raise ValueError('CACHE88_RATING')
@@ -88,7 +91,7 @@ def recover(event):
     if key_hash not in (hashlib.sha256((context+'.'+digest).encode()).hexdigest(),
                         hashlib.sha256(asset_key(context,digest,proof).encode()).hexdigest()):continue
     if not admitted(proof,event):continue
-    if view499 and not roles499.manual(proof) and not roles499.selected(proof,view499):continue
+    if proof.get('role81') in roles499.PERSON_ROLES or (view499 and not roles499.manual(proof) and not roles499.selected(proof,view499)):continue
     record=decoded(texture,texture.get('url',''))
     if not record:continue
     result=dict(proof,key=event['key'],fingerprint=fingerprint(event),code='READY',image=record['file'],thumbnail=record['file'],sha256=record['sha256'],scope69=identity(event),profile69=scope(),policy69=negative_scope({}),until=min(time.time()+600,event['stop']),decoded77=True,image_width77=record['width'],image_height77=record['height'],persisted69=False,storage69='KODI_TEXTURE_CACHE')

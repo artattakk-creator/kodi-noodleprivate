@@ -30,7 +30,7 @@ def remember(event,value,body):
   try:__import__('external_art89').archive_programme(event,value,body)
   except (OSError,ValueError,TypeError,RuntimeError):pass
  return result
-def publish89(event,value,body):
+def publish89(event,value,body,*,shared=True):
  """Internal producer: caller already proved source/event and decoded bytes."""
  from programme_requests68 import identity,scope
  from programme_policy68 import negative_scope
@@ -44,7 +44,7 @@ def publish89(event,value,body):
   asset=__import__('decoded_assets88').put(asset_key88,body,until,receipt88=proof)
   result=dict(value,key=event.get('key') or __import__('programme_events46').key(event['pid'],event['sid'],event),fingerprint=__import__('programme_art46').fingerprint(event),image=asset['uri'],thumbnail=asset['uri'],sha256=asset['sha256'],until=asset['until'],asset88=asset_key88,decoded88=True,scope69=identity(event),profile69=scope(),policy69=negative_scope({}),storage69='RAM_ONLY',persisted69=False)
   for field in ('display84','display_key84','url_version55','url_verified69','temp85'):result.pop(field,None)
-  window().setProperty(PREFIX+key(event),json.dumps(result,separators=(',',':')))
+  if shared:window().setProperty(PREFIX+key(event),json.dumps(result,separators=(',',':')))
   return result
  except (OSError,ValueError,TypeError):return value
 def read(event):

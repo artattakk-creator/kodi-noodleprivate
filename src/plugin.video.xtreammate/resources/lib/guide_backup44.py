@@ -4,18 +4,16 @@ from pathlib import Path
 from urllib.parse import quote
 
 
-def authorize(filename,cancel=lambda:False):
-    """User-requested worker action only. Source stays intact on every failure."""
+def authorize(filename,cancel=lambda:False,*,current_schema_only=False):
+    """Authorize using a verified backup. Automatic callers cannot migrate data."""
     from import_budget import check_space
-    from guide_publish44 import initialize,ready,diagnose
+    from guide_publish44 import initialize
     source=Path(filename)
     if not source.is_file() or source.is_symlink():raise ValueError('GUIDE_FILE_REQUIRED')
     folder=source.parent/'guide_backups44';folder.mkdir(mode=0o700,exist_ok=True)
     if folder.is_symlink():raise ValueError('UNSAFE_BACKUP_PATH')
     check_space(str(source),source.stat().st_size*2+32*1048576)
     destination=folder/('guide-'+str(time.time_ns())+'.sqlite')
-    fd=os.open(destination,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
-    os.close(fd)
     config=source.parent/'xtreammate_epg_sources.json'
     config_bytes=None;config_stamp=None
     if config.exists():
@@ -24,9 +22,14 @@ def authorize(filename,cancel=lambda:False):
         config_bytes=config.read_bytes()
         json.loads(config_bytes)  # A corrupt config is not silently backed up as valid.
         if (config.stat().st_mtime_ns,config.stat().st_size)!=config_stamp:raise ValueError('CONFIG_CHANGED_RETRY_BACKUP')
-    incoming=sqlite3.connect('file:'+quote(str(source),safe='/')+'?mode=ro',uri=True,timeout=.2)
-    output=sqlite3.connect(str(destination),timeout=.2)
+    incoming=output=None
+    committed=False
+    created=[]
     try:
+        incoming=sqlite3.connect('file:'+quote(str(source),safe='/')+'?mode=ro',uri=True,timeout=.2)
+        fd=os.open(destination,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+        created.append(destination);os.close(fd)
+        output=sqlite3.connect(str(destination),timeout=.2)
         def progress(status,remaining,total):
             if cancel():raise InterruptedError('CANCELLED')
         incoming.backup(output,pages=256,progress=progress,sleep=.01)
@@ -49,21 +52,35 @@ def authorize(filename,cancel=lambda:False):
             actual=db.execute('SELECT pid,count(*),min(start),max(stop) FROM programmes GROUP BY pid ORDER BY pid').fetchall()
             if before!=after or coverage!=actual:raise ValueError('GUIDE_CHANGED_RETRY_BACKUP')
             if config_stamp and (config.stat().st_mtime_ns,config.stat().st_size)!=config_stamp:raise ValueError('CONFIG_CHANGED_RETRY_BACKUP')
+            if current_schema_only:
+                if db.execute("SELECT 1 FROM guide44_authorization WHERE kind='VERIFIED_BACKUP' LIMIT 1").fetchone():
+                    return None  # Another worker completed the authorization.
+            else:
+                initialize(db)
             if config_bytes is not None:
-                fd=os.open(str(destination)+'.sources.json',os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+                config_copy=destination.with_name(destination.name+'.sources.json')
+                fd=os.open(config_copy,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+                created.append(config_copy)
                 with os.fdopen(fd,'wb') as f:f.write(config_bytes);f.flush();os.fsync(f.fileno())
-            # DDL only follows explicit backup and validated unchanged snapshot.
-            initialize(db)
+            manifest=dict(code='BACKUP_VERIFIED',sha256=digest,bytes=destination.stat().st_size,events=sum(r[1] for r in coverage),backup=destination.name,source_config_sha256=hashlib.sha256(config_bytes).hexdigest() if config_bytes is not None else None)
+            receipt=destination.with_name(destination.name+'.json')
+            fd=os.open(receipt,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+            created.append(receipt)
+            with os.fdopen(fd,'w',encoding='utf-8') as f:json.dump(manifest,f);f.flush();os.fsync(f.fileno())
+            if cancel():raise InterruptedError('CANCELLED')
             with db:
                 db.execute('INSERT INTO guide44_authorization VALUES(?,?,?)',('VERIFIED_BACKUP',digest,time.time()))
-                db.execute("INSERT OR IGNORE INTO guide44_inputs SELECT pid,'legacy:'||source,cid,start,stop,title,description,source FROM programmes")
+                if not current_schema_only:
+                    db.execute("INSERT OR IGNORE INTO guide44_inputs SELECT pid,'legacy:'||source,cid,start,stop,title,description,source FROM programmes")
+            committed=True
         finally:db.close()
-        manifest=dict(code='BACKUP_VERIFIED',sha256=digest,bytes=destination.stat().st_size,events=sum(r[1] for r in coverage),backup=destination.name,source_config_sha256=hashlib.sha256(config_bytes).hexdigest() if config_bytes is not None else None)
-        with open(str(destination)+'.json','x',encoding='utf-8') as f:json.dump(manifest,f);f.flush();os.fsync(f.fileno())
         return manifest
     finally:
         if output is not None:output.close()
-        incoming.close()
+        if incoming is not None:incoming.close()
+        if not committed:
+            for file in reversed(created):
+                file.unlink(missing_ok=True)
 
 _worker=None
 _last=''

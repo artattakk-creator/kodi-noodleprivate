@@ -19,6 +19,26 @@ class GridTests(Fixture,unittest.TestCase):
 
     def key(self,w,k):w.onAction(types.SimpleNamespace(getId=lambda:k));self.settle(w)
 
+    def test_groups_opened_during_cold_start_stay_open_when_catalog_arrives(self):
+        w = self.window()
+        groups = list(w.groups)
+        self.assertTrue(groups)
+        w._start_pending = True
+        w.groups = []
+        w._show_groups(refresh=False)
+        w._groups_loaded(groups)
+        self.assertEqual(w.mode, 'groups')
+        self.assertTrue(w.getControl(200).visible)
+
+    def test_background_refresh_keeps_lastgood_rows_when_epg_snapshot_is_unavailable(self):
+        w = self.window()
+        old = w.rows[0]['events']
+        self.assertTrue(old)
+        w._background = True
+        changed = [dict(row, events=[]) for row in w.rows]
+        w._loaded(dict(rows=changed, groups=w.groups, total=w.total, code='NOT_CREATED'))
+        self.assertEqual(w.rows[0]['events'], old)
+
     def test_shared_axis_clips_and_keeps_duration_proportions(self):
         self.assertEqual(self.data.rectangle(0,3600,0),(0,298))
         self.assertEqual(self.data.rectangle(3600,7200,0),(298,299))

@@ -71,6 +71,6 @@ def enrich(pid,cid,rows,source=None,sid48=None,revision48=None):
 def source_metadata(event):
     from programme_store46 import metadata
     result=metadata(event)
-    for key in ('xmltv_image','provider_image','agent_art','subtitle','genre','episode_label','year','season','episode','cast','director','epg_source46','epg_text46','source_key46','fact_revision46','field_sources52','updated52'):
+    for key in ('xmltv_image','provider_image','agent_art','subtitle','genre','episode_label','year','season','episode','cast','director','xmltv_date','language','epg_source46','epg_text46','source_key46','fact_revision46','field_sources52','updated52'):
         if event.get(key) not in (None,'',[]):result[key]=event[key]
     return result

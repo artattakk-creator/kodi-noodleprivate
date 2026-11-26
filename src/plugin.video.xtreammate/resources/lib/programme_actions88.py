@@ -1,5 +1,5 @@
 """Exact-event bookmarks and existing owner-pump tuning, no alternate player."""
-import hashlib,json,math,os,tempfile,time
+import hashlib,json,math,os,re,tempfile,time
 from pathlib import Path
 def bookmark_id(event):
  return hashlib.sha256(json.dumps([str(event['pid']),str(event['sid']),int(event['start']),int(event['stop'])]).encode()).hexdigest()
@@ -46,10 +46,31 @@ def tmdb_source(source):
  return str(source).startswith('tmdb') or source=='agent_tmdb'
 
 
-def rating(value):
- score=value.get('vote_average88');votes=value.get('vote_count88')
- if not tmdb_source(value.get('source','')) or value.get('provisional85') or type(score) not in (int,float) or not math.isfinite(score) or not 0<score<=10 or type(votes) is not int or votes<=0:return ''
+def tmdb_id(value):
+ if not tmdb_source(value.get('source')) or value.get('provisional85'):
+  return None
+ raw=value.get('provider_id')
+ if type(raw) is int or isinstance(raw,str) and len(raw)<=12 and raw.isascii() and raw.isdecimal():
+  ident=int(raw)
+  return ident if 0<ident<10**12 else None
+ return None
+
+
+def _rating_text(score):
+ if type(score) not in (int,float) or not 0<score<=10:return ''
  return 'TMDB '+format(score,'.1f').replace('.',',')+'/10'
+
+def rating(value):
+ votes=value.get('vote_count88')
+ if not tmdb_source(value.get('source','')) or value.get('provisional85') or type(votes) is not int or votes<=0:return ''
+ return _rating_text(value.get('vote_average88'))
+
+def xmltv_tmdb(event):
+ ident=event.get('xmltv_tmdb_id')
+ if not isinstance(ident,str) or not re.fullmatch(r'(?:tv|movie)/[1-9][0-9]{0,11}',ident):ident=''
+ scope={'tv':'Serie','movie':'Film'}.get(ident.partition('/')[0],'')
+ return ident,_rating_text(event.get('xmltv_tmdb_score')) if ident else '',scope
+
 def tune(parent,portal,channel):
  if parent is None:return False
  sid=str(channel.get('sid',''))

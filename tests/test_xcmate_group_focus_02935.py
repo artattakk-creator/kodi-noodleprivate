@@ -22,7 +22,7 @@ class GroupFocus35(Fixture,unittest.TestCase):
         self.assertEqual(json.dumps(self.portal,sort_keys=True),before);self.assertFalse(self.options)
     def test_delayed_catalogue_retries_saved_start_group_instead_of_first_group(self):
         self.index.replace_catalog('p','live',[],[]);self.portal.update(start_group_id='b',start_stream_id='b1')
-        w=self.window();self.assertEqual(w.mode,'groups');self.assertTrue(w._start_pending)
+        w=self.window();self.assertEqual(w.rows,[])
         self.index.replace_catalog('p','live',[dict(stream_id='a1',category_id='a',name='A'),dict(stream_id='b1',category_id='b',name='B')],self.catalogs['get_live_categories'])
         w._start_retry=0;w._owner_tick();self.settle(w)
         self.assertEqual(w.mode,'grid');self.assertEqual(w.category,'b');self.assertEqual(w.rows[w.row]['channel']['sid'],'b1')

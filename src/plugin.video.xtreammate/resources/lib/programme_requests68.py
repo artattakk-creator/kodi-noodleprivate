@@ -5,13 +5,15 @@ alone reloads authoritative local event facts and uses the existing URL queue.
 No provider URLs, tokens, SQL, files or HTTP in request()/result().
 """
 import hashlib,json,threading,time
+from agent_programme100 import PERSON_VIEWS
 PREFIX='XCMate.Programme68.'
 SLOTS=64
-ROLE_BANKS={'hero':0,'details':1,'card':2}
-INTENT_SLOTS=SLOTS*len(ROLE_BANKS)
+PERSON_SLOTS=8
+ROLE_BANKS={'hero':0,'details':1,'card':2,**{view:3+i for i,view in enumerate(PERSON_VIEWS)}}
+INTENT_SLOTS=3*SLOTS+len(PERSON_VIEWS)*PERSON_SLOTS
 MAX_BYTES=8192
 _FIELDS=('pid','sid','start','stop','title','canonical','revision','source_key46','fact_revision46','epg_source46')
-_ART=('key','fingerprint','code','source','match','image','thumbnail','sha256','attribution','image_scope57','until','failure_reason68','storage68','source_url','url_version55','url_verified69','scope69','profile69','persisted69','storage69','storage_code69','policy69','resolved_at55','sources70','lookup70','origin_policy75','decoded77','image_width77','image_height77','display84','display_key84','provisional85','manual85','temp85','mapping_epoch85','role81','decoded88','asset88','vote_average88','vote_count88','xmltv96')
+_ART=('key','fingerprint','code','source','match','image','thumbnail','sha256','attribution','image_scope57','until','failure_reason68','storage68','source_url','url_version55','url_verified69','scope69','profile69','persisted69','storage69','storage_code69','policy69','resolved_at55','sources70','lookup70','origin_policy75','decoded77','image_width77','image_height77','display84','display_key84','provisional85','manual85','temp85','mapping_epoch85','role81','decoded88','asset88','provider_id','vote_average88','vote_count88','xmltv96')
 _lock=threading.Lock()
 _thread=None
 _stop=threading.Event()
@@ -29,6 +31,8 @@ def identity(event):
  return hashlib.sha256(json.dumps(values,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
 
 def slot_for(tag,view='hero'):
+ if view in PERSON_VIEWS:
+  return 3*SLOTS+PERSON_VIEWS.index(view)*PERSON_SLOTS+int(tag[:8],16)%PERSON_SLOTS
  return ROLE_BANKS[view]*SLOTS+int(tag[:8],16)%SLOTS
 
 def _window():
@@ -94,6 +98,10 @@ def status(event,code,art=None):
   tags=[identity(event)]
   with _lock:tags+=list(_aliases.get((tags[0],view),()))
   payload={k:art[k] for k in _ART if art and k in art}
+  if 'provider_id' in payload:
+   verified_id=__import__('programme_actions88').tmdb_id(payload)
+   if verified_id:payload['provider_id']=verified_id
+   else:del payload['provider_id']
   if 'sources70' in payload:payload['sources70']=__import__('programme_outcomes70').clean(payload['sources70'])
   if 'lookup70' in payload:payload['lookup70']={k:bool(v) for k,v in payload['lookup70'].items() if k in ('own','helper','catalog','tvmaze')} if isinstance(payload['lookup70'],dict) else {}
   if not (payload.get('decoded88') and __import__('sticky_art88').valid(payload,event)) and (payload.get('source_url') or str(payload.get('image','')).startswith(('http://','https://','smb://'))):
@@ -116,13 +124,14 @@ def result(event,previous=None):
  try:
   import agent_programme100 as roles499
   requested=roles499.view(event)
-  locked89=__import__('programme_lock89').current(event)
+  person=requested in PERSON_VIEWS
+  locked89=None if person else __import__('programme_lock89').current(event)
   if locked89 and roles499.manual(locked89):return locked89
   from utils import setting_bool
   role499=roles499.read(event,requested) if setting_bool('epg_agent_enabled',False) else None
   if role499:return role499
   if locked89 and locked89.get('role81')!='legacy_icon' and roles499.fits(locked89,requested):return locked89
-  pinned88=__import__('sticky_art88').read(event)
+  pinned88=None if person else __import__('sticky_art88').read(event)
   if pinned88 and pinned88.get('role81')!='legacy_icon' and roles499.fits(pinned88,requested):return pinned88
   if not roles499.fits(previous,requested):previous=None
   tag=identity(event);value=_read('status.'+str(slot_for(tag,requested)))
@@ -193,6 +202,7 @@ def drain(cancel=lambda:False):
    requested=value.get('view499','hero')
    if not isinstance(requested,str) or requested not in ROLE_BANKS or slot!=slot_for(value['tag'],requested):continue
    event=dict(event,_art_view499=requested)
+   person=requested in PERSON_VIEWS
    previous69=_read('status.'+str(slot))
    if previous69.get('tag')==value['tag'] and previous69.get('scope')==scope():
     artifact69=previous69.get('art') or {}
@@ -211,9 +221,10 @@ def drain(cancel=lambda:False):
    if not portal or not portal.get('enabled',True) or not portal.get('include_live',True):continue
    # Token refresh/file access is deliberately in this worker, never focus.
    from programme_art46 import fingerprint
-   from tmdb_token61 import effective_tmdb_read_token,TokenError
-   try:effective_tmdb_read_token()
-   except TokenError:pass
+   if not person:
+    from tmdb_token61 import effective_tmdb_read_token,TokenError
+    try:effective_tmdb_read_token()
+    except TokenError:pass
    policy=fingerprint(event)+'|'+requested;tag=value['tag'];now=time.monotonic()
    with _lock:prior=_seen.get((tag,policy),-1e9)
    if now-prior<10:continue
@@ -246,8 +257,8 @@ def drain(cancel=lambda:False):
     while len(_aliases)>128:_aliases.pop(next(iter(_aliases)))
    from utils import setting_bool
    own=setting_bool('programme_tmdb46',False) and setting_bool('tmdb_research43',False)
-   allow=own or setting_bool('programme_tvmaze67',False) or setting_bool('programme_helper57',True) or setting_bool('programme_catalog57',True)
-   if not allow and not current.get('xmltv_image') and not current.get('provider_image') and not __import__('agent_programme100').candidates(current):
+   allow=not person and (own or setting_bool('programme_tvmaze67',False) or setting_bool('programme_helper57',True) or setting_bool('programme_catalog57',True))
+   if not person and not allow and not current.get('xmltv_image') and not current.get('provider_image') and not __import__('agent_programme100').candidates(current):
     # An explicit local XMLTV choice can refer to another active feed.
     # Admit it without granting remote search; resolve revalidates its facts.
     local96=__import__('programme_mapping85').current(current)
@@ -255,7 +266,7 @@ def drain(cancel=lambda:False):
      status(current,'TMDB_LOOKUP_DISABLED')
      mark_seen(tag,policy,now)
      continue
-   accepted=enqueue(current,allow_lookup=allow,local_image63=setting_bool('programme_art_local69',False),priority68=2 if value.get('priority') else False)
+   accepted=enqueue(current,allow_lookup=allow,local_image63=not person and setting_bool('programme_art_local69',False),priority68=2 if value.get('priority') else False)
    mark_seen(tag,policy,now if accepted else now-8)
    processed+=1
    if processed>=9:_cursor=(slot+1)%INTENT_SLOTS;break

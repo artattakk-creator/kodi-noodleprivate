@@ -1,6 +1,6 @@
 """Pure display admission for verified public URL references and local images."""
 import json,math,os,time
-FIELDS=('key','fingerprint','code','source','match','image','thumbnail','source_url','url_version55','url_verified69','scope69','profile69','until','image_scope57','persisted69','storage69','storage_code69','policy69','display84','display_key84','temp85','sha256','provisional85','manual85','mapping_epoch85','role81','image_width77','image_height77','decoded77','decoded88','asset88','vote_average88','vote_count88','xmltv96')
+FIELDS=('key','fingerprint','code','source','match','image','thumbnail','source_url','url_version55','url_verified69','scope69','profile69','until','image_scope57','persisted69','storage69','storage_code69','policy69','display84','display_key84','temp85','sha256','provisional85','manual85','mapping_epoch85','role81','image_width77','image_height77','decoded77','decoded88','asset88','provider_id','vote_average88','vote_count88','xmltv96')
 def url(art):
  from programme_urls55 import safe,OPTIONS
  value=art.get('source_url','') if isinstance(art,dict) else ''
@@ -43,7 +43,11 @@ def eligible(art,event=None):
  return isinstance(art.get('scope69'),str) and len(art['scope69'])==64
 def reference(art,event=None):return art.get('image','') if eligible(art,event) else ''
 def proof(art):
- return json.dumps({k:art[k] for k in FIELDS if k in art},separators=(',',':')) if eligible(art) else ''
+ if not eligible(art):return ''
+ value={k:art[k] for k in FIELDS if k in art and k!='provider_id'}
+ ident=__import__('programme_actions88').tmdb_id(art)
+ if ident:value['provider_id']=ident
+ return json.dumps(value,separators=(',',':'))
 def unpack(raw,event=None):
  if not isinstance(raw,str) or len(raw)>8192:return {}
  try:value=json.loads(raw)

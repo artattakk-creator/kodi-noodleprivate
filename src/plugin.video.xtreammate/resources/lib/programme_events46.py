@@ -36,7 +36,7 @@ def describe(portal,channel,event=None,canonical='',revision=None,guide=None):
  trace('MATCH',value,'READY' if value.get('epg_source46') else 'NO_SOURCE_FACTS')
  trace('SOURCE',value,'READY' if value.get('xmltv_image') or value.get('provider_image') else 'NO_SOURCE_FACTS')
  value['key']=key(pid,sid,value);value['placeholder']=placeholder(value)
- value['details_url']='plugin://plugin.video.xtreammate/?'+urlencode(dict(action='programme_details46',pid=pid,sid=sid,start=value['start'],stop=value['stop'],event=value['key']))
+ value['details_url']='plugin://plugin.video.xtreammate/?'+urlencode(dict(action='programme_details46',pid=pid,sid=sid,start=value['start'],stop=value['stop'],event=value['key'],source=value.get('source_key46','')))
  return value
 
 def from_info(portal,channel,info):
@@ -50,7 +50,7 @@ def load(portal,channel,selected=None,now=None):
  now=time.time() if now is None else now;mappings=configuration(portal['id']).get('mappings',{})
  moment=selected.get('start',now) if selected else now
  view=window(portal['id'],[channel],mappings,moment,moment+2*86400,limit=48,budget=.15)
- sid,ids=channel_keys(channel,mappings);event=None;canonical=''
+ sid,ids=channel_keys(channel,mappings);event=None;canonical='';following=[];preceding=None
  if view is not None:
   for ident in ids:
    rows=view.get(ident,[])
@@ -59,22 +59,42 @@ def load(portal,channel,selected=None,now=None):
    for raw in rows:
     candidate=dict(raw,title=raw['name'],description=raw['descr'],start=raw['start_timestamp'],stop=raw['stop_timestamp'],source=raw.get('source',raw.get('_source_index',0)))
     if selected:
+     if selected.get('source_key46') and selected['source_key46']!=candidate.get('source_key46'):continue
      if candidate['start']==int(selected.get('start',0)) and candidate['stop']==int(selected.get('stop',0)) and (not selected.get('title') or candidate['title']==selected['title']):event=candidate;break
     elif candidate['start']<=now<candidate['stop']:event=candidate;break
-   if event is not None:break  # Expired/future aliases cannot mask a valid current provider row.
+   if event is not None:
+    canonical=event.get('_canonical') or canonical
+    source=event.get('source_key46')
+    def same_source(row):
+     if source:return row.get('source_key46')==source
+     return row.get('source',row.get('_source_index',0))==event['source']
+    def schedule_row(row):
+     return dict(start=row['start_timestamp'],stop=row['stop_timestamp'],title=row['name'])
+    following=[schedule_row(row) for row in rows if row['start_timestamp']>=event['stop']
+               and same_source(row) and row.get('name')][:3]
+    prior=window(portal['id'],[channel],mappings,event['start']-3*3600,event['start'],limit=48,budget=.08)
+    if prior is not None and getattr(prior,'revision',None)==getattr(view,'revision',None):
+     previous=[row for row in prior.get(ident,[]) if row['stop_timestamp']<=event['start']
+               and same_source(row) and row.get('name')]
+     if previous:preceding=schedule_row(max(previous,key=lambda row:row['stop_timestamp']))
+    break  # Expired/future aliases cannot mask a valid current provider row.
  # An existing source/mapping/revision-checked Now/Next snapshot is local
  # authority during a short SQLite outage, not a guessed short-cache event.
  if event is None:
   from epg_handoff63 import get as handoff85
   info85=handoff85(portal['id'],sid,now=now,mappings=mappings)
   if info85:
-   saved85=next((v for v in info85.get('events',[]) if (int(v['start'])==int(selected.get('start',0)) and int(v['stop'])==int(selected.get('stop',0)) if selected else v['start']<=now<v['stop']) and (not selected or not selected.get('title') or v['title']==selected['title'])),None)
+   saved85=next((v for v in info85.get('events',[]) if (int(v['start'])==int(selected.get('start',0)) and int(v['stop'])==int(selected.get('stop',0)) if selected else v['start']<=now<v['stop']) and (not selected or not selected.get('title') or v['title']==selected['title'])
+                 and (not selected or not selected.get('source_key46') or
+                      selected['source_key46']==v.get('source_key46'))),None)
    if saved85:
     return describe(portal,channel,dict(saved85,_metadata_verified48=True),info85.get('canonical46',''),info85.get('snapshot_revision'))
  # Locally supplied legacy short-cache text remains usable offline, labelled.
  if event is None and selected and selected.get('title') and int(selected.get('stop',0))>int(selected.get('start',0)):
   event=dict(selected);canonical='';view=None
  result=describe(portal,channel,event,canonical,getattr(view,'revision',None))
+ if following:result['following46']=following
+ if preceding:result['preceding46']=preceding
  if event and view is None:
   result['code']='CACHED_EVENT';result['read_code69']=__import__('epg_read69').last(portal['id'],sid)
  if selected and selected.get('key') and selected['key']!=result['key']:return describe(portal,channel)

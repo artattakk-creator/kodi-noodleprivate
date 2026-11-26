@@ -8,7 +8,7 @@ import os
 import tempfile
 import time
 import uuid
-from profile_transaction import writing,reading
+from profile_transaction import writing
 
 
 def path():
@@ -58,8 +58,9 @@ def request_many(portal,kind,categories,retry=False,missing=False):
 
 
 def states(pid,kind):
-    with reading(timeout=.05):
-        rows=[row for row in _read()['jobs'].values() if row['pid']==str(pid) and row['kind']==kind]
+    # Each file replacement is atomic. This single-file read never observes
+    # an in-progress write and need not wait behind unrelated profile writers.
+    rows=[row for row in _read()['jobs'].values() if row['pid']==str(pid) and row['kind']==kind]
     if kind in ('vod','series'):
         from catalog_delta52 import progress
         rows=progress(pid,kind,rows)

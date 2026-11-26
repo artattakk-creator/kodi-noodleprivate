@@ -98,7 +98,7 @@ def _run():
  cancel=lambda:_stop.is_set() or monitor.abortRequested()
  while not cancel():
   try:
-   if not suspended() and not runtime.pressure():prepare(cancel)
+   if runtime.portals_ready() and not suspended() and not runtime.pressure():prepare(cancel)
   except Exception:pass
   if monitor.waitForAbort(.2):break
 def poll():

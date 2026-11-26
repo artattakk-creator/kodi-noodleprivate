@@ -249,23 +249,25 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
             from epg_binding48 import commit_verified
             identity=self.source['id'];candidate=dict(self.candidate);portal=dict(self.portal);sid=self.channel['sid']
             events=list(self.cold53.selected(identity,candidate['id']))
-            def prepare():
-                from epg_binding48 import MappingSaveError
-                if self.cancel.is_set() or self.parent._closed:raise MappingSaveError('MAPPING_CANCELLED')
-                value=self.adapter96.prepare_saved(candidate,identity)
-                if self.cancel.is_set() or self.parent._closed:raise MappingSaveError('MAPPING_CANCELLED')
-                return value
             def commit():
                 try:
-                    if self.cancel.is_set() or self.parent._closed:return dict(error='MAPPING_CANCELLED')
+                    if self.cancel.is_set() or self.parent._closed:
+                        return dict(error='MAPPING_CANCELLED')
+                    receipt=commit_verified(portal,sid,candidate['id'],identity)
+                except (OSError,ValueError,RuntimeError) as exc:
+                    return dict(error=getattr(exc,'code','MAPPING_WRITE_FAILED'))
+                if self.cancel.is_set() or self.parent._closed:
+                    return receipt
+                try:
                     if events:
                         from epg_candidate53 import publish
                         publish(portal,identity,candidate['id'],candidate.get('name',candidate['id']),events)
-                    return commit_verified(portal,sid,candidate['id'],identity,
-                        prepare=prepare)
-                except (OSError,ValueError,RuntimeError) as exc:
-                    return dict(error=getattr(exc,'code','MAPPING_WRITE_FAILED'))
+                    receipt['prepared']=self.adapter96.prepare_saved(candidate,identity)
+                except Exception:
+                    receipt['refresh_error']='MAPPING_RELOAD_FAILED'
+                return receipt
             self._saving53=True
+            self._job_timedout482=False
             accepted=self._submit(commit,self._committed474)
             if accepted is False:
                 self._saving53=False;self._save_error474('MAPPING_BUSY')
@@ -281,35 +283,43 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
         self._saving53=False
         if receipt.get('error'):
             self._save_error474(receipt['error']);return
-        from epg_binding48 import rollback_verified,confirm_verified
+        from epg_binding48 import confirm_verified,recheck_verified
         try:
             with confirm_verified(receipt):
-                self.adapter96.apply_saved(receipt['prepared'])
-                self.getControl(103).setText('EPG-Zuordnung gespeichert und geprüft.')
-                try:xbmcgui.Dialog().notification('XCMate','EPG-Zuordnung gespeichert und geprüft.',time=3000)
-                except RuntimeError:pass
-                self.saved=True
-        except Exception as exc:
-            self.saved=False
-            code=getattr(exc,'code','MAPPING_UI_REFRESH_FAILED')
-            try:rollback_verified(receipt)
-            except Exception as rollback:code=getattr(rollback,'code','MAPPING_ROLLBACK_UNCONFIRMED')
-            try:
-                restore=getattr(self.adapter96,'restore_saved',None)
-                if restore:restore()
-                else:self.adapter96.finish(False)
-            except Exception:pass
-            self._save_error474(code);return
+                pass
+        except (OSError,ValueError) as exc:
+            code=getattr(exc,'code','MAPPING_CONFLICT')
+            if code=='MAPPING_CONFLICT' and not receipt.get('rechecked'):
+                def recheck():
+                    try:return recheck_verified(receipt)
+                    except (OSError,ValueError) as failure:return dict(error=getattr(failure,'code','MAPPING_CONFLICT'))
+                self._saving53=True
+                if self._submit(recheck,self._committed474) is not False:return
+                self._saving53=False
+            self._save_error474(code)
+            return
+        self.saved=True
+        if receipt.get('refresh_error'):
+            self._saved_refresh_error474(receipt['refresh_error'])
+            return
+        try:
+            self.adapter96.apply_saved(receipt['prepared'])
+        except Exception:
+            self._saved_refresh_error474('MAPPING_UI_REFRESH_FAILED')
+            return
+        self.getControl(103).setText('EPG-Zuordnung gespeichert und geprüft.')
+        try:xbmcgui.Dialog().notification('XCMate','EPG-Zuordnung gespeichert und geprüft.',time=3000)
+        except RuntimeError:pass
         self.close()
-    @staticmethod
-    def _retire474(future):
-        if future.cancelled():return
-        try:receipt=future.result()
-        except Exception:return
-        if not isinstance(receipt,dict) or receipt.get('error'):return
-        try:__import__('epg_binding48').rollback_verified(receipt)
-        except (OSError,ValueError,RuntimeError):
-            xbmc.log('[XCMate][MAPPING474] UNCONFIRMED_ON_EXIT',xbmc.LOGWARNING)
+
+    def _saved_refresh_error474(self,code):
+        try:
+            restore=getattr(self.adapter96,'restore_saved',None)
+            if restore:restore()
+            else:self.adapter96.finish(False)
+        except (RuntimeError,ValueError,TypeError,AttributeError):pass
+        self.getControl(103).setText('Zuordnung gespeichert und geprüft. EPG-Ansicht wird beim erneuten Öffnen aktualisiert. ('+code+')')
+
     def onAction(self,action):
         if action.getId() in (9,10,92):self.close()
     def run(self):
@@ -323,7 +333,7 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
         finally:
             if self._saving53 and self.future is not None:
                 future=self.future;self.future=self.apply=None;self._saving53=False
-                self.cancel.set();future.add_done_callback(self._retire474);future.cancel()
+                self.cancel.set();future.cancel()
             self.close()
             self.adapter96.finish(self.saved)
     def close(self):

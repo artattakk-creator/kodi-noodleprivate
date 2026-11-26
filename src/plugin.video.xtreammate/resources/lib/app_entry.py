@@ -4,7 +4,10 @@ No DB/network on entry or IR. A consumed lease stays consumed through refresh,
 Back, settings and playback. Only service-observed departure rearms it. Kodi
 restart clears Window properties; it never starts playback without an entry.
 """
+from contextlib import contextmanager
+import fcntl
 import json
+import os
 import time
 import uuid
 from urllib.parse import urlsplit
@@ -40,6 +43,27 @@ def toggle_pause():
     xbmcgui.Dialog().notification('XCMate',tr(35501 if paused() else 35502))
 
 
+
+@contextmanager
+def _lease_lock(timeout=.05):
+    from utils import addon_data_dir
+
+    path = os.path.join(addon_data_dir(), '.xcmate-app-entry.lock')
+    fd = os.open(path, os.O_CREAT | os.O_RDWR, 0o600)
+    try:
+        deadline = time.monotonic() + timeout
+        while True:
+            try:
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                break
+            except BlockingIOError:
+                if time.monotonic() >= deadline:
+                    raise
+                time.sleep(.005)
+        yield
+    finally:
+        os.close(fd)
+
 def enter(router,portal):
     import xbmc
     params=router._params
@@ -50,31 +74,25 @@ def enter(router,portal):
     # A skin background widget is not a deliberate foreground app opening.
     if router._handle<0 or not getattr(xbmc,'getCondVisibility',lambda c:False)('Window.IsActive(videos)'):return False
     if read():return False
-    value=dict(nonce=uuid.uuid4().hex,phase='consumed',pid=str(portal['id']),seen=False,outside=0)
-    player=xbmc.Player()
-    from live_exit import state
-    if (paused() or state() or portal.get('type')!='xtream' or not portal.get('enabled',True)
-        or not portal.get('include_live',True) or not portal.get('autoplay_start') or not portal.get('start_stream_id')
-        or getattr(player,'isPlaying',player.isPlayingVideo)()):
-        marker().setProperty(KEY,json.dumps(value))
+    try:
+        with _lease_lock():
+            if read():return False
+            value=dict(nonce=uuid.uuid4().hex,phase='consumed',pid=str(portal['id']),seen=False,outside=0)
+            player=xbmc.Player()
+            from live_exit import state
+            blocked = (paused() or state() or portal.get('type')!='xtream' or not portal.get('enabled',True)
+                       or not portal.get('include_live',True) or not portal.get('autoplay_start')
+                       or not portal.get('start_stream_id') or getattr(player,'isPlaying',player.isPlayingVideo)())
+            if not blocked:
+                value['phase']='queued'
+            marker().setProperty(KEY,json.dumps(value))
+    except (OSError,RuntimeError):return False
+    if blocked:
         if paused():
             import xbmcgui
             from localization import tr
             xbmcgui.Dialog().notification('XCMate',tr(35501))
         return False
-    from profile_transaction import writing
-    try:
-        with writing(timeout=.05):
-            if read():return False
-            value=dict(nonce=uuid.uuid4().hex,phase='consumed',pid=str(portal['id']),seen=False,outside=0)
-            marker().setProperty(KEY,json.dumps(value))
-            player=xbmc.Player()
-            from live_exit import state
-            if (paused() or state() or portal.get('type')!='xtream' or not portal.get('enabled',True)
-                or not portal.get('include_live',True) or not portal.get('autoplay_start') or not portal.get('start_stream_id')
-                or getattr(player,'isPlaying',player.isPlayingVideo)()):return False
-            value['phase']='queued';marker().setProperty(KEY,json.dumps(value))
-    except (OSError,RuntimeError):return False
     xbmc.executebuiltin('RunPlugin('+router.url(action='play_start_direct',pid=portal['id'],autoplay_entry=value['nonce'])+')')
     return True
 
@@ -84,13 +102,19 @@ def accept_play(params):
     if not nonce:return True  # Existing manual direct route.
     import xbmc
     from portals import get_by_id
-    from profile_transaction import writing
-    with writing(timeout=.05):
-        value=read();portal=get_by_id(params.get('pid',''));player=xbmc.Player()
-        if not value or value['nonce']!=nonce or value['phase']!='queued':return False
-        value['phase']='consumed';marker().setProperty(KEY,json.dumps(value))
-        return bool(portal and portal.get('enabled',True) and portal.get('include_live',True) and portal.get('autoplay_start') and not paused()
-                    and not getattr(player,'isPlaying',player.isPlayingVideo)())
+    pid = params.get('pid','')
+    try:
+        portal = get_by_id(pid)
+        with _lease_lock():
+            value=read();player=xbmc.Player()
+            if not value or value['nonce']!=nonce or value['phase']!='queued' or value['pid']!=pid:
+                return False
+            value['phase']='consumed';marker().setProperty(KEY,json.dumps(value))
+            return bool(portal and portal.get('enabled',True) and portal.get('include_live',True)
+                        and portal.get('autoplay_start') and not paused()
+                        and not getattr(player,'isPlaying',player.isPlayingVideo)())
+    except (OSError,RuntimeError):
+        return False
 
 
 def _observe_locked():
@@ -123,9 +147,8 @@ def _observe_locked():
 
 def observe():
     if not read():return
-    from profile_transaction import writing
     try:
-        with writing(timeout=0):_observe_locked()
+        with _lease_lock(timeout=0):_observe_locked()
     except (OSError,RuntimeError):return
 
 
@@ -136,6 +159,6 @@ def still_allowed(params):
     try:
         value=read();portal=get_by_id(params.get('pid',''));player=xbmc.Player()
         return bool(value and value['nonce']==params['autoplay_entry'] and value['phase']=='consumed'
-                    and portal and portal.get('enabled',True) and portal.get('include_live',True)
+                    and portal and value['pid']==str(portal['id']) and portal.get('enabled',True) and portal.get('include_live',True)
                     and portal.get('autoplay_start') and not paused() and not getattr(player,'isPlaying',player.isPlayingVideo)())
     except (OSError,RuntimeError):return False

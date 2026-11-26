@@ -2,7 +2,7 @@
 from collections import defaultdict
 
 from epg_agent100 import SOURCE_ID, SOURCE_NAME, SOURCE_RANK
-from epg_agent_github import XMLTV_FILE
+from epg_agent_github import XMLTV_FILE, local_manifest
 
 
 def match(channels, streams, mappings):
@@ -49,7 +49,9 @@ def install(portal, folder, cancel):
     artwork = build(folder, cancel)
     result = {}
     source = dict(id=SOURCE_ID, name=SOURCE_NAME, enabled=True, local=True,
-                  uri=str(folder / XMLTV_FILE), _agent_artwork=str(artwork))
+                  uri=str(folder / XMLTV_FILE), _agent_artwork=str(artwork), _agent_folder102=folder)
+    if local_manifest(folder).get('status') == 'PUBLIC_READY':
+        source['_agent_public102'] = True
     job = dict(portal, _epg_auto53=True, _epg_sources53=[SOURCE_ID],
                _agent_source=source, _agent_result=result, _agent_cancel=cancel)
     _refresh_portal_epg(portal["id"], job, force=True)

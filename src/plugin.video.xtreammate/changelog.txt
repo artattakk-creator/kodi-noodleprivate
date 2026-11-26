@@ -1,3 +1,9 @@
+0.1.29.102 (2026-11-25) – XCMate Testkandidat
+- Native Callbacks des Einrichtungsassistenten werden beim Anlegen der Fensterklasse registriert.
+- Der Hintergrunddienst prüft ein leeres Profil in kurzen Abständen und wartet mit anbieterspezifischen Aufgaben bis zur Einrichtung.
+- Der standardmäßig aktive öffentliche Schema-5-Feed lädt ausgewählte Länderprofile anonym. Bereits verifizierte EPG-Daten bleiben bei Wartezustand und Übertragungsfehlern verfügbar.
+- Bestehende Portale, aktive EPG-Quellen, Benutzerzuordnungen und Bildquellen bleiben nutzbar.
+
 0.1.29.96 (2026-11-16) – Gruppen, EPG und Artwork, unveröffentlichter Testkandidat
 - Aktivierte Sendergruppen gezielt aus dem lokalen Katalog laden; verspätete Gruppenantworten verwerfen, vorhandene Sender bei Beschäftigung behalten und begrenzt erneut prüfen.
 - Anbieter-EPG als Xtream-Grundversorgung; frühere Abschaltungen als Historie bewahren. Gesicherte Guide-Daten und Importfreigabe bleiben geschützt.

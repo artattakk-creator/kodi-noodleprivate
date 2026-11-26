@@ -60,7 +60,7 @@ class Settings96(Fixture,unittest.TestCase):
   self.assertEqual(result,'SOURCES_VERIFIED');self.assertEqual(write.call_count,1)
   changes=write.call_args[0][0];self.assertNotIn('tmdb_read_token43',changes)
   self.assertTrue(all(changes[k]=='true' for k in ('programme_xmltv96','programme_tmdb46','tmdb_research43','programme_tvmaze67')))
-  choose.assert_called_once_with('yes')
+  choose.assert_not_called()
  def test_unrelated_native_setting_loss_rolls_back_and_keeps_failed_copy(self):
   p=self.xml('<settings><setting id="tmdb_read_token43">TEST_ONLY</setting><setting id="programme_tmdb46">false</setting></settings>');before=p.read_bytes()
   guard=importlib.import_module('settings_guard96')

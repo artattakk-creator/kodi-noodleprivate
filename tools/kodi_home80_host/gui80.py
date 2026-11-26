@@ -5,6 +5,9 @@ change. The controlled provider/AV stream is synthetic, never Android PASS.
 """
 from pathlib import Path
 import xbmcaddon
+version80=xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version')
+current_releases80=('0.1.29.101', '0.1.29.102')
+modern80=version80 in ('0.1.29.88','0.1.29.89','0.1.29.90','0.1.29.91','0.1.29.92','0.1.29.93','0.1.29.94','0.1.29.95','0.1.29.96') + current_releases80
 source80=Path('/base_gui79.py').read_text()
 for old80,new80 in (("Path('/root/home75.json')","Path('/root/home75-base80.json')"),('range(600,1040)','range(480,1040)'),('((270,20),1080,580)','((270,0),1620,480)'),('getpixel((330,645))','getpixel((330,525))'),('getpixel((800,150))','getpixel((1000,150))')):
  if old80 not in source80:raise RuntimeError('NATIVE80_BASE_CONTRACT_CHANGED')
@@ -26,7 +29,6 @@ source80=source80.replace("path,rgb=capture('home75-'+kind+'-'+str(index))", "pa
 def capture_selected80(kind,index):
  deadline80=time.monotonic()+5;name80='home75-'+kind+'-'+str(index);attempt80=0
  expected80=((180,100,30) if kind=='vod' and index==0 else tuple((v+index*step)%240 for v,step in zip((40,70,120) if kind=='vod' else (100,50,20),(19,31,13)))) if kind in ('vod','series') else None
- modern80=xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version')in ('0.1.29.88','0.1.29.89','0.1.29.90','0.1.29.91','0.1.29.92','0.1.29.93','0.1.29.94','0.1.29.95','0.1.29.96')
  point80=(1500,150) if modern80 else (1000,150)
  if kind=='live' and index==0:
   expected80=(20,80,130);point80=(1500,300) if modern80 else (500,300)
@@ -38,26 +40,60 @@ def capture_selected80(kind,index):
    return path80,rgb80 # The original strict pixel assertion reports failure.
   pump();xbmc.sleep(100)
 def settle_idle86():
- if xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version') not in ('0.1.29.86','0.1.29.87','0.1.29.88','0.1.29.89','0.1.29.90','0.1.29.91','0.1.29.92','0.1.29.93','0.1.29.94','0.1.29.95','0.1.29.96'):return
+ if not modern80 and version80 not in ('0.1.29.86', '0.1.29.87'):return
  # .86 correctly shows a station logo until the selected event's renderer
  # receipt exists. Start the unchanged soak only on its actual settled pixels.
  deadline=time.monotonic()+5
  while True:
   pump();xbmc.sleep(100);_,frame=capture('home86-before-idle')
-  hero=frame.getpixel((1500,300) if xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version')in ('0.1.29.88','0.1.29.89','0.1.29.90','0.1.29.91','0.1.29.92','0.1.29.93','0.1.29.94','0.1.29.95','0.1.29.96') else (500,300));logo=frame.getpixel((330,525))
+  hero=frame.getpixel((1500,300) if modern80 else (500,300));logo=frame.getpixel((330,525))
   if max(abs(a-b) for a,b in zip(hero,(20,80,130)))<=8 and max(abs(a-b) for a,b in zip(logo,(20,90,150)))<=8:return
   if time.monotonic()>=deadline:
    prefix='XCMate.Hero63.'+home.getProperty('XCMate.Hero63.Active')+'.'
    raise RuntimeError(str(dict(code='IDLE86_PRECONDITION_NOT_RENDERED',hero=hero,logo=logo,kind=home.getProperty(prefix+'Kind86'),source=home.getProperty(prefix+'ArtSource'))))
-if xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version')in ('0.1.29.88','0.1.29.89','0.1.29.90','0.1.29.91','0.1.29.92','0.1.29.93','0.1.29.94','0.1.29.95','0.1.29.96'):
+if modern80:
  source80=source80.replace('crop((120,20,250,500))','crop((110,20,145,500))')
  source80=source80.replace('((270,0),1620,480)','((130,0),1760,620)').replace('getpixel((300,150))','getpixel((1500,150))').replace('getpixel((500,300))','getpixel((1500,300))').replace('getpixel((1000,150))','getpixel((1500,150))')
+
+def detail_hero_matches102(frame, texture):
+ # The .102 detail paints two gradients over the XMLTV hero (XML control 110).
+ # Use an unobstructed point inside that control, outside text and poster.
+ point=(1200,120)
+ origin=(78,42)
+ relative=(point[0]-origin[0],point[1]-origin[1])
+ size=(1764,486)
+ media=Path(xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('path'))/'resources/media'
+ expected=Image.new('RGBA',(1,1),texture)
+ for name in ('hero88/left-gradient.png','media_detail_gradient.png'):
+  with Image.open(media/name) as gradient:
+   tint=gradient.convert('RGBA').resize(size,Image.Resampling.BILINEAR).getpixel(relative)
+  expected=Image.alpha_composite(expected,Image.new('RGBA',(1,1),tint))
+ return max(abs(a-b) for a,b in zip(frame.getpixel(point),expected.getpixel((0,0))[:3]))<=5
+
+def capture_focused_rail102(name, expected_focus):
+ # Kodi assigns focus before the native scroll/fade presents the new rail.
+ # Keep the original focus and contour checks on a fresh, presented frame.
+ deadline=time.monotonic()+4
+ while True:
+  path,frame=capture(name)
+  lines=contours(frame)
+  if home.getFocusId()==expected_focus and 1<=len(lines)<=2:return path,frame
+  if time.monotonic()>=deadline:raise RuntimeError(('NATIVE_ONE_RAIL',name,expected_focus,lines))
+  pump()
+
+if version80=='0.1.29.102':
+ old_detail80="max(abs(a-b) for a,b in zip(detail_rgb77.getpixel((486,395)),expected77))<=8"
+ if source80.count(old_detail80)!=1:raise RuntimeError('NATIVE102_DETAIL_PIXEL_ANCHOR_CHANGED')
+ source80=source80.replace(old_detail80,'detail_hero_matches102(detail_rgb77,expected77)')
+ old_navigation80="path,rgb=capture('home75-action-'+str(i))"
+ if source80.count(old_navigation80)!=1:raise RuntimeError('NATIVE102_NAVIGATION_PIXEL_ANCHOR_CHANGED')
+ source80=source80.replace(old_navigation80,"path,rgb=capture_focused_rail102('home75-action-'+str(i),ident)")
 exec(compile(source80,'native-home80-base','exec'),globals())
 # Keep every real TLS/cache assertion from .79, including full decode.
 cache80=Path('/base_gui_cache79.py').read_text().split('import widget_cache79 as cache79',1)[1]
 cache80='import widget_cache79 as cache79'+cache80
 cache80=cache80.replace("Path('/root/home75-base79.json')","Path('/root/home75-base80.json')").replace("Path('/root/home75.json')","Path('/root/home75-cache80.json')")
-if xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version')in ('0.1.29.88','0.1.29.89','0.1.29.90','0.1.29.91','0.1.29.92','0.1.29.93','0.1.29.94','0.1.29.95','0.1.29.96'):cache80=cache80.replace('getpixel((800,150))','getpixel((1500,150))')
+if modern80:cache80=cache80.replace('getpixel((800,150))','getpixel((1500,150))')
 exec(compile(cache80,'native-home80-cache','exec'),globals())
 # Native large-guide entry, long text and exact gray-blue focus pixels.
 from guide_grid_window import GuideGridWindow

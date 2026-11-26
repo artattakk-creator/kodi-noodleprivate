@@ -76,7 +76,7 @@ def event_art(event, admit):
         candidate = admit(image["url"], image["system"])
         if not role or not candidate:
             continue
-        orientation = "P" if role == "poster" else "L"
+        orientation = "P" if role in ("poster", "person", "character") else "L"
         priority = (PRIORITY[candidate["provider"]],
                     int(image["orient"] not in ("", orientation)),
                     -int(image["size"] or 0))
@@ -87,7 +87,8 @@ def event_art(event, admit):
     for role, candidates in by_role.items():
         ordered = sorted(candidates, key=lambda value: value[0])
         selected = dict(ordered[0][1])
-        if role in ("poster", "backdrop", "episode_still"):
+        if role in ("poster", "backdrop", "episode_still", "person", "character"):
+            limit = 1 if role in ("person", "character") else 2
             seen = {selected["url"]}
             alternatives = []
             for _, candidate in ordered[1:]:
@@ -99,7 +100,7 @@ def event_art(event, admit):
                 seen.add(candidate["url"])
                 alternatives.append(candidate)
                 alternative_budget -= cost
-                if len(alternatives) == 2:
+                if len(alternatives) == limit:
                     break
             if alternatives:
                 selected["alternatives"] = alternatives

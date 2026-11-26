@@ -106,8 +106,8 @@ class Candidates:
 def publish(portal,identity,cid,name,events):
     """Save-only additive publication in the existing shared fact store.
 
-    No automatic aliases or global priorities change. Re-read every exact fact
-    before allowing the mapping write; a failed cache write is never success.
+    The confirmed binding is independent of this cache. Fill missing slots
+    and retain authoritative updates that arrived after the preview.
     """
     if not events:return
     from programme_store46 import Stage
@@ -121,8 +121,8 @@ def publish(portal,identity,cid,name,events):
             stage.add(event)
         stage.flush()
         if stage.failed or stage.facts46.failed:raise PreviewUnavailable('PREVIEW_WRITE_FAILED')
-        stage.finish(True)
+        stage.finish(True,insert_missing=True)
         for event in events:
             saved=window(portal['id'],cid,event['start_timestamp'],event['stop_timestamp'],limit=256,source48=identity)
-            if not any(e['start_timestamp']==event['start_timestamp'] and e['stop_timestamp']==event['stop_timestamp'] and e['name']==event['name'] for e in saved):raise PreviewUnavailable('PREVIEW_VERIFY_FAILED')
+            if not any(e['start_timestamp']==event['start_timestamp'] and e['stop_timestamp']==event['stop_timestamp'] for e in saved):raise PreviewUnavailable('PREVIEW_VERIFY_FAILED')
     finally:stage.finish(False)

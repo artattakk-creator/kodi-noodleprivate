@@ -45,6 +45,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
     from guide_store import connect,path
     from epg_sources import _channel_name_key
     from xmltv_stream import parse
+    from epg_horizon102 import Coverage
     from import_budget import check_space
     db=connect(filename,write=True);target=filename or path();generation=generation54 or uuid.uuid4().hex
     if len(generation)!=32 or any(c not in '0123456789abcdef' for c in generation):db.close();raise ValueError('INVALID_IMPORT_GENERATION')
@@ -65,6 +66,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
     metadata46=ProgrammeStage46(pid,generation,source_index,filename,source_identity=__import__('guide_publish44').source_id(source,source_index))
     batch=[];stored=0;unique94=0;now=time.time();keep_stage=False;right46=__import__('programme_index46').bounds(now)[1]
     left=__import__('guide_store').day_window(-7,now)[0]
+    raw_horizon=Coverage(now)
     agent_artwork=source.get('_agent_artwork')
     agent_channels={};agent_icons={};agent_matched=False
     if agent_artwork:
@@ -103,6 +105,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
             agent_icons[cid]=url
     def programme(event):
         nonlocal stored,agent_matched
+        raw_horizon.add(event['channel'],event['start_timestamp'],event['stop_timestamp'])
         if agent_artwork and not agent_matched:
             from epg_agent100_import import match
             aliases.clear();aliases.update(match(agent_channels,streams,mappings))
@@ -124,23 +127,35 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         # only, never a published programme or user's source configuration.
         # Each import owns only its generation; no deletion of another stage.
         phase='DOWNLOAD'
+        http_status=None
         try:
             parse_options=dict(include_icons=True,include_images=True,strict_images=True,
                                channel_image=channel_icon,max_seconds=720) if agent_artwork else {}
             with source_stream(source,cancel=cancel) as stream:
                 phase='PARSE'
+                http_status=getattr(stream,'http_status',None)
                 if progress:counts=parse(progress54.wrap(stream),channel,programme,cancel,progress=progress54.parsed,**parse_options)
                 else:counts=parse(stream,channel,programme,cancel,**parse_options)
         except Exception as exc:
-            try: exc.xcmate_stage=phase
+            try:
+                exc.xcmate_stage=phase
+                if http_status is not None:
+                    exc.epg_counts102=dict(http_status=http_status)
             except Exception: pass
             raise
+        counts['raw_horizon102']=raw_horizon.result()
+        if http_status is not None:
+            counts['http_status']=http_status
+        if source.get('_agent_folder102'):
+            from epg_agent_hub5 import coverage_report
+            counts['profiles102']=coverage_report(source['_agent_folder102'],aliases)
         flush();metadata46.flush()
         progress54.emit('MATCHING',force=True,stored=unique94)
         if not stored:
             from epg_errors import EmptyGuideError
             error=EmptyGuideError('No matching current programmes')
             error.xcmate_no_match59=bool(counts.get('programmes'))
+            error.epg_counts102=dict(counts,selected_streams66=len(streams),matched_streams66=0)
             raise error
         for key,sids in (() if agent_artwork else names.items()):
             cid=channel_names.get(key)
@@ -316,7 +331,13 @@ def refresh(portal,force=False,cancel=lambda:False):
 def _refresh44(portal,force=False,cancel=lambda:False):
     from guide_store import path as guide_path46
     from epg_gate46 import access as refresh_access46
-    state46=refresh_access46(guide_path46())
+    filename=guide_path46()
+    state46=refresh_access46(filename)
+    if (state46 == 'DB_AUTHORIZATION_MISSING' and portal.get('epg_show', True)
+            and (portal.get('_agent_source') or {}).get('_agent_public102') and not cancel()):
+        from guide_backup44 import authorize
+        authorize(filename, cancel, current_schema_only=True)
+        state46=refresh_access46(filename)
     if state46 not in ('READY','NOT_CREATED'):
         from epg_status import update
         update(portal['id'],'refresh',state46,running=False)
@@ -358,7 +379,7 @@ def _refresh44(portal,force=False,cancel=lambda:False):
         except Exception as exc:
             code,fields=failure_details(exc,'DOWNLOAD')
             update(pid,'provider',code,running=False,**fields);provider_failure52=1
-            source_started53(pid,'provider','provider',0);source_done53(pid,'provider',code)
+            source_started53(pid,'provider','provider',0);source_done53(pid,'provider',code,fields)
             observe94('provider','FAILED',error_code=code)
     if portal.get('provider_epg_enabled',True) and (selected53 is None or 'provider' in selected53) and not uri and not provider_failure52:
         provider_failure52=1
@@ -397,7 +418,7 @@ def _refresh44(portal,force=False,cancel=lambda:False):
             code,fields=failure_details(exc,getattr(exc,'xcmate_stage','MERGE'))
             observe94(key,'FAILED',error_code=code)
             update(pid,key,code,running=False,source_index=index,**fields);failures+=1
-            source_done53(pid,identity53,code)
+            source_done53(pid,identity53,code,dict(getattr(exc,'epg_counts102',{}),**fields))
     if cancel():
         discard_stages44(stages)
         for stage in stages:update(pid,stage['key'],'CANCELLED',running=False)
@@ -412,6 +433,8 @@ def _refresh44(portal,force=False,cancel=lambda:False):
         for stage in stages:
             stage['observe94']('FAILED',error_code=code)
             update(pid,stage['key'],code,running=False,**fields)
+            identity53=__import__('guide_publish44').source_id(stage['source'],stage['index'])
+            source_done53(pid,identity53,code,dict(stage['counts'],**fields))
         update(pid,'refresh',code,running=False,**fields)
         return {}
     for stage,outcome in zip(stages,outcomes):

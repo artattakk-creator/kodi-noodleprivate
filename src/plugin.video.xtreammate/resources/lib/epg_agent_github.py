@@ -2,6 +2,7 @@
 from datetime import datetime, timezone
 import gzip
 import hashlib
+from http.client import HTTPException
 import json
 import os
 from pathlib import Path
@@ -31,8 +32,10 @@ IMAGE_COUNT_KEYS = (*XMLTV_IMAGE_TYPES, "programme_icon", "channel_logo")
 
 class DeliveryError(ValueError):
     """Only a short, non-credential-bearing code may cross UI/log boundaries."""
-    def __init__(self, code):
+    def __init__(self, code, *, phase="", http_status=None):
         self.code = str(code)
+        self.phase = phase
+        self.http_status = http_status
         super().__init__(self.code)
 
 
@@ -93,14 +96,17 @@ def _open(path, token, opener=None, *, etag="", payload_ref=""):
         exc.close()
         if code == 304 and etag and path == "manifest.json":
             return None
+        phase = "manifest" if path == "manifest.json" else "asset"
         if code in (401, 403, 404):
-            raise DeliveryError("PRIVATE_ENDPOINT_ACCESS_DENIED") from None
-        if code in (429, 500, 502, 503, 504):
-            raise DeliveryError("PRIVATE_ENDPOINT_TEMPORARILY_UNAVAILABLE") from None
-        raise DeliveryError("PRIVATE_ENDPOINT_HTTP_ERROR") from None
+            failure = "PRIVATE_ENDPOINT_ACCESS_DENIED"
+        elif code in (429, 500, 502, 503, 504):
+            failure = "PRIVATE_ENDPOINT_TEMPORARILY_UNAVAILABLE"
+        else:
+            failure = "PRIVATE_ENDPOINT_HTTP_ERROR"
+        raise DeliveryError(failure, phase=phase, http_status=code) from None
     except DeliveryError:
         raise
-    except (OSError, ValueError, TimeoutError):
+    except (OSError, ValueError, HTTPException):
         raise DeliveryError("PRIVATE_ENDPOINT_NETWORK_ERROR") from None
 
 
@@ -115,7 +121,7 @@ def _consume(response, max_bytes, sink, cancel=lambda: False):
                 raise DeliveryError("PRIVATE_ENDPOINT_NETWORK_ERROR")
             try:
                 part = response.read(min(65536, max_bytes + 1 - total))
-            except (OSError, ValueError):
+            except (OSError, ValueError, HTTPException):
                 raise DeliveryError("PRIVATE_ENDPOINT_NETWORK_ERROR") from None
             if not part:
                 break
@@ -147,6 +153,14 @@ def _read_manifest(token, opener=None, *, etag="", cancel=lambda: False):
         reason = obj.get("reason_code")
         return {"status": "PRIVATE_PENDING", "reason": (reason if reason ==
                 "PRODUCTION_DATA_NOT_APPROVED" else "PRIVATE_PENDING")}, response_etag
+    if obj.get("status") == "PRIVATE_READY" and obj.get("schema_version") == 5:
+        from epg_agent_hub5 import validate_manifest
+        validate_manifest(obj)
+        return obj, response_etag
+    if obj.get("status") == "PRIVATE_READY" and obj.get("schema_version") == 4:
+        from epg_agent_hub4 import validate_manifest
+        validate_manifest(obj)
+        return obj, response_etag
     if obj.get("status") != "PRIVATE_READY" or obj.get("schema_version") != SCHEMA_VERSION:
         raise DeliveryError("UNSUPPORTED_MANIFEST_VERSION")
     _validate_manifest(obj)
@@ -317,12 +331,21 @@ def stage_full_candidate(directory, token_path=None, opener=None, *,
     root = Path(directory)
     previous = local_manifest(candidate_path(root, known))
     manifest, response_etag = _read_manifest(token, opener,
-        etag=etag if previous.get("schema_version") == SCHEMA_VERSION else "", cancel=cancel)
+        etag=etag if previous.get("schema_version") in (SCHEMA_VERSION, 4, 5) else "",
+        cancel=cancel)
     response = {"status": manifest["status"], "etag": response_etag}
     if manifest["status"] != "PRIVATE_READY":
         if "reason" in manifest:
             response["reason"] = manifest["reason"]
         return response
+    if manifest.get("schema_version") == 5:
+        from epg_agent_hub5 import stage as stage_hub5
+        return stage_hub5(root, token, manifest, response_etag, opener,
+                          known=known, cancel=cancel)
+    if manifest.get("schema_version") == 4:
+        from epg_agent_hub4 import stage as stage_hub4
+        return stage_hub4(root, token, manifest, response_etag, opener,
+                          known=known, cancel=cancel)
     generation = manifest["revision"]
     response.update(generation=generation, channels=manifest["channel_count"],
                     programmes=manifest["programme_count"], image_counts=manifest["image_counts"],

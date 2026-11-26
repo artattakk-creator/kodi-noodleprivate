@@ -4,6 +4,7 @@ import os
 import sqlite3
 import threading
 import time
+from datetime import date
 from urllib.parse import quote
 
 _cache={}
@@ -26,17 +27,20 @@ def token(filename):
     return tuple(result)
 
 
-def collect(pid,filename,seconds=8,source_seconds=2,cancel=lambda:False):
+def collect(pid,filename,seconds=8,source_seconds=2,cancel=lambda:False,*,now=None):
     started=time.monotonic()
     end=started+seconds
     db=None
     rows=[]
     total=first=last=None
     code='READY'
-    key=(filename,str(pid))
+    from epg_horizon102 import stored
+    now=time.time() if now is None else now
+    horizon=None
+    key=(filename,str(pid),date.fromtimestamp(now))
 
     def result(status):
-        return dict(code=status,sources=rows,programmes=total,first=first,last=last)
+        return dict(code=status,sources=rows,programmes=total,first=first,last=last,horizon102=horizon)
 
     try:
         if cancel():
@@ -56,7 +60,7 @@ def collect(pid,filename,seconds=8,source_seconds=2,cancel=lambda:False):
         ids=[r[0] for r in db.execute('SELECT DISTINCT source_id FROM guide44_inputs WHERE pid=? LIMIT 129',(str(pid),))]
         if len(ids)>128:
             return result('INVENTORY_BUDGET')
-        total=db.execute('SELECT count(*) FROM programmes WHERE pid=?',(str(pid),)).fetchone()[0]
+        total,first,last=db.execute('SELECT count(*),min(start),max(stop) FROM programmes WHERE pid=?',(str(pid),)).fetchone()
         for source in ids:
             if cancel():
                 return result('INVENTORY_CANCELLED')
@@ -79,16 +83,29 @@ def collect(pid,filename,seconds=8,source_seconds=2,cancel=lambda:False):
                 if time.monotonic()>=deadline or n>=1000000:
                     raise TimeoutError('INVENTORY_BUDGET')
                 row=dict(id=source,code='READY',channels=channels,programmes=n,first=left,last=right)
-                if n:
-                    first=left if first is None else min(first,left)
-                    last=right if last is None else max(last,right)
             except (TimeoutError,sqlite3.Error) as exc:
                 if cancel():
                     return result('INVENTORY_CANCELLED')
                 reason='DB_BUSY' if getattr(exc,'sqlite_errorcode',0)&255 in (5,6) else 'INVENTORY_BUDGET'
                 row=dict(id=source,code=reason,channels=None,programmes=None,first=None,last=None)
                 code='PARTIAL'
+            if row['code']=='READY':
+                try:
+                    row['horizon102']=stored(db,now,str(pid),source,row['first'],row['last'])
+                except sqlite3.OperationalError:
+                    row['horizon102']=None
+                    code='PARTIAL'
             rows.append(row)
+        db.set_progress_handler(lambda:int(cancel() or time.monotonic()>=end),1000)
+        if not cancel() and time.monotonic()<end:
+            try:
+                horizon=stored(db,now,str(pid),first=first,last=last)
+            except sqlite3.OperationalError:
+                code='PARTIAL'
+        else:
+            code='PARTIAL'
+        if cancel():
+            return result('INVENTORY_CANCELLED')
         value=dict(result(code),elapsed_ms=round((time.monotonic()-started)*1000,2))
         if code=='READY' and token(filename)==before:
             with _lock:

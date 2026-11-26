@@ -16,7 +16,7 @@ ROUTES=ROUTES|frozenset(('media_play','epg_sources','guide_backup44','movies_hom
     'guide_browser','guide_grid','art_status','art_retry','art_db_health','recording_capabilities',
     'appearance_settings','global_search','settings_section','settings'))
 ERRORS = frozenset(('IndexError','KeyError','SystemExit','InterruptedError','RuntimeError', 'OSError', 'PermissionError', 'ValueError',
-    'TypeError', 'ImportError', 'ModuleNotFoundError', 'TimeoutError',
+    'TypeError', 'AttributeError', 'ImportError', 'ModuleNotFoundError', 'TimeoutError',
     'MemoryError', 'IndexReadError', 'PortalReadError', 'ArtworkDBUnavailable',
     'OperationalError', 'DatabaseError', 'IntegrityError'))
 

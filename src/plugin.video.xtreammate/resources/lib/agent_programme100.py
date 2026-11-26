@@ -3,6 +3,8 @@
 SOURCES = {'agent_tmdb': 'tmdb', 'agent_tvmaze': 'tvmaze', 'agent_xmltv': 'xmltv'}
 VIEW_ROLE = {'hero': 'backdrop', 'details': 'episode_still', 'card': 'poster'}
 ROLE_ORDER = (*VIEW_ROLE.values(), 'legacy_icon', 'thumb')
+PERSON_ROLES = ('person', 'character')
+PERSON_VIEWS = ('person1', 'person2')
 
 
 def allowed(source):
@@ -24,7 +26,7 @@ def allowed(source):
 
 def view(event):
     requested = event.get('_art_view499')
-    if isinstance(requested, str) and requested in VIEW_ROLE:
+    if isinstance(requested, str) and (requested in VIEW_ROLE or requested in PERSON_VIEWS):
         return requested
     return 'details' if event.get('_detail93') else 'hero'
 
@@ -40,13 +42,19 @@ def manual(value):
 
 
 def fits(value, requested):
+    if requested in PERSON_VIEWS:
+        return (not value or value.get('source') in (None, '', 'placeholder')
+                or (value.get('source') in SOURCES and value.get('match') == 'EXACT_EVENT'
+                    and value.get('role81') in PERSON_ROLES and value.get('decoded88') is True))
+    if value and value.get('role81') in PERSON_ROLES:
+        return False
     if not value or manual(value) or value.get('source') not in SOURCES:
         return True
     return value.get('role81') in (VIEW_ROLE[requested], 'legacy_icon')
 
 
 def selected(value, requested):
-    return value.get('role81') == VIEW_ROLE[requested]
+    return requested in VIEW_ROLE and value.get('role81') == VIEW_ROLE[requested]
 
 
 def image_shape(role, checked):
@@ -58,6 +66,8 @@ def image_shape(role, checked):
         return False
     if role == 'poster':
         return .4 <= width / height <= .89
+    if role in PERSON_ROLES:
+        return .4 <= width / height <= 1
     if role in ('episode_still', 'backdrop'):
         return 1.3 <= width / height <= 2.5
     return True
@@ -68,7 +78,9 @@ def _receipt(event, requested):
     from programme_requests68 import identity
     from programme_policy68 import negative_scope
     tag = hashlib.sha256((identity(event) + negative_scope(event) + '|' + requested).encode()).hexdigest()
-    return tag, 'XCMate.TypedArt499.' + str(int(tag[:8], 16) % 192)
+    bucket = int(tag[:8], 16)
+    slot = 192 + 8 * PERSON_VIEWS.index(requested) + bucket % 8 if requested in PERSON_VIEWS else bucket % 192
+    return tag, 'XCMate.TypedArt499.' + str(slot)
 
 
 def remember(event, requested, value):
@@ -107,13 +119,38 @@ def read(event, requested):
 
 
 def candidates(event, requested=None):
+    if requested in PERSON_VIEWS:
+        index = PERSON_VIEWS.index(requested)
+        return person_candidates(event)[index:index + 1]
+    roles = (VIEW_ROLE[requested], 'legacy_icon') if requested else ROLE_ORDER
+    return _candidates(event, roles)
+
+
+def person_candidates(event):
+    from epg_agent100_art import validator
+
+    admit = validator()
+    result = []
+    seen = set()
+    for row in _candidates(event, PERSON_ROLES):
+        uri = row['url']
+        verified = admit(uri)
+        if uri in seen or not verified or verified['source'] != row['source']:
+            continue
+        seen.add(uri)
+        result.append(dict(row, attribution=verified['attribution']))
+        if len(result) == len(PERSON_VIEWS):
+            break
+    return result
+
+
+def _candidates(event, roles):
     from urllib.parse import urlsplit
 
     raw = event.get('agent_art')
     if not isinstance(raw, dict):
         return []
     result = []
-    roles = (VIEW_ROLE[requested], 'legacy_icon') if requested else ROLE_ORDER
     for role in roles:
         primary = raw.get(role)
         if not isinstance(primary, dict):
