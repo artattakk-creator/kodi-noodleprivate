@@ -394,6 +394,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
  def _paint_art(self,art,hero,poster):
   from programme_actions88 import rating,tmdb_source,tmdb_id,xmltv_tmdb
   from programme_image69 import eligible
+  from agent_programme100 import image_shape,manual
 
   def image(value,view=None):
    event=dict(self.event,_art_view499=view) if view else self.event
@@ -402,18 +403,20 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   hero_image=image(hero,'hero')
   poster_image=image(poster,'card')
   detail_image=image(art)
-  confirmed=__import__('agent_programme100').manual(art)
+  confirmed=manual(art)
   role=art.get('role81')
+  landscape=role!='legacy_icon' or image_shape('backdrop',
+      {'decoded77':art.get('decoded77'),'width':art.get('image_width77'),'height':art.get('image_height77')})
   ready=hero_image
-  if confirmed and role=='backdrop' or not ready and role not in ('poster','episode_still'):
+  if confirmed and role=='backdrop' or not ready and landscape and role not in ('poster','episode_still'):
    ready=detail_image or ready
   cover=poster_image if poster.get('role81')=='poster' else ''
   if detail_image and role=='poster' and (confirmed or not cover):cover=detail_image
-  gallery=detail_image if detail_image and role=='episode_still' else ready
   if cover==ready:cover=''
-  primary=art if confirmed and detail_image else hero if hero_image else poster if cover and cover==poster_image and not ready else art
-  source=primary.get('source','') if ready or cover else ''
-  visible_poster=poster if cover and cover==poster_image else {}
+  gallery=detail_image if detail_image and (role=='episode_still' or role=='legacy_icon' and not ready) else ready
+  visible_poster=(poster if cover==poster_image else art) if cover else {}
+  primary=(art if ready==detail_image else hero) if ready else visible_poster
+  source=primary.get('source','')
   score_source=source
   score=rating(primary)
   if not score and visible_poster:
@@ -426,7 +429,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   brand=bool(score) or tmdb_source(source) or tmdb_source(visible_poster.get('source'))
   art_id=(tmdb_id(primary) or tmdb_id(visible_poster)) if ready or cover else None
   verified_id=feed_id or art_id
-  poster_source=(poster if cover==poster_image else art).get('source','') if cover else ''
+  poster_source=visible_poster.get('source','')
   episode_picture=bool(detail_image and (role=='episode_still' or art.get('image_scope57')=='episode'))
   series_picture=bool(ready and primary.get('image_scope57')=='series_fallback')
   signature=(ready,cover,gallery,source,score,score_scope,brand,verified_id,poster_source,episode_picture,
@@ -450,9 +453,9 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   self.getControl(146).setVisible(bool(poster_attribution))
   self._detail_view_event['_episode_picture']=episode_picture
   self._reference_images=(gallery,cover)
-  if episode_picture:
+  if episode_picture or role=='legacy_icon' and gallery==detail_image and not ready:
    reference_credit=names.get(art.get('source'),'TMDB' if tmdb_source(art.get('source')) else '')
-   self._reference_label='Episodenbild'+(' · '+reference_credit if reference_credit else '')
+   self._reference_label=('Episodenbild' if episode_picture else 'Programmbild')+(' · '+reference_credit if reference_credit else '')
   else:
    self._reference_label='Hintergrundbild'+(' · '+image_source if image_source else '')
   self._paint_cards()

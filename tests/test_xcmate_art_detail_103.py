@@ -221,3 +221,18 @@ class PublicArt103(Fixture, unittest.TestCase):
         self.assertIsNotNone(recovered)
         self.assertEqual(recovered['role81'], 'backdrop')
         self.assertEqual(recovered['image'], str(file))
+
+    def test_detail_keeps_backdrop_and_manual_poster_provenance_separate(self):
+        from programme_window46 import ProgrammeWindow46
+        from xcmate027_fixture import ADDON
+
+        window = ProgrammeWindow46('XCMateProgramme46.xml', str(ADDON), 'Default', '720p')
+        window.configure(self.portal, {'sid': '1', 'name': 'Test channel'})
+        window.event = dict(self.event(('backdrop',)), _detail93=True)
+        self.addCleanup(window.close)
+        backdrop = dict(source='agent_tmdb', role81='backdrop', image='/verified-wide.png')
+        poster = dict(source='tvmaze_series', role81='poster', image='/manual-portrait.png', manual85=True)
+        with mock.patch('programme_image69.eligible', side_effect=lambda value, event: bool(value)):
+            window._paint_art(poster, backdrop, {})
+        self.assertEqual(window.getControl(105).label, 'Hintergrundbild · Agent/TMDB')
+        self.assertEqual(window.getControl(146).label, 'Poster · TVMaze')
