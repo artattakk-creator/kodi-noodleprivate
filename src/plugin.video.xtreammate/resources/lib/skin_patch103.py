@@ -124,8 +124,11 @@ def confirm(dialog, plan):
         choice = dialog.select(tr(36669), choices, preselect=0, useDetails=True)
         if choice != 2:
             return choice == 1
-        changes = '\n\n'.join(
-            name + '\n' + entry['before'] + '\n→ ' + entry['after']
-            for name, entry in zip(names, entries) if entry['before'] != entry['after']
-        )
-        dialog.textviewer(tr(39372), tr(39373, len(entries)) + '\n\n' + changes)
+        checksums = [tr(32710)]
+        for name, entry in zip(names, entries):
+            before, after = entry['before'], entry['after']
+            if before != after:
+                checksums.extend((name, tr(39380, before[:32]), before[32:],
+                                  tr(39381, after[:32]), after[32:]))
+        heading = tr(39372) + ' · SHA-256 · ' + tr(39373, len(entries))
+        dialog.select(heading, checksums, preselect=0)

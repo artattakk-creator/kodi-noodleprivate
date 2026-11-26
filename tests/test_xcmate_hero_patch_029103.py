@@ -47,21 +47,26 @@ class HeroPatch103(Fixture50, unittest.TestCase):
 
     def test_setup_offers_native_cancel_install_and_optional_details(self):
         self.options['xcmate_ui_language'] = 'de_de'
-        dialog = self.setup_dialog(iter([2, -1]))
+        dialog = self.setup_dialog(iter([2, -1, -1]))
         with mock.patch('xbmcgui.Dialog', return_value=dialog), mock.patch.object(
             self.manager, 'runtime', return_value=(self.profile, self.skin)
         ):
             self.manager.skin_setup()
-        self.assertEqual(dialog.select.call_count, 2)
+        self.assertEqual(dialog.select.call_count, 3)
         first = dialog.select.call_args_list[0]
         self.assertEqual(first.kwargs, {'preselect': 0, 'useDetails': True})
         self.assertEqual([item.getLabel() for item in first.args[1]],
                          ['Abbrechen', 'Jetzt installieren', 'Technische Details'])
         self.assertIn('Senderleiste', first.args[1][1].label2)
         self.assertNotIn('IncludesHomeWidgets.xml', first.args[1][1].label2)
-        details = dialog.textviewer.call_args.args[1]
-        self.assertIn('IncludesHomeWidgets.xml', details)
-        self.assertNotIn('<control', details)
+        technical = dialog.select.call_args_list[1]
+        self.assertIn('Geprüfte Dateien', technical.args[0])
+        details = technical.args[1]
+        self.assertEqual(details[0], 'Zurück')
+        self.assertIn('xml/IncludesHomeWidgets.xml', details)
+        self.assertTrue(any(row.startswith('Vorher ') for row in details))
+        self.assertTrue(any(row.startswith('Nachher ') for row in details))
+        self.assertNotIn('<control', '\n'.join(details))
         self.assertEqual(self.graph_bytes(), self.before)
 
     def test_widget_change_during_preview_is_reported_without_writing_skin_files(self):

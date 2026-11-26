@@ -6317,8 +6317,8 @@ msgid "Technical details"
 msgstr "Technical details"
 
 msgctxt "#39373"
-msgid "Verified files in the installation plan: {0}. Checksums are shown for the files that change."
-msgstr "Verified files in the installation plan: {0}. Checksums are shown for the files that change."
+msgid "Verified files {0}"
+msgstr "Verified files {0}"
 
 msgctxt "#39374"
 msgid "The BINGIE layout could not be installed. Use the verified backup to recover an interrupted installation."
@@ -6343,3 +6343,11 @@ msgstr "The verified skin files were saved. Kodi could not confirm the Skinshort
 msgctxt "#39379"
 msgid "Verified backup and checksums"
 msgstr "Verified backup and checksums"
+
+msgctxt "#39380"
+msgid "Before {0}"
+msgstr "Before {0}"
+
+msgctxt "#39381"
+msgid "After {0}"
+msgstr "After {0}"
