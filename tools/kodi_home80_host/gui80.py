@@ -7,7 +7,6 @@ from pathlib import Path
 import xbmc,xbmcaddon
 version80=xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version')
 current_releases80=('0.1.29.101', '0.1.29.102', '0.1.29.103')
-layout80_103=xbmc.getInfoLabel('$VAR[XCMate103.Contract]')=='READY'
 modern80=version80 in ('0.1.29.88','0.1.29.89','0.1.29.90','0.1.29.91','0.1.29.92','0.1.29.93','0.1.29.94','0.1.29.95','0.1.29.96') + current_releases80
 source80=Path('/base_gui79.py').read_text()
 for old80,new80 in (("Path('/root/home75.json')","Path('/root/home75-base80.json')"),('range(600,1040)','range(480,1040)'),('((270,20),1080,580)','((270,0),1620,480)'),('getpixel((330,645))','getpixel((330,525))'),('getpixel((800,150))','getpixel((1000,150))')):
@@ -47,7 +46,7 @@ def settle_idle86():
  deadline=time.monotonic()+5
  while True:
   pump();xbmc.sleep(100);_,frame=capture('home86-before-idle')
-  hero=frame.getpixel((1500,300) if modern80 else (500,300));logo=frame.getpixel((190,665) if layout80_103 else (330,525))
+  hero=frame.getpixel((1500,300) if modern80 else (500,300));logo=frame.getpixel((190,665)) if layout103 else frame.getpixel((330,525))
   if max(abs(a-b) for a,b in zip(hero,(20,80,130)))<=8 and max(abs(a-b) for a,b in zip(logo,(20,90,150)))<=8:return
   if time.monotonic()>=deadline:
    prefix='XCMate.Hero63.'+home.getProperty('XCMate.Hero63.Active')+'.'
@@ -56,11 +55,13 @@ if modern80:
  source80=source80.replace('crop((120,20,250,500))','crop((110,20,145,500))')
  source80=source80.replace('((270,0),1620,480)','((130,0),1760,620)').replace('getpixel((300,150))','getpixel((1500,150))').replace('getpixel((500,300))','getpixel((1500,300))').replace('getpixel((1000,150))','getpixel((1500,150))')
 
-if layout80_103:
- # Card X follows the same measured left edge as the fixed station band.
- source80=source80.replace('getpixel((330,665))','getpixel((190,665))')
- source80=source80.replace('getpixel((350,770))','getpixel((210,770))')
- source80=source80.replace('getpixel((350,1020))','getpixel((210,1020))')
+# Approval can activate the new layout during the reused gui75 script.
+# Choose sampling positions from its observed post-activation marker.
+for old_point, new_point in (((330,665), (190,665)), ((350,770), (210,770)),
+                             ((350,1020), (210,1020))):
+ old_sample='getpixel('+str(old_point).replace(' ','')+')'
+ sample='getpixel('+str(new_point)+' if layout103 else '+str(old_point)+')'
+ source80=source80.replace(old_sample,sample)
 
 def detail_hero_matches102(frame, texture):
  # The .102 detail paints two gradients over the XMLTV hero (XML control 110).
