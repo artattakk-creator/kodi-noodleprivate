@@ -1,0 +1,680 @@
+{
+  "kodi": "21.2 Debian package version: 2:21.2+dfsg-4",
+  "skin": "skin.titan.bingie.mod",
+  "rows": [
+    {
+      "kind": "live",
+      "step": 0,
+      "cid": 2510,
+      "current": "1",
+      "total": "18",
+      "label": "Channel 01",
+      "hero": "Auf Sendung \u2013 Channel 01",
+      "artist": "",
+      "album": "",
+      "selected_art": true,
+      "contour": [
+        {
+          "y": [
+            645,
+            645
+          ],
+          "x": [
+            135,
+            266
+          ]
+        },
+        {
+          "y": [
+            706,
+            706
+          ],
+          "x": [
+            135,
+            266
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "live",
+      "step": 1,
+      "cid": 2510,
+      "current": "2",
+      "total": "18",
+      "label": "Channel 02",
+      "hero": "Auf Sendung \u2013 Channel 02",
+      "artist": "",
+      "album": "",
+      "selected_art": true,
+      "contour": [
+        {
+          "y": [
+            645,
+            645
+          ],
+          "x": [
+            277,
+            408
+          ]
+        },
+        {
+          "y": [
+            706,
+            706
+          ],
+          "x": [
+            277,
+            408
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "vod",
+      "step": 0,
+      "cid": 2520,
+      "current": "1",
+      "total": "18",
+      "label": "Fall 2: Deadpoint 01",
+      "hero": " Fall 2: Deadpoint 01",
+      "artist": "",
+      "album": "",
+      "selected_art": true,
+      "contour": [
+        {
+          "y": [
+            750,
+            753
+          ],
+          "x": [
+            130,
+            249
+          ]
+        },
+        {
+          "y": [
+            926,
+            929
+          ],
+          "x": [
+            130,
+            249
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "vod",
+      "step": 1,
+      "cid": 2520,
+      "current": "2",
+      "total": "18",
+      "label": "Fall 2: Deadpoint 02",
+      "hero": " Fall 2: Deadpoint 02",
+      "artist": "",
+      "album": "",
+      "selected_art": true,
+      "contour": [
+        {
+          "y": [
+            750,
+            753
+          ],
+          "x": [
+            137,
+            256
+          ]
+        },
+        {
+          "y": [
+            926,
+            929
+          ],
+          "x": [
+            137,
+            256
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "series",
+      "step": 0,
+      "cid": 2530,
+      "current": "1",
+      "total": "18",
+      "label": "Lupin 01",
+      "hero": " Lupin 01",
+      "artist": "",
+      "album": "",
+      "selected_art": true,
+      "contour": [
+        {
+          "y": [
+            866,
+            869
+          ],
+          "x": [
+            130,
+            249
+          ]
+        },
+        {
+          "y": [
+            1042,
+            1045
+          ],
+          "x": [
+            130,
+            249
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "series",
+      "step": 1,
+      "cid": 2530,
+      "current": "2",
+      "total": "18",
+      "label": "Lupin 02",
+      "hero": " Lupin 02",
+      "artist": "",
+      "album": "",
+      "selected_art": true,
+      "contour": [
+        {
+          "y": [
+            866,
+            869
+          ],
+          "x": [
+            138,
+            257
+          ]
+        },
+        {
+          "y": [
+            1042,
+            1045
+          ],
+          "x": [
+            138,
+            257
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "cinema",
+      "step": 0,
+      "cid": 29761,
+      "current": "1",
+      "total": "6",
+      "label": "now_playing 1",
+      "hero": " now_playing 1",
+      "artist": "",
+      "album": "",
+      "selected_art": true,
+      "contour": [
+        {
+          "y": [
+            866,
+            869
+          ],
+          "x": [
+            130,
+            249
+          ]
+        },
+        {
+          "y": [
+            1042,
+            1045
+          ],
+          "x": [
+            130,
+            249
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "cinema",
+      "step": 1,
+      "cid": 29761,
+      "current": "2",
+      "total": "6",
+      "label": "now_playing 2",
+      "hero": " now_playing 2",
+      "artist": "",
+      "album": "",
+      "selected_art": true,
+      "contour": [
+        {
+          "y": [
+            866,
+            869
+          ],
+          "x": [
+            130,
+            249
+          ]
+        },
+        {
+          "y": [
+            1042,
+            1045
+          ],
+          "x": [
+            130,
+            249
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "trend",
+      "step": 0,
+      "cid": 29763,
+      "current": "1",
+      "total": "6",
+      "label": "trending_week 1",
+      "hero": " trending_week 1",
+      "artist": "",
+      "album": "",
+      "selected_art": true,
+      "contour": [
+        {
+          "y": [
+            866,
+            869
+          ],
+          "x": [
+            130,
+            249
+          ]
+        },
+        {
+          "y": [
+            1042,
+            1045
+          ],
+          "x": [
+            130,
+            249
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "trend",
+      "step": 1,
+      "cid": 29763,
+      "current": "2",
+      "total": "6",
+      "label": "trending_week 2",
+      "hero": " trending_week 2",
+      "artist": "",
+      "album": "",
+      "selected_art": true,
+      "contour": [
+        {
+          "y": [
+            866,
+            869
+          ],
+          "x": [
+            130,
+            249
+          ]
+        },
+        {
+          "y": [
+            1042,
+            1045
+          ],
+          "x": [
+            130,
+            249
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "mp3",
+      "step": 0,
+      "cid": 29764,
+      "current": "2",
+      "total": "6",
+      "label": "Audio test 2",
+      "hero": " Audio test 2",
+      "artist": "Fixture artist",
+      "album": "Fixture album",
+      "selected_art": true,
+      "contour": [
+        {
+          "y": [
+            866,
+            869
+          ],
+          "x": [
+            130,
+            249
+          ]
+        },
+        {
+          "y": [
+            1042,
+            1045
+          ],
+          "x": [
+            130,
+            249
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "mp3",
+      "step": 1,
+      "cid": 29764,
+      "current": "3",
+      "total": "6",
+      "label": "Audio test 3",
+      "hero": " Audio test 3",
+      "artist": "Fixture artist",
+      "album": "Fixture album",
+      "selected_art": true,
+      "contour": [
+        {
+          "y": [
+            866,
+            869
+          ],
+          "x": [
+            130,
+            249
+          ]
+        },
+        {
+          "y": [
+            1042,
+            1045
+          ],
+          "x": [
+            130,
+            249
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "personal-film",
+      "step": 0,
+      "cid": 2540,
+      "current": "1",
+      "total": "18",
+      "label": "Local film 01",
+      "hero": " Local film 01",
+      "artist": "",
+      "album": "",
+      "selected_art": true,
+      "contour": [
+        {
+          "y": [
+            725,
+            725
+          ],
+          "x": [
+            135,
+            364
+          ]
+        },
+        {
+          "y": [
+            1044,
+            1044
+          ],
+          "x": [
+            135,
+            364
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "personal-film",
+      "step": 1,
+      "cid": 2540,
+      "current": "2",
+      "total": "18",
+      "label": "Local film 02",
+      "hero": " Local film 02",
+      "artist": "",
+      "album": "",
+      "selected_art": true,
+      "contour": [
+        {
+          "y": [
+            725,
+            725
+          ],
+          "x": [
+            152,
+            381
+          ]
+        },
+        {
+          "y": [
+            1044,
+            1044
+          ],
+          "x": [
+            152,
+            381
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "personal-audio",
+      "step": 0,
+      "cid": 2550,
+      "current": "1",
+      "total": "18",
+      "label": "Local music 01",
+      "hero": " Local music 01",
+      "artist": "",
+      "album": "",
+      "selected_art": true,
+      "contour": [
+        {
+          "y": [
+            725,
+            725
+          ],
+          "x": [
+            135,
+            364
+          ]
+        },
+        {
+          "y": [
+            1044,
+            1044
+          ],
+          "x": [
+            135,
+            364
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "personal-audio",
+      "step": 1,
+      "cid": 2550,
+      "current": "2",
+      "total": "18",
+      "label": "Local music 02",
+      "hero": " Local music 02",
+      "artist": "",
+      "album": "",
+      "selected_art": true,
+      "contour": [
+        {
+          "y": [
+            725,
+            725
+          ],
+          "x": [
+            168,
+            397
+          ]
+        },
+        {
+          "y": [
+            1044,
+            1044
+          ],
+          "x": [
+            168,
+            397
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "personal-series",
+      "step": 0,
+      "cid": 2560,
+      "current": "1",
+      "total": "18",
+      "label": "Local series 01",
+      "hero": " Local series 01",
+      "artist": "",
+      "album": "",
+      "selected_art": true,
+      "contour": [
+        {
+          "y": [
+            725,
+            725
+          ],
+          "x": [
+            135,
+            364
+          ]
+        },
+        {
+          "y": [
+            1044,
+            1044
+          ],
+          "x": [
+            135,
+            364
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "personal-series",
+      "step": 1,
+      "cid": 2560,
+      "current": "2",
+      "total": "18",
+      "label": "Local series 02",
+      "hero": " Local series 02",
+      "artist": "",
+      "album": "",
+      "selected_art": true,
+      "contour": [
+        {
+          "y": [
+            725,
+            725
+          ],
+          "x": [
+            142,
+            371
+          ]
+        },
+        {
+          "y": [
+            1044,
+            1044
+          ],
+          "x": [
+            142,
+            371
+          ]
+        }
+      ]
+    }
+  ],
+  "scroll": [
+    {
+      "action": "Down",
+      "focus": 2520
+    },
+    {
+      "action": "Down",
+      "focus": 2530
+    },
+    {
+      "action": "Down",
+      "focus": 29761
+    },
+    {
+      "action": "Down",
+      "focus": 29763
+    },
+    {
+      "action": "Down",
+      "focus": 29764
+    },
+    {
+      "action": "Up",
+      "focus": 29763
+    },
+    {
+      "action": "Up",
+      "focus": 29761
+    },
+    {
+      "action": "Up",
+      "focus": 2530
+    },
+    {
+      "action": "Up",
+      "focus": 2520
+    },
+    {
+      "action": "Up",
+      "focus": 2510
+    }
+  ],
+  "physical": "NOT_TESTED",
+  "candidate": true,
+  "core_ready": {
+    "live": "18",
+    "vod": "18",
+    "series": "18"
+  },
+  "actual_resolution": [
+    1920,
+    1080
+  ],
+  "source_plan": {
+    "cinema": "WAITING",
+    "disney": "SOURCE_NOT_CONFIGURED",
+    "trend": "WAITING",
+    "mp3": "WAITING"
+  },
+  "fixture_audio_played": true,
+  "saved_bindings_identical": true,
+  "status": "PASS"
+}

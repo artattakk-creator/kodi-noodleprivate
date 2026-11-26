@@ -1,0 +1,48 @@
+{
+  "skin": "skin.titan.bingie.mod",
+  "rows": [
+    {
+      "kind": "live",
+      "phase": 1,
+      "control": 2510,
+      "hero": {
+        "geometry": true,
+        "rendered": true,
+        "x": 130,
+        "y": 0,
+        "width": 1760,
+        "height": 640
+      },
+      "title": "Auf Sendung \u2013 Channel 01"
+    },
+    {
+      "kind": "vod",
+      "phase": 1,
+      "control": 2520,
+      "hero": {
+        "geometry": true,
+        "rendered": true,
+        "x": 130,
+        "y": 0,
+        "width": 1760,
+        "height": 640
+      },
+      "title": " Fall 2: Deadpoint 03"
+    },
+    {
+      "kind": "series",
+      "phase": 1,
+      "control": 2530,
+      "hero": {
+        "geometry": true,
+        "rendered": true,
+        "x": 130,
+        "y": 0,
+        "width": 1760,
+        "height": 640
+      },
+      "title": " Lupin 03"
+    }
+  ],
+  "status": "PASS"
+}
