@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addons><addon id="plugin.video.xtreammate" name="XCMate" version="0.1.29.103" provider-name="GS Media">
+<addons><addon id="plugin.video.xtreammate" name="XCMate" version="0.1.29.104" provider-name="GS Media">
 
   <requires>
     <import addon="xbmc.python" version="3.0.0" />
@@ -35,7 +35,7 @@
     <forum>https://forum.kodi.tv</forum>
     <website>https://kodi.tv</website>
     <source>https://github.com/artattakk-creator/kodi-noodleprivate</source>
-    <news>0.1.29.103 – Native EPG-Agent-Einstellungen und geprüfte Senderzuordnung. Importierte Sendungsbilder ohne lokale API-Tokens, erweiterte Sendungsdetails und feste BINGIE-Home-Bereiche.</news>
+    <news>0.1.29.104 – Vollständiger lokaler EPG-Agent-Index, indizierte Sender- und Werksuche sowie quellgenaue Bildrollen für Live-TV.</news>
     <assets>
       <icon>icon-81da1003a2753ec6.png</icon>
       <fanart>resources/media/lightweight_splash.jpg</fanart>
