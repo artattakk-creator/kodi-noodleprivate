@@ -2,6 +2,8 @@
 import argparse
 from collections import Counter, defaultdict
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import suppress
+import cProfile
 from datetime import datetime, timezone
 import hashlib
 import json
@@ -32,6 +34,8 @@ def main():
     parser.add_argument('--seconds', type=int, default=7200)
     parser.add_argument('--report-every', type=int, default=60)
     parser.add_argument('--variant', choices=('artwork', 'standard'), default='artwork')
+    parser.add_argument('--profiles', type=Path, help='Write optional per-operation Python profile data')
+    parser.add_argument('--profile-operation', choices=('playback','station','preview','widget'), default='playback')
     args = parser.parse_args()
     if args.seconds < 1 or args.report_every < 1:
         parser.error('durations must be positive')
@@ -100,6 +104,8 @@ def run(args, fixture):
     began = time.monotonic()
     until = began + args.seconds
     initial = counters()
+    if args.profiles is not None:
+        args.profiles.mkdir(parents=True, exist_ok=True)
 
     def emit(data):
         print(json.dumps(data, sort_keys=True, ensure_ascii=False), flush=True)
@@ -127,11 +133,12 @@ def run(args, fixture):
     # Each operation is scheduled relative to the start and skips missed slots.
     # The workload has four bounded workers and never queues an unbounded backlog.
     def worker(label, operation, period):
+        profile_run = cProfile.Profile() if args.profiles is not None and label == args.profile_operation else None
         index = 0
         while not stop.is_set() and time.monotonic() < until:
             tick = time.monotonic()
             try:
-                outcome = operation(index)
+                outcome = profile_run.runcall(operation, index) if profile_run is not None else operation(index)
             except Exception as exc:
                 outcome = getattr(exc, 'code', type(exc).__name__)
             elapsed = (time.monotonic() - tick) * 1000
@@ -140,10 +147,26 @@ def run(args, fixture):
                 samples[label].append(elapsed)
             index = max(index + 1, int((time.monotonic() - began) / period) + 1)
             stop.wait(max(0, min(until, began + index * period) - time.monotonic()))
+        if profile_run is not None:
+            profile_run.dump_stats(args.profiles / (label + '.pstats'))
 
     def snapshot():
         runtime = counters()
-        files = [file for file in fixture.folder.rglob('*') if file.is_file()]
+        sizes = []
+        for file in fixture.folder.rglob('*'):
+            if file.is_file():
+                with suppress(FileNotFoundError):
+                    sizes.append(file.stat().st_size)
+        runtime_workload = getattr(__import__('service_runtime'), 'workload', None)
+        if runtime_workload is not None:
+            tasks = runtime_workload()
+        else:
+            programme = sys.modules.get('programme_urls55')
+            widget = sys.modules.get('widget_assets69')
+            tasks = dict(queues={
+                'programme_urls55.default': len(programme._queue) if programme else 0,
+                'widget_assets69.default': widget._queue.qsize() if widget else 0,
+            })
         with lock:
             measurements = {}
             for name, values in samples.items():
@@ -158,8 +181,8 @@ def run(args, fixture):
         emit(dict(kind='sample', elapsed_seconds=round(time.monotonic()-began, 3),
                   operations=measurements, portal=runtime,
                   portal_delta={key: runtime[key]-value for key, value in initial.items()
-                                if isinstance(value, int)}, files=len(files), cache_bytes=sum(file.stat().st_size for file in files if file.exists()),
-                  **memory()))
+                                if isinstance(value, int)}, files=len(sizes), cache_bytes=sum(sizes),
+                  **memory(), **tasks))
 
     with sqlite3.connect('file:' + guide_path() + '?mode=ro', uri=True) as db:
         guide_rows = db.execute("SELECT count(*) FROM guide44_inputs WHERE pid='p' AND source_id='agent'").fetchone()[0]

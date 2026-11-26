@@ -13,6 +13,7 @@ _portal_ready=False
 _next_portal_probe=0
 _portal_probe_lock=threading.Lock()
 _sockets=weakref.WeakSet()
+_library_prefix=__file__.rpartition(os.sep)[0]+os.sep
 CALLERS={'service_runtime':'SERVICE','genre_search':'GENRE','widget_fast69':'WIDGET','widget_hooks45':'WIDGET','widget_refresh45':'WIDGET','widget_entry46':'WIDGET','widget_consumer58':'WIDGET','service':'SERVICE','app_services':'LIBRARY','art_store':'ART_SCAN','startup_preload':'STARTUP',
          'xtream':'PROVIDER','catalog_sync':'CATALOG','app_routes':'ROUTE','main':'ROUTE',
          'live_recovery':'LIVE','live_overlay':'LIVE','source_live':'LIVE','search_live':'SEARCH',
@@ -21,6 +22,9 @@ CALLERS={'service_runtime':'SERVICE','genre_search':'GENRE','widget_fast69':'WID
          'hero_epg63':'HERO','programme_display84':'ART_DISPLAY','programme_reference84':'ART_REFERENCE',
          'programme_urls55':'ART_SAFETY','agent_programme100':'AGENT','xmltv_art96':'ART_XMLTV',
          'portal_manager':'CONFIG','provider_baseline96':'CONFIG'}
+CALLER_PREFIXES=(('programme_','ARTWORK'),('artwork_','ARTWORK'),('logo_','ARTWORK'),('widget_','WIDGET'),
+                 ('live_','LIVE'),('epg_','EPG'),('home_','HOME'),('catalog_','CATALOG'),
+                 ('wizard_','CONFIG'),('setup_','CONFIG'),('media_','MEDIA'),('reminder_','REMINDER'))
 PORTAL_OUTCOMES = {'MEMORY', 'MEMORY_PAUSE', 'PROFILE_BUSY', 'PROFILE_BUDGET', 'PROFILE_RACE',
                    'INVALID_PROFILE', 'READ_IO', 'UNKNOWN', 'CACHE', 'LOCK_PROOF', 'LOCKED'}
 EPG_STAGES={'DB_READ','AGENT_INDEX_READ','AGENT_INDEX_BUILD'}
@@ -67,12 +71,18 @@ def portal_call():
             if name not in ('portal_snapshot','portals'):
                 break
             frame=frame.f_back
-        module=name if frame is not None and name in CALLERS else 'OTHER'
-        category=CALLERS.get(module,'OTHER')
+        local=(frame is not None and isinstance(name,str) and name.isidentifier()
+               and frame.f_code.co_filename.startswith(_library_prefix))
+        module=name if frame is not None and (name in CALLERS or local) else 'OTHER'
+        category=CALLERS.get(module)
+        if category is None:
+            category=next((label for prefix,label in CALLER_PREFIXES if module.startswith(prefix)),
+                          'ADDON' if local else 'OTHER')
         with _lock:
             _calls+=1
             _callers[category]=_callers.get(category,0)+1
-            _caller_modules[module]=_caller_modules.get(module,0)+1
+            key=module if module in _caller_modules or len(_caller_modules)<128 else 'OTHER'
+            _caller_modules[key]=_caller_modules.get(key,0)+1
     finally:del frame
 
 

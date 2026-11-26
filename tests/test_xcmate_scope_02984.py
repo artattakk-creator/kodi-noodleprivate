@@ -16,6 +16,11 @@ APPROVED_103_SHA256={
  # #517 separates the programme backdrop and poster and adds details.
  'src/plugin.video.xtreammate/resources/skins/Default/720p/XCMateProgramme46.xml':'eb3f1fac9dd1f7805306e277930309ab8f73d7641bb118af45dff1ddea32c54a',
 }
+APPROVED_104_SHA256={
+ **APPROVED_103_SHA256,
+ # #519 projects account fields from the verified portal snapshot and reports read failures.
+ 'src/plugin.video.xtreammate/resources/lib/portals.py':'1d12b62fc92514a671234c24807d5724da17168dbd9a9ea5657d6620f59c0fa1',
+}
 class Scope84(unittest.TestCase):
  def data(self):return json.loads((ROOT/'tests/fixtures/xcmate_02984_protection.json').read_text())
  def test_every_previous_source_file_has_reviewed_delta_or_identical_bytes(self):
@@ -31,7 +36,8 @@ class Scope84(unittest.TestCase):
   prefixes=('src/script.gsmedia.setup/','src/plugin.video.xtreammate/resources/skins/')
   names={'live_exit.py','exit_jobs.py','playback_exit.py','native_stop41.py','app_routes.py','window_navigation.py','portals.py','artwork_config.py','art_storage.py','artwork_migration.py','artwork_ui.py'}
   version=ElementTree.parse(ROOT/'src/plugin.video.xtreammate/addon.xml').getroot().get('version')
-  approved={'0.1.29.102':APPROVED_102_SHA256,'0.1.29.103':APPROVED_103_SHA256}.get(version,{})
+  approved={'0.1.29.102':APPROVED_102_SHA256,'0.1.29.103':APPROVED_103_SHA256,
+            '0.1.29.104':APPROVED_104_SHA256}.get(version,{})
   for path in subprocess.check_output(['git','ls-tree','-r','--name-only',BASE,'src'],cwd=ROOT).decode().splitlines():
    if not (path.startswith(prefixes) or Path(path).name in names):continue
    contents=(ROOT/path).read_bytes()

@@ -41,6 +41,35 @@ jobs:
           path: ${{ runner.temp }}/candidate/${{ steps.package.outputs.artifact }}.zip*
           if-no-files-found: error
 
+  public-cdn-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'Pillow>=11,<13' 'simpleeval==0.9.13'
+      - name: Recheck a pinned public event through real CDN transport
+        run: |
+          mkdir -p "$RUNNER_TEMP/public-feed"
+          feed="$RUNNER_TEMP/public-feed"
+          curl --silent --show-error --fail --location --proto '=https' --max-time 90 \
+            https://raw.githubusercontent.com/artattakk-creator/xcmate-epg-public/1dd93d633b7c7206f0694fb1aaf8e7a694afdda9/manifest.json \
+            --output "$feed/manifest.json"
+          curl --silent --show-error --fail --location --proto '=https' --max-time 90 \
+            https://github.com/artattakk-creator/xcmate-epg-public/releases/download/gs-hub-20261125T184530Z-3dcf8e71b9a1/epg-de.xml.gz \
+            --output "$feed/artwork.xml.gz"
+          python tools/run_xcmate104_public_art.py . --feed "$feed" | tee "$feed/cdn-evidence.jsonl"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xcmate-029104-public-cdn-replay
+          path: ${{ runner.temp }}/public-feed/cdn-evidence.jsonl
+          if-no-files-found: warn
+
   comparative-soak:
     runs-on: ubuntu-latest
     timeout-minutes: 140
