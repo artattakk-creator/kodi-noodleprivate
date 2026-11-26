@@ -2,12 +2,13 @@
 import contextlib
 import gzip
 import io
+import os
 import sqlite3
+import sys
 import time
 import unittest
 from unittest import mock
 
-from test_xcmate_epg_agent100 import AgentCycleTests
 from xcmate027_fixture import Fixture
 
 
@@ -42,6 +43,8 @@ class StationProofs103(unittest.TestCase):
 
 class MappingScope103(unittest.TestCase):
     def test_local_catalogue_change_reprocesses_retained_candidate_without_network(self):
+        from test_xcmate_epg_agent100 import AgentCycleTests
+
         cycle = AgentCycleTests(methodName='runTest')
         cycle.setUp()
         self.addCleanup(cycle.doCleanups)
@@ -96,6 +99,28 @@ class AgentGuide103(Fixture, unittest.TestCase):
         self.assertEqual([len(page) for page in pages], [100, 100, 100, 100, 100, 1])
         self.assertEqual([row['id'] for row in channels('p', 'agent', 'Fixture 500', strict482=True)],
                          ['cid-500'])
+
+    def test_cold_agent_preview_save_publishes_to_the_source_qualified_guide(self):
+        from epg_agent100 import _save, profile
+        from epg_agent100_art import build
+        from epg_agent_catalog103 import build as catalogue
+        from epg_candidate53 import Candidates, publish
+        from guide_store import path
+
+        folder = self.candidate([('unmatched', 'Unused station')], [
+            ('unmatched', 'Verified Agent programme', '')])
+        build(folder, lambda: False)
+        catalogue(folder, lambda: False)
+        _save(profile(), dict(code='IMPORT_PENDING', remote='AVAILABLE', generation='a' * 64))
+        portal = {'id': 'p'}
+        events = Candidates().programmes(portal, 'agent', 'unmatched', lambda: False)
+        self.assertEqual(events[0]['name'], 'Verified Agent programme')
+        self.assertFalse(os.path.isfile(path()))
+        sys.modules.pop('epg_status', None)
+        publish(portal, 'agent', 'unmatched', 'Unused station', events)
+        with sqlite3.connect('file:' + path() + '?mode=ro', uri=True) as db:
+            self.assertEqual(db.execute('SELECT source_id,cid,title FROM guide44_inputs').fetchall(),
+                             [('agent', 'unmatched', 'Verified Agent programme')])
 
     def test_same_generation_only_imports_new_cids_and_reuses_existing_cids(self):
         from epg_agent100 import SOURCE_RANK
@@ -166,7 +191,6 @@ class AgentGuide103(Fixture, unittest.TestCase):
         from epg_agent100 import SOURCE_RANK
         from epg_agent100_art import build
         from epg_binding48 import Mappings
-        from epg_merge52 import publish_aliases
         from epg_variant53 import channel_name_key
         from local_epg import window
         from stream_epg import import_source
@@ -186,8 +210,10 @@ class AgentGuide103(Fixture, unittest.TestCase):
                               SOURCE_RANK, [stream], Mappings())
             except ValueError as error:
                 self.fail(f'Qualified Agent import failed before the read path: {error}')
-        self.assertTrue(publish_aliases('p', 'agent', {'1': agent_cid}, [stream], {},
-                                        proofs={'1': 'provider_id'}))
+        from programme_index46 import connect
+        with contextlib.closing(connect(False)) as db:
+            proof = db.execute("SELECT proof,cid FROM source_aliases52 WHERE source_id='agent'").fetchone()
+        self.assertEqual(tuple(proof), ('provider_id', agent_cid))
         row = window('p', [stream], Mappings(), self.now, self.now + 3600)['Provider.de'][0]
         self.assertEqual(row['country'], 'DE')
         self.assertEqual(row['field_sources52']['country'], {'source': 'agent', 'channel': agent_cid})

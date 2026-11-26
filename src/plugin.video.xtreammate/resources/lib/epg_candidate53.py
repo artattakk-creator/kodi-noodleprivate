@@ -65,6 +65,7 @@ def scan(portal,identity,cid=None,cancel=lambda:False):
         if cid is None or event['channel']!=cid or event['stop_timestamp']<=left or event['start_timestamp']>=right:return
         event=dict(event,source_key46=identity,_source_index=rank,source=rank)
         if agent:
+            event['_agent_generation103'] = selected.get('_agent_generation103')
             references=event_art(event,admit_art)
             if references:event['agent_art']=references
             for key in ('screenshot_uri','icons','images'):event.pop(key,None)
@@ -112,7 +113,10 @@ def publish(portal,identity,cid,name,events):
     if not events:return
     from programme_store46 import Stage
     from programme_index46 import window
-    _,rank=source(portal,identity)
+    selected,rank=source(portal,identity)
+    if identity == 'agent':
+        _publish_agent_preview(portal['id'], selected, rank, cid, events)
+        return
     stage=Stage(portal['id'],'mapping53-'+uuid.uuid4().hex,rank,source_identity=identity)
     try:
         stage.channel48(cid,name)
@@ -126,3 +130,55 @@ def publish(portal,identity,cid,name,events):
             saved=window(portal['id'],cid,event['start_timestamp'],event['stop_timestamp'],limit=256,source48=identity)
             if not any(e['start_timestamp']==event['start_timestamp'] and e['stop_timestamp']==event['stop_timestamp'] for e in saved):raise PreviewUnavailable('PREVIEW_VERIFY_FAILED')
     finally:stage.finish(False)
+
+
+
+def _publish_agent_preview(pid, selected, rank, cid, events):
+    """Place the selected verified generation's preview in the normal guide."""
+    from epg_binding48 import connection
+    from epg_events import deduplicate
+    from epg_gate46 import access
+    from guide_store import path, import_cache
+    from stream_epg import portal_lease44
+
+    expected = selected.get('_agent_generation103')
+    if not expected or any(event.get('source_key46') != 'agent' or event['channel'] != cid
+                           or event.get('_agent_generation103') != expected for event in events):
+        raise PreviewUnavailable('PREVIEW_IDENTITY')
+    rows = deduplicate(events, channel=cid)
+    if not rows:
+        raise PreviewUnavailable('PREVIEW_VERIFY_FAILED')
+    first, last = rows[0]['start'], rows[-1]['start']
+
+    def slots():
+        db = connection()
+        if db is None:
+            return set()
+        try:
+            return set(db.execute('SELECT start,stop FROM guide44_inputs '
+                                  'WHERE pid=? AND source_id=? AND cid=? AND start BETWEEN ? AND ?',
+                                  (str(pid), 'agent', cid, first, last)))
+        finally:
+            db.close()
+
+    with portal_lease44(pid) as held:
+        if not held:
+            raise PreviewUnavailable('PREVIEW_GUIDE_BUSY')
+        filename = path()
+        gate = access(filename)
+        if gate == 'DB_AUTHORIZATION_MISSING' and selected.get('_agent_public102'):
+            from guide_backup44 import authorize
+            authorize(filename, current_schema_only=True)
+            gate = access(filename)
+        if gate not in ('READY', 'NOT_CREATED'):
+            raise PreviewUnavailable(gate)
+        before = slots()
+        missing = [row for row in rows if (row['start'], row['stop']) not in before]
+        if missing and not import_cache(pid, {cid: missing}, 'agent-binding-' + uuid.uuid4().hex,
+                                        trusted_feed=True, source_records={rank: selected}):
+            raise PreviewUnavailable('PREVIEW_WRITE_FAILED')
+        verified = slots()
+        if any((row['start'], row['stop']) not in verified for row in rows):
+            raise PreviewUnavailable('PREVIEW_VERIFY_FAILED')
+    from epg_status import changed
+    changed(pid)

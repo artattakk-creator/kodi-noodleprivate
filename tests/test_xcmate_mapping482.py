@@ -289,7 +289,9 @@ class Mapping482(unittest.TestCase):
         self.d.source=None
         with mock.patch('programme_index46.connect',side_effect=sqlite3.OperationalError('database is locked')),mock.patch('menu_icons45.select',return_value=-1) as choose:
             self.d._choose_source();self.pump()
-        self.assertTrue(all('Datenbank belegt' in label for label in choose.call_args.args[2]))
+        labels = choose.call_args.args[2]
+        self.assertTrue(all('Datenbank belegt' in label for label in labels if 'Agent' not in label))
+        self.assertTrue(any('Agent' in label and 'Index nicht verfügbar' in label for label in labels))
 
     def test_missing_names_require_explicit_cold_load_and_keep_preview_in_ram(self):
         self.d.query='Kabel1HD';calls=[]

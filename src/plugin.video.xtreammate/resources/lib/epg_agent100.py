@@ -314,7 +314,7 @@ def installed_source(pid):
     if not enabled():
         return None
     from epg_agent100_art import INDEX
-    from epg_agent_github import XMLTV_FILE
+    from epg_agent_github import XMLTV_FILE, local_manifest
     folder = local_candidate(pid)
     if folder is None:
         # .102 installations may still preview their previously verified cache
@@ -328,7 +328,9 @@ def installed_source(pid):
     if index.is_symlink() or not index.is_file():
         return None
     return dict(id=SOURCE_ID, name=SOURCE_NAME, local=True, enabled=True,
-                uri=str(folder / XMLTV_FILE), _agent_artwork=str(index))
+                uri=str(folder / XMLTV_FILE), _agent_artwork=str(index),
+                _agent_generation103=folder.name.removeprefix("candidate-"),
+                _agent_public102=local_manifest(folder).get("status") == "PUBLIC_READY")
 
 
 def run(portals, cancel):

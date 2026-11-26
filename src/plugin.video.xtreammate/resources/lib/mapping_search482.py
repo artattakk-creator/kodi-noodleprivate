@@ -26,7 +26,7 @@ def failure(error):
 
 
 _PREFIX=re.compile(r'^\s*(?:[A-Za-z]{2}|AUS)\s*[|:]\s*',re.IGNORECASE)
-_QUALITY=re.compile(r'(?:uhd|hevc|fhd|hd|sd|4k|8k)(?:[\s()\[\]-]+(?:uhd|hevc|fhd|hd|sd|4k|8k))*[\s)\]]*$')
+_QUALITY=re.compile(r'(?:uhd|hevc|fhd|hd|sd|4k|8k)[\s)\]]*$')
 _DISTRIBUTION=re.compile(r'^joyn\s+|\s*\(joyn\)\s*$')
 _EINS=re.compile(r'\beins\b')
 _ASCII_OTHER=re.compile(r'[^a-z0-9+]')
@@ -41,7 +41,12 @@ def normal(value):
     text=text.casefold()
     if not text.isascii():text=unicodedata.normalize('NFKD',text)
     if 'joyn' in text:text=_DISTRIBUTION.sub('',text)
-    text=_QUALITY.sub('',text)
+    text=text.rstrip()
+    while text.endswith(('d','c','k',')',']')):
+        shorter=_QUALITY.sub('',text)
+        if shorter==text:
+            break
+        text=shorter.rstrip()
     if 'eins' in text:text=_EINS.sub('1',text)
     # C regex handles the common ASCII catalogue path; international letters
     # retain the previous Unicode alphanumeric semantics.
@@ -158,12 +163,23 @@ def search(pid,source,query='',offset=0,cancel=lambda:False):
             if db.execute("SELECT 1 FROM sqlite_master WHERE name='source_channels48'").fetchone():
                 found=db.execute('SELECT 1 FROM source_channels48 WHERE pid=? AND source_id=? LIMIT 1',(str(pid),source)).fetchone()
                 if found:
-                    # Apply the same normalizer before pagination. Raw-text SQL
-                    # filtering loses accents/punctuation and can spend its cap
-                    # on excluded +1 channels before the first valid result.
-                    order=_search_order(db,query)
-                    rows=db.execute('SELECT cid,name FROM source_channels48 WHERE pid=? AND source_id=? AND mapping_match482(cid,name) ORDER BY '+order+' LIMIT 100 OFFSET ?',
-                                    args)
+                    clause = 'pid=? AND source_id=?'
+                    scan_args = args[:2]
+                    if query:
+                        # SQLite can discard ASCII strings without the query's
+                        # literal characters in order. Unicode names and exact
+                        # IDs still use the full normalizer before pagination.
+                        letters = ''.join(c for c in normal(query) if c != '1')[:12]
+                        if len(letters) > 1 and letters.isascii():
+                            pattern = '*' + '*'.join(letters) + '*'
+                            clause += (" AND (cid=? COLLATE NOCASE OR length(name)!=length(CAST(name AS BLOB))"
+                                       " OR length(cid)!=length(CAST(cid AS BLOB))"
+                                       " OR lower(name) GLOB ? OR lower(cid) GLOB ?)")
+                            scan_args += (query, pattern, pattern)
+                        clause += ' AND mapping_match482(cid,name)'
+                    order = _search_order(db, query)
+                    rows = db.execute('SELECT cid,name FROM source_channels48 WHERE ' + clause +
+                                      ' ORDER BY ' + order + ' LIMIT 100 OFFSET ?', scan_args + args[2:])
                     return [dict(id=r[0],name=r[1],first=None,last=None) for r in rows]
             db.close();db=None
         db=connection()
