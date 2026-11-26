@@ -1,83 +1,78 @@
-"""One visible exact-adapter upgrade; installation/update never writes skin XML."""
-import threading,time
-_lock=threading.Lock();_pending=None;_done=False;_next=0
+"""Offer a reviewed Home adapter update and require explicit Kodi approval."""
+
+import threading
+import time
+from xml.etree.ElementTree import ParseError
+
+_lock=threading.Lock()
+_pending=None
+_done=False
+_next=0
+
 
 def prepare():
     global _pending,_next
-    import xbmcgui
-    marker=xbmcgui.Window(10000);requested78=marker.getProperty('XCMate.Home78.Apply')
-    if requested78:
-        marker.clearProperty('XCMate.Home78.Apply')
-        try:
-            from widget_manager50 import runtime,rebuild,trace
-            from widget_skin50 import apply
-            from widget_transaction50 import load
-            profile,skin=runtime();plan78=load(requested78,'skin')
-            from widget_skin78 import previous_owned
-            if not previous_owned(skin):return
-            apply(requested78,skin,confirmed=True);trace('SKIN_FILES_VERIFIED');rebuild()
-        except (OSError,ValueError,RuntimeError,KeyError):pass
-        return
     if _done or time.monotonic()<_next:return
     with _lock:
         if _pending is not None:return
     _next=time.monotonic()+60
-    try:
-        from utils import setting
-        from widget_manager50 import runtime
-        from widget_skin50 import applied,prepare as make
-        from widget_skin75 import previously_applied
-        from widget_skin77 import inspect as inspect77
-        profile,skin=runtime()
-        upgrade90=__import__('widget_skin90').previous_owned(skin)
-        if setting('bingie_hero63_notice','') in ('0.1.29.88','0.1.29.90') and not upgrade90:return
-        if applied(skin):return
-        from widget_skin78 import supported,installed,previous_owned
-        if supported(skin) and installed(skin):
-            # A restart can lose the RAM receipt after files were committed.
-            # Recheck only own consumers; do not reapply the skin transaction.
-            from home_activation78 import KEY,request
-            if not marker.getProperty(KEY):request('installed78')
-            return
-        upgrade88=supported(skin) and __import__('widget_skin88').previous_owned(skin)
-        automatic78=not upgrade88 and not upgrade90 and supported(skin) and previous_owned(skin) and not __import__('utils').setting_bool('home78_repair_optout',False)
-        if not automatic78 and not upgrade88 and not upgrade90 and not previously_applied(skin) and inspect77().get('code')!='ADAPTER_APPROVAL_REQUIRED':return
-        plan=make(skin)
-        from widget_skin60 import preview
-        text=preview(plan).replace('(.60)','(.90)' if upgrade90 else '(.88)')
-        from epg_handoff63 import profile_scope
-        with _lock:_pending=dict(profile=profile,skin=skin,plan=plan,text=text,scope=profile_scope(),automatic78=automatic78,upgrade90=upgrade90)
-    except (OSError,ValueError,KeyError,TypeError,RuntimeError):pass
+    import xbmcgui
+    from epg_handoff63 import profile_scope
+    from skin_patch103 import log_error
+    from utils import setting,setting_bool
+    from widget_manager50 import runtime
+    from widget_skin50 import applied,prepare as make
+    from widget_skin75 import previously_applied
+    from widget_skin77 import inspect
+    from widget_skin78 import installed,previous_owned,supported
+
+    try:profile,skin=runtime()
+    except (OSError,ValueError,RuntimeError):return
+    marker=xbmcgui.Window(10000)
+    marker.clearProperty('XCMate.Home78.Apply')
+    if applied(skin):return
+    if supported(skin) and installed(skin):
+        from home_activation78 import KEY,request
+        if not marker.getProperty(KEY):request('installed78')
+        return
+    if setting_bool('home78_repair_optout',False) or setting('bingie_hero63_notice','')=='0.1.29.103':
+        return
+    owned = (supported(skin) and (previous_owned(skin) or __import__('widget_skin88').previous_owned(skin)))
+    if not owned and not previously_applied(skin) and inspect().get('code')!='ADAPTER_APPROVAL_REQUIRED':
+        return
+
+    scope=profile_scope()
+    try:plan=make(skin)
+    except (OSError,ValueError,KeyError,TypeError,RuntimeError,ParseError) as exc:
+        log_error(exc,'layout')
+        return
+    with _lock:
+        _pending=dict(profile=profile,skin=skin,plan=plan,scope=scope)
+
 
 def poll():
     global _pending,_done
-    import xbmc,xbmcgui,xbmcaddon
-    if _done or xbmcgui.getCurrentWindowId()!=10000 or xbmcgui.getCurrentWindowDialogId() not in (0,-1,9999):return
-    if xbmc.getCondVisibility('Player.HasMedia'):return
-    # Offer new Home integration only while one of our native rows is focused.
-    # Existing bindings/settings are preserved; no patch without confirmation.
-    with _lock:
-        automatic78=bool(_pending and _pending.get('automatic78'));upgrade90=bool(_pending and _pending.get('upgrade90'))
-    if not automatic78 and not upgrade90 and xbmc.getInfoLabel('ListItem.Property(XCMate.WidgetKind41)') not in ('live','vod','series'):return
-    with _lock:pending=_pending;_pending=None
-    if pending is None:return
+    import xbmc,xbmcaddon,xbmcgui
     from epg_handoff63 import profile_scope
-    if pending.get('scope')!=profile_scope():return
+    from skin_patch103 import confirm,show_error
+    from widget_manager50 import install_skin
+
+    if _done or xbmcgui.getCurrentWindowId()!=10000 or xbmcgui.getCurrentWindowDialogId() not in (0,-1,9999):
+        return
+    if xbmc.getCondVisibility('Player.HasMedia') or xbmc.getCondVisibility('System.HasActiveModalDialog'):
+        return
+    with _lock:
+        pending=_pending
+        _pending=None
+    if pending is None or pending.get('scope')!=profile_scope():return
+
     _done=True
-    if pending.get('automatic78'):
-        xbmcgui.Window(10000).setProperty('XCMate.Home78.Apply',pending['plan']['id']);return
-    from localization import tr
     dialog=xbmcgui.Dialog()
-    dialog.textviewer(tr(36669),tr(36670)+'\n\n'+pending['text'])
-    confirmed=dialog.yesno(tr(36669),tr(36671),defaultbutton=getattr(xbmcgui,'DLG_YESNO_NO_BTN',10))
-    if pending.get('scope')!=profile_scope():return
-    xbmcaddon.Addon().setSetting('bingie_hero63_notice','0.1.29.90' if pending.get('upgrade90') else '0.1.29.88')
-    if not confirmed:return
-    from widget_manager50 import runtime,rebuild,trace,error
     try:
-        from widget_skin50 import apply
-        profile,skin=runtime()
-        if profile!=pending['profile'] or skin!=pending['skin']:raise ValueError('PROFILE_CHANGED')
-        apply(pending['plan']['id'],skin,confirmed=True)
-        trace('SKIN_PATCH_VERIFIED');rebuild();dialog.notification('XCMate',tr(36415))
-    except (OSError,ValueError,KeyError,TypeError,RuntimeError) as exc:error(exc)
+        approved=confirm(dialog,pending['plan'])
+        if pending.get('scope')!=profile_scope():return
+        if approved:
+            install_skin(pending['plan'],pending['profile'],pending['skin'],dialog)
+        xbmcaddon.Addon().setSetting('bingie_hero63_notice','0.1.29.103')
+    except (OSError,ValueError,KeyError,TypeError,RuntimeError,ParseError) as exc:
+        show_error(dialog,exc,'preview')

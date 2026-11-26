@@ -8,14 +8,17 @@ ERRORS={'UNVERIFIED_VARIABLES','UNVERIFIED_INCLUDE_GRAPH','UNVERIFIED_HOME_HOOK'
 
 
 def runtime():
-    import xbmc,xbmcaddon,xbmcgui,xbmcvfs
+    import xbmc,xbmcaddon,xbmcgui
+    from skin_patch103 import active_profile,local_dir
     if xbmc.getSkinDir()!='skin.titan.bingie.mod':raise ValueError('UNSUPPORTED_SKIN')
     skin=xbmcaddon.Addon('skin.titan.bingie.mod');shortcuts=xbmcaddon.Addon('script.skinshortcuts')
     if skin.getAddonInfo('version')!='2.2.3':raise ValueError('UNVERIFIED_SKIN_VERSION')
     if shortcuts.getAddonInfo('version')!='2.1.0':raise ValueError('UNVERIFIED_SHORTCUTS_VERSION')
     if xbmc.getCondVisibility('Player.HasMedia'):raise ValueError('PLAYER_ACTIVE')
-    if xbmc.getCondVisibility('Window.IsVisible(script-skinshortcuts.xml)') or xbmcgui.Window(10000).getProperty('skinshortcuts-isrunning')=='True':raise ValueError('NATIVE_EDITOR_BUSY')
-    return Path(xbmcvfs.translatePath('special://profile/')).resolve(),Path(skin.getAddonInfo('path')).resolve()
+    if xbmc.getCondVisibility('Window.IsVisible(script-skinshortcuts.xml)') or xbmcgui.Window(10000).getProperty('skinshortcuts-isrunning').lower()=='true':raise ValueError('NATIVE_EDITOR_BUSY')
+    skin_root=local_dir(skin.getAddonInfo('path'),'SKIN_PATH_UNAVAILABLE')
+    if skin_root!=local_dir('special://skin/','SKIN_PATH_UNAVAILABLE'):raise ValueError('SKIN_CHANGED')
+    return active_profile(),skin_root
 
 
 def rebuild():
@@ -123,9 +126,12 @@ def link(router,portal):
 
 def skin_setup():
     import xbmcgui
-    from widget_skin50 import prepare,apply,applied,FILES
+    from skin_patch103 import confirm,phase,show_error
+    from widget_skin50 import prepare,applied
+    dialog=xbmcgui.Dialog()
     try:
-        profile,skin=runtime()
+        with phase('runtime'):
+            profile,skin=runtime()
         if applied(skin):
             # Never reapply or rebuild on opening this directory. Recovery of a
             # stale generated include is a separate, explicit user action.
@@ -135,16 +141,26 @@ def skin_setup():
                 if current_profile!=profile or current_skin!=skin:raise ValueError('PROFILE_CHANGED')
                 rebuild();xbmcgui.Dialog().notification('XCMate',tr(36415))
             return
-        plan=prepare(skin)
-        names75=list(__import__('widget_skin78').FILES) if len(plan['entries'])==8 else list(FILES)+(['xml/IncludesBingie.xml'] if len(plan['entries'])==5 else [])
-        hashes='\n'.join(name+'\n'+e['before']+' → '+e['after'] for name,e in zip(names75,plan['entries']))
-        from widget_skin60 import preview
-        xbmcgui.Dialog().textviewer(tr(36401),tr(36417)+'\n\n'+hashes+'\n\n'+preview(plan))
-        if not xbmcgui.Dialog().yesno(tr(36413),tr(36418),nolabel=tr(36426),yeslabel=tr(36419),defaultbutton=getattr(xbmcgui,'DLG_YESNO_NO_BTN',10)):return
+        with phase('layout'):
+            plan=prepare(skin)
+        if confirm(dialog,plan):install_skin(plan,profile,skin,dialog)
+    except (OSError,ValueError,KeyError,TypeError,RuntimeError,ET.ParseError) as exc:
+        show_error(dialog,exc,'preview')
+
+
+def install_skin(plan,profile,skin,dialog):
+    from skin_patch103 import phase
+    from widget_skin50 import apply
+    with phase('profile'):
         current_profile,current_skin=runtime()
-        if current_profile!=profile or current_skin!=skin:raise ValueError('PROFILE_CHANGED')
-        apply(plan['id'],skin,confirmed=True);trace('SKIN_PATCH_VERIFIED');rebuild();xbmcgui.Dialog().notification('XCMate',tr(36415))
-    except (OSError,ValueError,KeyError,TypeError,RuntimeError,ET.ParseError) as exc:error(exc)
+        if current_profile!=profile:raise ValueError('PROFILE_CHANGED')
+        if current_skin!=skin:raise ValueError('SKIN_CHANGED')
+    with phase('target'):
+        apply(plan['id'],skin,confirmed=True)
+    with phase('reload'):
+        trace('SKIN_PATCH_VERIFIED')
+        rebuild()
+    dialog.notification('XCMate',tr(36415))
 
 
 def restore():
@@ -160,7 +176,9 @@ def restore():
                     try:plan=load(p.name,kind)
                     except (OSError,ValueError,KeyError):continue
                     status=json.loads((p/'state.json').read_text()).get('state')
-                    if status in ('APPLIED','APPLYING','INTERRUPTED','RESTORING'):plans.append(plan)
+                    if (status in ('APPLIED','APPLYING','INTERRUPTED','RESTORING')
+                            and plan['metadata'].get('profile',str(profile))==str(profile)):
+                        plans.append(plan)
                     break
             except (OSError,ValueError,KeyError):pass
         plans.sort(key=lambda p:p.get('at',0),reverse=True)
@@ -177,6 +195,9 @@ def restore():
             apply(plan['id'],profile,skin,confirmed=True,restore=True)
         else:
             from widget_skin50 import apply
-            apply(plan['id'],skin,confirmed=True,restore=True)
+            from skin_patch103 import show_error
+            try:apply(plan['id'],skin,confirmed=True,restore=True)
+            except (OSError,ValueError,KeyError,TypeError,RuntimeError,ET.ParseError) as exc:
+                show_error(xbmcgui.Dialog(),exc,'restore');return
         trace('RESTORED');rebuild();xbmcgui.Dialog().notification('XCMate',tr(36425))
     except (OSError,ValueError,KeyError,TypeError,RuntimeError,ET.ParseError) as exc:error(exc)

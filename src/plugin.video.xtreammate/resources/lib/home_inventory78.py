@@ -3,12 +3,11 @@
 Never inventories portals/tokens or writes SkinShortcuts/user settings. Copies
 are local recovery evidence, not uploadable diagnostics.
 """
-import hashlib,json,os,time,uuid
+import hashlib,json,time,uuid
 from pathlib import Path
 
 def snapshot(profile,skin):
-    from utils import addon_data_dir
-    from widget_transaction50 import private,read
+    from widget_transaction50 import private,private_folder,read,sync_dir
     profile=Path(profile).resolve();skin=Path(skin).resolve()
     receipt87=__import__('widget_inventory87').collect(profile,skin)
     paths=[profile/'addon_data/skin.titan.bingie.mod/settings.xml',skin/'xml/script-skinshortcuts-includes.xml']
@@ -24,13 +23,22 @@ def snapshot(profile,skin):
         data=read(path);total+=len(data)
         if total>32*1024*1024:raise ValueError('PROFILE_BUDGET')
         values.append((path,data))
-    root=Path(addon_data_dir())/'home78_inventory'
-    if root.is_symlink():raise ValueError('UNSAFE_BACKUP_FOLDER')
-    root.mkdir(mode=0o700,exist_ok=True);folder=root/uuid.uuid4().hex;folder.mkdir(mode=0o700)
+    root=private_folder('home78_inventory')
+    folder=root/uuid.uuid4().hex;folder.mkdir(mode=0o700)
     records=[]
     for i,(path,data) in enumerate(values):
         name=str(i)+'.original';private(folder/name,data)
         if read(folder/name)!=data:raise ValueError('BACKUP_VERIFY_FAILED')
         records.append(dict(target=str(path),file=name,sha256=hashlib.sha256(data).hexdigest(),bytes=len(data)))
     private(folder/'inventory.json',json.dumps(dict(version=1,at=time.time(),files=records,widgets87=receipt87)).encode())
+    sync_dir(folder);sync_dir(root)
     return folder.name
+
+
+def receipt(token):
+    from widget_transaction50 import plan_id,private_folder,read
+    folder=private_folder('home78_inventory')/plan_id(token)
+    if folder.is_symlink():raise ValueError('UNSAFE_BACKUP_FOLDER')
+    index=json.loads(read(folder/'inventory.json'))
+    if index.get('version')!=1:raise ValueError('BACKUP_VERIFY_FAILED')
+    return index.get('widgets87')

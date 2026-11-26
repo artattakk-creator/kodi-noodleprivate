@@ -130,28 +130,59 @@ def runtime():
 def prepare(skin):
     from widget_skin50 import guard
     from widget_transaction50 import prepare as transaction
-    import xbmcvfs
     from home_inventory78 import snapshot
-    guard(skin);root=Path(skin).resolve();original={name:read(root/name) for name in FILES};candidate=build(original)
-    inventory=snapshot(Path(xbmcvfs.translatePath('special://profile/')),root)
-    return transaction('skin',[(root/name,candidate[name]) for name in FILES],dict(skin=str(root),meta_sha=sha(read(root/'addon.xml')),contract78=1,inventory78=inventory))
+    from skin_patch103 import active_profile,phase
+    with phase('profile'):
+        profile=active_profile()
+    with phase('layout'):
+        guard(skin);root=Path(skin).resolve()
+        paths=[root/name for name in FILES]
+        if any(path.parent.is_symlink() for path in paths):raise ValueError('UNSAFE_TARGET')
+        original={name:read(path) for name,path in zip(FILES,paths)}
+        candidate=build(original)
+        meta_sha=sha(read(root/'addon.xml'))
+    with phase('inventory'):
+        inventory=snapshot(profile,root)
+    with phase('journal'):
+        changes=[(path,candidate[name]) for name,path in zip(FILES,paths)]
+        return transaction('skin',changes,dict(skin=str(root),meta_sha=meta_sha,contract78=1,
+                           inventory78=inventory,profile=str(profile)),originals=tuple(original.values()))
 
 def apply(token,skin,confirmed=False,restore=False):
     from widget_transaction50 import load,folder,apply as transaction
     from widget_skin50 import guard
-    guard(skin);root=Path(skin).resolve();plan=load(token,'skin');backup=folder()/token
-    if plan['metadata'].get('skin')!=str(root) or plan['metadata'].get('meta_sha')!=sha(read(root/'addon.xml')) or plan['metadata'].get('contract78')!=1:raise ValueError('SKIN_CHANGED')
-    original={name:read(backup/('original.'+str(i))) for i,name in enumerate(FILES)};expected=build(original)
-    for i,name in enumerate(FILES):
-        if expected[name]!=read(backup/('candidate.'+str(i))):raise ValueError('CANDIDATE_VERIFY_FAILED')
+    from skin_patch103 import active_profile,phase
+    if confirmed is not True:raise PermissionError('EXPLICIT_APPROVAL_REQUIRED')
+    with phase('profile'):
+        profile=active_profile()
+    with phase('layout'):
+        guard(skin);root=Path(skin).resolve()
+        if any((root/name).parent.is_symlink() for name in FILES):raise ValueError('UNSAFE_TARGET')
+        meta_sha=sha(read(root/'addon.xml'))
+    with phase('journal'):
+        metadata=load(token,'skin')['metadata'];backup=folder()/token
+        if metadata.get('skin')!=str(root) or metadata.get('meta_sha')!=meta_sha or metadata.get('contract78')!=1:
+            raise ValueError('SKIN_CHANGED')
+        if 'profile' in metadata and metadata['profile']!=str(profile):raise ValueError('PROFILE_CHANGED')
+        original={name:read(backup/('original.'+str(i))) for i,name in enumerate(FILES)}
+        expected=build(original)
+        for i,name in enumerate(FILES):
+            if expected[name]!=read(backup/('candidate.'+str(i))):raise ValueError('CANDIDATE_VERIFY_FAILED')
     # Revalidate the complete saved widget inventory before activating own
     # XML, not only the three XCMate paths. The snapshot is private/local.
-    inventory87=plan['metadata'].get('inventory78')
-    if inventory87:
-        from utils import addon_data_dir
-        import json,xbmcvfs
-        receipt87=json.loads(read(Path(addon_data_dir())/'home78_inventory'/inventory87/'inventory.json')).get('widgets87')
-        if receipt87:__import__('widget_inventory87').compare(Path(xbmcvfs.translatePath('special://profile/')),receipt87)
+    if not restore or 'profile' not in metadata:
+        with phase('inventory'):
+            from home_inventory78 import receipt
+            inventory87=metadata.get('inventory78')
+            receipt87=receipt(inventory87) if inventory87 else None
+            if receipt87 is not None:
+                if not isinstance(receipt87,dict):raise ValueError('BACKUP_VERIFY_FAILED')
+                if receipt87.get('profile')!=str(profile):raise ValueError('PROFILE_CHANGED')
+                if not restore:
+                    from widget_inventory87 import InventoryChanged,compare
+                    try:compare(profile,receipt87)
+                    except InventoryChanged:raise ValueError('WIDGET_INVENTORY_CHANGED') from None
+            elif 'profile' in metadata:raise ValueError('BACKUP_VERIFY_FAILED')
     result=transaction(token,'skin',[root/name for name in FILES],confirmed=confirmed,restore=restore)
     import xbmcaddon,xbmcgui
     xbmcaddon.Addon().setSetting('home78_repair_optout','true' if restore else 'false')
