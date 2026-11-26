@@ -115,13 +115,15 @@ class MappingSaveError(ValueError):
         super().__init__(code)
 
 
-def commit_verified(portal,sid,cid,source,prepare=None):
+def commit_verified(portal,sid,cid,source,prepare=None,*,validate=None):
     """Linearize write, cold readback and RO view preparation on the worker."""
     from profile_transaction import writing
     from epg_sources import _load_all,configuration
     from epg_handoff63 import profile_scope
     sid=str(sid);pid=str(portal['id'])
     with writing(timeout=.2):
+        if validate is not None:
+            validate()
         before=_load_all().get(pid,{})
         receipt=dict(pid=pid,sid=sid,profile474=profile_scope(),
                      target=dict(channel=str(cid),source=str(source)),before={})
@@ -137,12 +139,16 @@ def commit_verified(portal,sid,cid,source,prepare=None):
             stage='MAPPING_RELOAD_FAILED'
             receipt['prepared']=prepare() if prepare is not None else None
             if binding(configuration(pid)['mappings'],sid)!=receipt['target']:raise MappingSaveError('MAPPING_CONFLICT')
+            if validate is not None:
+                validate()
             receipt['stamp474']=_stamp474()
             return receipt
         except Exception as error:
             from mapping_search482 import failure
             code=failure(error, writing=stage=='MAPPING_WRITE_FAILED')
-            if code not in ('DB_BUSY','SQLITE_INTERRUPT','EPG_READ_TIMEOUT','SQLITE_WRITE_TIMEOUT','EPG_READ_FAILED'):
+            if isinstance(error, MappingSaveError) and error.code in ('MAPPING_GENERATION_CHANGED','MAPPING_CANCELLED'):
+                code=error.code
+            elif code not in ('DB_BUSY','SQLITE_INTERRUPT','EPG_READ_TIMEOUT','SQLITE_WRITE_TIMEOUT','EPG_READ_FAILED'):
                 code=stage
             try:rollback_verified(receipt)
             except Exception as exc:raise MappingSaveError(getattr(exc,'code','MAPPING_ROLLBACK_UNCONFIRMED')) from None

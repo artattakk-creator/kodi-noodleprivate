@@ -456,9 +456,10 @@ def logos(folder, channels):
     return result
 
 
-WINDOW_SQL = ("SELECT e.eid,e.start,e.stop,e.data FROM channels c JOIN events e ON e.cid=c.cid "
-              "WHERE c.cid=? AND e.start>?-c.duration AND e.start<? AND e.stop>? "
-              "ORDER BY e.start,e.stop,e.eid LIMIT ? OFFSET ?")
+_WINDOW = (" FROM channels c JOIN events e ON e.cid=c.cid "
+           "WHERE c.cid=? AND e.start>?-c.duration AND e.start<? AND e.stop>? "
+           "ORDER BY e.start,e.stop,e.eid LIMIT ?")
+WINDOW_SQL = "SELECT e.eid,e.start,e.stop,e.data" + _WINDOW + " OFFSET ?"
 _COLUMNS = "a.url,a.source,a.provider,a.attribution,p.orient,p.size"
 _EVENT_ART = ("SELECT p.eid,p.role,p.position," + _COLUMNS + " FROM event_art p "
               "JOIN assets a ON a.aid=p.aid WHERE p.eid IN ({}) ORDER BY p.eid,p.role,p.position")
@@ -511,6 +512,13 @@ def programmes(folder, cid, start, stop, limit=96, cancel=lambda: False):
     """Retrieve a bounded exact qualified station window without unpacking XMLTV."""
     with _read(folder, cancel) as db:
         return _window(db, folder, cid, start, stop, min(PAGE, max(1, limit)))
+
+
+def intervals(folder, cid, start, stop):
+    """Read exact stored time slots for explicit coverage without unpacking facts."""
+    with _read(folder, lambda: False) as db:
+        return db.execute("SELECT e.start,e.stop" + _WINDOW,
+                          (cid, start, stop, start, 10001)).fetchall()
 
 
 def iter_programmes(folder, channels, start, stop, cancel):

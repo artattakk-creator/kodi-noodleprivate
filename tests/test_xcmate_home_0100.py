@@ -6,6 +6,14 @@ from xcmate027_fixture import Fixture
 
 
 class HomeGroupPolicy(Fixture, unittest.TestCase):
+    def test_empty_policy_never_loads_a_portal_but_invalid_policy_still_fails(self):
+        from home_filter92 import selected, signature
+        with mock.patch('home_filter92.context', side_effect=AssertionError('unneeded portal lookup')):
+            self.assertIsNone(selected('p'))
+            self.assertEqual(signature('p'), '')
+        with mock.patch('home_filter92.read', side_effect=ValueError('invalid policy')):
+            self.assertEqual(signature('p'), 'HOME_FILTER_UNAVAILABLE')
+
     def seed_groups(self):
         from library_index import replace_catalog
         groups = [

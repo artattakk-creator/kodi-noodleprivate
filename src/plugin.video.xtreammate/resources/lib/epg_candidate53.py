@@ -104,9 +104,9 @@ class Candidates:
         try:
             selected, _ = source(portal, 'agent')
         except PreviewUnavailable:
-            raise MappingSaveError('MAPPING_RELOAD_FAILED') from None
+            raise MappingSaveError('MAPPING_GENERATION_CHANGED') from None
         if self.agent_preview != (cid, selected['_agent_generation103']):
-            raise MappingSaveError('MAPPING_RELOAD_FAILED')
+            raise MappingSaveError('MAPPING_GENERATION_CHANGED')
     def channels(self,portal,identity,query,offset,cancel):
         if identity == 'agent':
             from mapping_search482 import search

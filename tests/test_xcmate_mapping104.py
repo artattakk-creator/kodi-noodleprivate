@@ -157,6 +157,47 @@ class MappingErrors104(unittest.TestCase):
         self.assertIn('(SQLITE_WRITE_TIMEOUT)', self.dialog.getControl(103).text)
         self.assertNotIn('private sqlite context', self.dialog.getControl(103).text)
 
+    def test_new_generation_before_dialog_commit_preserves_the_previous_binding(self):
+        import epg_binding48 as binding
+
+        dialog, fixture = self.dialog, self.fixture
+        dialog._preview()
+        old = fixture.sources._load_all()
+        dialog.source = {'id': 'agent'}
+        dialog._proof482 = ('agent', dialog.candidate['id'])
+        dialog.cold53.agent_preview = (dialog.candidate['id'], 'old')
+        active = {'_agent_generation103': 'old'}
+        commit = binding.commit_verified
+
+        def publish_first(*args, **kwargs):
+            active['_agent_generation103'] = 'new'
+            return commit(*args, **kwargs)
+
+        with mock.patch.object(binding, 'commit_verified', side_effect=publish_first), \
+                mock.patch('epg_candidate53.source', return_value=(active, 0)), \
+                mock.patch('epg_binding48.save', return_value=True) as save:
+            dialog.onClick(405)
+        save.assert_not_called()
+        self.assertEqual(fixture.sources._load_all(), old)
+        self.assertFalse(dialog.saved)
+        self.assertFalse(dialog.getControl(405).enabled)
+        self.assertIn('MAPPING_GENERATION_CHANGED', dialog.getControl(103).text)
+
+    def test_changed_generation_after_write_rolls_back_only_the_binding(self):
+        binding, fixture = self.fixture.binding, self.fixture
+        before = fixture.sources._load_all()
+        checked = []
+
+        def validate():
+            checked.append(binding.binding(fixture.sources.configuration('p')['mappings'], '1'))
+            if len(checked) == 2:
+                raise binding.MappingSaveError('MAPPING_GENERATION_CHANGED')
+
+        with self.assertRaisesRegex(binding.MappingSaveError, 'MAPPING_GENERATION_CHANGED'):
+            binding.commit_verified(fixture.portal, '1', 'xml', fixture.bid, validate=validate)
+        self.assertEqual(checked[-1], dict(channel='xml', source=fixture.bid))
+        self.assertEqual(fixture.sources._load_all(), before)
+
 
 class ManualIndex104(Fixture, unittest.TestCase):
     def test_confirmed_agent_binding_reads_directly_without_a_guide_database(self):
@@ -181,3 +222,8 @@ class ManualIndex104(Fixture, unittest.TestCase):
         self.assertEqual([(event['name'], event['source_key46']) for event in indexed], [('Indexed DMAX', 'agent')])
         empty = window('p', stations, mappings, self.now + 86400, self.now + 90000, strict48=True)
         self.assertEqual(empty.channels['1']['s1.DMAX.de'], [])
+        from guide_coverage52 import inspect
+        with mock.patch('epg_sources.configuration', return_value={'mappings': mappings, 'sources': []}):
+            coverage = inspect('p', '1', 'DMax.de', now=self.now)
+        self.assertEqual(coverage['code'], 'READY')
+        self.assertEqual([(row['source'], row['events']) for row in coverage['sources']], [('agent', 1)])

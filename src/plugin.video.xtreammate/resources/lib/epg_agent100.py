@@ -55,6 +55,13 @@ def _save(directory, record):
     atomic(directory / "status.json", record)
 
 
+def _save_live(directory, record):
+    """Serialize active generation updates with manual Agent binding saves."""
+    from profile_transaction import writing
+    with writing():
+        _save(directory, record)
+
+
 def request_check(*, force=False):
     """Ask the existing service to check once, without a request on the GUI."""
     import xbmcgui
@@ -122,9 +129,10 @@ def _failed(record, now, code, *, phase="", http_status=None):
 
 
 def cycle(directory, token_path, portals, *, now=None, request=0,
-          fetch=None, install=None, cancel=lambda: False, public=False, force=False):
+          fetch=None, install=None, cancel=lambda: False, public=False, force=False, save_record=None):
     """Persist manifest outcomes and only advance a portal after verified readback."""
     from epg_agent100_import import mapping_scope
+    persist = save_record or _save
     migrate_index = install is None
     if migrate_index:
         from epg_agent100_import import install
@@ -146,7 +154,7 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
         current.update(last_checked=now, next_check=now + AGENT_INTERVAL, code="CHECKING",
                        delivery_phase="manifest", download_bytes=0, download_total=0,
                        remote_phase="", remote_http_status=None)
-        _save(directory, current)
+        persist(directory, current)
         # A region or picture-mode change needs a fresh manifest even when
         # its HTTP ETag has not changed. Otherwise 304 masks that selection.
         fetch_etag = "" if manual and force else current.get("etag", "")
@@ -164,13 +172,13 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
             tick = time.monotonic()
             if tick >= next_progress or done == total:
                 current.update(download_bytes=done, download_total=total)
-                _save(directory, current)
+                persist(directory, current)
                 next_progress = tick + 2
 
         def phase(value):
             if current["delivery_phase"] != value:
                 current["delivery_phase"] = value
-                _save(directory, current)
+                persist(directory, current)
 
         try:
             options = dict(known=current.get("generation", ""), etag=fetch_etag, cancel=cancel)
@@ -224,7 +232,7 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
                                remote_reason=payload.get("reason", ""))
                 if status == "PUBLIC_PENDING":
                     current["next_check"] = now + RETRY_INTERVAL
-        _save(directory, current)
+        persist(directory, current)
     if cancel():
         return current
     remote_ready = current.get("remote") == "AVAILABLE"
@@ -232,7 +240,7 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
     remote_folder = candidate_path(directory, generation) if remote_ready else None
     if remote_ready and remote_folder is None:
         current.update(last_checked=0, code="CANDIDATE_MISSING", etag="")
-        _save(directory, current)
+        persist(directory, current)
         return current
     receipts = current.setdefault("portals", {})
     for portal in portals:
@@ -256,7 +264,7 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
             continue
         previous_code = current.get("code")
         current["code"] = "IMPORTING"
-        _save(directory, current)
+        persist(directory, current)
         try:
             result = install(dict(portal, _agent_incremental103=same_generation), folder, cancel)
         except MemoryError:
@@ -275,7 +283,7 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
                                  attempt_scope=scope, code=result["code"])
         if not remote_ready:
             current["code"] = previous_code
-        _save(directory, current)
+        persist(directory, current)
     if not remote_ready:
         return current
     available = sum(receipts.get(str(p["id"]), {}).get("generation") == generation
@@ -283,7 +291,7 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
     code = "CURRENT" if available == len(portals) else "IMPORT_PENDING"
     if current["code"] != code or current.get("ready_portals") != available:
         current.update(ready_portals=available, code=code)
-        _save(directory, current)
+        persist(directory, current)
     if available == len(portals):
         _prune(directory, current)
     return current
@@ -388,4 +396,5 @@ def run(portals, cancel):
             return not consent
 
         cycle(directory, None, eligible, now=now, request=request,
-              cancel=cancelled, public=public, force=bool(request and request == _request_time(FORCE)))
+              cancel=cancelled, public=public, force=bool(request and request == _request_time(FORCE)),
+              save_record=_save_live)

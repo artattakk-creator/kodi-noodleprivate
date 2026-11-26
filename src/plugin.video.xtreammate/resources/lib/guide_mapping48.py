@@ -289,9 +289,10 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
                 try:
                     if cancelled():
                         return dict(error='MAPPING_CANCELLED')
-                    if identity=='agent':
+                    def validate():
                         self.cold53.verify_agent_preview(portal,candidate['id'],cancelled)
-                    receipt=commit_verified(portal,sid,candidate['id'],identity)
+                    receipt=commit_verified(portal,sid,candidate['id'],identity,
+                                            validate=validate if identity=='agent' else None)
                 except (OSError,ValueError,RuntimeError,sqlite3.Error) as exc:
                     return dict(error=getattr(exc,'code','') or failure(exc, writing=True))
                 if cancelled():
@@ -315,10 +316,13 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
     def _save_error474(self,code):
         safe={'MAPPING_BUSY','MAPPING_CANCELLED','MAPPING_WRITE_FAILED','MAPPING_READBACK_FAILED','MAPPING_RELOAD_FAILED',
               'MAPPING_UI_REFRESH_FAILED','MAPPING_ROLLBACK_UNCONFIRMED','MAPPING_CONFLICT','MAPPING_PROFILE_CHANGED',
-              'DB_BUSY','SQLITE_WRITE_TIMEOUT','EPG_READ_TIMEOUT','EPG_READ_FAILED','SQLITE_INTERRUPT'}
+              'MAPPING_GENERATION_CHANGED','DB_BUSY','SQLITE_WRITE_TIMEOUT','EPG_READ_TIMEOUT','EPG_READ_FAILED','SQLITE_INTERRUPT'}
         code=code if code in safe else 'MAPPING_WRITE_FAILED'
         uncertain=code in ('MAPPING_ROLLBACK_UNCONFIRMED','MAPPING_CONFLICT','MAPPING_PROFILE_CHANGED')
         text='Speicherzustand nicht bestätigt. Bitte Diagnose prüfen.' if uncertain else 'Zuordnung nicht gespeichert; vorherige Zuordnung erhalten.'
+        if code=='MAPPING_GENERATION_CHANGED':
+            self.previewed=False;self._proof482=None;self.getControl(405).setEnabled(False)
+            text='Agent-Daten wurden aktualisiert. Bitte Vorschau neu laden.'
         self.getControl(103).setText(text+' ('+code+')')
     def _committed474(self,receipt):
         self._saving53=False
