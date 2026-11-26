@@ -6,6 +6,7 @@ on:
       - 'tools/package_xcmate_public.py'
       - 'tests/test_xcmate_epg_agent_public102.py'
       - 'tests/test_xcmate_epg_agent_settings103.py'
+      - 'tests/test_*103.py'
       - '.github/workflows/xcmate-epg102-pilot-tokenfree.yml'
   workflow_dispatch:
 permissions:
@@ -23,7 +24,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install host dependency
-        run: python -m pip install 'Pillow>=11,<13'
+        run: python -m pip install 'Pillow>=11,<13' 'simpleeval==0.9.13'
       - name: Run focused client tests
         env:
           PYTHONPATH: src/plugin.video.xtreammate/resources/lib
@@ -32,6 +33,7 @@ jobs:
           python -m unittest discover -s tests -p 'test_epg_agent*.py' -v
           python -m unittest discover -s tests -p 'test_xcmate_0293_setup_first_run.py' -v
           python -m unittest discover -s tests -p 'test_xcmate_service_idle102.py' -v
+          python -m unittest discover -s tests -p 'test_*103.py' -v
       - name: Verify public ZIP and SHA256
         id: package
         run: |
