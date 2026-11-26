@@ -129,8 +129,11 @@ class AgentGuide103(Fixture, unittest.TestCase):
             install({'id': 'p'}, folder, lambda: False)
         pages = [channels('p', 'agent', '', offset, strict482=True) for offset in range(0, 501, 100)]
         self.assertEqual([len(page) for page in pages], [100, 100, 100, 100, 100, 1])
-        self.assertEqual([row['id'] for row in channels('p', 'agent', 'Fixture 500', strict482=True)],
-                         ['cid-500'])
+        for query in ('Fixture 500', 'DE| Fixture 500 AVC', 'DE| Fixture 500 H.264',
+                      'DE| Fixture 500 H265', 'DE| Fixture 500 FHD X265'):
+            with self.subTest(query=query):
+                self.assertEqual([row['id'] for row in channels('p', 'agent', query, strict482=True)],
+                                 ['cid-500'])
 
     def test_cold_agent_preview_save_publishes_to_the_source_qualified_guide(self):
         from epg_agent100 import _save, profile

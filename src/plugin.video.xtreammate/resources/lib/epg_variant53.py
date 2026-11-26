@@ -15,8 +15,8 @@ _COUNTRY_ID = re.compile(r'\.([a-z]{2})(?=@|$)', re.I)
 _SHIFT = re.compile(r'(?:\+\s*|@plus|\bplus\s*)([1-9][0-9]?)(?![0-9])', re.I)
 _TOKEN = r'[\s@|:._()\[\]-]'
 _QUALITY = re.compile(r'(?:^|' + _TOKEN + r')(sd|hd|fhd|uhd|4k|8k)(?=$|' + _TOKEN + r')', re.I)
-_SUFFIX = r'(?:uhd|fhd|hd|sd|4k|8k|hevc|avc|h[. ]?26[45]|x26[45])'
-_NAME_SUFFIX = re.compile(r'(?:[\s|:()\[\]-]+' + _SUFFIX + r')+[\s)\]]*$', re.I)
+PRESENTATION_SUFFIX = r'(?:uhd|fhd|hd|sd|4k|8k|hevc|avc|h[. ]?26[45]|x26[45])'
+_NAME_SUFFIX = re.compile(r'(?:[\s|:()\[\]-]+' + PRESENTATION_SUFFIX + r')+[\s)\]]*$', re.I)
 _REGION_ID = re.compile(r'@([a-z][a-z0-9_-]*)$', re.I)
 _QUALIFIER = re.compile(r'^(?:s[0-9]+\.|[a-z0-9_-]+:)(.+)$', re.I)
 
@@ -37,7 +37,7 @@ def _variants(name, cid):
     region = _REGION_ID.search(cid)
     regional = region[1].casefold() if region and not (
         _QUALITY.search(region[0]) or _SHIFT.search(region[0]) or
-        re.fullmatch(_SUFFIX, region[1], re.I)) else None
+        re.fullmatch(PRESENTATION_SUFFIX, region[1], re.I)) else None
     return shifts, countries, qualities, regional
 
 

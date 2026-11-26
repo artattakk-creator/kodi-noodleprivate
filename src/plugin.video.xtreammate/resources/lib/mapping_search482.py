@@ -4,6 +4,8 @@ import sqlite3
 import time
 import unicodedata
 
+from epg_variant53 import PRESENTATION_SUFFIX
+
 
 class MappingReadError(OSError):
     def __init__(self,code):self.code=code;super().__init__(code)
@@ -26,7 +28,7 @@ def failure(error):
 
 
 _PREFIX=re.compile(r'^\s*(?:[A-Za-z]{2}|AUS)\s*[|:]\s*',re.IGNORECASE)
-_QUALITY=re.compile(r'(?:uhd|hevc|fhd|hd|sd|4k|8k)[\s)\]]*$')
+_QUALITY=re.compile(PRESENTATION_SUFFIX + r'[\s)\]]*$')
 _DISTRIBUTION=re.compile(r'^joyn\s+|\s*\(joyn\)\s*$')
 _EINS=re.compile(r'\beins\b')
 _ASCII_OTHER=re.compile(r'[^a-z0-9+]')
@@ -42,7 +44,7 @@ def normal(value):
     if not text.isascii():text=unicodedata.normalize('NFKD',text)
     if 'joyn' in text:text=_DISTRIBUTION.sub('',text)
     text=text.rstrip()
-    while text.endswith(('d','c','k',')',']')):
+    while text.endswith(('d','c','k','4','5',')',']')):
         shorter=_QUALITY.sub('',text)
         if shorter==text:
             break
