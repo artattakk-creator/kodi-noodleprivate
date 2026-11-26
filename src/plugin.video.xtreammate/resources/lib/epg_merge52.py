@@ -145,8 +145,7 @@ def publish_aliases(pid,source,aliases,streams,mappings,guide=None,proofs=None):
             for row in streams:
                 sid=str(row['sid']);cid=aliases.get(sid)
                 if not cid:continue
-                # Automatic different-CID aliases are produced only by the
-                # existing unambiguous exact normalized channel-name matcher.
+                # The source importer supplies each station proof explicitly.
                 proof=(proofs or {}).get(sid,'manual' if mappings.get(sid) else 'provider_id')
                 records.append((str(pid),sid,source,str(cid),proof))
             if source=='agent':
@@ -156,6 +155,17 @@ def publish_aliases(pid,source,aliases,streams,mappings,guide=None,proofs=None):
     except (OSError,sqlite3.Error,ValueError):return False
     finally:
         if db is not None:db.close()
+
+
+def proven_targets(db, pid, sid, allowed):
+    """Read cross-CID station proofs shared by the guide and its diagnostics."""
+    try:
+        return [(source, cid) for source, cid in db.execute(
+            "SELECT source_id,cid FROM source_aliases52 WHERE pid=? AND sid=? "
+            "AND proof IN ('name','provider_id') LIMIT 32", (str(pid), str(sid)))
+                if source in allowed]
+    except sqlite3.OperationalError:
+        return []  # Profiles without a verified source alias table.
 
 
 def window(pid,sid,cid,start,stop,primary=(),limit=256,manual=False,guide=None):
@@ -168,9 +178,8 @@ def window(pid,sid,cid,start,stop,primary=(),limit=256,manual=False,guide=None):
         deadline=time.monotonic()+.06;db.set_progress_handler(lambda:int(time.monotonic()>deadline),1000)
         allowed=ranks(pid);targets=[(None,str(cid))]
         if not manual:
-            try:
-                targets.extend((source,channel) for source,channel in db.execute('SELECT source_id,cid FROM source_aliases52 WHERE pid=? AND sid=? AND proof IN (\'name\',\'provider_id\') LIMIT 32',(str(pid),str(sid))) if source in allowed and channel!=str(cid))
-            except sqlite3.OperationalError:pass  # Existing profiles have no aliases until a verified refresh.
+            targets.extend((source, channel) for source, channel in proven_targets(db, pid, sid, allowed)
+                           if channel != str(cid))
         for source,channel in targets:
             sql='SELECT source_id,fingerprint,data,updated FROM facts WHERE pid=? AND cid=? AND start<? AND stop>?'
             args=[str(pid),channel,stop,start]

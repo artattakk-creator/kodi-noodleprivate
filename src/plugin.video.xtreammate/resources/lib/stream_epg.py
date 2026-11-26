@@ -305,14 +305,16 @@ def publish_stages44(pid,stages,filename=None,cancel=lambda:False):
             observe94('CLEANUP',verified=stage['verified94']['rows'],
                       verified_channels=stage['verified94']['channels'],raw_deleted_bytes=0)
         from programme_store46 import finish as finish_metadata46
+        from epg_merge52 import publish_aliases
         for stage in stages:
-            finish_metadata46(pid,stage['generation'],stage.get('metadata_ok46',True),filename,index_ok46=stage.get('index_ok46',True),index_publish46=True)
-            from epg_merge52 import publish_aliases
+            # Alias proof belongs to the independently verified guide. Publish
+            # it before optional fact promotion can fill the sidecar budget.
             aliases_saved = publish_aliases(pid,source_id(stage['source'],stage['index']),stage['aliases'],stage.get('streams52',()),stage.get('mappings52',{}),filename,proofs=stage.get('proofs52'))
             agent_index=stage['source'].get('_agent_artwork')
+            if agent_index and not aliases_saved:
+                raise OSError('AGENT_ALIAS_WRITE_FAILED')
+            finish_metadata46(pid,stage['generation'],stage.get('metadata_ok46',True),filename,index_ok46=stage.get('index_ok46',True),index_publish46=True)
             if agent_index:
-                if not aliases_saved:
-                    raise OSError('AGENT_ALIAS_WRITE_FAILED')
                 from epg_agent100_art import bind_streams
                 bind_streams(agent_index,pid,stage['aliases'],stage['agent_icons'],stage['agent_processed103'])
         if filename is None and proofs94:

@@ -28,8 +28,8 @@ def inspect(pid,sid,cid,guide=None,now=None):
         aux=connect(False,guide)
         if aux is not None:aux.set_progress_handler(lambda:int(time.monotonic()>deadline),1000)
         if aux is not None and not selected:
-            try:targets.update((source,channel) for source,channel in aux.execute("SELECT source_id,cid FROM source_aliases52 WHERE pid=? AND sid=? AND proof='name' LIMIT 32",(str(pid),str(sid))) if source in allowed)
-            except sqlite3.OperationalError:pass
+            from epg_merge52 import proven_targets
+            targets.update(proven_targets(aux, pid, sid, allowed))
         left=day_window(-7,now)[0];right=day_window(21,now)[0];matrix=[];source_summary=[]
         for source,channel in sorted(targets):
             if time.monotonic()>deadline:raise TimeoutError()

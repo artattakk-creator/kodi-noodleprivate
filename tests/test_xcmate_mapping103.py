@@ -174,6 +174,34 @@ class AgentGuide103(Fixture, unittest.TestCase):
         self.assertEqual(stage['aliases'], {'1': 's1.Test.de', '2': 's5.MixedStation.de'})
         self.assertEqual(stage['proofs52'], {'1': 'name', '2': 'name'})
 
+    def test_archive_alias_is_committed_before_optional_fact_promotion_saturates(self):
+        from epg_agent100 import SOURCE_RANK
+        from epg_agent100_art import build
+        from epg_variant53 import channel_name_key
+        from programme_index46 import connect, path
+        from programme_store46 import finish
+        from programme_writes69 import record
+        from stream_epg import import_source, publish_stages44
+
+        folder = self.candidate([('s1.Test.de', 'Test')], [('s1.Test.de', 'Guide text', '')])
+        source = {'id': 'agent', 'uri': str(folder/'xcmate-epg.xml.gz'),
+                  '_agent_artwork': str(build(folder, lambda: False))}
+        rows = [dict(sid='1', name='DE| Test', epg_channel_id='Test.de')]
+        with mock.patch('epg_sources._channel_name_key', channel_name_key, create=True):
+            stage = import_source('p', source, SOURCE_RANK, rows, {}, stage_only=True)
+
+        def full_after_promotion(*args, **kwargs):
+            finish(*args, **kwargs)
+            error = sqlite3.OperationalError('database or disk is full')
+            error.sqlite_errorname = 'SQLITE_FULL'
+            record(path(), error, 'facts')
+
+        with mock.patch('programme_store46.finish', side_effect=full_after_promotion):
+            publish_stages44('p', [stage])
+        with contextlib.closing(connect(False)) as db:
+            alias = db.execute("SELECT cid,proof FROM source_aliases52 WHERE source_id='agent'").fetchone()
+        self.assertEqual(tuple(alias), ('s1.Test.de', 'provider_id'))
+
     def test_manual_agent_binding_does_not_erase_provider_import(self):
         from epg_binding48 import Mappings
         from epg_variant53 import channel_name_key
@@ -219,6 +247,10 @@ class AgentGuide103(Fixture, unittest.TestCase):
         self.assertEqual(row['field_sources52']['country'], {'source': 'agent', 'channel': agent_cid})
         self.assertEqual(row['field_sources52']['start_timestamp'], {'source': 'provider', 'channel': 'Provider.de'})
         self.assertEqual(row['field_sources52']['agent_art.poster'], {'source': 'agent', 'channel': agent_cid})
+
+        from guide_coverage52 import inspect
+        coverage = inspect('p', '1', 'Provider.de', now=self.now)
+        self.assertEqual({source['source'] for source in coverage['sources']}, {'agent', 'provider'})
 
 
 if __name__ == '__main__':
