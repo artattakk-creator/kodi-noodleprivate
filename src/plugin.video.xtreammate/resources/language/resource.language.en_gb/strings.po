@@ -6305,8 +6305,8 @@ msgid "Public EPG data is being prepared. The provider guide remains available."
 msgstr "Public EPG data is being prepared. The provider guide remains available."
 
 msgctxt "#39370"
-msgid "A full-width Hero and a fixed station bar will sit above the scrolling widget rows. XCMate verified a backup for recovery. Installing requests a Skinshortcuts rebuild."
-msgstr "A full-width Hero and a fixed station bar will sit above the scrolling widget rows. XCMate verified a backup for recovery. Installing requests a Skinshortcuts rebuild."
+msgid "Full-width Hero and fixed station bar"
+msgstr "Full-width Hero and fixed station bar"
 
 msgctxt "#39371"
 msgid "Install now"
@@ -6339,3 +6339,7 @@ msgstr "Kodi could not resolve the active profile or skin to a local folder."
 msgctxt "#39378"
 msgid "The verified skin files were saved. Kodi could not confirm the Skinshortcuts rebuild."
 msgstr "The verified skin files were saved. Kodi could not confirm the Skinshortcuts rebuild."
+
+msgctxt "#39379"
+msgid "Verified backup and checksums"
+msgstr "Verified backup and checksums"

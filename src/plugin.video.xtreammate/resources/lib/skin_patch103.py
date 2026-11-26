@@ -108,15 +108,20 @@ def show_error(dialog, exc, stage):
 
 
 def confirm(dialog, plan):
+    from xbmcgui import ListItem
     from widget_skin50 import FILES
     from widget_skin78 import FILES as GRAPH
 
     entries = plan['entries']
     names = GRAPH if len(entries) == len(GRAPH) else FILES + ('xml/IncludesBingie.xml',)
+    # BINGIE's three-button confirmation cuts off the German action labels.
+    install = ListItem(tr(39371))
+    install.setLabel2(tr(39370))
+    details = ListItem(tr(39372))
+    details.setLabel2(tr(39379))
+    choices = [ListItem(tr(36426)), install, details]
     while True:
-        choice = dialog.yesnocustom(
-            tr(36669), tr(39370), customlabel=tr(39372), nolabel=tr(36426), yeslabel=tr(39371)
-        )
+        choice = dialog.select(tr(36669), choices, preselect=0, useDetails=True)
         if choice != 2:
             return choice == 1
         changes = '\n\n'.join(

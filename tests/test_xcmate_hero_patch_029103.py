@@ -43,7 +43,7 @@ class HeroPatch103(Fixture50, unittest.TestCase):
             self.assertEqual(self.graph_bytes(), self.before)
             return next(results)
 
-        return mock.Mock(yesnocustom=mock.Mock(side_effect=choose))
+        return mock.Mock(select=mock.Mock(side_effect=choose))
 
     def test_setup_offers_native_cancel_install_and_optional_details(self):
         self.options['xcmate_ui_language'] = 'de_de'
@@ -52,12 +52,13 @@ class HeroPatch103(Fixture50, unittest.TestCase):
             self.manager, 'runtime', return_value=(self.profile, self.skin)
         ):
             self.manager.skin_setup()
-        self.assertEqual(dialog.yesnocustom.call_count, 2)
-        first = dialog.yesnocustom.call_args_list[0]
-        self.assertEqual(first.kwargs['nolabel'], 'Abbrechen')
-        self.assertEqual(first.kwargs['yeslabel'], 'Jetzt installieren')
-        self.assertEqual(first.kwargs['customlabel'], 'Technische Details')
-        self.assertNotIn('IncludesHomeWidgets.xml', first.args[1])
+        self.assertEqual(dialog.select.call_count, 2)
+        first = dialog.select.call_args_list[0]
+        self.assertEqual(first.kwargs, {'preselect': 0, 'useDetails': True})
+        self.assertEqual([item.getLabel() for item in first.args[1]],
+                         ['Abbrechen', 'Jetzt installieren', 'Technische Details'])
+        self.assertIn('Senderleiste', first.args[1][1].label2)
+        self.assertNotIn('IncludesHomeWidgets.xml', first.args[1][1].label2)
         details = dialog.textviewer.call_args.args[1]
         self.assertIn('IncludesHomeWidgets.xml', details)
         self.assertNotIn('<control', details)
@@ -71,7 +72,7 @@ class HeroPatch103(Fixture50, unittest.TestCase):
             self.prop.write_text(repr(self.saved))
             return 1
 
-        dialog.yesnocustom.side_effect = select_install
+        dialog.select.side_effect = select_install
         with mock.patch('xbmcgui.Dialog', return_value=dialog), mock.patch.object(
             self.manager, 'runtime', return_value=(self.profile, self.skin)
         ), mock.patch('xbmc.log', create=True) as log:
@@ -198,7 +199,7 @@ class HeroPatch103(Fixture50, unittest.TestCase):
             skin_upgrade63.prepare()
             skin_upgrade63.poll()
             skin_upgrade63.prepare()
-        dialog.yesnocustom.assert_called_once()
+        dialog.select.assert_called_once()
         self.assertNotIn('XCMate.Home78.Apply', self.properties)
         self.assertEqual(self.graph_bytes(), self.before)
 
