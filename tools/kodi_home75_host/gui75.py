@@ -84,9 +84,22 @@ def rail_present(frames,ident):
     if len(frames)!=2:return False
     top,bottom=(640,720) if ident==2510 else (720,1080)
     return all(top<=start<=end<bottom for start,end in frames)
+def wait_for_focus(ident,kind):
+    # SetFocus is queued in Kodi. The observer can still see a genuinely
+    # focused previous row until the GUI acknowledges this test's selection.
+    field='ListItem.Property(XCMate.WidgetKind41)'
+    deadline=time.monotonic()+4
+    while time.monotonic()<deadline:
+        if (home.getFocusId()==ident and xbmc.getInfoLabel(field)==kind
+                and xbmc.getInfoLabel('Container('+str(ident)+').'+field)==kind):
+            return
+        xbmc.sleep(50)
+    raise RuntimeError(('NATIVE_SELECTION_NOT_ACKNOWLEDGED',kind,ident,home.getFocusId()))
+
 def select(ident,index,kind):
     started=time.monotonic()
     home.setFocusId(ident);home.getControl(ident).selectItem(index)
+    if layout103 and kind in ('live','vod','series'):wait_for_focus(ident,kind)
     for _ in range(30):pump();xbmc.sleep(50)
     path,rgb=capture('home75-'+kind+'-'+str(index))
     frames=contours(rgb)
@@ -119,7 +132,7 @@ from widget_fast69 import prepare
 prepare();xbmc.sleep(300)
 prepared_state=json.loads(home.getProperty(schedule.KEY))
 check(prepared_state['phase']==3,'NO_AUTOMATIC_PREPARATION')
-check(prepared_state['visible']==['live'],'HIDDEN_ROWS_CLAIMED_VISIBLE')
+check(prepared_state['visible']==['live'],('HIDDEN_ROWS_CLAIMED_VISIBLE',prepared_state['visible']))
 check(home.getFocusId()==2510,'PREPARATION_MOVED_FOCUS')
 select(2520,0,'vod')
 check('vod' in json.loads(home.getProperty(schedule.KEY))['visible'],'NO_NATIVE_MOVIES_READY')
