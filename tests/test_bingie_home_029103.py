@@ -26,6 +26,10 @@ def test_guarded_graph_has_fixed_hero_station_rail_and_native_cover_clip():
         assert int(viewport.find("param[@name='top']").get('value')) == int(live.findtext('top')) + int(live.findtext('height'))
         assert int(live.findtext('top')) == int(body.findtext('height')) >= 640
         assert body.findtext('left') == live_list.findtext('left') == '130'
+        focused = live_list.find('focusedlayout')
+        assert focused[-1].findtext('texture', '').endswith('/programme55/focus.png')
+        label = focused.find("control[@type='label']")
+        assert int(label.findtext('top')) + int(label.findtext('height')) <= 66
         assert live.find("include[.='XCMate103.LiveZone']") is not None
         assert cover.find("include[.='XCMate103.LiveZone']") is None
         assert list(parent).index(live) > list(parent).index(cover)

@@ -52,7 +52,13 @@ def live_list(node):
     set_values(control, left=LEFT, width=WIDTH, height=LIVE_HEIGHT)
     for layout in control.findall('itemlayout') + control.findall('focusedlayout'):
         label = layout.find("control[@type='label']")
-        set_values(label, scroll='true')
+        set_values(label, top=46, scroll='true')
+    focused = control.find('focusedlayout')
+    frame = next(n for n in focused.findall("control[@type='image']")
+                 if n.findtext('texture', '').endswith('/programme55/focus.png'))
+    # Render the selected station border after the logo/caption layers.
+    focused.remove(frame)
+    focused.append(frame)
 
 
 def media_wrapper(node):
