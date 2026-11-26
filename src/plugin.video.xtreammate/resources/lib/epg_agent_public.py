@@ -71,7 +71,8 @@ def _read(response, limit, sink, cancel, phase):
         raise DeliveryError(code, phase=phase, http_status=response.status) from None
 
 
-def download_asset(record, tag, dest, opener, cancel, *, on_http=None, on_bytes=None):
+def download_asset(record, tag, dest, opener, cancel, *, on_http=None, on_bytes=None,
+                   on_verify=None):
     target = dest / record["file"]
     response = _open(asset_url(record, tag), opener, "asset")
     if on_http is not None:
@@ -86,17 +87,20 @@ def download_asset(record, tag, dest, opener, cancel, *, on_http=None, on_bytes=
         _read(response, record["bytes"], sink, cancel, "asset")
         output.flush()
         os.fsync(output.fileno())
+    if on_verify is not None:
+        on_verify()
     if target.stat().st_size != record["bytes"] or digest.hexdigest() != record["sha256"]:
         raise DeliveryError("CHECKSUM_OR_SIZE_MISMATCH", phase="asset", http_status=response.status)
     return target
 
 
-def stage_public_candidate(directory, opener=None, *, known="", etag="", cancel=lambda: False, progress=None):
+def stage_public_candidate(directory, opener=None, *, known="", etag="", cancel=lambda: False,
+                           progress=None, phase=None):
     from epg_agent_hub5 import stage
 
     response = _open(MANIFEST_URL, opener, "manifest", etag)
     if response is None:
-        return dict(status="NOT_MODIFIED", etag=etag)
+        return dict(status="NOT_MODIFIED", etag=etag, manifest_http=304)
     received = response.headers.get("ETag") or ""
     received = received if ETAG_RE.fullmatch(received) else ""
     pieces = []
@@ -112,7 +116,9 @@ def stage_public_candidate(directory, opener=None, *, known="", etag="", cancel=
     if data.get("status") == "PUBLIC_PENDING":
         if any(data.get(field) != [] for field in ("profiles", "variants", "files")):
             raise DeliveryError("PUBLIC_INVALID_MANIFEST", phase="manifest")
-        return dict(status="PUBLIC_PENDING", etag="")
+        return dict(status="PUBLIC_PENDING", etag="", manifest_http=response.status)
     if data.get("status") != "PUBLIC_READY":
         raise DeliveryError("PUBLIC_INVALID_MANIFEST", phase="manifest")
-    return stage(Path(directory), None, data, received, opener, known=known, cancel=cancel, progress=progress)
+    result = stage(Path(directory), None, data, received, opener, known=known,
+                   cancel=cancel, progress=progress, phase=phase)
+    return dict(result, manifest_http=response.status)

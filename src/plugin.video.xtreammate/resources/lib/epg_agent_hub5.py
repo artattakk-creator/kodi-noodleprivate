@@ -262,7 +262,8 @@ def coverage_report(folder, aliases):
                            matched=matched))
     return result
 
-def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: False, progress=None):
+def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: False,
+          progress=None, phase=None):
     """Download only chosen variants; stage full XMLTV before any portal install."""
     public = manifest.get("status") == "PUBLIC_READY"
     profiles, variant, records, available = selected_for(manifest, root)
@@ -278,6 +279,8 @@ def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: 
     response = dict(common, generation=generation)
     previous = candidate_path(root, generation)
     if previous is not None:
+        if phase is not None:
+            phase("validate")
         saved = local_manifest(previous)
         if (saved.get("schema_version") != 5 or saved.get("asset_generation") != signature or
                 saved.get("selected_profiles") != list(profiles) or
@@ -304,8 +307,6 @@ def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: 
         verified_assets = {}
         observed = time.time()
         transferred = 0
-        if progress is not None:
-            progress(0, total)
         for p, record in rows:
             key = (record["sha256"], record["bytes"])
             if key in verified_assets:
@@ -320,17 +321,27 @@ def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: 
                         pass  # Optional diagnostic. The same bytes were already verified.
                 continue
             status = []
+            if phase is not None:
+                phase("download")
+            on_bytes = on_verify = None
+            if progress is not None:
+                progress(transferred, total)
+
+                def on_bytes(size):
+                    progress(transferred + size, total)
+
+            if phase is not None:
+                def on_verify():
+                    phase("validate")
+
             if public:
                 from epg_agent_public import download_asset
-                on_bytes = None
-                if progress is not None:
-                    def on_bytes(size):
-                        progress(transferred + size, total)
                 path = download_asset(record, manifest["tag"], downloads, opener, cancel,
-                                      on_http=status.append, on_bytes=on_bytes)
-                transferred += record["bytes"]
+                                      on_http=status.append, on_bytes=on_bytes, on_verify=on_verify)
             else:
-                path = _download(record, token, downloads, opener, cancel, on_http=status.append)
+                path = _download(record, token, downloads, opener, cancel, on_http=status.append,
+                                 on_bytes=on_bytes, on_verify=on_verify)
+            transferred += record["bytes"]
             _verify_profile(path, record, cancel, observed, status[0] if status else None,
                             report_dir=temporary, public=public)
             verified_assets[key] = record

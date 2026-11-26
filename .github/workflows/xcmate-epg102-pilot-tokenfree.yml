@@ -1,10 +1,11 @@
-name: XCMate 0.1.29.102 public candidate
+name: XCMate installable candidate
 on:
   pull_request:
     paths:
       - 'src/plugin.video.xtreammate/**'
       - 'tools/package_xcmate_public.py'
       - 'tests/test_xcmate_epg_agent_public102.py'
+      - 'tests/test_xcmate_epg_agent_settings103.py'
       - '.github/workflows/xcmate-epg102-pilot-tokenfree.yml'
   workflow_dispatch:
 permissions:
@@ -16,6 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
       - uses: actions/setup-python@v5
         with:
@@ -31,12 +33,15 @@ jobs:
           python -m unittest discover -s tests -p 'test_xcmate_0293_setup_first_run.py' -v
           python -m unittest discover -s tests -p 'test_xcmate_service_idle102.py' -v
       - name: Verify public ZIP and SHA256
+        id: package
         run: |
-          python tools/package_xcmate_public.py "$RUNNER_TEMP/candidate"
-          cd "$RUNNER_TEMP/candidate"
-          sha256sum -c plugin.video.xtreammate-0.1.29.102.zip.sha256
+          version="$(python -c 'import xml.etree.ElementTree as E; print(E.parse("src/plugin.video.xtreammate/addon.xml").getroot().get("version"))')"
+          artifact="plugin.video.xtreammate-$version"
+          python tools/package_xcmate_public.py "$RUNNER_TEMP/candidate" --version "$version"
+          (cd "$RUNNER_TEMP/candidate" && sha256sum -c "$artifact.zip.sha256")
+          echo "artifact=$artifact" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-artifact@v4
         with:
-          name: plugin.video.xtreammate-0.1.29.102-candidate
-          path: ${{ runner.temp }}/candidate/plugin.video.xtreammate-0.1.29.102.zip*
+          name: ${{ steps.package.outputs.artifact }}-candidate
+          path: ${{ runner.temp }}/candidate/${{ steps.package.outputs.artifact }}.zip*
           if-no-files-found: error

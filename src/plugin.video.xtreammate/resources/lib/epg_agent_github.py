@@ -205,7 +205,7 @@ def probe(token_path=None, opener=None):
 
 
 def _download_to(path, token, dest, expected_size, expected_sha, opener=None, *,
-                 payload_ref="", cancel=lambda: False):
+                 payload_ref="", cancel=lambda: False, progress=None, on_verify=None):
     fd, name = tempfile.mkstemp(prefix=".xcmate-agent-", dir=str(dest))
     digest = hashlib.sha256()
     count = 0
@@ -216,10 +216,14 @@ def _download_to(path, token, dest, expected_size, expected_sha, opener=None, *,
                 stream.write(chunk)
                 digest.update(chunk)
                 count += len(chunk)
+                if progress is not None:
+                    progress(count, expected_size)
             response = _open(path, token, opener, payload_ref=payload_ref)
             _consume(response, expected_size, sink, cancel)
             stream.flush()
             os.fsync(stream.fileno())
+        if on_verify is not None:
+            on_verify()
         if count != expected_size or digest.hexdigest() != expected_sha:
             raise DeliveryError("CHECKSUM_OR_SIZE_MISMATCH")
         return Path(name)
@@ -325,7 +329,7 @@ def local_manifest(folder):
 
 
 def stage_full_candidate(directory, token_path=None, opener=None, *,
-                         known="", etag="", cancel=lambda: False):
+                         known="", etag="", cancel=lambda: False, progress=None, phase=None):
     """Stage one GZIP and its manifest. Keep prior V1/V2 snapshots offline."""
     token = read_token(token_path)
     root = Path(directory)
@@ -333,25 +337,30 @@ def stage_full_candidate(directory, token_path=None, opener=None, *,
     manifest, response_etag = _read_manifest(token, opener,
         etag=etag if previous.get("schema_version") in (SCHEMA_VERSION, 4, 5) else "",
         cancel=cancel)
-    response = {"status": manifest["status"], "etag": response_etag}
+    manifest_http = 304 if manifest["status"] == "NOT_MODIFIED" else 200
+    response = {"status": manifest["status"], "etag": response_etag, "manifest_http": manifest_http}
     if manifest["status"] != "PRIVATE_READY":
         if "reason" in manifest:
             response["reason"] = manifest["reason"]
         return response
     if manifest.get("schema_version") == 5:
         from epg_agent_hub5 import stage as stage_hub5
-        return stage_hub5(root, token, manifest, response_etag, opener,
-                          known=known, cancel=cancel)
+        result = stage_hub5(root, token, manifest, response_etag, opener,
+                            known=known, cancel=cancel, progress=progress, phase=phase)
+        return dict(result, manifest_http=manifest_http)
     if manifest.get("schema_version") == 4:
         from epg_agent_hub4 import stage as stage_hub4
-        return stage_hub4(root, token, manifest, response_etag, opener,
-                          known=known, cancel=cancel)
+        result = stage_hub4(root, token, manifest, response_etag, opener,
+                            known=known, cancel=cancel, progress=progress, phase=phase)
+        return dict(result, manifest_http=manifest_http)
     generation = manifest["revision"]
     response.update(generation=generation, channels=manifest["channel_count"],
                     programmes=manifest["programme_count"], image_counts=manifest["image_counts"],
                     artwork_records=sum(manifest["image_counts"].values()))
     existing = candidate_path(root, generation)
     if existing is not None:
+        if phase is not None:
+            phase("validate")
         remembered = local_manifest(existing)
         fields = ("schema_version", "sha256", "revision", "bytes", "channel_count",
                   "programme_count", "image_counts", "window")
@@ -367,8 +376,17 @@ def stage_full_candidate(directory, token_path=None, opener=None, *,
     check_space(str(root / "manifest.json"), manifest["bytes"])
     stage = Path(tempfile.mkdtemp(prefix=".candidate-", dir=root))
     try:
+        on_verify = None
+        if phase is not None:
+            phase("download")
+
+            def on_verify():
+                phase("validate")
+        if progress is not None:
+            progress(0, manifest["bytes"])
         item = _download_to(XMLTV_FILE, token, stage, manifest["bytes"], manifest["sha256"],
-                            opener, payload_ref=manifest["payload_ref"], cancel=cancel)
+                            opener, payload_ref=manifest["payload_ref"], cancel=cancel,
+                            progress=progress, on_verify=on_verify)
         _check_xmltv(item, manifest, cancel)
         os.replace(item, stage / XMLTV_FILE)
         with (stage / "manifest.json").open("w", encoding="utf-8") as stream:

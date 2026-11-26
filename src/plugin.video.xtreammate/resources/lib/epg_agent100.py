@@ -63,6 +63,7 @@ def request_check(*, force=False):
     if force:
         window.setProperty(FORCE, stamp)
     window.setProperty(REQUEST, stamp)
+    return float(stamp)
 
 
 def _request_time(key=REQUEST):
@@ -71,6 +72,35 @@ def _request_time(key=REQUEST):
         return float(xbmcgui.Window(10000).getProperty(key) or 0)
     except ValueError:
         return 0
+
+
+def pending_request(record, *, seconds=80):
+    stamp = _request_time()
+    return record.get("request", 0) < stamp and 0 <= time.time() - stamp < seconds
+
+
+def publish_variant(variant):
+    """Expose the read-back profile choice to renderers without profile file I/O."""
+    import xbmcgui
+    from epg_handoff63 import profile_scope
+
+    window = xbmcgui.Window(10000)
+    key = "XCMate.Agent103.Variant." + profile_scope()
+    if window.getProperty(key) != variant:
+        window.setProperty(key, variant)
+
+
+def _publish_initial_variant(directory, public):
+    try:
+        import xbmcgui
+        from epg_handoff63 import profile_scope
+        from epg_agent_hub5 import selection
+
+        if not xbmcgui.Window(10000).getProperty("XCMate.Agent103.Variant." + profile_scope()):
+            publish_variant(selection(directory, public=public)[1])
+    except (DeliveryError, ImportError, AttributeError, RuntimeError):
+        # Leave existing pictures intact when a stored selection cannot be read.
+        pass
 
 
 
@@ -112,7 +142,8 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
         current["request"] = request
     if manual or _due(current, now):
         current.update(last_checked=now, next_check=now + AGENT_INTERVAL, code="CHECKING",
-                       download_bytes=0, download_total=0)
+                       delivery_phase="manifest", download_bytes=0, download_total=0,
+                       remote_phase="", remote_http_status=None)
         _save(directory, current)
         # A region or picture-mode change needs a fresh manifest even when
         # its HTTP ETag has not changed. Otherwise 304 masks that selection.
@@ -134,11 +165,20 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
                 _save(directory, current)
                 next_progress = tick + 2
 
+        def phase(value):
+            if current["delivery_phase"] != value:
+                current["delivery_phase"] = value
+                _save(directory, current)
+
         try:
             options = dict(known=current.get("generation", ""), etag=fetch_etag, cancel=cancel)
+            if fetch is None:
+                options.update(phase=phase, progress=progress)
             if public:
                 from epg_agent_public import stage_public_candidate
-                payload = (fetch or stage_public_candidate)(directory, progress=progress, **options)
+                if fetch is not None:
+                    options["progress"] = progress
+                payload = (fetch or stage_public_candidate)(directory, **options)
             else:
                 from epg_agent_token_bootstrap import ensure_local_token, fetch_with_recovery
                 if token_path is None:
@@ -154,7 +194,8 @@ def cycle(directory, token_path, portals, *, now=None, request=0,
         except MemoryError:
             _failed(current, now, "MEMORY_PRESSURE")
         else:
-            current.update(remote_failures=0, remote_phase="", remote_http_status=None,
+            current.update(remote_failures=0, remote_phase="manifest",
+                           remote_http_status=payload.get("manifest_http"),
                            last_successful_check=now, remote_reason="")
             if payload.get("revision"):
                 current["manifest_revision"] = payload["revision"]
@@ -253,15 +294,16 @@ def installed_source(pid):
 
 
 def run(portals, cancel):
+    directory = profile()
+    public = not use_private()
+    _publish_initial_variant(directory, public)
     eligible = [p for p in portals if p.get("include_live", True) and
                 p.get("epg_show", True)]
     if not eligible or not enabled() or cancel():
         return
-    directory = profile()
     now = time.time()
     request = _request_time()
     record = state(directory)
-    public = not use_private()
     generation = record.get("generation")
     receipts = record.get("portals", {})
     pending_import = record.get("remote") == "AVAILABLE" and any(

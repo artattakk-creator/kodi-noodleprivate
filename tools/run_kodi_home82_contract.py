@@ -9,11 +9,11 @@ from run_kodi_home74_contract import SKIN_SHA,SKIN_URL
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--report-dir',type=Path,required=True)
     parser.add_argument('--skin-archive',type=Path);parser.add_argument('--idle-seconds',type=int,default=180)
-    parser.add_argument('--resolution',default='1920x1080',choices=('1920x1080','1280x720'))
+    parser.add_argument('--resolution',default='1920x1080',choices=('1920x1080','1280x720','3840x2160'))
     parser.add_argument('--fault-idle-seconds',type=int,default=0);parser.add_argument('--keep-container',action='store_true');args=parser.parse_args()
     root=Path(__file__).resolve().parents[1]
     version=ElementTree.parse(root/'src/plugin.video.xtreammate/addon.xml').getroot().get('version')
-    current_releases=('0.1.29.101', '0.1.29.102')
+    current_releases=('0.1.29.101', '0.1.29.102', '0.1.29.103')
     version79=version in ('0.1.29.82','0.1.29.83','0.1.29.84','0.1.29.85','0.1.29.86','0.1.29.87','0.1.29.88','0.1.29.89','0.1.29.90','0.1.29.91','0.1.29.92','0.1.29.93','0.1.29.94','0.1.29.95','0.1.29.96') + current_releases
     report=args.report_dir.resolve();report.mkdir(parents=True,exist_ok=True)
     archive=args.skin_archive or report/'skin.zip'

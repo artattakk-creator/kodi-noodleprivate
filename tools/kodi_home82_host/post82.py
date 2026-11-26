@@ -3,7 +3,7 @@ from pathlib import Path
 import xbmcaddon
 import io,uuid
 version82=xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version')
-current_releases82=('0.1.29.101', '0.1.29.102')
+current_releases82=('0.1.29.101', '0.1.29.102', '0.1.29.103')
 modern82=version82 in ('0.1.29.88','0.1.29.89','0.1.29.90','0.1.29.91','0.1.29.92','0.1.29.93','0.1.29.94','0.1.29.95','0.1.29.96') + current_releases82
 source82=Path('/root/base-post81.py').read_text()
 source82=source82.replace("picture=Path('/root/home75-cold79-'+kind+'.png')", "canonical82=Path('/root/home75-cold79-'+kind+'.png')\n picture=Path('/root/home75-cold79-'+kind+'-'+uuid.uuid4().hex+'.png')")

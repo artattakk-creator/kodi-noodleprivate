@@ -115,7 +115,8 @@ def _open_asset(record, token, opener):
         _failed("PRIVATE_ENDPOINT_NETWORK_ERROR")
 
 
-def _download(record, token, dest, opener, cancel, *, on_http=None):
+def _download(record, token, dest, opener, cancel, *, on_http=None, on_bytes=None,
+              on_verify=None):
     from epg_agent_github import _consume
     target = dest / record["file"]
     # Created inside an owned temporary staging directory, no path supplied by feed.
@@ -124,12 +125,16 @@ def _download(record, token, dest, opener, cancel, *, on_http=None):
         def sink(part):
             digest.update(part)
             output.write(part)
+            if on_bytes is not None:
+                on_bytes(output.tell())
         response = _open_asset(record, token, opener)
         if on_http is not None:
             on_http(getattr(response, "status", None))
         _consume(response, record["bytes"], sink, cancel)
         output.flush()
         os.fsync(output.fileno())
+    if on_verify is not None:
+        on_verify()
     if target.stat().st_size != record["bytes"] or digest.hexdigest() != record["sha256"]:
         _failed("CHECKSUM_OR_SIZE_MISMATCH")
     return target
@@ -233,7 +238,8 @@ def _combine(files, output, cancel):
     return len(channels)
 
 
-def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: False):
+def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: False,
+          progress=None, phase=None):
     """Stage selected asset(s) atomically; existing verified generation stays intact."""
     from epg_agent_github import XMLTV_FILE, candidate_path, local_manifest
     files = validate_manifest(manifest)
@@ -246,6 +252,8 @@ def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: 
                 "profile": "+".join(profiles)}
     previous = candidate_path(root, generation)
     if previous is not None:
+        if phase is not None:
+            phase("validate")
         saved = local_manifest(previous)
         if (saved.get("schema_version") != 4 or saved.get("selected_profiles") != list(profiles) or
                 saved.get("asset_generation") != digest_items):
@@ -264,8 +272,23 @@ def stage(root, token, manifest, etag, opener=None, *, known="", cancel=lambda: 
     folder = Path(tempfile.mkdtemp(prefix=".hub4-", dir=root))
     try:
         input_files = []
+        total = sum(files[p]["bytes"] for p in profiles)
+        transferred = 0
+        on_bytes = on_verify = None
+        if progress is not None:
+            def on_bytes(size):
+                progress(transferred + size, total)
+        if phase is not None:
+            def on_verify():
+                phase("validate")
         for p in profiles:
-            source = _download(files[p], token, folder, opener, cancel)
+            if phase is not None:
+                phase("download")
+            if progress is not None:
+                progress(transferred, total)
+            source = _download(files[p], token, folder, opener, cancel,
+                               on_bytes=on_bytes, on_verify=on_verify)
+            transferred += files[p]["bytes"]
             _verify(source, files[p], cancel)
             input_files.append((p, source))
         final = folder / XMLTV_FILE

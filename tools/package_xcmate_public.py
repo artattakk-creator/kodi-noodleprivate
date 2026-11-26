@@ -1,4 +1,4 @@
-"""Build and independently inspect the public XCMate 0.1.29.102 ZIP."""
+"""Build and independently inspect the installable XCMate candidate ZIP."""
 import argparse
 import hashlib
 import json
@@ -10,7 +10,7 @@ from xml.etree import ElementTree as ET
 from package_xcmate71 import ROOT, build, inspect_package
 
 ADDON = "plugin.video.xtreammate"
-VERSION = "0.1.29.102"
+VERSIONS = {"0.1.29.102", "0.1.29.103"}
 SOURCE = ROOT / "src" / ADDON
 DATA_SUFFIXES = (".sqlite", ".db", ".xml.gz", ".sqlite-wal", ".db-wal", ".db-shm",
                  ".log", ".pyo", ".zip")
@@ -43,10 +43,11 @@ def source_hashes(source):
     return hashes
 
 
-def build_public(output, source=SOURCE):
+def build_public(output, source=SOURCE, *, version=None):
     source, output = Path(source), Path(output)
     node = ET.parse(source / "addon.xml").getroot()
-    if (node.get("id"), node.get("version")) != (ADDON, VERSION):
+    version = version or node.get("version")
+    if version not in VERSIONS or (node.get("id"), node.get("version")) != (ADDON, version):
         raise ValueError("UNEXPECTED_PUBLIC_VERSION")
     expected = source_hashes(source)
     entries = [item.get("library") for item in node.findall("extension") if item.get("library")]
@@ -57,11 +58,11 @@ def build_public(output, source=SOURCE):
         raise ValueError("PACKAGE_ENTRYPOINT_OR_ASSET_MISSING")
 
     output.mkdir(parents=True, exist_ok=True)
-    filename = f"{ADDON}-{VERSION}.zip"
+    filename = f"{ADDON}-{version}.zip"
     with TemporaryDirectory(prefix=".xcmate-public-", dir=output) as temp:
         temp = Path(temp)
         build(temp, source=source)
-        result = inspect_package(temp / filename, expected, VERSION, "PUBLIC_PACKAGE")
+        result = inspect_package(temp / filename, expected, version, "PUBLIC_PACKAGE")
         for name in (filename, filename + ".sha256"):
             (temp / name).replace(output / name)
     return result
@@ -70,4 +71,6 @@ def build_public(output, source=SOURCE):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("output", type=Path)
-    print(json.dumps(build_public(parser.parse_args().output), sort_keys=True))
+    parser.add_argument("--version", choices=sorted(VERSIONS))
+    args = parser.parse_args()
+    print(json.dumps(build_public(args.output, version=args.version), sort_keys=True))

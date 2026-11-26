@@ -1,0 +1,202 @@
+<?xml version='1.0' encoding='utf-8'?>
+<window>
+  <defaultcontrol>200</defaultcontrol>
+  <allowoverlay>yes</allowoverlay>
+  <controls>
+    <control type="image">
+      <left>14</left>
+      <top>16</top>
+      <width>1252</width>
+      <height>688</height>
+      <texture colordiffuse="FC111B27">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texture>
+    </control>
+    <control type="label">
+      <left>40</left>
+      <top>29</top>
+      <width>1200</width>
+      <height>48</height>
+      <font>font30_title</font>
+      <textcolor>FFFFFFFF</textcolor>
+      <label>EPG-Agent</label>
+    </control>
+    <control type="label">
+      <left>40</left>
+      <top>86</top>
+      <width>532</width>
+      <height>38</height>
+      <font>font13</font>
+      <textcolor>FFD5E4F0</textcolor>
+      <label>Quelle, Profile und Sendungsbilder</label>
+    </control>
+    <control type="label">
+      <left>594</left>
+      <top>86</top>
+      <width>643</width>
+      <height>38</height>
+      <font>font13</font>
+      <textcolor>FFD5E4F0</textcolor>
+      <label>Live-Status</label>
+    </control>
+    <control type="image">
+      <left>568</left>
+      <top>100</top>
+      <width>2</width>
+      <height>482</height>
+      <texture colordiffuse="FF355066">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texture>
+    </control>
+    <control type="list" id="200">
+      <left>40</left>
+      <top>130</top>
+      <width>504</width>
+      <height>448</height>
+      <ondown>301</ondown>
+      <onup>301</onup>
+      <onright>301</onright>
+      <onleft>303</onleft>
+      <itemlayout width="504" height="40">
+        <control type="image">
+          <left>0</left>
+          <top>0</top>
+          <width>504</width>
+          <height>38</height>
+          <texture colordiffuse="FF1A2837">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texture>
+        </control>
+        <control type="label">
+          <left>13</left>
+          <top>0</top>
+          <width>388</width>
+          <height>38</height>
+          <font>font13</font>
+          <label>$INFO[ListItem.Label]</label>
+          <textcolor>FFF5F7FA</textcolor>
+        </control>
+        <control type="label">
+          <left>408</left>
+          <top>0</top>
+          <width>80</width>
+          <height>38</height>
+          <font>font13</font>
+          <align>right</align>
+          <label>$INFO[ListItem.Label2]</label>
+          <textcolor>FFFFFFFF</textcolor>
+        </control>
+      </itemlayout>
+      <focusedlayout width="504" height="40">
+        <control type="image">
+          <left>0</left>
+          <top>0</top>
+          <width>504</width>
+          <height>38</height>
+          <texture colordiffuse="FF2A654D">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texture>
+        </control>
+        <control type="label">
+          <left>13</left>
+          <top>0</top>
+          <width>388</width>
+          <height>38</height>
+          <font>font13</font>
+          <label>$INFO[ListItem.Label]</label>
+          <textcolor>FFF5F7FA</textcolor>
+        </control>
+        <control type="label">
+          <left>408</left>
+          <top>0</top>
+          <width>80</width>
+          <height>38</height>
+          <font>font13</font>
+          <align>right</align>
+          <label>$INFO[ListItem.Label2]</label>
+          <textcolor>FFFFFFFF</textcolor>
+        </control>
+      </focusedlayout>
+    </control>
+    <control type="textbox" id="401">
+      <left>594</left>
+      <top>133</top>
+      <width>635</width>
+      <height>445</height>
+      <font>font13</font>
+      <textcolor>FFF5F7FA</textcolor>
+    </control>
+    <control type="label" id="402">
+      <left>40</left>
+      <top>587</top>
+      <width>1194</width>
+      <height>26</height>
+      <font>font13</font>
+      <textcolor>FFCFEADA</textcolor>
+    </control>
+    <control type="button" id="301">
+      <left>40</left>
+      <top>626</top>
+      <width>290</width>
+      <height>54</height>
+      <font>font13</font>
+      <label>Auf Updates prüfen</label>
+      <align>center</align>
+      <aligny>center</aligny>
+      <onleft>303</onleft>
+      <onright>302</onright>
+      <onup>200</onup>
+      <ondown>200</ondown>
+      <textcolor>FFF5F7FA</textcolor>
+      <focusedcolor>FFFFFFFF</focusedcolor>
+      <texturefocus colordiffuse="FF2A654D">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturefocus>
+      <texturenofocus colordiffuse="FF253649">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturenofocus>
+    </control>
+    <control type="button" id="302">
+      <left>340</left>
+      <top>626</top>
+      <width>285</width>
+      <height>54</height>
+      <font>font13</font>
+      <label>Jetzt aktualisieren</label>
+      <align>center</align>
+      <aligny>center</aligny>
+      <onleft>301</onleft>
+      <onright>304</onright>
+      <onup>200</onup>
+      <ondown>200</ondown>
+      <textcolor>FFF5F7FA</textcolor>
+      <focusedcolor>FFFFFFFF</focusedcolor>
+      <texturefocus colordiffuse="FF2A654D">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturefocus>
+      <texturenofocus colordiffuse="FF253649">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturenofocus>
+    </control>
+    <control type="button" id="304">
+      <left>635</left>
+      <top>626</top>
+      <width>330</width>
+      <height>54</height>
+      <font>font13</font>
+      <label>TMDB-Zugang (optional)</label>
+      <align>center</align>
+      <aligny>center</aligny>
+      <onleft>302</onleft>
+      <onright>303</onright>
+      <onup>200</onup>
+      <ondown>200</ondown>
+      <textcolor>FFF5F7FA</textcolor>
+      <focusedcolor>FFFFFFFF</focusedcolor>
+      <texturefocus colordiffuse="FF2A654D">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturefocus>
+      <texturenofocus colordiffuse="FF253649">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturenofocus>
+    </control>
+    <control type="button" id="303">
+      <left>975</left>
+      <top>626</top>
+      <width>260</width>
+      <height>54</height>
+      <font>font13</font>
+      <label>Zurück</label>
+      <align>center</align>
+      <aligny>center</aligny>
+      <onleft>304</onleft>
+      <onright>301</onright>
+      <onup>200</onup>
+      <ondown>200</ondown>
+      <textcolor>FFF5F7FA</textcolor>
+      <focusedcolor>FFFFFFFF</focusedcolor>
+      <texturefocus colordiffuse="FF2A654D">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturefocus>
+      <texturenofocus colordiffuse="FF253649">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturenofocus>
+    </control>
+  </controls>
+</window>
