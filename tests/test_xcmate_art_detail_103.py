@@ -192,3 +192,32 @@ class PublicArt103(Fixture, unittest.TestCase):
              mock.patch('programme_urls55.enqueue', return_value=True):
             self.assertTrue(request(event, priority=True))
             self.assertEqual(drain(), 1)
+
+    def test_detail_can_recover_verified_backdrop_from_kodi_cache_without_network(self):
+        import hashlib
+        import json
+
+        from decoded_assets88 import shutdown
+        from event_cache88 import recover
+        from programme_urls55 import resolve
+
+        event = self.event(('backdrop',))
+        detail = dict(event, _detail93=True)
+        with mock.patch('home_schedule75.applicable', return_value=False), \
+             mock.patch('artwork_display84.observe', return_value=False), \
+             mock.patch('programme_urls55.probe', side_effect=self.preflight):
+            backdrop = resolve(event, url_mode69=True)
+        body = self.preflight(backdrop['source_url'])['_body81']
+        file = self.folder / 'kodi-image.png'
+        file.write_bytes(body)
+        texture = dict(file=str(file), sha256=hashlib.sha256(body).hexdigest(), width=1280, height=720)
+        rpc = json.dumps({'result': {'textures': [{'url': backdrop['image']}]}})
+        shutdown()
+        self.properties.clear()
+        with mock.patch('xbmc.executeJSONRPC', return_value=rpc, create=True), \
+             mock.patch('widget_cache82.decoded', return_value=texture), \
+             mock.patch('programme_urls55.probe', side_effect=AssertionError('Kodi cache hit')):
+            recovered = recover(detail)
+        self.assertIsNotNone(recovered)
+        self.assertEqual(recovered['role81'], 'backdrop')
+        self.assertEqual(recovered['image'], str(file))

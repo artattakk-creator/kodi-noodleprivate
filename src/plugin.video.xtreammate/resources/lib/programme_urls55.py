@@ -199,7 +199,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             if not roles499.selected(v,view499):
                 return False
         return not home86 or bool(__import__('hero_art86').classify(v))
-    upgrade81=False;best86=None
+    upgrade81=False;best86=None;cached_fallback499=None
     def retain86(v):
         nonlocal best86
         if home86 and v and usable86(v) and __import__('programme_image69').eligible(v,event) and __import__('event_art81').allowed(v):
@@ -240,6 +240,14 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     pressure84=__import__('artwork_display84').observe() or __import__('home_schedule75').applicable()
     if url_mode69 and pressure84 and not invalid_manual96:
         renewed84=__import__('sticky_art88').read(event) or __import__('event_cache88').recover(event) or __import__('programme_display84').recover(event) or __import__('programme_display84').renew(event)
+        if (typed499 and renewed84 and renewed84.get('source') in roles499.SOURCES
+                and __import__('programme_image69').eligible(renewed84,event)):
+            cached_fallback499=renewed84
+            rank=roles499.role_priority(renewed84,view499)
+            if (not mapping86 or roles499.manual(renewed84)) and rank is not None and not any(
+                    roles499.role_priority(candidate,view499)[0]<rank[0]
+                    for candidate in roles499.candidates(event,view499)):
+                return renewed84
         retain86(renewed84)
         if renewed84 and usable86(renewed84) and not upgrade81:
             upgrade81=upgrade86(renewed84)
@@ -506,6 +514,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     if best86 and (value.get('source')=='placeholder' or not usable86(value) or __import__('hero_art86').classify(best86)[1]<__import__('hero_art86').classify(value)[1]):
         return dict(best86,code='READY_STALE' if value.get('source')=='placeholder' else best86.get('code','READY'))
     if value.get('source')=='placeholder':
+        if cached_fallback499:return dict(cached_fallback499,code='READY_STALE')
         if durable81:return durable81
         value['negative_scope68']=negative68
         if typed499:

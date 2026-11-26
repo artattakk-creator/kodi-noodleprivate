@@ -73,6 +73,7 @@ def recover(event):
   if not isinstance(raw,str) or len(raw)>262144:return None
   textures=json.loads(raw).get('result',{}).get('textures',[])
   if not isinstance(textures,list):return None
+  admitted_textures=[]
   for texture in reversed(textures[:32]):
    try:
     if not isinstance(texture,dict):continue
@@ -91,10 +92,17 @@ def recover(event):
     if key_hash not in (hashlib.sha256((context+'.'+digest).encode()).hexdigest(),
                         hashlib.sha256(asset_key(context,digest,proof).encode()).hexdigest()):continue
     if not admitted(proof,event):continue
-    if proof.get('role81') in roles499.PERSON_ROLES or (view499 and not roles499.manual(proof) and not roles499.selected(proof,view499)):continue
+    if proof.get('role81') in roles499.PERSON_ROLES:continue
+    priority=roles499.role_priority(proof,view499)
+    if view499 and priority is None and not roles499.manual(proof):continue
+    admitted_textures.append((priority or (0, not roles499.manual(proof)),texture,proof))
+   except (OSError,ValueError,TypeError,KeyError,AttributeError):continue
+  for _,texture,proof in sorted(admitted_textures,key=lambda row:row[0]):
+   try:
     record=decoded(texture,texture.get('url',''))
     if not record:continue
     result=dict(proof,key=event['key'],fingerprint=fingerprint(event),code='READY',image=record['file'],thumbnail=record['file'],sha256=record['sha256'],scope69=identity(event),profile69=scope(),policy69=negative_scope({}),until=min(time.time()+600,event['stop']),decoded77=True,image_width77=record['width'],image_height77=record['height'],persisted69=False,storage69='KODI_TEXTURE_CACHE')
+    if view499 and not roles499.fits(result,view499):continue
     result.pop('source_hash88',None);result.pop('dns_hash88',None)
     result['attribution']='XCMate EPG Agent · TMDB · '+__import__('tmdb_connection60').ATTRIBUTION if result['source']=='agent_tmdb' else 'XCMate EPG Agent · TVmaze' if result['source']=='agent_tvmaze' else 'XCMate EPG Agent · XMLTV' if result['source']=='agent_xmltv' else 'TMDB · '+__import__('tmdb_connection60').ATTRIBUTION if result['source'].startswith('tmdb') else 'TVmaze · Daten CC BY-SA; Bildrechte beim Rechteinhaber' if result['source'].startswith('tvmaze') else 'XMLTV' if result['source']=='xmltv_event' else 'Provider'
     if record.get('stamp'):_ram[cache_key]=dict(value=result,proof=proof,stamp=record['stamp'])
