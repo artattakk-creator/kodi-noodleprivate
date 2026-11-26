@@ -13,7 +13,7 @@ def main():
     parser.add_argument('--fault-idle-seconds',type=int,default=0);parser.add_argument('--keep-container',action='store_true');args=parser.parse_args()
     root=Path(__file__).resolve().parents[1]
     version=ElementTree.parse(root/'src/plugin.video.xtreammate/addon.xml').getroot().get('version')
-    current_releases=('0.1.29.101', '0.1.29.102', '0.1.29.103')
+    current_releases=('0.1.29.101', '0.1.29.102', '0.1.29.103', '0.1.29.104')
     version79=version in ('0.1.29.82','0.1.29.83','0.1.29.84','0.1.29.85','0.1.29.86','0.1.29.87','0.1.29.88','0.1.29.89','0.1.29.90','0.1.29.91','0.1.29.92','0.1.29.93','0.1.29.94','0.1.29.95','0.1.29.96') + current_releases
     report=args.report_dir.resolve();report.mkdir(parents=True,exist_ok=True)
     archive=args.skin_archive or report/'skin.zip'

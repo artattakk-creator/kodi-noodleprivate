@@ -24,3 +24,37 @@ class ServicePortalStateTests(Fixture, unittest.TestCase):
                 portals.save_all([{"id": "fixture", "type": "m3u"}])
                 clock[0] += 5
                 self.assertTrue(service_runtime.portals_ready())
+
+    def test_snapshot_reads_are_attributed_through_public_portal_accessors(self):
+        with patch.dict(sys.modules):
+            sys.modules.pop("portals", None)
+            import portals
+            import service_runtime
+            from types import ModuleType
+
+            portals.save_all([{"id": "fixture", "type": "m3u"}])
+            worker = ModuleType("widget_fast69")
+            worker.__dict__["get_active"] = portals.get_active
+            exec("def prepare():\n    return get_active()", worker.__dict__)
+            before = service_runtime.counters()
+            self.assertEqual(worker.prepare()[0]["id"], "fixture")
+            after = service_runtime.counters()
+            self.assertEqual(after["portal_calls"], before["portal_calls"] + 1)
+            self.assertEqual(after["portal_disk_reads"], before["portal_disk_reads"])
+            self.assertEqual(after["callers"].get("WIDGET", 0), before["callers"].get("WIDGET", 0) + 1)
+
+    def test_field_projection_cannot_mutate_profile_and_observes_replacement(self):
+        with patch.dict(sys.modules):
+            sys.modules.pop("portals", None)
+            import portals
+
+            portals.save_all([{"id": "fixture", "type": "xtream", "xc_user": "first", "state": {"active": True}}])
+            fields = ("xc_user", "state")
+            saved = portals.get_fields("fixture", fields)
+            self.assertEqual(saved, {"xc_user": "first", "state": {"active": True}})
+            saved["state"]["active"] = False
+            self.assertTrue(portals.get_fields("fixture", fields)["state"]["active"])
+            Path(portals._db_path()).unlink()
+            self.assertIsNone(portals.get_fields("fixture", fields))
+            portals.save_all([{"id": "fixture", "type": "xtream", "xc_user": "second"}])
+            self.assertEqual(portals.get_fields("fixture", fields), {"xc_user": "second"})

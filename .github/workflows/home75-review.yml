@@ -55,7 +55,7 @@ jobs:
       - name: .75 code and preservation regressions
         run: |
           version="$(python -c 'import xml.etree.ElementTree as E; print(E.parse("src/plugin.video.xtreammate/addon.xml").getroot().get("version"))')"
-          if [[ "$version" = "0.1.29.102" || "$version" = "0.1.29.103" ]]; then
+          if [[ "$version" = "0.1.29.102" || "$version" = "0.1.29.103" || "$version" = "0.1.29.104" ]]; then
             python tools/run_home75_host_contract.py "$RUNNER_TEMP/native75/host"
           else
             for release in {75..84}; do
@@ -66,7 +66,7 @@ jobs:
         run: |
           candidate_version="$(python -c 'import xml.etree.ElementTree as E; print(E.parse("src/plugin.video.xtreammate/addon.xml").getroot().get("version"))')"
           package_dir="$RUNNER_TEMP/package75"
-          if [[ "$candidate_version" = "0.1.29.102" || "$candidate_version" = "0.1.29.103" ]]; then
+          if [[ "$candidate_version" = "0.1.29.102" || "$candidate_version" = "0.1.29.103" || "$candidate_version" = "0.1.29.104" ]]; then
             python tools/package_xcmate_public.py "$package_dir" --version "$candidate_version"
             (cd "$package_dir" && sha256sum -c "plugin.video.xtreammate-$candidate_version.zip.sha256")
           else

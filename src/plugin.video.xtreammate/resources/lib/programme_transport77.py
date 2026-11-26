@@ -3,12 +3,15 @@
 No API/bearer request, cookies, query credentials or network work on GUI. A
 cross-origin hop requires a separately configured/known image host, never '*'.
 """
+import socket
+import ssl
 import time
 from urllib.parse import urlsplit
 
 def verified(url,cancel=lambda:False,connect=None,resolver=None,keep_data81=False):
     from programme_urls55 import safe,hosts
     from download_redirect import addresses,_connect
+    from download_sources import DownloadFailure
     from image_redirect48 import open_image
     from media_sources43 import SourceError,validate_image,MAX_IMAGE
     initial=urlsplit(url).hostname;final=[url];deadline=time.monotonic()+12
@@ -55,6 +58,17 @@ def verified(url,cancel=lambda:False,connect=None,resolver=None,keep_data81=Fals
         return result
     except MemoryError:raise
     except SourceError:raise
+    except DownloadFailure as exc:
+        code=exc.code if exc.code in ('DNS_ERROR','REDIRECT_PRIVATE_ADDRESS','REDIRECT_UNSAFE_HOST') else 'UNSAFE_SOURCE'
+        raise SourceError(code) from None
+    except socket.gaierror:
+        raise SourceError('DNS_ERROR') from None
+    except ssl.SSLError:
+        raise SourceError('TLS_ERROR') from None
+    except TimeoutError:
+        raise SourceError('TIMEOUT') from None
+    except ConnectionError:
+        raise SourceError('CONNECTION_ERROR') from None
     except Exception:
         raise SourceError('IMAGE_PREFLIGHT_FAILED') from None
     finally:

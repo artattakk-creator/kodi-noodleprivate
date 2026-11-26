@@ -28,7 +28,8 @@ NAMES = {"all": "Gesamt-EPG (ALL)", "de": "Deutschland (DE)", "at": "Österreich
          "fr": "Französisch (FR)", "it": "Italienisch (IT)",
          "tr": "Türkisch (TR)", "ar": "Arabisch (AR)"}
 DELIVERY = {"manifest": "Manifest prüfen", "download": "EPG-Datei herunterladen",
-            "validate": "Dateigröße, SHA-256 und XMLTV prüfen"}
+            "validate": "Dateigröße, SHA-256 und XMLTV prüfen",
+            "index": "XMLTV vollständig indexieren und SQLite prüfen"}
 IMPORT = {"QUEUED": "Import eingereiht", "WAIT_CATALOG": "Lokalen Katalog abwarten",
           "PARSE": "XMLTV einlesen", "MATCHING": "Sender zuordnen",
           "STAGING": "Import vorbereiten", "COMMIT": "EPG in SQLite speichern",
@@ -65,6 +66,21 @@ def _phase(receipt, job):
     return ""
 
 
+def _index_receipt(pid, area, receipt):
+    from epg_agent100 import local_candidate
+    from epg_agent_catalog103 import IndexReadError, statistics
+
+    folder = local_candidate(pid, area, receipt)
+    if folder is None:
+        return receipt
+    generation = folder.name.removeprefix("candidate-")
+    try:
+        index = dict(statistics(folder), generation=generation)
+    except IndexReadError as exc:
+        index = dict(generation=generation, code=exc.code)
+    return dict(receipt, verified_index=index)
+
+
 def _detail_lines(receipt, selected, current, variant, active, private, job):
     code = receipt.get("code", "")
     phase = _phase(receipt, job) if active else ""
@@ -98,6 +114,19 @@ def _detail_lines(receipt, selected, current, variant, active, private, job):
             f"Feed  {_number(receipt['channels'])} Sender · {_number(receipt.get('programmes'))} Sendungen",
             f"Bildreferenzen im Feed  {_number(receipt.get('artwork_records'))}",
         ))
+    index = receipt.get("verified_index")
+    if index:
+        if index.get("index_schema"):
+            lines.extend((
+                f"Lokaler Index geprüft  {_number(index.get('channels'))} Sender · "
+                f"{_number(index.get('programmes'))} Sendungen",
+                f"Index-Zeitraum  {_when(index.get('first'))} – {_when(index.get('last'))}",
+                f"Index-Generation  {index['generation'][:16]}",
+            ))
+        elif index.get("code") == "NO_LOCAL_INDEX":
+            lines.append("Vollständiger lokaler Index noch ausstehend")
+        else:
+            lines.append(f"Indexprüfung  {index.get('code', 'EPG_READ_FAILED')}")
     if selected.get("verified"):
         lines.extend((
             f"Zuordnung  {_number(selected.get('matched'))} Streams · "
@@ -132,16 +161,17 @@ def _detail_lines(receipt, selected, current, variant, active, private, job):
 
 
 def details(portal):
-    receipt = state()
+    area = profile()
+    receipt = state(area)
     pid = str((portal or {}).get("id", ""))
     private = use_private()
     try:
-        current, variant = selection(profile(), public=not private)
+        current, variant = selection(area, public=not private)
     except DeliveryError as exc:
         return exc.code
     from epg_jobs94 import read
 
-    return "\n".join(_detail_lines(receipt, receipt.get("portals", {}).get(pid, {}),
+    return "\n".join(_detail_lines(_index_receipt(pid, area, receipt), receipt.get("portals", {}).get(pid, {}),
                                    current, variant, enabled(), private, read(pid)))
 
 
@@ -186,6 +216,7 @@ class AgentSettings(OwnerDispatch, xbmcgui.WindowXMLDialog):
         area = profile()
         active, private = enabled(), use_private()
         receipt = state(area)
+        pid = str(self.portal.get("id", ""))
         current, variant = selection(area, public=not private)
         if "all" in current:
             current = ("all",)
@@ -196,8 +227,8 @@ class AgentSettings(OwnerDispatch, xbmcgui.WindowXMLDialog):
             research = tuple(research_enabled(source) for source in ("tmdb", "tvmaze"))
         except SourceError:
             research = (False, False)
-        return ((active, private, current, variant, choices, research), receipt,
-                read(str(self.portal.get("id", ""))))
+        return ((active, private, current, variant, choices, research),
+                _index_receipt(pid, area, receipt), read(pid))
 
     def _request_status(self):
         if self._editing:

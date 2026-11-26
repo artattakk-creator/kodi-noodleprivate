@@ -5,15 +5,28 @@ from functools import wraps
 
 _stop=threading.Event();_local=threading.local();_service=False;_pressure=0
 _lock=threading.RLock();_calls=0;_reads=0;_bytes=0;_oom=0;_errors=0;_callers={}
+_caller_modules={};_portal_outcomes={}
+_epg_stats={}
 _last_emit=0
+_last_portal_sample={}
 _portal_ready=False
 _next_portal_probe=0
 _portal_probe_lock=threading.Lock()
 _sockets=weakref.WeakSet()
-CALLERS={'service_runtime':'SERVICE','genre_search':'GENRE','widget_fast69':'WIDGET','service':'SERVICE','app_services':'LIBRARY','art_store':'ART_SCAN','startup_preload':'STARTUP',
+CALLERS={'service_runtime':'SERVICE','genre_search':'GENRE','widget_fast69':'WIDGET','widget_hooks45':'WIDGET','widget_refresh45':'WIDGET','widget_entry46':'WIDGET','widget_consumer58':'WIDGET','service':'SERVICE','app_services':'LIBRARY','art_store':'ART_SCAN','startup_preload':'STARTUP',
          'xtream':'PROVIDER','catalog_sync':'CATALOG','app_routes':'ROUTE','main':'ROUTE',
          'live_recovery':'LIVE','live_overlay':'LIVE','source_live':'LIVE','search_live':'SEARCH',
-         'download_sources':'DOWNLOAD','capture_service':'RECORD','epg':'EPG'}
+         'download_sources':'DOWNLOAD','capture_service':'RECORD','epg':'EPG',
+         'epg_config94':'EPG','epg_manager53':'MAPPING','epg_snapshot75':'EPG','epg_sources':'EPG','epg_views':'EPG',
+         'hero_epg63':'HERO','programme_display84':'ART_DISPLAY','programme_reference84':'ART_REFERENCE',
+         'programme_urls55':'ART_SAFETY','agent_programme100':'AGENT','xmltv_art96':'ART_XMLTV',
+         'portal_manager':'CONFIG','provider_baseline96':'CONFIG'}
+PORTAL_OUTCOMES = {'MEMORY', 'MEMORY_PAUSE', 'PROFILE_BUSY', 'PROFILE_BUDGET', 'PROFILE_RACE',
+                   'INVALID_PROFILE', 'READ_IO', 'UNKNOWN', 'CACHE', 'LOCK_PROOF', 'LOCKED'}
+EPG_STAGES={'DB_READ','AGENT_INDEX_READ','AGENT_INDEX_BUILD'}
+EPG_OUTCOMES={'READY','OK','CANCELLED','DB_BUSY','SQLITE_INTERRUPT','SQLITE_WRITE_TIMEOUT',
+              'EPG_DB_BUDGET','EPG_READ_TIMEOUT','EPG_READ_FAILED','EPG_CACHE_UNAVAILABLE',
+              'NO_LOCAL_INDEX','INDEX_READBACK_FAILED','EPG_STORAGE','SOURCE_TIMEOUT'}
 
 
 def install():
@@ -49,13 +62,17 @@ def portal_call():
     global _calls
     frame=sys._getframe(1)
     try:
-        for _ in range(4):
-            if frame is None:break
-            name=os.path.basename(frame.f_code.co_filename).rsplit('.',1)[0]
-            if name not in ('portal_snapshot','portals'):break
+        while frame is not None:
+            name=frame.f_globals.get('__name__')
+            if name not in ('portal_snapshot','portals'):
+                break
             frame=frame.f_back
-        category=CALLERS.get(name,'OTHER')
-        with _lock:_calls+=1;_callers[category]=_callers.get(category,0)+1
+        module=name if frame is not None and name in CALLERS else 'OTHER'
+        category=CALLERS.get(module,'OTHER')
+        with _lock:
+            _calls+=1
+            _callers[category]=_callers.get(category,0)+1
+            _caller_modules[module]=_caller_modules.get(module,0)+1
     finally:del frame
 
 
@@ -69,6 +86,48 @@ def portal_failure(code):
     with _lock:
         if code=='OOM':_oom+=1
         else:_errors+=1
+
+
+def portal_outcome(code):
+    if code in PORTAL_OUTCOMES:
+        with _lock:
+            _portal_outcomes[code]=_portal_outcomes.get(code,0)+1
+
+
+def observe_epg(stage, code, duration_ms):
+    if stage not in EPG_STAGES:
+        return
+    code=code if code in EPG_OUTCOMES else 'OTHER'
+    elapsed=max(0, min(300_000, int(duration_ms)))
+    with _lock:
+        entry=_epg_stats.setdefault(stage, {'counts':{}, 'total_ms':0, 'max_ms':0})
+        entry['counts'][code]=entry['counts'].get(code,0)+1
+        entry['total_ms']+=elapsed
+        entry['max_ms']=max(entry['max_ms'],elapsed)
+
+
+def workload():
+    """Observed queues and caches without importing or waking their workers."""
+    queues={}
+    for name in ('programme_urls55','widget_assets69','artwork_visible'):
+        module=sys.modules.get(name)
+        if module is None:
+            continue
+        values=getattr(module,'_queues',None) or {'default':getattr(module,'_queue',None)}
+        for lane, queue in values.items():
+            if queue is not None:
+                queues[name+'.'+lane]=queue.qsize() if hasattr(queue,'qsize') else len(queue)
+    caches={}
+    module=sys.modules.get('artwork_request100')
+    if module is not None:
+        for key in ('images','metadata'):
+            cache=getattr(module,key,None)
+            if cache is not None:
+                with cache.changed:
+                    caches[key]=dict(entries=len(cache.ready),active=len(cache.active),bytes=cache.bytes)
+    with _lock:
+        epg={stage:dict(values,counts=dict(values['counts'])) for stage,values in _epg_stats.items()}
+    return dict(queues=queues,request_caches=caches,epg_io=epg)
 
 
 def note_pressure():
@@ -98,17 +157,31 @@ def pressure():
 
 
 def counters():
-    with _lock:return dict(portal_calls=_calls,portal_disk_reads=_reads,portal_bytes=_bytes,portal_oom=_oom,portal_read_errors=_errors,callers=dict(_callers))
+    with _lock:
+        return dict(portal_calls=_calls,portal_disk_reads=_reads,portal_bytes=_bytes,
+                    portal_oom=_oom,portal_read_errors=_errors,callers=dict(_callers),
+                    caller_modules=dict(_caller_modules),portal_outcomes=dict(_portal_outcomes))
 
 
 def emit():
-    global _last_emit
+    global _last_emit,_last_portal_sample
     now=time.monotonic()
-    if now-_last_emit<60:return
-    _last_emit=now
+    with _lock:
+        interval=now-_last_emit
+        if interval<60:return
+        value=counters()
+        rates={}
+        if _last_portal_sample:
+            for key in ('portal_calls','portal_disk_reads','portal_oom','portal_read_errors'):
+                rates[key]=round((value[key]-_last_portal_sample[key])*60/interval,1)
+            rates['callers']={key:round((count-_last_portal_sample['callers'].get(key,0))*60/interval,1)
+                              for key,count in value['callers'].items()}
+        _last_portal_sample=value
+        _last_emit=now
     try:
         import xbmc,json
-        xbmc.log('[XCMate][STABILITY] '+json.dumps(dict(counters(),**memory(),pressure=pressure()),sort_keys=True),xbmc.LOGINFO)
+        xbmc.log('[XCMate][STABILITY] '+json.dumps(dict(value,**memory(),**workload(),pressure=pressure(),
+                 portal_per_minute=rates),sort_keys=True),xbmc.LOGINFO)
     except (ImportError,AttributeError,RuntimeError,MemoryError):pass
 
 

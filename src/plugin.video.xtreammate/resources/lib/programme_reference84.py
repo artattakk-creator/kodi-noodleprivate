@@ -10,17 +10,18 @@ _lock=threading.RLock();_works=OrderedDict();_scans={};_due=0.;_flush=0.;_loaded
 MAX_RECORDS=256;MAX_BYTES=512*1024
 PREFIX='XCMate.Reference84.Import.'
 
-def context(pid):
+def context(pid,account=None):
  from programme_policy68 import negative_scope
  from programme_display84 import _account
  from utils import setting_bool
  flags=[setting_bool(k,False) for k in ('programme_tmdb_optout77','programme_tvmaze_optout77')]
- return hashlib.sha256((negative_scope({})+_account(pid)+json.dumps(flags)).encode()).hexdigest()
+ if account is None:account=_account(pid)
+ return hashlib.sha256((negative_scope({})+account+json.dumps(flags)).encode()).hexdigest()
 
-def work_key(event):
+def work_key(event,account=None):
  from programme_title80 import key
  facts=[key(str(event.get('title') or '')),event.get('year'),event.get('season'),event.get('episode'),event.get('subtitle'),event.get('genre')]
- return hashlib.sha256(json.dumps([context(event.get('pid')),facts],sort_keys=True).encode()).hexdigest()
+ return hashlib.sha256(json.dumps([context(event.get('pid'),account),facts],sort_keys=True).encode()).hexdigest()
 
 def path():
  from utils import addon_data_dir
@@ -51,14 +52,16 @@ def get(event):
 def put(event,candidate):
  # Persist only safe public metadata, never title text, API bodies or images.
  from widget_assets69 import safe
- from portals import get_by_id
- portal=get_by_id(str(event.get('pid'))) or {}
+ from portals import get_fields
+ from programme_display84 import ACCOUNT_FIELDS,_account_digest
  if candidate and (candidate.get('provisional85') or candidate.get('match')=='PROVISIONAL_TV85'):return None
+ portal=get_fields(str(event.get('pid')),ACCOUNT_FIELDS) or {}
  if candidate and (not portal or not safe(portal,candidate.get('url'))):return None
  allowed=('url','source','match','remote_id','provider_id','attribution','image_scope57','role81','matched_year56')
  value=dict(candidate={k:candidate[k] for k in allowed if k in candidate} if candidate else None,until=time.time()+(86400 if candidate else 3600))
+ key=work_key(event,_account_digest(portal))
  with _lock:
-  _works[work_key(event)]=value
+  _works[key]=value
   while len(_works)>MAX_RECORDS or len(json.dumps(_works).encode())>MAX_BYTES-128:_works.popitem(last=False)
  return value
 

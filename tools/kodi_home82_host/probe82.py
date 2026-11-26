@@ -129,7 +129,7 @@ for _ in range(200):
     current=rpc('GUI.GetProperties',{'properties':['currentwindow','currentcontrol']})
     ident=current['currentwindow']['id']
     if not states or states[-1]!=current:states.append(current)
-    if addon_version == '0.1.29.103' and ident == 12000 and not approved:
+    if addon_version in ('0.1.29.103', '0.1.29.104') and ident == 12000 and not approved:
         keys = ['Control.GetLabel(1)', 'Container(6).ListItem.Label', 'Container(3).ListItem.Label']
         labels = rpc('XBMC.GetInfoLabels', {'labels': keys})
         heading, choice, detail = (labels[key] for key in keys)

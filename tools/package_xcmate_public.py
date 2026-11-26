@@ -10,7 +10,7 @@ from xml.etree import ElementTree as ET
 from package_xcmate71 import ROOT, build, inspect_package
 
 ADDON = "plugin.video.xtreammate"
-VERSIONS = {"0.1.29.102", "0.1.29.103"}
+VERSIONS = {"0.1.29.102", "0.1.29.103", "0.1.29.104"}
 SOURCE = ROOT / "src" / ADDON
 DATA_SUFFIXES = (".sqlite", ".db", ".xml.gz", ".sqlite-wal", ".db-wal", ".db-shm",
                  ".log", ".pyo", ".zip")

@@ -1,3 +1,10 @@
+0.1.29.104 (2026-11-26) – XCMate Testkandidat für Issue #519
+- Vollständiger lokaler Agent-Index für Sender, Sendungen und Bildrollen. Verifizierte Generationen beim Aktualisieren und bei Fehlern weiter nutzen.
+- Indizierte Sendersuche und Vorschau aus dem gespeicherten Feed mit getrennten Befunden zu regionalen Varianten und blockierten Lesevorgängen.
+- Agent-Bilder und manuelle Werksuche am tatsächlichen Programm und seiner Bildrolle ausrichten. Optionale Recherche bleibt unabhängig.
+- BINGIE-Hero und Live-Ansichten an das aktuelle Ereignis und die passende Bildfreigabe binden.
+- Agent-Status zeigt Umfang und Zeitraum des verifizierten Index. Portaldiagnose zählt Aufrufer, Cache-Nutzung und physische Lesevorgänge.
+
 0.1.29.103 (2026-11-26) – XCMate Testkandidat für Issue #517
 - Verifizierte Bilder und IDs des EPG-Agents verwenden. Manuelle Bildzuordnung und Import bleiben unabhängig von optionaler Direktrecherche.
 - Lokale Agent-Sendersuche, Vorschau und Zuordnung behalten. Katalog- und Zuordnungsänderungen können den gespeicherten Feed erneut auswerten.

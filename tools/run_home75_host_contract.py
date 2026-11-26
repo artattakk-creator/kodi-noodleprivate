@@ -12,6 +12,7 @@ from run_host94_contract import ROOT, materialize
 
 BASELINE_101 = '5cc1a34d451e88cfb82b7b16daeb2a5976d0021b'
 BASELINE_102 = '5703b25caade638b4404570170fe9d19957271ba'
+BASELINE_103 = '5842ce44a7784cf7fa2d0cf6cd3cbea15ff11a01'
 
 
 def suite_result(output, status):
@@ -72,7 +73,7 @@ def main():
     head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
     from xml.etree import ElementTree
     version = ElementTree.parse(ROOT / 'src/plugin.video.xtreammate/addon.xml').getroot().get('version')
-    previous = BASELINE_102 if version == '0.1.29.103' else BASELINE_101
+    previous = {'0.1.29.103': BASELINE_102, '0.1.29.104': BASELINE_103}.get(version, BASELINE_101)
     subprocess.run(['git', 'merge-base', '--is-ancestor', previous, head], cwd=ROOT, check=True)
     with TemporaryDirectory(prefix='xcmate-home75-') as temporary:
         directory = Path(temporary)

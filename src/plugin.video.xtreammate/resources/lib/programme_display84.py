@@ -9,18 +9,23 @@ import json
 import time
 from urllib.parse import urlsplit
 PREFIX='XCMate.EventDisplay84.'
+ACCOUNT_FIELDS=('id','type','xc_host','xc_user','xc_pass','enabled')
+
+
+def _account_digest(portal):
+    return hashlib.sha256(json.dumps([portal.get(k) for k in ACCOUNT_FIELDS],sort_keys=True).encode()).hexdigest()
 
 
 def _account(pid):
-    from portals import get_by_id
-    portal=get_by_id(str(pid)) or {}
-    return hashlib.sha256(json.dumps([portal.get(k) for k in ('id','type','xc_host','xc_user','xc_pass','enabled')],sort_keys=True).encode()).hexdigest()
+    from portals import get_fields
+    return _account_digest(get_fields(str(pid),ACCOUNT_FIELDS) or {})
 
 
-def key(event,source=None):
+def key(event,source=None,*,account=None):
     from programme_requests68 import identity
     from programme_image69 import fingerprint,policy
-    return hashlib.sha256((identity(event)+fingerprint(event,source)+policy(source)+_account(event.get('pid'))).encode()).hexdigest()
+    if account is None:account=_account(event.get('pid'))
+    return hashlib.sha256((identity(event)+fingerprint(event,source)+policy(source)+account).encode()).hexdigest()
 
 
 def _slot(tag):return PREFIX+str(int(tag[:8],16)%128)
@@ -42,13 +47,15 @@ def verify(art,event=None):
     if not isinstance(tag,str) or len(tag)!=64:return False
     value=_load(tag);old=value.get('art',{});now=time.time()
     if value.get('profile')!=scope() or old.get('policy69')!=negative_scope({}):return False
-    if value.get('account84')!=_account(value.get('pid84')):return False
+    account=_account(value.get('pid84'))
+    if value.get('account84')!=account:return False
     if __import__('widget_refs74').revoked(old.get('source_url','')):return False
     until=old.get('until',0)
     if type(until) not in (int,float) or not 0<until-now<=30:return False
     if event is not None:
         from programme_art46 import fingerprint
-        if key(event)!=tag or old.get('scope69')!=identity(event) or old.get('fingerprint')!=fingerprint(event):return False
+        if (str(event.get('pid',''))!=value.get('pid84') or key(event,account=account)!=tag
+                or old.get('scope69')!=identity(event) or old.get('fingerprint')!=fingerprint(event)):return False
     return all(art.get(k)==old.get(k) for k in ('key','image','source_url','scope69','profile69','fingerprint','source','match','until'))
 
 
@@ -65,16 +72,18 @@ def _publish(event,value,validated_until):
     from programme_policy68 import negative_scope
     from programme_urls55 import safe,OPTIONS
     from widget_assets69 import safe as provider_safe
-    from portals import get_by_id
+    from portals import get_fields
     from artwork_visible import public_dns,_dns_cache,_lock
     from artwork_display84 import note
     url=value.get('source_url','');now=time.time()
-    portal=get_by_id(str(event.get('pid',''))) or {}
+    portal=get_fields(str(event.get('pid','')),ACCOUNT_FIELDS) or {}
     if not portal or not provider_safe(portal,url) or not safe(url):return None
+    account=_account_digest(portal)
+    tag=key(event,account=account)
     if not public_dns(url):
         if __import__('widget_refs74').revoked(url):
             import xbmcgui
-            xbmcgui.Window(10000).clearProperty(_slot(key(event)))
+            xbmcgui.Window(10000).clearProperty(_slot(tag))
         return None
     from programme_image69 import eligible
     admission=dict(value,until=now+1)
@@ -85,7 +94,6 @@ def _publish(event,value,validated_until):
     remaining=min(30,max(0,dns[0]-time.monotonic())) if dns and dns[1] else 0
     until=min(now+remaining,validated_until,float(event.get('stop',now)))
     if until<=now:return None
-    tag=key(event)
     art=dict(value,code='READY',key=event['key'],fingerprint=fingerprint(event),
              image=url+OPTIONS,thumbnail=url+OPTIONS,url_version55=1,url_verified69=True,
              scope69=identity(event),profile69=scope(),policy69=negative_scope({}),until=until,
@@ -93,7 +101,7 @@ def _publish(event,value,validated_until):
     # A body decoded for another event may never be rebound by this API.
     if value.get('scope69')!=identity(event) or value.get('fingerprint')!=fingerprint(event):return None
     import xbmcgui
-    raw=json.dumps(dict(key84=tag,profile=scope(),pid84=str(event.get('pid','')),account84=_account(event.get('pid')),validated_until=validated_until,art=art),separators=(',',':'))
+    raw=json.dumps(dict(key84=tag,profile=scope(),pid84=str(event.get('pid','')),account84=account,validated_until=validated_until,art=art),separators=(',',':'))
     if len(raw)>16384:return None
     xbmcgui.Window(10000).setProperty(_slot(tag),raw)
     note('event','RAM_ONLY',width=int(value.get('image_width77',0)),height=int(value.get('image_height77',0)))
@@ -128,10 +136,10 @@ def recover(event):
     A cached file is not evidence of current Android GUI visibility.
     """
     import xbmc
-    from portals import get_by_id
+    from portals import get_fields
     from widget_assets69 import safe
     from widget_cache82 import variants,decoded
-    portal=get_by_id(str(event.get('pid',''))) or {};wanted={}
+    portal=get_fields(str(event.get('pid','')),('id','xc_user','xc_pass')) or {};wanted={}
     if not portal:return None
     from image_reference78 import canonical
     for field,source in (('xmltv_image','xmltv_event'),('provider_image','provider_event')):
