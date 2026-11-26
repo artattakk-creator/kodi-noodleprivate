@@ -175,7 +175,7 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
             for row in rows:
                 item=xbmcgui.ListItem(row['name'])
                 quality,region=variant(row['name'],row['id'])
-                coverage = 'Keine Sendungen im Feed' if row.get('scheduled') is False else ''
+                coverage = 'Ohne Sendungen' if row.get('scheduled') is False else ''
                 item.setLabel2(' · '.join(value for value in (quality,region,'EPG-ID '+row['id'],coverage) if value))
                 items.append(item)
             control.addItems(items)
