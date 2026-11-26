@@ -72,7 +72,9 @@ def _detail_lines(receipt, selected, current, variant, active, private, job):
     checked = receipt.get("selected_profiles")
     selection_changed = (
         receipt.get("transport", transport) != transport
-        or checked is not None and (set(checked) != set(current) or receipt.get("selected_variant") != variant)
+        or isinstance(checked, list)
+        and (sorted(str(key) for key in checked) != sorted(current)
+             or receipt.get("selected_variant") != variant)
     )
     status = phase or _status(receipt, active)
     if active and not current:
@@ -321,7 +323,7 @@ class AgentSettings(OwnerDispatch, xbmcgui.WindowXMLDialog):
             self.close()
             return
         if control_id == 305 and self._status_text:
-            xbmcgui.Dialog().textviewer("EPG-Agent · Statusdetails", self._status_text)
+            xbmcgui.Dialog().select("EPG-Agent · Statusdetails", self._status_text.splitlines())
             return
         if self.configuration is None or self._editing or self._closed:
             return
