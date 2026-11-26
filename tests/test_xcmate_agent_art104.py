@@ -27,7 +27,7 @@ class AgentArtwork104(Fixture, unittest.TestCase):
         def record(event):
             rows[event['channel']] = dict(event, agent_art=event_art(event, admit))
         with FIXTURE.open('rb') as stream:
-            parse(stream, lambda *_: None, record, include_images=True)
+            parse(stream, lambda *_: None, record, include_images=True, include_icons=True)
         return rows
 
     def programme(self, raw):
@@ -45,7 +45,7 @@ class AgentArtwork104(Fixture, unittest.TestCase):
         self.assertEqual(schluempfe['title'], 'Die Schlümpfe')
         self.assertEqual(len(schluempfe['cast']), 6)
         self.assertEqual(schluempfe['agent_art'], {})
-        self.assertEqual(set(series['agent_art']), {'backdrop', 'poster'})
+        self.assertEqual(set(series['agent_art']), {'backdrop', 'poster', 'legacy_icon'})
 
         for event, reason in ((schluempfe, 'AGENT_REFERENCE_MISSING'), (series, 'READY')):
             info = dict(events=[event], start=event['start'], stop=event['stop'], now=event['title'])
